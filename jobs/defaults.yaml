@@ -1,0 +1,17 @@
+- wrapper:
+    name: default-wrappers
+    wrappers:
+        - ansicolor
+        - credentials-binding:
+            - text:
+                credential-id: d5d498a9-029b-416d-a839-98694e22f534
+                variable: REPO_BASE_URL
+            - text:
+                credential-id: 3b1e3e6f-0536-4a3d-b1ab-9f1db6c0d908
+                variable: RHN_USERNAME
+            - text:
+                credential-id: 441b4de0-96c6-479e-8dfa-dd11d84f09b2
+                variable: RHN_PASSWORD
+            - text:
+                credential-id: e13aa619-3c93-4711-b2db-dc46032a3e1e
+                variable: RHN_POOLID

@@ -1,0 +1,318 @@
+#==============================================================================
+# Macros
+#==============================================================================
+- parameter:
+    name: automation-parameters
+    parameters:
+        - string:
+            name: SERVER_HOSTNAME
+        - choice:
+            name: VERBOSITY
+            choices:
+                - '5'
+                - '4'
+                - '3'
+                - '2'
+                - '1'
+        - choice:
+            name: SMOKE
+            choices:
+                - '1'
+                - '0'
+        - choice:
+            name: LOCALE
+            choices:
+                - en_US.UTF-8
+
+- wrapper:
+    name: automation-wrappers
+    wrappers:
+        - config-file-provider:
+            files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421863970654
+                  variable: FAKE_CERT_CONFIG
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1423566090839
+                  variable: ROBOTTELO_CONFIG
+
+- builder:
+    name: automation-builders
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw 'automation.sh'
+
+- builder:
+    name: automation-profiling-builder
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command: |
+                pip install -U gprof2dot
+                gprof2dot --format pstats --node-thres 5 "test-foreman-$ENDPOINT.pstats" \
+                | dot -Tsvg -o "test-foreman-$ENDPOINT.svg"
+
+- publisher:
+    name: automation-profiling-publisher
+    publishers:
+        - archive:
+            artifacts: 'test-foreman-*.svg'
+
+- publisher:
+    name: automation-publishers
+    publishers:
+        - junit:
+            results: 'foreman-results.xml'
+
+#==============================================================================
+# Job Templates
+#==============================================================================
+- job-template:
+    name: '{product}-provisioning-{distribution}-{os}'
+    parameters:
+        - string:
+            name: BASE_URL
+            description: Required for dowstream and iso distributions
+        - choice:
+            name: SELINUX_MODE
+            choices:
+                - 'enforcing'
+                - 'permissive'
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421176025129
+                  variable: PROVISIONING_CONFIG
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421863970654
+                  variable: FAKE_CERT_CONFIG
+        - inject:
+            properties-content: |
+                DISTRO={os}
+                DISTRIBUTION={product}-{distribution}
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command: |
+                pip install -r requirements.txt
+                source $FAKE_CERT_CONFIG
+                source $PROVISIONING_CONFIG
+                if [ "$DISTRIBUTION" = 'satellite6-zstream' ]; then
+                    DISTRIBUTION='satellite6-downstream'
+                fi
+
+                fab -H "root@$PROVISIONING_HOST" -i ~/.ssh/id_hudson_dsa "product_install:$DISTRIBUTION,true"
+                # Write a properties file to allow passing variables to other build steps
+                echo "SERVER_HOSTNAME=$TARGET_IMAGE.$VM_DOMAIN" > build_env.properties
+        - inject:
+            properties-file: build_env.properties
+        - trigger-builds:
+            - project: '{product}-smoke-{distribution}-{os}'
+              predefined-parameters: |
+                SERVER_HOSTNAME=$SERVER_HOSTNAME
+
+- job-template:
+    name: '{product}-smoke-{distribution}-{os}'
+    parameters:
+        - automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - automation-wrappers
+        - inject:
+            properties-content: |
+                ENDPOINT=smoke
+    builders:
+        - automation-builders
+        - trigger-builds:
+            - project: '{product}-automation-{distribution}-{os}-api'
+              current-parameters: true
+    publishers:
+        - automation-publishers
+
+- job-template:
+    name: '{product}-automation-{distribution}-{os}-api'
+    parameters:
+        - automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - automation-wrappers
+        - inject:
+            properties-content: |
+                ENDPOINT=api
+    builders:
+        - automation-builders
+        - automation-profiling-builder
+        - trigger-builds:
+            - project: '{product}-automation-{distribution}-{os}-cli'
+              current-parameters: true
+    publishers:
+        - automation-profiling-publisher
+        - automation-publishers
+
+- job-template:
+    name: '{product}-automation-{distribution}-{os}-cli'
+    parameters:
+        - automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - automation-wrappers
+        - inject:
+            properties-content: |
+                ENDPOINT=cli
+    builders:
+        - automation-builders
+        - automation-profiling-builder
+        - trigger-builds:
+            - project: '{product}-automation-{distribution}-{os}-ui'
+              current-parameters: true
+    publishers:
+        - automation-profiling-publisher
+        - automation-publishers
+
+- job-template:
+    name: '{product}-automation-{distribution}-{os}-ui'
+    parameters:
+        - automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - automation-wrappers
+        - inject:
+            properties-content: |
+                ENDPOINT=ui
+    builders:
+        - automation-builders
+        - automation-profiling-builder
+    publishers:
+        - automation-profiling-publisher
+        - automation-publishers
+
+#==============================================================================
+# Project
+#==============================================================================
+- project:
+    name: satellite6-automation
+    node: sesame
+    scm-branch: origin/master
+    distribution:
+        - cdn
+        - downstream
+        - zstream:
+            scm-branch: origin/satellite-6.0.z.1
+        - iso
+        - upstream
+    os:
+        - rhel66
+        - rhel70
+    product:
+        - sam
+        - satellite6
+    jobs:
+        - '{product}-provisioning-{distribution}-{os}'
+        - '{product}-smoke-{distribution}-{os}'
+        - '{product}-automation-{distribution}-{os}-api'
+        - '{product}-automation-{distribution}-{os}-cli'
+        - '{product}-automation-{distribution}-{os}-ui'
+
+#==============================================================================
+# Jobs
+#==============================================================================
+- job:
+    name: satellite6-trigger
+    description: Triggers automation for Satellite 6
+    parameters:
+        - string:
+            name: RHEL6_BASE_URL
+        - string:
+            name: RHEL7_BASE_URL
+        - choice:
+            name: SELINUX_MODE
+            choices:
+                - 'enforcing'
+                - 'permissive'
+    builders:
+        - trigger-builds:
+            - project: satellite6-provisioning-downstream-rhel66
+              predefined-parameters: |
+                BASE_URL=${RHEL6_BASE_URL}/os
+                SELINUX_MODE=${SELINUX_MODE}
+        - trigger-builds:
+            - project: satellite6-provisioning-downstream-rhel70
+              predefined-parameters: |
+                BASE_URL=${RHEL7_BASE_URL}/os
+                SELINUX_MODE=${SELINUX_MODE}
+        - trigger-builds:
+            - project: satellite6-provisioning-iso-rhel66
+              predefined-parameters: |
+                BASE_URL=${RHEL6_BASE_URL}/iso
+                SELINUX_MODE=${SELINUX_MODE}
+        - trigger-builds:
+            - project: satellite6-provisioning-iso-rhel70
+              predefined-parameters: |
+                BASE_URL=${RHEL7_BASE_URL}/iso
+                SELINUX_MODE=${SELINUX_MODE}
+
+- job:
+    name: satellite6-zstream-trigger
+    description: Triggers automation for Satellite 6 zstream
+    parameters:
+        - string:
+            name: RHEL6_BASE_URL
+        - string:
+            name: RHEL7_BASE_URL
+    builders:
+        - trigger-builds:
+            - project: satellite6-provisioning-zstream-rhel66
+              predefined-parameters:
+                BASE_URL=${RHEL6_BASE_URL}/os
+        - trigger-builds:
+            - project: satellite6-provisioning-zstream-rhel70
+              predefined-parameters:
+                BASE_URL=${RHEL7_BASE_URL}/os
+
+- job:
+    name: satellite6-upstream-trigger
+    description: Triggers automation for Satellite 6 upstream
+    triggers:
+        - timed: 'H 19 * * *'
+    builders:
+        - trigger-builds:
+            - project: |
+                satellite6-provisioning-upstream-rhel66,
+                satellite6-provisioning-upstream-rhel70
+                sam-provisioning-upstream-rhel66,
+                sam-provisioning-upstream-rhel70
