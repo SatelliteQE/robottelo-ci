@@ -35,6 +35,9 @@ password=<jenkins-api-key>
 url=<jenkins-url>
 ```
 
+Or you can just run `cp jenkins_jobs.ini.sample jenkins_jobs.ini` and change
+the jenkins credentials section.
+
 Creating the jobs
 -----------------
 

@@ -1,0 +1,10 @@
+[job_builder]
+keep_descriptions=False
+include_path=.:scripts
+recursive=True
+allow_duplicates=False
+
+[jenkins]
+user=<jenkin-user>
+password=<jenkins-api-key>
+url=<jenkins-url>
