@@ -2,6 +2,13 @@ pip install -U -r requirements.txt nose PyVirtualDisplay
 source $FAKE_CERT_CONFIG
 source $ROBOTTELO_CONFIG
 
+# Project on YAML file is satellite6 or sam but robottelo just accept sam or
+# sat as a project. Adjust the product variable properly
+if [ "$PRODUCT" = 'satellite6' ]; then
+    PRODUCT='sat'
+fi
+
+
 cp robottelo.properties.sample robottelo.properties
 
 sed -i "s/server\.hostname.*/server\.hostname=$SERVER_HOSTNAME/" robottelo.properties
@@ -9,6 +16,7 @@ sed -i "s/server\.ssh\.key_private.*/server\.ssh\.key_private=\/home\/jenkins\/.
 sed -i "s/smoke.*/smoke=$SMOKE/" robottelo.properties
 sed -i "s/verbosity.*/verbosity=$VERBOSITY/" robottelo.properties
 sed -i "s/locale.*/locale=$LOCALE/" robottelo.properties
+sed -i "s/project.*/project=$PRODUCT/" robottelo.properties
 sed -i "s/virtual_display.*/virtual_display=1/" robottelo.properties
 sed -i "s/window_manager_command.*/window_manager_command=fluxbox/" robottelo.properties
 
