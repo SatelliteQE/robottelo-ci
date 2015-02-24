@@ -28,6 +28,11 @@
                   <li><strong>ISO</strong>: Install from an ISO image from latest stable internal compose</li>
                   <li><strong>UPSTREAM</strong>: Install from latest community build</li>
                 </ul>
+        - choice:
+            name: SELINUX_MODE
+            choices:
+                - 'enforcing'
+                - 'permissive'
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
