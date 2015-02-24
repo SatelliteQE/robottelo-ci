@@ -141,6 +141,7 @@
         - inject:
             properties-content: |
                 ENDPOINT=smoke
+                PRODUCT={product}
     builders:
         - automation-builders
         - trigger-builds:
@@ -164,6 +165,7 @@
         - inject:
             properties-content: |
                 ENDPOINT=api
+                PRODUCT={product}
     builders:
         - automation-builders
         - automation-profiling-builder
@@ -189,6 +191,7 @@
         - inject:
             properties-content: |
                 ENDPOINT=cli
+                PRODUCT={product}
     builders:
         - automation-builders
         - automation-profiling-builder
@@ -214,6 +217,7 @@
         - inject:
             properties-content: |
                 ENDPOINT=ui
+                PRODUCT={product}
     builders:
         - automation-builders
         - automation-profiling-builder
