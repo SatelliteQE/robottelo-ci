@@ -33,6 +33,17 @@
             choices:
                 - 'enforcing'
                 - 'permissive'
+        - bool:
+            name: FIX_HOSTNAME
+            default: true
+            description: |
+                Run a task to updates /etc/hosts with FQDN and IP
+        - bool:
+            name: PARTITION_DISK
+            default: false
+            description: |
+                Run a task to re-partition disk to increase the size of /root
+                to handle synchronization of larger repositories
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
