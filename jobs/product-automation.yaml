@@ -242,6 +242,7 @@
     os:
         - rhel66
         - rhel70
+        - rhel71
     product:
         - sam
         - satellite6
@@ -275,7 +276,7 @@
                 BASE_URL=${RHEL6_BASE_URL}/os
                 SELINUX_MODE=${SELINUX_MODE}
         - trigger-builds:
-            - project: satellite6-provisioning-downstream-rhel70
+            - project: satellite6-provisioning-downstream-rhel71
               predefined-parameters: |
                 BASE_URL=${RHEL7_BASE_URL}/os
                 SELINUX_MODE=${SELINUX_MODE}
@@ -285,7 +286,7 @@
                 BASE_URL=${RHEL6_BASE_URL}/iso
                 SELINUX_MODE=${SELINUX_MODE}
         - trigger-builds:
-            - project: satellite6-provisioning-iso-rhel70
+            - project: satellite6-provisioning-iso-rhel71
               predefined-parameters: |
                 BASE_URL=${RHEL7_BASE_URL}/iso
                 SELINUX_MODE=${SELINUX_MODE}
@@ -317,6 +318,6 @@
         - trigger-builds:
             - project: |
                 satellite6-provisioning-upstream-rhel66,
-                satellite6-provisioning-upstream-rhel70
+                satellite6-provisioning-upstream-rhel71,
                 sam-provisioning-upstream-rhel66,
-                sam-provisioning-upstream-rhel70
+                sam-provisioning-upstream-rhel71
