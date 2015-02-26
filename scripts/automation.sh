@@ -28,4 +28,7 @@ sed -i "s|manifest\.cert_url.*|manifest\.cert_url=$FAKE_MANIFEST_CERT_URL|" robo
 # Clients configuration
 sed -i "s/provisioning_server.*/provisioning_server=$PROVISIONING_SERVER/" robottelo.properties
 
+# Docker configuration
+sed -i "s/external_url.*/external_url=$DOCKER_EXTERNAL_URL/" robottelo.properties
+
 make test-foreman-$ENDPOINT
