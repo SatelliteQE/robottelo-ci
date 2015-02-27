@@ -15,11 +15,6 @@
                 - '2'
                 - '1'
         - choice:
-            name: SMOKE
-            choices:
-                - '1'
-                - '0'
-        - choice:
             name: LOCALE
             choices:
                 - en_US.UTF-8

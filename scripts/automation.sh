@@ -8,6 +8,12 @@ if [ "$PRODUCT" = 'satellite6' ]; then
     PRODUCT='sat'
 fi
 
+# API automation will run all data-driven tests
+if [ "$ENDPOINT" = 'api' ]; then
+    SMOKE=0
+else
+    SMOKE=1
+fi
 
 cp robottelo.properties.sample robottelo.properties
 
