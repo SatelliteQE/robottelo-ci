@@ -257,8 +257,12 @@
     parameters:
         - string:
             name: RHEL6_BASE_URL
+            description: |
+                End with the arch. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/Satellite/x86_64
         - string:
             name: RHEL7_BASE_URL
+            description: |
+                End with the arch. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/Satellite/x86_64
         - choice:
             name: SELINUX_MODE
             choices:
@@ -292,8 +296,12 @@
     parameters:
         - string:
             name: RHEL6_BASE_URL
+            description: |
+                End with the arch. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/Satellite/x86_64
         - string:
             name: RHEL7_BASE_URL
+            description: |
+                End with the arch. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/Satellite/x86_64
     builders:
         - trigger-builds:
             - project: satellite6-provisioning-zstream-rhel66
