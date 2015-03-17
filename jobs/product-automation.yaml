@@ -79,6 +79,12 @@
             choices:
                 - 'enforcing'
                 - 'permissive'
+        - choice:
+            name: PROXY_MODE
+            choices:
+                - 'authenticated'
+                - 'non-authenticated'
+                - 'no-proxy'
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -89,6 +95,8 @@
         - default-wrappers
         - config-file-provider:
             files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426617852908
+                  variable: PROXY_CONFIG
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421176025129
                   variable: PROVISIONING_CONFIG
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421863970654
@@ -107,6 +115,7 @@
                 pip install -r requirements.txt
                 source $FAKE_CERT_CONFIG
                 source $PROVISIONING_CONFIG
+                source $PROXY_CONFIG
                 if [ "$DISTRIBUTION" = 'satellite6-zstream' ]; then
                     DISTRIBUTION='satellite6-downstream'
                 fi
