@@ -1,6 +1,7 @@
 pip install -U -r requirements.txt
 
 source ${PROXY_CONFIG}
+source ${SUBSCRIPTION_CONFIG}
 
 if [ ${FIX_HOSTNAME} = "true" ]; then
     fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} fix_hostname
