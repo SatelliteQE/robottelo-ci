@@ -1,0 +1,80 @@
+- job:
+    name: 'satellite5-installer'
+    concurrent: true
+    display-name: 'Satellite 5 Installer'
+    description: |
+        <p>Job that just install <strong>Satellite 5</strong> on a machine.</p>
+        <p>Please make sure to add the following <strong>ssh key</strong> to your server so that this <strong>Jenkins</strong> job can access it.</p>
+        <pre>
+          ssh-dss AAAAB3NzaC1kc3MAAACBAP2+EVkCT6dJzwL5LFDX0ACzbtlDasmpXbC5dpPNiWmADfdpRdDjWtVA/xjbSOT5tTuLr5fi6cQ2VMLNgVoQUT7tlPAJJU5Z7BngR6CkmonSlczLWbqyJVxg7At/o/kzzYFLE+i1+ReGlXasv4kOlPxhwhqm/wO0hzdImcc866qfAAAAFQDZ8h1+tp6S6KkAahfQUBfgrYhXZQAAAIBJUgNuQZw4ZJ81CPmYDkkYrGbMKxlPn7p/Mycxz+pZi6GbLuaY8rzbhiwS1JcOpUKuB0r4PX6qUoQvhRYZdhfaSEGX81K/3EGpjbzvcFSXa/8ymCcvw9oDoFFV6HWtWxEbjmy9kGrmHMeyFfFAK/tvNbwxDnn2usA4P7UX2NrqUgAAAIEAoVFEn7VZOn7mZZGkBa9Zrtm4AOQEbqd03UoYE1til96Z0Hja8rs6ilqYwuT57VzoePh2uIPfCgzeUxQ+RDjku3YLBsMNRwz3yS49iNiRWF1PAfqscLYyHAFPvvxDE1D/5dHtQGkad618nepycGf+cuSNzZjJdbbbT+qDCm+K6PY= hudson@statler.usersys.redhat.com
+        </pre>
+    node: sesame
+    parameters:
+        - string:
+            name: SERVER_HOSTNAME
+            description: "FQDN for your server where you want to install Satellite 5."
+        - choice:
+            name: DISTRIBUTION
+            choices:
+                - RELEASED
+                - CANDIDATE
+            description: |
+                <p>Choose the distribution type:</p>
+                <ul>
+                  <li><strong>RELEASED</strong>: Install using released version of compose</li>
+                  <li><strong>CANDIDATE </strong>: Install using latest internal compose</li>
+                </ul>
+        - choice:
+            name: VERSION
+            choices:
+                - '5.7'
+                - '5.6'
+            description: |
+                <p>Choose the released product version:</p>
+        - choice:
+            name: DB_BACKEND
+            choices:
+                - postgres
+                - oracle
+            description: |
+                <p>Choose the DB backend:</p>
+        - choice:
+            name: SELINUX_MODE
+            choices:
+                - 'enforcing'
+                - 'permissive'
+        - bool:
+            name: FIX_HOSTNAME
+            default: true
+            description: |
+                Run a task to updates /etc/hosts with FQDN and IP
+        - bool:
+            name: PARTITION_DISK
+            default: false
+            description: |
+                Run a task to re-partition disk to increase the size of /root
+                to handle synchronization of larger repositories
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="SERVER_HOSTNAME"}'
+        - build-user-vars
+        - config-file-provider:
+            files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426617852908
+                  variable: PROXY_CONFIG
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
+                  variable: SUBSCRIPTION_CONFIG
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw installer5.sh
