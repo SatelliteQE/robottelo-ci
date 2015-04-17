@@ -14,7 +14,7 @@ fi
 OS_VERSION=$(fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:digit:]]" | cut -d ' ' -f 2)
 
 if [ ${DISTRIBUTION} = "RELEASED" ]; then
-    export ISO_URL="http://download/released/Satellite-${VERSION}-RHEL-${OS_VERSION}/x86_64/os/ftp-isos/"
+    export ISO_URL="http://download/released/Satellite-${VERSION}-RHEL-${OS_VERSION}/x86_64/ftp-isos/"
 fi
 
 if [ ${DISTRIBUTION} = "CANDIDATE" ]; then
