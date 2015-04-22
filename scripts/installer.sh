@@ -25,3 +25,8 @@ if [ ${DISTRIBUTION} = "DOWNSTREAM" ]; then
 fi
 
 fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} product_install:satellite6-${DISTRIBUTION}
+
+if [ ${SETUP_FAKE_MANIFEST_CERTIFICATE} = "true" ]; then
+    source $FAKE_CERT_CONFIG
+    fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} setup_fake_manifest_certificate
+fi

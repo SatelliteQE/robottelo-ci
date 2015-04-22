@@ -50,6 +50,12 @@
             description: |
                 Run a task to re-partition disk to increase the size of /root
                 to handle synchronization of larger repositories
+        - bool:
+            name: SETUP_FAKE_MANIFEST_CERTIFICATE
+            default: false
+            description: |
+                Run a task to install a fake manifest certificate. Run this if
+                you are planning to run Robottelo tests.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -62,6 +68,8 @@
         - build-user-vars
         - config-file-provider:
             files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421863970654
+                  variable: FAKE_CERT_CONFIG
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426617852908
                   variable: PROXY_CONFIG
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
