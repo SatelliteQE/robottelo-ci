@@ -72,6 +72,8 @@
                   variable: FAKE_CERT_CONFIG
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426617852908
                   variable: PROXY_CONFIG
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
+                  variable: SATELLITE6_REPOS_URLS
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
                   variable: SUBSCRIPTION_CONFIG
         - default-wrappers

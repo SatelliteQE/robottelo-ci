@@ -1,6 +1,7 @@
 pip install -U -r requirements.txt
 
 source ${PROXY_CONFIG}
+source ${SATELLITE6_REPOS_URLS}
 source ${SUBSCRIPTION_CONFIG}
 
 if [ ${FIX_HOSTNAME} = "true" ]; then
@@ -16,12 +17,12 @@ OS_VERSION=$(fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} distro_info 
 
 # ISOs require a specific URL
 if [ ${DISTRIBUTION} = "ISO" ]; then
-    export ISO_URL="${REPO_BASE_URL}/Satellite/latest-stable-Satellite-6.1-RHEL-${OS_VERSION}/compose/Satellite/x86_64/iso/"
+    export ISO_URL="${SATELLITE6_ISO_REPO}"
 fi
 
 # This is only used for downstream builds
 if [ ${DISTRIBUTION} = "DOWNSTREAM" ]; then
-    export BASE_URL="${REPO_BASE_URL}/Satellite/latest-stable-Satellite-6.1-RHEL-${OS_VERSION}/compose/Satellite/x86_64/os/"
+    export BASE_URL="${SATELLITE6_OS_REPO}"
 fi
 
 fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} product_install:satellite6-${DISTRIBUTION}
