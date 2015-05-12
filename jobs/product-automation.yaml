@@ -294,39 +294,34 @@
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
                   variable: SATELLITE6_REPOS_URLS
     builders:
+        - shell: |
+            source ${SATELLITE6_REPOS_URLS}
+
+            echo "RHEL6_OS_URL=${RHEL6_OS_URL:-${SATELLITE6_RHEL6_OS}}" > properties.txt
+            echo "RHEL7_OS_URL=${RHEL7_OS_URL:-${SATELLITE6_RHEL7_OS}}" >> properties.txt
+            echo "RHEL6_ISO_URL=${RHEL6_ISO_URL:-${SATELLITE6_RHEL6_ISO}}" >> properties.txt
+            echo "RHEL7_ISO_URL=${RHEL7_ISO_URL:-${SATELLITE6_RHEL7_ISO}}" >> properties.txt
         - inject:
-            script-content: |
-                if [ -z RHEL6_OS_URL ]; then
-                    export RHEL6_OS_URL="${SATELLITE6_RHEL6_OS}"
-                fi
-                if [ -z RHEL7_OS_URL ]; then
-                    export RHEL7_OS_URL="${SATELLITE6_RHEL7_OS}"
-                fi
-                if [ -z RHEL6_ISO_URL ]; then
-                    export RHEL6_ISO_URL="${SATELLITE6_RHEL6_ISO}"
-                fi
-                if [ -z RHEL7_ISO_URL ]; then
-                    export RHEL7_ISO_URL="${SATELLITE6_RHEL7_ISO}"
-                fi
+            properties-file: properties.txt
         - trigger-builds:
             - project: satellite6-provisioning-downstream-rhel66
               predefined-parameters: |
-                BASE_URL=${RHEL6_BASE_URL}/os
+                BASE_URL=${RHEL6_OS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
         - trigger-builds:
             - project: satellite6-provisioning-downstream-rhel71
               predefined-parameters: |
-                BASE_URL=${RHEL7_BASE_URL}/os
+                BASE_URL=${RHEL7_OS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
         - trigger-builds:
             - project: satellite6-provisioning-iso-rhel66
               predefined-parameters: |
-                BASE_URL=${RHEL6_BASE_URL}/iso
+                BASE_URL=${RHEL6_ISO_URL}
                 SELINUX_MODE=${SELINUX_MODE}
         - trigger-builds:
             - project: satellite6-provisioning-iso-rhel71
               predefined-parameters: |
-                BASE_URL=${RHEL7_BASE_URL}/iso
+                BASE_URL=${RHEL7_ISO_URL}
                 SELINUX_MODE=${SELINUX_MODE}
 
 - job:
