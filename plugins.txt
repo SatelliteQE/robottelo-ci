@@ -1,0 +1,3 @@
+ansicolor
+config-file-provider
+shiningpanda
