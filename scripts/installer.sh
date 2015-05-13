@@ -1,6 +1,10 @@
 pip install -U -r requirements.txt
 
+# Figure out what version of RHEL the server uses
+export OS_VERSION=$(fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:digit:]]" | cut -d ' ' -f 2)
+
 source ${PROXY_CONFIG}
+# OS_VERSION needs to be defined before sourcing SATELLITE6_REPOS_URLS
 source ${SATELLITE6_REPOS_URLS}
 source ${SUBSCRIPTION_CONFIG}
 
@@ -12,8 +16,6 @@ if [ ${PARTITION_DISK} = "true" ]; then
     fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} partition_disk
 fi
 
-# Figure out what version of RHEL the server uses
-OS_VERSION=$(fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:digit:]]" | cut -d ' ' -f 2)
 
 # ISOs require a specific URL
 if [ ${DISTRIBUTION} = "ISO" ]; then
