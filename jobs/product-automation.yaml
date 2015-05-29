@@ -26,6 +26,9 @@
             files:
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1431607187795
                   variable: ROBOTTELO_CONFIG
+        - workspace-cleanup:
+            include:
+                - 'robottelo*.log'
 
 - builder:
     name: automation-builders
@@ -52,14 +55,10 @@
                 | dot -Tsvg -o "test-foreman-$ENDPOINT.svg"
 
 - publisher:
-    name: automation-profiling-publisher
-    publishers:
-        - archive:
-            artifacts: 'test-foreman-*.svg'
-
-- publisher:
     name: automation-publishers
     publishers:
+        - archive:
+            artifacts: 'test-foreman-*.svg,robottelo*.log'
         - junit:
             results: 'foreman-results.xml'
 
@@ -178,7 +177,6 @@
             - project: '{product}-automation-{distribution}-{os}-cli'
               current-parameters: true
     publishers:
-        - automation-profiling-publisher
         - automation-publishers
 
 - job-template:
@@ -204,7 +202,6 @@
             - project: '{product}-automation-{distribution}-{os}-ui'
               current-parameters: true
     publishers:
-        - automation-profiling-publisher
         - automation-publishers
 
 - job-template:
@@ -227,7 +224,6 @@
         - automation-builders
         - automation-profiling-builder
     publishers:
-        - automation-profiling-publisher
         - automation-publishers
 
 #==============================================================================
