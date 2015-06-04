@@ -1,0 +1,67 @@
+- job:
+    name: satellite6-standalone-automation
+    concurrent: true
+    description: |
+        <p>Job that runs robottelo on a machine.</p>
+        <p>Please make sure to add the following <strong>ssh key</strong> to your server so that this <strong>Jenkins</strong> job can access it.</p>
+        <pre>
+          ssh-dss AAAAB3NzaC1kc3MAAACBAP2+EVkCT6dJzwL5LFDX0ACzbtlDasmpXbC5dpPNiWmADfdpRdDjWtVA/xjbSOT5tTuLr5fi6cQ2VMLNgVoQUT7tlPAJJU5Z7BngR6CkmonSlczLWbqyJVxg7At/o/kzzYFLE+i1+ReGlXasv4kOlPxhwhqm/wO0hzdImcc866qfAAAAFQDZ8h1+tp6S6KkAahfQUBfgrYhXZQAAAIBJUgNuQZw4ZJ81CPmYDkkYrGbMKxlPn7p/Mycxz+pZi6GbLuaY8rzbhiwS1JcOpUKuB0r4PX6qUoQvhRYZdhfaSEGX81K/3EGpjbzvcFSXa/8ymCcvw9oDoFFV6HWtWxEbjmy9kGrmHMeyFfFAK/tvNbwxDnn2usA4P7UX2NrqUgAAAIEAoVFEn7VZOn7mZZGkBa9Zrtm4AOQEbqd03UoYE1til96Z0Hja8rs6ilqYwuT57VzoePh2uIPfCgzeUxQ+RDjku3YLBsMNRwz3yS49iNiRWF1PAfqscLYyHAFPvvxDE1D/5dHtQGkad618nepycGf+cuSNzZjJdbbbT+qDCm+K6PY= hudson@statler.usersys.redhat.com
+        </pre>
+    parameters:
+        - string:
+            name: SERVER_HOSTNAME
+        - string:
+            name: SSH_USER
+            default: root
+        - string:
+            name: FOREMAN_ADMIN_USER
+            default: admin
+        - string:
+            name: FOREMAN_ADMIN_PASSWORD
+            default: changeme
+        - choice:
+            name: TEST_TYPE
+            choices:
+                - 'api'
+                - 'cli'
+                - 'ui'
+                - 'smoke-api'
+                - 'smoke-cli'
+                - 'smoke-ui'
+                - 'all'
+                - 'smoke-all'
+            description: |
+                Be aware that the all TEST_TYPE will last for more than 4-5 hours
+        - string:
+            name: NOSE_OPTIONS
+            description: |
+                <p>If you know how to run nosetests and want to provide the
+                options for a more granular testing you can specify the options
+                here. For example <code>tests/foreman/cli/test_activationkey.py
+                -m test_positive_create</code> will run all
+                test_positive_create variations for Activation Key using
+                hammer.</p>
+                <p>If you need more information on how to run tests
+                using nose, please refer to <a
+                href="http://robottelo.readthedocs.org/en/latest/#testing-with-nose">Testing
+                With Nose</a> on the Robottelo's documentation.</p>
+                <p><strong>If you specify this parameter the TEST_TYPE
+                parameter will be ignored</strong>.</p>
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw 'satellite6-standalone-automation.sh'
+    publishers:
+        - satellite6-automation-publishers
