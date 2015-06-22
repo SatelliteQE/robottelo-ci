@@ -16,15 +16,17 @@
         - choice:
             name: DISTRIBUTION
             choices:
-                - CDN
                 - DOWNSTREAM
+                - CDN
+                - BETA
                 - ISO
                 - UPSTREAM
             description: |
                 <p>Choose the distribution type:</p>
                 <ul>
-                  <li><strong>CDN</strong>: Install from CDN</li>
                   <li><strong>DOWNSTREAM</strong>: Install from latest stable internal compose</li>
+                  <li><strong>CDN</strong>: Install from CDN</li>
+                  <li><strong>BETA</strong>: Install from CDN, using the beta repository</li>
                   <li><strong>ISO</strong>: Install from an ISO image from latest stable internal compose</li>
                   <li><strong>UPSTREAM</strong>: Install from latest community build</li>
                 </ul>
