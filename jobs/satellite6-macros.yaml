@@ -1,0 +1,60 @@
+- parameter:
+    name: satellite6-automation-parameters
+    parameters:
+        - string:
+            name: SERVER_HOSTNAME
+        - choice:
+            name: VERBOSITY
+            choices:
+                - '5'
+                - '4'
+                - '3'
+                - '2'
+                - '1'
+        - choice:
+            name: LOCALE
+            choices:
+                - en_US.UTF-8
+
+- wrapper:
+    name: satellite6-automation-wrappers
+    wrappers:
+        - config-file-provider:
+            files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1431607187795
+                  variable: ROBOTTELO_CONFIG
+        - workspace-cleanup:
+            include:
+                - 'robottelo*.log'
+
+- builder:
+    name: satellite6-automation-builders
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw 'automation.sh'
+
+- builder:
+    name: satellite6-automation-profiling-builder
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command: |
+                pip install -U gprof2dot
+                gprof2dot --format pstats --node-thres 5 "test-foreman-$ENDPOINT.pstats" \
+                | dot -Tsvg -o "test-foreman-$ENDPOINT.svg"
+
+- publisher:
+    name: satellite6-automation-publishers
+    publishers:
+        - archive:
+            artifacts: 'test-foreman-*.svg,robottelo*.log'
+        - junit:
+            results: 'foreman-results.xml'
