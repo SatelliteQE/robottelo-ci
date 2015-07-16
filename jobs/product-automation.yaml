@@ -18,6 +18,12 @@
                 - 'authenticated'
                 - 'non-authenticated'
                 - 'no-proxy'
+        - bool:
+            name: CHECK_GPG_SIGNATURES
+            default: false
+            description: |
+                Check packages' GPG signatures when installing from ISO. Not
+                used if not provisioning from ISO.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -218,6 +224,11 @@
             choices:
                 - 'enforcing'
                 - 'permissive'
+        - bool:
+            name: CHECK_GPG_SIGNATURES
+            default: false
+            description: |
+                Check packages' GPG signatures when installing from ISO.
     wrappers:
         - config-file-provider:
             files:
@@ -248,11 +259,13 @@
               predefined-parameters: |
                 BASE_URL=${RHEL6_ISO_URL}
                 SELINUX_MODE=${SELINUX_MODE}
+                CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
         - trigger-builds:
             - project: satellite6-provisioning-iso-rhel71
               predefined-parameters: |
                 BASE_URL=${RHEL7_ISO_URL}
                 SELINUX_MODE=${SELINUX_MODE}
+                CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
 
 - job:
     name: satellite6-zstream-trigger
