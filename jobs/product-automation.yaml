@@ -184,6 +184,7 @@
         - upstream
     os:
         - rhel66
+        - rhel67
         - rhel70
         - rhel71
     product:
@@ -245,7 +246,7 @@
         - inject:
             properties-file: properties.txt
         - trigger-builds:
-            - project: satellite6-provisioning-downstream-rhel66
+            - project: satellite6-provisioning-downstream-rhel67
               predefined-parameters: |
                 BASE_URL=${RHEL6_OS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
@@ -255,7 +256,7 @@
                 BASE_URL=${RHEL7_OS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
         - trigger-builds:
-            - project: satellite6-provisioning-iso-rhel66
+            - project: satellite6-provisioning-iso-rhel67
               predefined-parameters: |
                 BASE_URL=${RHEL6_ISO_URL}
                 SELINUX_MODE=${SELINUX_MODE}
@@ -297,7 +298,7 @@
     builders:
         - trigger-builds:
             - project: |
-                satellite6-provisioning-upstream-rhel66,
+                satellite6-provisioning-upstream-rhel67,
                 satellite6-provisioning-upstream-rhel71,
-                sam-provisioning-upstream-rhel66,
+                sam-provisioning-upstream-rhel67,
                 sam-provisioning-upstream-rhel71
