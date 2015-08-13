@@ -7,6 +7,11 @@ source ${PROXY_CONFIG}
 # OS_VERSION needs to be defined before sourcing SATELLITE6_REPOS_URLS
 source ${SATELLITE6_REPOS_URLS}
 source ${SUBSCRIPTION_CONFIG}
+if [ "$STAGE_TEST" = 'false' ]; then
+    source ${SUBSCRIPTION_CONFIG}
+else
+    source ${STAGE_CONFIG}
+fi
 
 if [ ${FIX_HOSTNAME} = "true" ]; then
     fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} fix_hostname
@@ -27,7 +32,7 @@ if [ ${DISTRIBUTION} = "DOWNSTREAM" ]; then
     export BASE_URL="${SATELLITE6_OS_REPO}"
 fi
 
-fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} product_install:satellite6-${DISTRIBUTION}
+fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} product_install:satellite6-${DISTRIBUTION},sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}
 
 if [ ${SETUP_FAKE_MANIFEST_CERTIFICATE} = "true" ]; then
     source $FAKE_CERT_CONFIG

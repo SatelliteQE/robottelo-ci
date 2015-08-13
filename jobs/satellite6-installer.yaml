@@ -58,6 +58,18 @@
             description: |
                 Run a task to install a fake manifest certificate. Run this if
                 you are planning to run Robottelo tests.
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.1'
+                - '6.0'
+            description: Used only in CDN provisioning.	
+        - bool:
+            name: STAGE_TEST
+            default: false
+            description: |
+                Points to RHSM stage for stage installation test. Used only
+                in CDN provisioning.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -78,6 +90,8 @@
                   variable: SATELLITE6_REPOS_URLS
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
                   variable: SUBSCRIPTION_CONFIG
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1439493457257
+                  variable: STAGE_CONFIG
         - default-wrappers
     builders:
         - shining-panda:

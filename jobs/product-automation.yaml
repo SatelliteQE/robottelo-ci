@@ -22,8 +22,20 @@
             name: CHECK_GPG_SIGNATURES
             default: false
             description: |
-                Check packages' GPG signatures when installing from ISO. Not
-                used if not provisioning from ISO.
+                Check packages' GPG signatures when installing from ISO. Used
+                only in ISO provisioning.
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.1'
+                - '6.0'
+            description: Used only in CDN provisioning.	
+        - bool:
+            name: STAGE_TEST
+            default: false
+            description: |
+                Points to RHSM stage for stage installation test. Used only
+                in CDN provisioning.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -42,6 +54,8 @@
                   variable: PROVISIONING_CONFIG
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
                   variable: SUBSCRIPTION_CONFIG
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1439493457257
+                  variable: STAGE_CONFIG
         - inject:
             properties-content: |
                 DISTRO={os}
@@ -57,12 +71,16 @@
                 source $FAKE_CERT_CONFIG
                 source $PROVISIONING_CONFIG
                 source $PROXY_CONFIG
-                source $SUBSCRIPTION_CONFIG
+                if [ "$STAGE_TEST" = 'false' ]; then
+                    source $SUBSCRIPTION_CONFIG
+                else
+                    source $STAGE_CONFIG
+                fi
                 if [ "$DISTRIBUTION" = 'satellite6-zstream' ]; then
                     DISTRIBUTION='satellite6-downstream'
                 fi
 
-                fab -H "root@$PROVISIONING_HOST" -i ~/.ssh/id_hudson_dsa "product_install:$DISTRIBUTION,true"
+                fab -H "root@$PROVISIONING_HOST" -i ~/.ssh/id_hudson_dsa "product_install:$DISTRIBUTION,create_vm=true,sat_cdn_version=$SATELLITE_VERSION,test_in_stage=$STAGE_TEST"
                 # Write a properties file to allow passing variables to other build steps
                 echo "SERVER_HOSTNAME=$TARGET_IMAGE.$VM_DOMAIN" > build_env.properties
         - inject:
