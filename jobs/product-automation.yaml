@@ -29,7 +29,7 @@
             choices:
                 - '6.1'
                 - '6.0'
-            description: Used only in CDN provisioning.	
+            description: Used only in CDN provisioning.
         - bool:
             name: STAGE_TEST
             default: false
