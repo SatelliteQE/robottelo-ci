@@ -183,6 +183,29 @@
     builders:
         - satellite6-automation-builders
         - satellite6-automation-profiling-builder
+        - trigger-builds:
+            - project: '{product}-access-insights-{distribution}-{os}'
+              current-parameters: true
+    publishers:
+        - satellite6-automation-publishers
+
+- job-template:
+    name: '{product}-access-insights-{distribution}-{os}'
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                PRODUCT={product}
+    builders:
+        - satellite6-insights-builder
     publishers:
         - satellite6-automation-publishers
 
@@ -214,6 +237,22 @@
         - '{product}-automation-{distribution}-{os}-api'
         - '{product}-automation-{distribution}-{os}-cli'
         - '{product}-automation-{distribution}-{os}-ui'
+
+- project:
+    name: redhat-access-insights-automation
+    node: sesame
+    scm-branch: origin/master
+    distribution:
+        - cdn
+        - downstream
+    os:
+        - rhel67
+        - rhel71
+    product:
+        - satellite6
+    jobs:
+        - '{product}-access-insights-{distribution}-{os}'
+
 
 #==============================================================================
 # Jobs

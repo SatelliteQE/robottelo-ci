@@ -51,6 +51,17 @@
                 gprof2dot --format pstats --node-thres 5 "test-foreman-$ENDPOINT.pstats" \
                 | dot -Tsvg -o "test-foreman-$ENDPOINT.svg"
 
+- builder:
+    name: satellite6-insights-builder
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw 'insights_automation.sh'
+
 - publisher:
     name: satellite6-automation-publishers
     publishers:
