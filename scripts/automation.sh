@@ -20,6 +20,13 @@ sed -i "s/smoke.*/smoke=$SMOKE/" robottelo.properties
 sed -i "s/verbosity.*/verbosity=$VERBOSITY/" robottelo.properties
 sed -i "s/locale.*/locale=$LOCALE/" robottelo.properties
 sed -i "s/project.*/project=$PRODUCT/" robottelo.properties
+sed -i "s/rhel6_repo*/rhel6_repo=$RHEL6_REPO/" robottelo.properties
+sed -i "s/rhel7_repo*/rhel7_7repo=$RHEL7_REPO/" robottelo.properties
+
+if [ "$ENDPOINT" = 'rhai' ]; then
+    sed -i "s/insights_el6repo*/insights_el6repo=$INSIGHTS_6_REPO/" robottelo.properties
+    sed -i "s/insights_el7repo*/insights_el7repo=$INSIGHTS_7_REPO/" robottelo.properties
+fi
 
 # Robottelo logging configuration
 sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
