@@ -28,7 +28,7 @@ if [ -n "${NOSE_OPTIONS}" ]; then
 fi
 
 case "${TEST_TYPE}" in
-    api|cli|ui )
+    api|cli|ui|rhai )
         make "test-foreman-${TEST_TYPE}"
         ;;
     smoke-api|smoke-cli|smoke-ui )

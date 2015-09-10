@@ -25,6 +25,7 @@
                 - 'api'
                 - 'cli'
                 - 'ui'
+                - 'rhai'
                 - 'smoke-api'
                 - 'smoke-cli'
                 - 'smoke-ui'
