@@ -22,7 +22,7 @@ sed -i "s/admin.password.*/admin.password=${FOREMAN_ADMIN_PASSWORD}/" robottelo.
 NOSETESTS="$(which nosetests) --logging-filter=nailgun,robottelo --with-xunit \
     --xunit-file=foreman-results.xml"
 
-if [ -n "${NOSE_OPTIONS}" ]; then
+if [ -n "${NOSE_OPTIONS:-}" ]; then
     ${NOSETESTS} ${NOSE_OPTIONS}
     exit 0
 fi
