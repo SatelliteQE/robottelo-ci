@@ -24,4 +24,10 @@ sed -i "s/project.*/project=$PRODUCT/" robottelo.properties
 # Robottelo logging configuration
 sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 
+# upstream = 1 for Distributions: UPSTREAM (default in robottelo.properties)
+# upstream = 0 for Distributions: DOWNSTREAM, CDN, BETA, ISO
+if [[ "$DISTRIBUTION" != *"UPSTREAM"* ]]; then
+   sed -i "s/upstream.*/upstream=0/" robottelo.properties
+fi
+
 make test-foreman-$ENDPOINT
