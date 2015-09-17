@@ -190,7 +190,7 @@
         - conditional-step:
             condition-kind: regex-match
             regex: (cdn|downstream)
-            label: {distribution}
+            label: ${{ENV,var="DISTRIBUTION"}}
             steps:
                 - trigger-builds:
                     - project: '{product}-automation-{distribution}-{os}-rhai'
