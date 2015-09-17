@@ -275,6 +275,7 @@
         - '{product}-automation-{distribution}-{os}-cli'
         - '{product}-automation-{distribution}-{os}-ui'
         - '{product}-automation-{distribution}-{os}-rhai'
+        - '{product}-automation-{distribution}-{os}-longrun'
 
 #==============================================================================
 # Jobs
