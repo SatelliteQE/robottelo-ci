@@ -56,6 +56,8 @@
                   variable: SUBSCRIPTION_CONFIG
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1439493457257
                   variable: STAGE_CONFIG
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1440792796745
+                  variable: INSTALL_CONFIG
         - inject:
             properties-content: |
                 DISTRO={os}
@@ -69,6 +71,7 @@
             command: |
                 pip install -r requirements.txt
                 source $FAKE_CERT_CONFIG
+                source $INSTALL_CONFIG
                 source $PROVISIONING_CONFIG
                 source $PROXY_CONFIG
                 if [ "$STAGE_TEST" = 'false' ]; then
