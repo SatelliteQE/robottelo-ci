@@ -19,7 +19,7 @@ sed -i "s/server\.hostname.*/server\.hostname=$SERVER_HOSTNAME/" robottelo.prope
 sed -i "s/smoke.*/smoke=$SMOKE/" robottelo.properties
 sed -i "s/verbosity.*/verbosity=$VERBOSITY/" robottelo.properties
 sed -i "s/locale.*/locale=$LOCALE/" robottelo.properties
-sed -i "s/project.*/project=$PRODUCT/" robottelo.properties
+sed -i "s/^project.*/project=$PRODUCT/" robottelo.properties
 
 # Robottelo logging configuration
 sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
