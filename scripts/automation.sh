@@ -37,7 +37,8 @@ fi
 if [[ "$DISTRIBUTION" != *"CDN"* ]]; then
    # The below cdn flag is required by automation to flip between RH & custom syncs.
    sed -i "s/cdn.*/cdn=0/" robottelo.properties
-   sed -i "s/clients\.sattools_repo.*/clients\.sattools_repo=$TOOLS_REPO/" robottelo.properties
+   # Usage of '#' is intentional as TOOLS_REPO can bring in http url which has '/'
+   sed -i "s#sattools_repo.*#sattools_repo=$TOOLS_REPO#" robottelo.properties
 fi
 
 make test-foreman-$ENDPOINT
