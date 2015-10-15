@@ -3,18 +3,6 @@
     parameters:
         - string:
             name: SERVER_HOSTNAME
-        - choice:
-            name: VERBOSITY
-            choices:
-                - '5'
-                - '4'
-                - '3'
-                - '2'
-                - '1'
-        - choice:
-            name: LOCALE
-            choices:
-                - en_US.UTF-8
 
 - wrapper:
     name: satellite6-automation-wrappers
