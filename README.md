@@ -16,8 +16,8 @@ pip install -r requirements.txt
 
 It will install all required packages. Make sure to have pip installed.
 
-Sample jenkins_jobs.ini configuration
--------------------------------------
+Setup
+-----
 
 After installing the required packages, you have to create a `jenkins_jobs.ini`
 config file:
@@ -35,8 +35,10 @@ password=<jenkins-api-key>
 url=<jenkins-url>
 ```
 
-Or you can just run `cp jenkins_jobs.ini.sample jenkins_jobs.ini` and change
-the jenkins credentials section.
+Or you can just run `./setup_jjb.sh` and change
+the jenkins credentials section. This will in turn
+also setup a local copy of foreman-infra from which
+macros are used.
 
 Creating the jobs
 -----------------
@@ -45,7 +47,7 @@ When all above steps are completed, you can create the jobs by running the
 following command:
 
 ```sh
-jenkins-jobs --conf jenkins_jobs.ini update jobs
+./update-job.sh jobs
 ```
 
 The above command considers that you are running on this repo root directory
