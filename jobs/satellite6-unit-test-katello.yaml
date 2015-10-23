@@ -1,19 +1,18 @@
 - job:
-    name: satellite6-unit-test-foreman
+    name: satellite6-unit-test-katello
     logrotate:
       daysToKeep: -1
       numToKeep: 32
     node: test-slave
     scm:
-      - foreman_gitlab
+      - katello_gitlab
+      - foreman_plugin_gitlab
     builders:
-      - test_develop
+      - test_katello
     publishers:
       - gemset_cleanup
       - junit:
-          results: 'jenkins/reports/unit/*.xml'
-    wrappers:
-      - default_xvfb
+          results: 'foreman/jenkins/reports/unit/*.xml'
     triggers:
       - gitlab_build_on_change
     parameters:
