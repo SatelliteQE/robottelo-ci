@@ -1,0 +1,19 @@
+- scm:
+    name: foreman_discovery_gitlab
+    scm:
+      - git:
+          wipe-workspace: true
+          skip-tag: true
+          basedir: 'plugin'
+          merge:
+            remote: origin
+            branch: ${gitlabTargetBranch}
+          branches:
+            - ${branch}
+            - origin/${gitlabSourceBranch}
+            - ${gitlabSourceRepoName}/${gitlabSourceBranch}
+          remotes:
+            - origin:
+                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/foreman_discovery.git'
+            - ${gitlabSourceRepoName}:
+                url: ${gitlabSourceRepoURL}

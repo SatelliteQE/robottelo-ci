@@ -1,0 +1,24 @@
+- job:
+    name: satellite6-unit-test-foreman-discovery
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    node: test-slave
+    scm:
+      - foreman_discovery_gitlab
+      - foreman_plugin_gitlab
+    builders:
+      - test_plugin
+    publishers:
+      - gemset_cleanup
+      - junit:
+          results: 'foreman/jenkins/reports/unit/*.xml'
+    triggers:
+      - gitlab_build_on_change
+    parameters:
+      - ruby
+      - database
+      - merge_request
+      - string:
+          name: plugin_name
+          default: 'foreman_discovery'
