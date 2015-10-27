@@ -1,0 +1,6 @@
+- trigger:
+    name: gitlab_merge_request
+    triggers:
+      - gitlab-merge-request:
+          cron: '* * * * *'
+          project-path: 'satellite6/foreman'

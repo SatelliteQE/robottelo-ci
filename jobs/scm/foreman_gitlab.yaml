@@ -1,0 +1,18 @@
+- scm:
+    name: foreman_gitlab
+    scm:
+      - git:
+          wipe-workspace: true
+          skip-tag: true
+          merge:
+            remote: origin
+            branch: ${gitlabTargetBranch}
+          branches:
+            - ${branch}
+            - origin/${gitlabSourceBranch}
+            - ${gitlabSourceRepoName}/${gitlabSourceBranch}
+          remotes:
+            - origin:
+                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/foreman.git'
+            - ${gitlabSourceRepoName}:
+                url: ${gitlabSourceRepoURL}

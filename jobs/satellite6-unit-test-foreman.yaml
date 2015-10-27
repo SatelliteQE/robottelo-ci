@@ -1,0 +1,43 @@
+- job:
+    name: satellite6-unit-test-foreman
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    node: test-slave
+    scm:
+      - foreman_gitlab
+    builders:
+      - test_develop
+    publishers:
+      - gemset_cleanup
+      - junit:
+          results: 'jenkins/reports/unit/*.xml'
+    wrappers:
+      - default_xvfb
+    triggers:
+      - gitlab_build_on_change
+    parameters:
+      - string:
+          name: ruby
+          default: 1.9.3
+          description: 'Version of Ruby to test against'
+      - string:
+          name: database
+          default: postgresql
+          description: 'Database to run tests against'
+      - string:
+          name: gitlabSourceRepoURL
+          default: 
+          description: 'Source repository that a merge request is coming from'
+      - string:
+          name: gitlabSourceRepoName
+          default: 
+          description: 'Source repository name (e.g. ehelms/foreman)'
+      - string:
+          name: gitlabSourceBranch
+          default: 
+          description: 'Source repository branch where the change exists (e.g. my-bug-branch)'
+      - string:
+          name: gitlabTargetBranch
+          default: 
+          description: 'Branch on the target repository that the merge request is going into (e.g. master)'

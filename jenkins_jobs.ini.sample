@@ -1,6 +1,6 @@
 [job_builder]
 keep_descriptions=False
-include_path=.:scripts
+include_path=.:scripts:foreman-infra
 recursive=True
 allow_duplicates=False
 
