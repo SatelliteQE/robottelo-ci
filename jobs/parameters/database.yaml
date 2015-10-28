@@ -1,0 +1,7 @@
+- parameter:
+    name: database
+    parameters:
+      - string:
+          name: database
+          default: postgresql
+          description: 'Database to run tests against'

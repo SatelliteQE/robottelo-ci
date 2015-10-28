@@ -11,7 +11,7 @@ cd _build
 
 #TODO: Change this to main foreman-infra repository once all job configurations
 #      are accepted there
-git clone https://github.com/ehelms/foreman-infra.git --branch test_develop
+git clone https://github.com/ehelms/foreman-infra.git --branch test-katello-core
 cd ..
 cp -rf _build/foreman-infra/puppet/modules/jenkins_job_builder/files/theforeman.org foreman-infra
 rm -rf _build
