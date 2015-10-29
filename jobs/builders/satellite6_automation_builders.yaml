@@ -1,0 +1,11 @@
+- builder:
+    name: satellite6-automation-builders
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw 'automation.sh'
+

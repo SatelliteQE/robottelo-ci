@@ -1,0 +1,5 @@
+- parameter:
+    name: satellite6-automation-parameters
+    parameters:
+        - string:
+            name: SERVER_HOSTNAME
