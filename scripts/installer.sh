@@ -31,7 +31,12 @@ fi
 
 # This is only used for downstream builds
 if [ ${DISTRIBUTION} = "DOWNSTREAM" ]; then
-    export BASE_URL="${SATELLITE6_OS_REPO}"
+    # If user provided custom baseurl, use it otherwise use the default
+    if [ ! -z "$SATELLITE6_CUSTOM_BASEURL" ]; then
+        export BASE_URL="${SATELLITE6_CUSTOM_BASEURL}"
+    else
+        export BASE_URL="${SATELLITE6_OS_REPO}"
+    fi
 fi
 
 fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} product_install:satellite6-${DISTRIBUTION},sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}
