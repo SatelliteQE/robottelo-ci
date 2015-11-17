@@ -70,6 +70,13 @@
             description: |
                 Points to RHSM stage for stage installation test. Used only
                 in CDN provisioning.
+        - string:
+            name: SATELLITE6_CUSTOM_BASEURL
+            description: |
+                Used only in Downstream provisioning.  Provide baseurl for
+                satellite install.  Note that this uses the given url for
+                installation without any validation.  It is the responsibility
+                of the user to provide a valid rhel6/rhel7 URL.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
