@@ -3,7 +3,7 @@
     logrotate:
       daysToKeep: -1
       numToKeep: 32
-    node: test-slave
+    node: sesame
     scm:
       - foreman_gitlab
     builders:
