@@ -96,16 +96,17 @@
                 fab -H "root@$PROVISIONING_HOST" -i ~/.ssh/id_hudson_dsa "product_install:$DISTRIBUTION,create_vm=true,sat_cdn_version=$SATELLITE_VERSION,test_in_stage=$STAGE_TEST"
                 # Write a properties file to allow passing variables to other build steps
                 echo "SERVER_HOSTNAME=$TARGET_IMAGE.$VM_DOMAIN" > build_env.properties
-                echo "CAPSULE_REPO=$CAPSULE_URL" >> build_env.properties
-                echo "TOOLS_REPO=$TOOLS_URL" >> build_env.properties
         - inject:
             properties-file: build_env.properties
         - trigger-builds:
             - project: '{product}-smoke-{distribution}-{os}'
               predefined-parameters: |
                 SERVER_HOSTNAME=$SERVER_HOSTNAME
-                CAPSULE_REPO=$CAPSULE_URL
                 TOOLS_REPO=$TOOLS_URL
+                SUBNET=$SUBNET
+                NETMASK=$NETMASK
+                GATEWAY=$GATEWAY
+                BRIDGE=$BRIDGE
 
 - job-template:
     name: '{product}-smoke-{distribution}-{os}'
