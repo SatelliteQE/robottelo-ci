@@ -282,6 +282,7 @@
         - rhel67
         - rhel70
         - rhel71
+        - rhel72
     product:
         - sam
         - satellite6
