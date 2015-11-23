@@ -20,4 +20,14 @@ if [[ "${DISTRIBUTION}" != *"UPSTREAM"* ]]; then
    sed -i "s/^upstream.*/upstream=false/" robottelo.properties
 fi
 
+# cdn = 1 for Distributions: CDN (default in robottelo.properties)
+# cdn = 0 for Distributions: DOWNSTREAM, BETA, ISO, ZSTREAM
+# Sync content and use the below repos only when DISTRIBUTION is not CDN
+if [[ "$DISTRIBUTION" != *"CDN"* ]]; then
+    # The below cdn flag is required by automation to flip between RH & custom syncs.
+    sed -i "s/cdn.*/cdn=0/" robottelo.properties
+    # Usage of '|' is intentional as TOOLS_REPO can bring in http url which has '/'
+    sed -i "s|sattools_repo.*|sattools_repo=$TOOLS_REPO|" robottelo.properties
+fi
+
 make test-foreman-${ENDPOINT}
