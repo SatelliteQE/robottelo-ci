@@ -18,6 +18,12 @@ sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 # upstream = 0 for Distributions: DOWNSTREAM, CDN, BETA, ISO
 if [[ "${DISTRIBUTION}" != *"UPSTREAM"* ]]; then
    sed -i "s/^upstream.*/upstream=false/" robottelo.properties
+    if [[ "${DISTRIBUTION}" != *"CDN"* ]]; then
+       sed -i "s/^# subnet.*/subnet=$SUBNET/" robottelo.properties
+       sed -i "s/^# netmask.*/netmask=$NETMASK/" robottelo.properties
+       sed -i "s/^# gateway.*/gateway=$GATEWAY/" robottelo.properties
+       sed -i "s/^# bridge.*/bridge=$BRIDGE/" robottelo.properties
+    fi
 fi
 
 # cdn = 1 for Distributions: CDN (default in robottelo.properties)
