@@ -16,4 +16,4 @@
             - origin:
                 url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/katello.git'
             - ${gitlabSourceRepoName}:
-                url: ${gitlabSourceRepoURL}
+                url: 'https://$GIT_HOSTNAME/${gitlabSourceRepoName}.git'

@@ -15,4 +15,4 @@
             - origin:
                 url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/foreman.git'
             - ${gitlabSourceRepoName}:
-                url: ${gitlabSourceRepoURL}
+                url: 'https://$GIT_HOSTNAME/${gitlabSourceRepoName}.git'

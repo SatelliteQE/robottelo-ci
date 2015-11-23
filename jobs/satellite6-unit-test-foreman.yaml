@@ -3,7 +3,7 @@
     logrotate:
       daysToKeep: -1
       numToKeep: 32
-    node: sesame
+    node: rhel
     scm:
       - foreman_gitlab
     builders:
