@@ -2,6 +2,7 @@
 """mock_chroot.py - Thin Python wrapper around mock(1)
 """
 from subprocess import check_output
+from collections import Iterable
 
 __all__ = ['MockChroot']
 
@@ -35,6 +36,28 @@ class MockChroot(object):
         """
         mock_cmd = self._mock_cmd('--clean')
         check_output(mock_cmd)
+
+    def rebuild(self, src_rpm, define=None):
+        """Build a package from .src.rpm in Mock
+
+        :param str src_rpm: The path to the .src.rpm file to build
+        :param list define: A n optional list of
+
+        :returns: the command output as string
+        :rtype: str
+        """
+        if define:
+            if isinstance(define, basestring):
+                defines = ('--define', define)
+            elif isinstance(define, Iterable):
+                defines = reduce(lambda l, x: l + ('--define', x), define, ())
+            else:
+                raise TypeError("given 'define' is not a list or a string")
+        else:
+            defines = ()
+        mock_cmd = self._mock_cmd('--rebuild', src_rpm, *defines)
+        output = check_output(mock_cmd)
+        return output
 
     def _mock_cmd(self, *more_args):
         cmd = [self.mock_exe(), '--root={}'.format(self._root)]
