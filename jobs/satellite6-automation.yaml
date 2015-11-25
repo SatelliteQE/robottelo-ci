@@ -2,7 +2,7 @@
 # Job Templates
 #==============================================================================
 - job-template:
-    name: '{product}-provisioning-{distribution}-{os}'
+    name: 'satellite6-provisioning-{distribution}-{os}'
     parameters:
         - string:
             name: BASE_URL
@@ -71,7 +71,7 @@
         - inject:
             properties-content: |
                 DISTRO={os}
-                DISTRIBUTION={product}-{distribution}
+                DISTRIBUTION=satellite6-{distribution}
     builders:
         - shining-panda:
             build-environment: virtualenv
@@ -104,7 +104,7 @@
         - inject:
             properties-file: build_env.properties
         - trigger-builds:
-            - project: '{product}-smoke-{distribution}-{os}'
+            - project: 'satellite6-smoke-{distribution}-{os}'
               predefined-parameters: |
                 SERVER_HOSTNAME=$SERVER_HOSTNAME
                 TOOLS_REPO=$TOOLS_REPO
@@ -114,7 +114,7 @@
                 BRIDGE=$BRIDGE
 
 - job-template:
-    name: '{product}-smoke-{distribution}-{os}'
+    name: 'satellite6-smoke-{distribution}-{os}'
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -129,17 +129,16 @@
             properties-content: |
                 DISTRIBUTION={distribution}
                 ENDPOINT=smoke
-                PRODUCT={product}
     builders:
         - satellite6-automation-builders
         - trigger-builds:
-            - project: '{product}-automation-{distribution}-{os}-api'
+            - project: 'satellite6-automation-{distribution}-{os}-api'
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
 
 - job-template:
-    name: '{product}-automation-{distribution}-{os}-api'
+    name: 'satellite6-automation-{distribution}-{os}-api'
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -154,18 +153,17 @@
             properties-content: |
                 DISTRIBUTION={distribution}
                 ENDPOINT=api
-                PRODUCT={product}
     builders:
         - satellite6-automation-builders
         - satellite6-automation-profiling-builder
         - trigger-builds:
-            - project: '{product}-automation-{distribution}-{os}-cli'
+            - project: 'satellite6-automation-{distribution}-{os}-cli'
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
 
 - job-template:
-    name: '{product}-automation-{distribution}-{os}-cli'
+    name: 'satellite6-automation-{distribution}-{os}-cli'
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -180,18 +178,17 @@
             properties-content: |
                 DISTRIBUTION={distribution}
                 ENDPOINT=cli
-                PRODUCT={product}
     builders:
         - satellite6-automation-builders
         - satellite6-automation-profiling-builder
         - trigger-builds:
-            - project: '{product}-automation-{distribution}-{os}-ui'
+            - project: 'satellite6-automation-{distribution}-{os}-ui'
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
 
 - job-template:
-    name: '{product}-automation-{distribution}-{os}-ui'
+    name: 'satellite6-automation-{distribution}-{os}-ui'
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -206,7 +203,6 @@
             properties-content: |
                 DISTRIBUTION={distribution}
                 ENDPOINT=ui
-                PRODUCT={product}
     builders:
         - satellite6-automation-builders
         - satellite6-automation-profiling-builder
@@ -216,13 +212,13 @@
             label: ${{ENV,var="DISTRIBUTION"}}
             steps:
                 - trigger-builds:
-                    - project: '{product}-automation-{distribution}-{os}-rhai'
+                    - project: 'satellite6-automation-{distribution}-{os}-rhai'
                       current-parameters: true
     publishers:
         - satellite6-automation-publishers
 
 - job-template:
-    name: '{product}-automation-{distribution}-{os}-rhai'
+    name: 'satellite6-automation-{distribution}-{os}-rhai'
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -237,17 +233,16 @@
             properties-content: |
                 DISTRIBUTION={distribution}
                 ENDPOINT=rhai
-                PRODUCT={product}
     builders:
         - satellite6-automation-builders
         - trigger-builds:
-            - project: '{product}-automation-{distribution}-{os}-longrun'
+            - project: 'satellite6-automation-{distribution}-{os}-longrun'
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
 
 - job-template:
-    name: '{product}-automation-{distribution}-{os}-longrun'
+    name: 'satellite6-automation-{distribution}-{os}-longrun'
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -262,7 +257,6 @@
             properties-content: |
                 DISTRIBUTION={distribution}
                 ENDPOINT=longrun
-                PRODUCT={product}
     builders:
         - satellite6-automation-builders
         - satellite6-automation-profiling-builder
@@ -284,22 +278,16 @@
         - iso
         - upstream
     os:
-        - rhel66
-        - rhel67
-        - rhel70
-        - rhel71
-        - rhel72
-    product:
-        - sam
-        - satellite6
+        - rhel6
+        - rhel7
     jobs:
-        - '{product}-provisioning-{distribution}-{os}'
-        - '{product}-smoke-{distribution}-{os}'
-        - '{product}-automation-{distribution}-{os}-api'
-        - '{product}-automation-{distribution}-{os}-cli'
-        - '{product}-automation-{distribution}-{os}-ui'
-        - '{product}-automation-{distribution}-{os}-rhai'
-        - '{product}-automation-{distribution}-{os}-longrun'
+        - 'satellite6-provisioning-{distribution}-{os}'
+        - 'satellite6-smoke-{distribution}-{os}'
+        - 'satellite6-automation-{distribution}-{os}-api'
+        - 'satellite6-automation-{distribution}-{os}-cli'
+        - 'satellite6-automation-{distribution}-{os}-ui'
+        - 'satellite6-automation-{distribution}-{os}-rhai'
+        - 'satellite6-automation-{distribution}-{os}-longrun'
 
 #==============================================================================
 # Jobs
