@@ -10,7 +10,7 @@ sed -i "s/^ssh_username.*/ssh_username=${SSH_USER}/" robottelo.properties
 sed -i "s/^admin_username.*/admin_username=${FOREMAN_ADMIN_USER}/" robottelo.properties
 sed -i "s/^admin_password.*/admin_password=${FOREMAN_ADMIN_PASSWORD}/" robottelo.properties
 
-NOSETESTS="$(which nosetests) --logging-filter=nailgun,robottelo --with-xunit \
+NOSETESTS="$(which nosetests) -s --logging-filter=nailgun,robottelo --with-xunit \
     --xunit-file=foreman-results.xml"
 
 if [ -n "${NOSE_OPTIONS:-}" ]; then
