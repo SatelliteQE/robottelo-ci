@@ -9,8 +9,6 @@
             remote: origin
             branch: ${gitlabTargetBranch}
           branches:
-            - ${branch}
-            - origin/${gitlabSourceBranch}
             - ${gitlabSourceRepoName}/${gitlabSourceBranch}
           remotes:
             - origin:
