@@ -9,9 +9,19 @@
 # - brewkoji
 # - mock
 #
+#TODO: Set a parameter for this
 DIST='.el7'
-OUTPUTDIR='tito_build'
+OUTPUTDIR='build_results'
 PYLIBSPATH="$(dirname "$0")/../lib/python"
+
+if [[ -n "$WORKSPACE" ]]; then
+    # if $WORKSPACE is set assume we are in Jenkins
+    OUTPUTDIR="$WORKSPACE/build_results"
+    PYLIBSPATH="$WORKSPACE/robotello-ci/lib/python"
+    #TODO: parameterize this:
+    PROJECT_PATH="foreman"
+    cd "$PROJECT_PATH"
+fi
 
 mkdir -p "$OUTPUTDIR"
 SRC_RPM="$(
