@@ -11,6 +11,7 @@
 #
 DIST='.el7'
 OUTPUTDIR='tito_build'
+PYLIBSPATH="$(dirname "$0")/../lib/python"
 
 mkdir -p "$OUTPUTDIR"
 SRC_RPM="$(
@@ -26,5 +27,6 @@ SRC_RPM="$(
 
 echo Tito built: "$SRC_RPM"
 
-PYLIBSPATH="$(dirname "$0")/../lib/python"
-python "$PYLIBSPATH/mock_brew.py" "$SRC_RPM"
+python "$PYLIBSPATH/mock_brew.py" \
+    --resultdir="$OUTPUTDIR" \
+    "$SRC_RPM"
