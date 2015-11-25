@@ -1,3 +1,5 @@
 jenkins_jobs.ini
 foreman-infra
 *.swp
+.ropeproject
+*.pyc
