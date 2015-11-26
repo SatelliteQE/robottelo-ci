@@ -293,8 +293,8 @@
 # Jobs
 #==============================================================================
 - job:
-    name: satellite6-trigger
-    description: Triggers automation for Satellite 6
+    name: satellite6-downstream-trigger
+    description: Triggers downstream automation for Satellite 6
     parameters:
         - string:
             name: RHEL6_OS_URL
@@ -320,6 +320,46 @@
             name: RHEL7_OS_TOOLS_URL
             description: |
                 Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/os
+        - choice:
+            name: SELINUX_MODE
+            choices:
+                - 'enforcing'
+                - 'permissive'
+    wrappers:
+        - config-file-provider:
+            files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
+                  variable: SATELLITE6_REPOS_URLS
+    builders:
+        - shell: |
+            source ${SATELLITE6_REPOS_URLS}
+            echo "RHEL6_OS_URL=${RHEL6_OS_URL:-${SATELLITE6_RHEL6_OS}}" > properties.txt
+            echo "RHEL6_OS_CAPSULE_URL=${RHEL6_OS_CAPSULE_URL:-${CAPSULE_RHEL6_OS}}" >> properties.txt
+            echo "RHEL6_OS_TOOLS_URL=${RHEL6_OS_TOOLS_URL:-${TOOLS_RHEL6_OS}}" >> properties.txt
+            echo "RHEL7_OS_URL=${RHEL7_OS_URL:-${SATELLITE6_RHEL7_OS}}" >> properties.txt
+            echo "RHEL7_OS_CAPSULE_URL=${RHEL7_OS_CAPSULE_URL:-${CAPSULE_RHEL7_OS}}" >> properties.txt
+            echo "RHEL7_OS_TOOLS_URL=${RHEL7_OS_TOOLS_URL:-${TOOLS_RHEL7_OS}}" >> properties.txt
+        - inject:
+            properties-file: properties.txt
+        - trigger-builds:
+            - project: satellite6-provisioning-downstream-rhel6
+              predefined-parameters: |
+                BASE_URL=${RHEL6_OS_URL}
+                CAPSULE_URL=${RHEL6_OS_CAPSULE_URL}
+                TOOLS_URL=${RHEL6_OS_TOOLS_URL}
+                SELINUX_MODE=${SELINUX_MODE}
+        - trigger-builds:
+            - project: satellite6-provisioning-downstream-rhel7
+              predefined-parameters: |
+                BASE_URL=${RHEL7_OS_URL}
+                CAPSULE_URL=${RHEL7_OS_CAPSULE_URL}
+                TOOLS_URL=${RHEL7_OS_TOOLS_URL}
+                SELINUX_MODE=${SELINUX_MODE}
+
+- job:
+    name: satellite6-iso-trigger
+    description: Triggers ISO automation for Satellite 6
+    parameters:
         - string:
             name: RHEL6_ISO_URL
             description: |
@@ -362,37 +402,16 @@
     builders:
         - shell: |
             source ${SATELLITE6_REPOS_URLS}
-
-            echo "RHEL6_OS_URL=${RHEL6_OS_URL:-${SATELLITE6_RHEL6_OS}}" > properties.txt
-            echo "RHEL6_OS_CAPSULE_URL=${RHEL6_OS_CAPSULE_URL:-${CAPSULE_RHEL6_OS}}" > properties.txt
-            echo "RHEL6_OS_TOOLS_URL=${RHEL6_OS_TOOLS_URL:-${TOOLS_RHEL6_OS}}" > properties.txt
-            echo "RHEL7_OS_URL=${RHEL7_OS_URL:-${SATELLITE6_RHEL7_OS}}" >> properties.txt
-            echo "RHEL7_OS_CAPSULE_URL=${RHEL7_OS_CAPSULE_URL:-${CAPSULE_RHEL7_OS}}" >> properties.txt
-            echo "RHEL7_OS_TOOLS_URL=${RHEL7_OS_TOOLS_URL:-${TOOLS_RHEL7_OS}}" >> properties.txt
-            echo "RHEL6_ISO_URL=${RHEL6_ISO_URL:-${SATELLITE6_RHEL6_ISO}}" >> properties.txt
-            echo "RHEL6_ISO_CAPSULE_URL=${RHEL6_ISO_CAPSULE_URL:-${CAPSULE_RHEL6_ISO}}" > properties.txt
-            echo "RHEL6_ISO_TOOLS_URL=${RHEL6_ISO_TOOLS_URL:-${TOOLS_RHEL6_ISO}}" > properties.txt
+            echo "RHEL6_ISO_URL=${RHEL6_ISO_URL:-${SATELLITE6_RHEL6_ISO}}" > properties.txt
+            echo "RHEL6_ISO_CAPSULE_URL=${RHEL6_ISO_CAPSULE_URL:-${CAPSULE_RHEL6_ISO}}" >> properties.txt
+            echo "RHEL6_ISO_TOOLS_URL=${RHEL6_ISO_TOOLS_URL:-${TOOLS_RHEL6_ISO}}" >> properties.txt
             echo "RHEL7_ISO_URL=${RHEL7_ISO_URL:-${SATELLITE6_RHEL7_ISO}}" >> properties.txt
-            echo "RHEL7_ISO_CAPSULE_URL=${RHEL7_ISO_CAPSULE_URL:-${CAPSULE_RHEL7_ISO}}" > properties.txt
-            echo "RHEL7_ISO_TOOLS_URL=${RHEL7_ISO_TOOLS_URL:-${TOOLS_RHEL7_ISO}}" > properties.txt
+            echo "RHEL7_ISO_CAPSULE_URL=${RHEL7_ISO_CAPSULE_URL:-${CAPSULE_RHEL7_ISO}}" >> properties.txt
+            echo "RHEL7_ISO_TOOLS_URL=${RHEL7_ISO_TOOLS_URL:-${TOOLS_RHEL7_ISO}}" >> properties.txt
         - inject:
             properties-file: properties.txt
         - trigger-builds:
-            - project: satellite6-provisioning-downstream-rhel67
-              predefined-parameters: |
-                BASE_URL=${RHEL6_OS_URL}
-                CAPSULE_URL=${RHEL6_OS_CAPSULE_URL}
-                TOOLS_URL=${RHEL6_OS_TOOLS_URL}
-                SELINUX_MODE=${SELINUX_MODE}
-        - trigger-builds:
-            - project: satellite6-provisioning-downstream-rhel71
-              predefined-parameters: |
-                BASE_URL=${RHEL7_OS_URL}
-                CAPSULE_URL=${RHEL7_OS_CAPSULE_URL}
-                TOOLS_URL=${RHEL7_OS_TOOLS_URL}
-                SELINUX_MODE=${SELINUX_MODE}
-        - trigger-builds:
-            - project: satellite6-provisioning-iso-rhel67
+            - project: satellite6-provisioning-iso-rhel6
               predefined-parameters: |
                 BASE_URL=${RHEL6_ISO_URL}
                 CAPSULE_URL=${RHEL6_ISO_CAPSULE_URL}
@@ -400,55 +419,13 @@
                 SELINUX_MODE=${SELINUX_MODE}
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
         - trigger-builds:
-            - project: satellite6-provisioning-iso-rhel71
+            - project: satellite6-provisioning-iso-rhel7
               predefined-parameters: |
                 BASE_URL=${RHEL7_ISO_URL}
                 CAPSULE_URL=${RHEL7_ISO_CAPSULE_URL}
                 TOOLS_URL=${RHEL7_ISO_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
-
-- job:
-    name: satellite6-zstream-trigger
-    description: Triggers automation for Satellite 6 zstream
-    parameters:
-        - string:
-            name: RHEL6_BASE_URL
-            description: |
-                End with the arch. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/Satellite/x86_64
-        - string:
-            name: RHEL6_CAPSULE_URL
-            description: |
-                End with the arch. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/Capsule/x86_64
-        - string:
-            name: RHEL6_TOOLS_URL
-            description: |
-                End with the arch. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/sattools/x86_64
-        - string:
-            name: RHEL7_BASE_URL
-            description: |
-                End with the arch. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/Satellite/x86_64
-        - string:
-            name: RHEL7_CAPSULE_URL
-            description: |
-                End with the arch. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/Capsule/x86_64
-        - string:
-            name: RHEL7_TOOLS_URL
-            description: |
-                End with the arch. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64
-    builders:
-        - trigger-builds:
-            - project: satellite6-provisioning-zstream-rhel66
-              predefined-parameters:
-                BASE_URL=${RHEL6_BASE_URL}/os
-                CAPSULE_URL=${RHEL6_CAPSULE_URL}/os
-                TOOLS_URL=${RHEL6_TOOLS_URL}/os
-        - trigger-builds:
-            - project: satellite6-provisioning-zstream-rhel70
-              predefined-parameters:
-                BASE_URL=${RHEL7_BASE_URL}/os
-                CAPSULE_URL=${RHEL7_CAPSULE_URL}/os
-                TOOLS_URL=${RHEL7_TOOLS_URL}/os
 
 - job:
     name: satellite6-upstream-trigger
@@ -458,7 +435,5 @@
     builders:
         - trigger-builds:
             - project: |
-                satellite6-provisioning-upstream-rhel67,
-                satellite6-provisioning-upstream-rhel71,
-                sam-provisioning-upstream-rhel67,
-                sam-provisioning-upstream-rhel71
+                satellite6-provisioning-upstream-rhel6,
+                satellite6-provisioning-upstream-rhel7,
