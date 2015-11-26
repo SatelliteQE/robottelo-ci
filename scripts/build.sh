@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 # build.sh - Build Satellite 6 packages
 #
 #   This script should be run from the root of the package's git repo
@@ -7,7 +7,7 @@
 # - tito
 # - koji
 # - brewkoji
-# - mock
+# - mock (Please ensure the user running the script is in the 'mock' group)
 #
 #TODO: Set a parameter for this
 DIST='.el7'

@@ -23,7 +23,7 @@
             basedir: 'robotello-ci'
     builders:
         - shell:
-            !include-raw-escape build.sh
+            !include-raw build.sh
     publishers:
         - archive:
             artifacts: build_results/*
