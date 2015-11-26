@@ -1,5 +1,5 @@
 - job:
-    name: 'ds-builder-foreman'
+    name: 'satellite6-builder-foreman'
     display-name: 'Downstream package Builder for foreman'
     description: |
         <p>Job to build the foreman downstream packages</p>
@@ -23,7 +23,7 @@
             basedir: 'robotello-ci'
     builders:
         - shell:
-            !include-raw build.sh
+            !include-raw satellite6-builder.sh
     publishers:
         - archive:
             artifacts: build_results/*

@@ -1,5 +1,5 @@
 #!/bin/bash -ex
-# build.sh - Build Satellite 6 packages
+# satellite6-builder.sh - Build Satellite 6 packages
 #
 #   This script should be run from the root of the package's git repo
 #
