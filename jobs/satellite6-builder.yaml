@@ -1,0 +1,17 @@
+- job:
+    name: 'satellite6-builder-foreman'
+    display-name: 'Downstream package Builder for foreman'
+    description: |
+        <p>Job to build the foreman downstream packages</p>
+        <p>This job requires a connection to Brew so it can only work inside the
+        Red Hat network</p>
+    node: builders
+    scm:
+        - foreman_gitlab_checkout
+        - robotello-ci_github
+    builders:
+        - shell:
+            !include-raw satellite6-builder.sh
+    publishers:
+        - archive:
+            artifacts: build_results/*

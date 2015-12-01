@@ -1,0 +1,10 @@
+- scm:
+    name: robotello-ci_github
+    scm:
+        - git:
+            url: 'https://github.com/SatelliteQE/robottelo-ci.git'
+            branches:
+                - master
+            skip-tag: true
+            wipe-workspace: true
+            basedir: 'robotello-ci'
