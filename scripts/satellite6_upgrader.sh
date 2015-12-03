@@ -17,4 +17,5 @@ export BASE_URL="${SATELLITE6_OS_REPO}"
 export CAPSULE_URL="${CAPSULE_OS_REPO}"
 export TOOLS_URL="${TOOLS_OS_REPO}"
 
-fab -i ~/.ssh/id_hudson_dsa -u root product_upgrade:"${PRODUCT}","${INSTANCE_NAME}","${IMAGE_NAME}","${IMAGE_FLAVOR}","${SSH_KEY_NAME}"
+# Run upgrade
+fab -i ~/.ssh/id_hudson_dsa -u root product_upgrade:"${PRODUCT}","${SSH_KEY_NAME}","${SATELLITE_INSTANCE}","${SATELLITE_IMAGE}","${IMAGE_FLAVOR}","${CAPSULE_INSTANCE}","${CAPSULE_IMAGE}","${IMAGE_FLAVOR}"
