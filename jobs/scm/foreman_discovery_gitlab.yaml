@@ -8,6 +8,7 @@
           merge:
             remote: origin
             branch: ${gitlabTargetBranch}
+            fast-forward-mode: NO_FF
           branches:
             - ${gitlabSourceRepoName}/${gitlabSourceBranch}
           remotes:
