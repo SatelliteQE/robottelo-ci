@@ -1,2 +1,2 @@
-jenkins-job-builder
+git+https://github.com/openstack-infra/jenkins-job-builder.git#egg=jenkins-job-builder
 requests
