@@ -1,10 +1,11 @@
 - job:
     name: 'satellite6-upgrader'
-    concurrent: false
+    concurrent: True
     display-name: 'Satellite6-Upgrader'
     description: |
-        <p> This job Upgrades older version of Satellite 6 on the pre-installed image of Openstack.</p>
+        <p> This job Upgrades older version of Satellite6 and Capsule6 on the pre-installed image of Openstack.</p>
         <p> Please make sure that the following <strong>ssh-key</strong> of jenkins has been added in your <strong>openstack project</strong>.</p>
+        <p> This ssh key will be added to satellite and capsule instance to execute upgrade steps.</p>
         <p><strong>SSH KEY:</strong></p>
         <pre>
           ssh-dss AAAAB3NzaC1kc3MAAACBAP2+EVkCT6dJzwL5LFDX0ACzbtlDasmpXbC5dpPNiWmADfdpRdDjWtVA/xjbSOT5tTuLr5fi6cQ2VMLNgVoQUT7tlPAJJU5Z7BngR6CkmonSlczLWbqyJVxg7At/o/kzzYFLE+i1+ReGlXasv4kOlPxhwhqm/wO0hzdImcc866qfAAAAFQDZ8h1+tp6S6KkAahfQUBfgrYhXZQAAAIBJUgNuQZw4ZJ81CPmYDkkYrGbMKxlPn7p/Mycxz+pZi6GbLuaY8rzbhiwS1JcOpUKuB0r4PX6qUoQvhRYZdhfaSEGX81K/3EGpjbzvcFSXa/8ymCcvw9oDoFFV6HWtWxEbjmy9kGrmHMeyFfFAK/tvNbwxDnn2usA4P7UX2NrqUgAAAIEAoVFEn7VZOn7mZZGkBa9Zrtm4AOQEbqd03UoYE1til96Z0Hja8rs6ilqYwuT57VzoePh2uIPfCgzeUxQ+RDjku3YLBsMNRwz3yS49iNiRWF1PAfqscLYyHAFPvvxDE1D/5dHtQGkad618nepycGf+cuSNzZjJdbbbT+qDCm+K6PY= hudson@statler.usersys.redhat.com
@@ -16,28 +17,52 @@
             name: PRODUCT
             choices:
                 - satellite
+                - capsule
+            description: |
+                <p> Choosing 'satellite' will upgrade only Satellite. Choosing 'capsule' will upgrade both Capsule as well as its associated Satellite.</p>
+        - choice:
+            name: FROM_VERSION
+            choices:
+                - '6.0'
+                - '6.1'
+            description: |
+                <p> Choose the currently installed Satellite version to upgrade to latest available.</p>
         - choice:
             name: OS
             choices:
                 - rhel_7
                 - rhel_6
         - string:
-            name: INSTANCE_NAME 
-            description: "Openstack Instance name to create on openstack and to run upgrade."
-        - string:
-            name: IMAGE_NAME
+            name: SATELLITE_INSTANCE
             description: |
-                Openstack Image name using which the the above instance will be created. The image should have older satellite version installed to upgrade.
-                <p><strong>Please make sure that there is no other instance running on openstack with same Image name. Else the results may vary or fail.</strong></p>
+                <p> Openstack Satellite Instance name to create on openstack and to run upgrade.</p>
+        - string:
+            name: CAPSULE_INSTANCE 
+            description: |
+                <p> Openstack Capsule Instance name to create on openstack and to run upgrade.</p>
+                <p> Provide only in the case of <strong>Capsule upgrade</strong>. i.e PRODUCT = capsule </p>
+        - string:
+            name: SATELLITE_IMAGE
+            description: |
+                <p> Openstack Satellite Image name using which the the above instance will be created. The image should have older satellite version installed to perform upgrade.</p>
+                <p><strong> Please make sure that there is no other instance running on openstack with same Image name. Else the results may vary or fail.</strong></p>
+        - string:
+            name: CAPSULE_IMAGE
+            description: |
+                <p> Openstack Capsule Image name using which the the above instance will be created. The image should have older capsule version installed to perform upgrade.</p>
+                <p><strong> Please make sure that there is no other instance running on openstack with same Image name. Else the results may vary or fail.</strong></p>
+                <p> Provide only in the case of <strong>Capsule upgrade</strong>. i.e PRODUCT = capsule </p>
         - choice:
             name: IMAGE_FLAVOR
             choices:
                 - m1.large
                 - m1.xlarge
-            description: "Choose the instance flavor/size to create on openstack. Prefer <strong>m1.large</strong>"
+            description: |
+                <p> Choose the instance flavor/size to create on openstack. Prefer <strong>m1.large</strong></p>
         - string:
             name: SSH_KEY_NAME
-            description: "The <strong>name</strong> of jenkins ssh-key, added in openstack project."
+            description: |
+                <p> The <strong>name</strong> of jenkins ssh-key, added in openstack project. If not added already, copy it from job status page and add to openstack.</p>
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
