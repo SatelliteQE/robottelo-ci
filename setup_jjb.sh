@@ -9,9 +9,7 @@ rm -rf _build
 mkdir _build
 cd _build
 
-#TODO: Change this to main foreman-infra repository once all job configurations
-#      are accepted there
-git clone https://github.com/ehelms/foreman-infra.git --branch test-katello-core
+git clone https://github.com/theforeman/foreman-infra.git
 cd ..
 
 cp -rf _build/foreman-infra/puppet/modules/jenkins_job_builder/files/theforeman.org foreman-infra
