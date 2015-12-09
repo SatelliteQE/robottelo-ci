@@ -1,0 +1,18 @@
+- scm:
+    name: foreman_docker_gitlab
+    scm:
+      - git:
+          wipe-workspace: true
+          skip-tag: true
+          basedir: 'plugin'
+          merge:
+            remote: origin
+            branch: ${gitlabTargetBranch}
+            fast-forward-mode: NO_FF
+          branches:
+            - ${gitlabSourceRepoName}/${gitlabSourceBranch}
+          remotes:
+            - origin:
+                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/foreman-docker.git'
+            - ${gitlabSourceRepoName}:
+                url: 'https://$GIT_HOSTNAME/${gitlabSourceRepoName}.git'
