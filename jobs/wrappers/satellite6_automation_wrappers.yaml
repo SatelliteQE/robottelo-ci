@@ -8,4 +8,5 @@
         - workspace-cleanup:
             include:
                 - 'robottelo*.log'
-
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="BUILD_LABEL"}'

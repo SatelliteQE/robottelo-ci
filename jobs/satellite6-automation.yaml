@@ -46,6 +46,8 @@
             description: |
                 Points to RHSM stage for stage installation test. Used only
                 in CDN provisioning.
+        - string:
+            name: BUILD_LABEL
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -72,6 +74,8 @@
             properties-content: |
                 DISTRO={os}
                 DISTRIBUTION=satellite6-{distribution}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
     builders:
         - shining-panda:
             build-environment: virtualenv
@@ -112,6 +116,7 @@
                 NETMASK=$NETMASK
                 GATEWAY=$GATEWAY
                 BRIDGE=$BRIDGE
+                BUILD_LABEL=$BUILD_LABEL
 
 - job-template:
     name: 'satellite6-smoke-{distribution}-{os}'
@@ -325,6 +330,8 @@
             choices:
                 - 'enforcing'
                 - 'permissive'
+        - string:
+            name: BUILD_LABEL
     wrappers:
         - config-file-provider:
             files:
@@ -348,6 +355,7 @@
                 CAPSULE_URL=${RHEL6_OS_CAPSULE_URL}
                 TOOLS_URL=${RHEL6_OS_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
+                BUILD_LABEL=${BUILD_LABEL}
         - trigger-builds:
             - project: satellite6-provisioning-downstream-rhel7
               predefined-parameters: |
@@ -355,6 +363,7 @@
                 CAPSULE_URL=${RHEL7_OS_CAPSULE_URL}
                 TOOLS_URL=${RHEL7_OS_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
+                BUILD_LABEL=${BUILD_LABEL}
 
 - job:
     name: satellite6-iso-trigger
@@ -394,6 +403,8 @@
             default: false
             description: |
                 Check packages' GPG signatures when installing from ISO.
+        - string:
+            name: BUILD_LABEL
     wrappers:
         - config-file-provider:
             files:
@@ -418,6 +429,7 @@
                 TOOLS_URL=${RHEL6_ISO_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
+                BUILD_LABEL=${BUILD_LABEL}
         - trigger-builds:
             - project: satellite6-provisioning-iso-rhel7
               predefined-parameters: |
@@ -426,6 +438,7 @@
                 TOOLS_URL=${RHEL7_ISO_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
+                BUILD_LABEL=${BUILD_LABEL}
 
 - job:
     name: satellite6-upstream-trigger
