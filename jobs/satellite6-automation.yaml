@@ -249,11 +249,11 @@
             recipients: $PROJECT_DEFAULT_RECIPIENTS
             reply-to: $PROJECT_DEFAULT_REPLYTO
             content-type: text
-            subject: $PROJECT_NAME - Build number: $BUILD_NUMBER - $BUILD_STATUS!
+            subject: "$PROJECT_NAME - Build number: $BUILD_NUMBER - $BUILD_STATUS!"
             body: |
-                $PROJECT_NAME - Build number: $BUILD_NUMBER - $BUILD_STATUS:
+                "$PROJECT_NAME - Build number: $BUILD_NUMBER - $BUILD_STATUS:
 
-                Check console output at $BUILD_URL to view the results.
+                Check console output at $BUILD_URL to view the results."
             unstable: true
             failure: true
             success: true
