@@ -18,3 +18,5 @@
         - string:
             name: BRIDGE
             description: 'The bridge of the vlan network, for the above Server Hostname.'
+        - string:
+            name: BUILD_LABEL
