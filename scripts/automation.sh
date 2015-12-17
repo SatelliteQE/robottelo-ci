@@ -12,7 +12,7 @@ sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 if [[ "${DISTRIBUTION}" != *"upstream"* ]]; then
    sed -i "s/^upstream.*/upstream=false/" robottelo.properties
     if [[ "${DISTRIBUTION}" != *"cdn"* ]]; then
-       sed -i "s/^# [vlan_networking].*/[vlan_networking]/" robottelo.properties
+       sed -i "s/^# \[vlan_networking\].*/[vlan_networking]/" robottelo.properties
        sed -i "s/^# subnet.*/subnet=${SUBNET}/" robottelo.properties
        sed -i "s/^# netmask.*/netmask=${NETMASK}/" robottelo.properties
        sed -i "s/^# gateway.*/gateway=${GATEWAY}/" robottelo.properties
