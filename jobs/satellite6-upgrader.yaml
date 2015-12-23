@@ -30,16 +30,22 @@
         - choice:
             name: OS
             choices:
-                - rhel_7
-                - rhel_6
-        - string:
+                - rhel7
+                - rhel6
+        - choice:
             name: SATELLITE_INSTANCE
+            choices:
+                - sat-upgrade-auto-rhel7
+                - sat-upgrade-auto-rhel6
             description: |
-                <p> Openstack Satellite Instance name to create on openstack and to run upgrade.</p>
-        - string:
-            name: CAPSULE_INSTANCE 
+                <p> Openstack Satellite Instance name to create on openstack and to run upgrade. Choose according to <strong>OS</strong> selected above.</p>
+        - choice:
+            name: CAPSULE_INSTANCE
+            choices:
+                - cap-upgrade-auto-rhel7
+                - cap-upgrade-auto-rhel6
             description: |
-                <p> Openstack Capsule Instance name to create on openstack and to run upgrade.</p>
+                <p> Openstack Capsule Instance name to create on openstack and to run upgrade. Choose according to <strong>OS</strong> selected above.</p>
                 <p> Provide only in the case of <strong>Capsule upgrade</strong>. i.e PRODUCT = capsule </p>
         - string:
             name: SATELLITE_IMAGE
