@@ -2,7 +2,7 @@
     name: robotello-ci_github
     scm:
         - git:
-            url: 'https://github.com/SatelliteQE/robottelo-ci.git'
+            url: 'https://$US_GIT_HOSTNAME/$US_GIT_ORGANIZATION/robottelo-ci.git'
             branches:
                 - master
             skip-tag: true
