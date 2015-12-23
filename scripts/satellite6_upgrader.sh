@@ -1,9 +1,9 @@
 pip install -U -r requirements.txt
 
 # Set OS version for further use
-if [ "${OS}" = 'rhel_7' ]; then
+if [ "${OS}" = 'rhel7' ]; then
         export OS_VERSION='7'
-elif [ "${OS}" = 'rhel_6' ]; then
+elif [ "${OS}" = 'rhel6' ]; then
         export OS_VERSION='6'
 fi
 
