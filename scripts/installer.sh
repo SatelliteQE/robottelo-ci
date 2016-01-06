@@ -43,5 +43,8 @@ fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} product_install:satellite
 
 if [ ${SETUP_FAKE_MANIFEST_CERTIFICATE} = "true" ]; then
     source $FAKE_CERT_CONFIG
+    if [ ${DOWNLOAD_MANIFEST} = "true" ]; then
+        fab -i ~/.ssh/id_hudson_dsa -H root@${MANIFEST_SERVER_HOSTNAME} relink_manifest
+    fi
     fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} setup_fake_manifest_certificate
 fi
