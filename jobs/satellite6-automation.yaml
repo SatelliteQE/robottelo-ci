@@ -48,6 +48,11 @@
                 in CDN provisioning.
         - string:
             name: BUILD_LABEL
+        - bool:
+            name: DOWNLOAD_MANIFEST
+            default: false
+            description: |
+                Downloads the manifest and configures it.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -96,7 +101,9 @@
                 if [ "$DISTRIBUTION" = 'satellite6-zstream' ]; then
                     DISTRIBUTION='satellite6-downstream'
                 fi
-
+                if [ "$DOWNLOAD_MANIFEST" = 'true' ]; then
+                    fab -H "root@$MANIFEST_SERVER_HOSTNAME" -i ~/.ssh/id_hudson_dsa relink_manifest
+                fi
                 fab -H "root@$PROVISIONING_HOST" -i ~/.ssh/id_hudson_dsa "product_install:$DISTRIBUTION,create_vm=true,sat_cdn_version=$SATELLITE_VERSION,test_in_stage=$STAGE_TEST"
                 # Write a properties file to allow passing variables to other build steps
                 echo "SERVER_HOSTNAME=$TARGET_IMAGE.$VM_DOMAIN" > build_env.properties
@@ -342,6 +349,11 @@
             choices:
                 - 'enforcing'
                 - 'permissive'
+        - bool:
+            name: DOWNLOAD_MANIFEST
+            default: false
+            description: |
+                Downloads the manifest and configures it.
         - string:
             name: BUILD_LABEL
     wrappers:
@@ -368,6 +380,7 @@
                 TOOLS_URL=${RHEL6_OS_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
                 BUILD_LABEL=${BUILD_LABEL}
+                DOWNLOAD_MANIFEST=${DOWNLOAD_MANIFEST}
         - trigger-builds:
             - project: satellite6-provisioning-downstream-rhel7
               predefined-parameters: |
@@ -376,6 +389,7 @@
                 TOOLS_URL=${RHEL7_OS_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
                 BUILD_LABEL=${BUILD_LABEL}
+                DOWNLOAD_MANIFEST=${DOWNLOAD_MANIFEST}
 
 - job:
     name: satellite6-iso-trigger
@@ -417,6 +431,11 @@
                 Check packages' GPG signatures when installing from ISO.
         - string:
             name: BUILD_LABEL
+        - bool:
+            name: DOWNLOAD_MANIFEST
+            default: false
+            description: |
+                Downloads the manifest and configures it.
     wrappers:
         - config-file-provider:
             files:
@@ -442,6 +461,7 @@
                 SELINUX_MODE=${SELINUX_MODE}
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
                 BUILD_LABEL=${BUILD_LABEL}
+                DOWNLOAD_MANIFEST=${DOWNLOAD_MANIFEST}
         - trigger-builds:
             - project: satellite6-provisioning-iso-rhel7
               predefined-parameters: |
@@ -451,6 +471,7 @@
                 SELINUX_MODE=${SELINUX_MODE}
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
                 BUILD_LABEL=${BUILD_LABEL}
+                DOWNLOAD_MANIFEST=${DOWNLOAD_MANIFEST}
 
 - job:
     name: satellite6-upstream-trigger

@@ -77,6 +77,11 @@
                 satellite install.  Note that this uses the given url for
                 installation without any validation.  It is the responsibility
                 of the user to provide a valid rhel6/rhel7 URL.
+        - bool:
+            name: DOWNLOAD_MANIFEST
+            default: false
+            description: |
+                Downloads the manifest and configures it.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
