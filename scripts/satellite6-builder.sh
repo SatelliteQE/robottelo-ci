@@ -18,25 +18,23 @@ if [[ -n "$WORKSPACE" ]]; then
     # if $WORKSPACE is set assume we are in Jenkins
     OUTPUTDIR="$WORKSPACE/build_results"
     PYLIBSPATH="$WORKSPACE/robotello-ci/lib/python"
-    #TODO: parameterize this:
-    PROJECT_PATH="foreman"
+fi
+
+if [[ -n "$PROJECT_PATH" ]]; then
     cd "$PROJECT_PATH"
 fi
 
+TITO_RELEASE="${TITO_RELEASE:-ruby193-git-sat}"
+
+PYTHONPATH="$PYLIBSPATH"
+export PYTHONPATH
+
 mkdir -p "$OUTPUTDIR"
-SRC_RPM="$(
-    tito build \
-        --offline \
-        --srpm \
-        --test \
-        --dist="${DIST}" \
-        --scl=ruby193 \
-        --output="$OUTPUTDIR" \
-    | sed -nre 's/^Wrote: (.*\.src\.rpm)$/\1/p'
-)"
+find "$OUTPUTDIR" -mindepth 1 -maxdepth 1 -print0 \
+    | xargs -0 -r -P0 rm -rf
 
-echo Tito built: "$SRC_RPM"
+# run mocktito.py to patch tito configuration
+python "$PYLIBSPATH/mocktito.py"
 
-python "$PYLIBSPATH/mock_brew.py" \
-    --resultdir="$OUTPUTDIR" \
-    "$SRC_RPM"
+# do the build with tito
+tito release "$TITO_RELEASE" --test --offline --output="$OUTPUTDIR"

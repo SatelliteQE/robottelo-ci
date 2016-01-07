@@ -1,0 +1,38 @@
+- job-template:
+    name: 'satellite6-builder-{project}'
+    display-name: 'Downstream package Builder for {project}'
+    description: |
+        <p>Job to build the {project} downstream packages</p>
+        <p>This job requires a connection to Brew so it can only work inside the
+        Red Hat network</p>
+        <p> Some environment variables affect this job and can or need to be set
+        in Jenkins:</p>
+        <ul>
+        <li>US_GIT_HOSTNAME: Hostname of server with upstream Git repos
+        <li>US_GIT_ORGANIZATION: Organization owning upstream Git repos
+        <li>KOJI_TOPURL: Optional url of oji package mirror
+        <li>KOJI_PROFILE: Optional name of Koji configuration profile to use
+        </ul>
+    node: builders
+    scm:
+        - '{project}_gitlab_checkout'
+        - robotello-ci_github
+    builders:
+        - inject:
+            properties-content: |
+                PROJECT_PATH={project}
+                TITO_RELEASE={tito-release}
+        - shell:
+            !include-raw-escape satellite6-builder.sh
+    publishers:
+        - archive:
+            artifacts: build_results/**/*
+
+- project:
+    name: 'satellite6-builders'
+    project:
+        - 'foreman'
+    tito-release: 'ruby193-git-sat'
+    jobs:
+        - 'satellite6-builder-{project}'
+
