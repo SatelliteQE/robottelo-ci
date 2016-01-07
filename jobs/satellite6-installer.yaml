@@ -77,6 +77,24 @@
                 satellite install.  Note that this uses the given url for
                 installation without any validation.  It is the responsibility
                 of the user to provide a valid rhel6/rhel7 URL.
+        - string:
+            name: INTERFACE
+            description: |
+                This will configure DHCP And DNS capsule services with this interface.
+                Required only when network interface is other than virtual interface virbr.
+                Would be helpful in installing sat6 in VmWare setups to do testing with
+                VmWare compute-resource. Otherwise this is Optional.
+        - string:
+            name: GATEWAY
+            description: |
+                This is required when the gateway is other than what is set as default
+                by katello-installer. Would be helpful in installing sat6 in VmWare setups
+                to do testing with VmWare compute-resource. Otherwise this is Optional.
+        - string:
+            name: DHCP_RANGE
+            description: |
+                This is required when we need to set a custom DHCP range.
+                Completely Optional but would be helpful to have.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
