@@ -17,6 +17,9 @@ if [[ "${DISTRIBUTION}" != *"upstream"* ]]; then
        sed -i "s/^# netmask.*/netmask=${NETMASK}/" robottelo.properties
        sed -i "s/^# gateway.*/gateway=${GATEWAY}/" robottelo.properties
        sed -i "s/^# bridge.*/bridge=${BRIDGE}/" robottelo.properties
+       # To set the discovery ISO name in properties file
+       sed -i "s/^# \[discovery\].*/[discovery]/" robottelo.properties
+       sed -i "s/^# discovery_iso.*/discovery_iso=${DISCOVERY_ISO}/" robottelo.properties
     fi
 fi
 
