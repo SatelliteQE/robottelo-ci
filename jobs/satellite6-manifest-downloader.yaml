@@ -1,0 +1,33 @@
+- job:
+    name: 'satellite6-manifest-downloader'
+    display-name: 'Satellite6-Manifest-Downloader'
+    description: |
+        Downloads the Satellite6 Manifest from access.redhat.com
+    triggers:
+        - timed: '00 17 * * 0'
+    node: sesame
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421863970654
+                  variable: FAKE_CERT_CONFIG
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
+                  variable: SUBSCRIPTION_CONFIG
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command: |
+                pip install -r requirements.txt
+                source $FAKE_CERT_CONFIG
+                source $SUBSCRIPTION_CONFIG
+                fab -H "root@$MANIFEST_SERVER_HOSTNAME" -i ~/.ssh/id_hudson_dsa relink_manifest
