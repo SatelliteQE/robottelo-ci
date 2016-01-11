@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt nose PyVirtualDisplay
+pip install -U -r requirements.txt pytest-xdist PyVirtualDisplay
 
 cp ${ROBOTTELO_CONFIG} ./robottelo.properties
 
@@ -33,4 +33,4 @@ if [[ "${DISTRIBUTION}" != *"cdn"* ]]; then
     sed -i "s|sattools_repo.*|sattools_repo=${TOOLS_REPO}|" robottelo.properties
 fi
 
-make test-foreman-${ENDPOINT}
+make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=4

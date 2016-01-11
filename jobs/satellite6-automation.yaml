@@ -108,7 +108,7 @@
         - inject:
             properties-file: build_env.properties
         - trigger-builds:
-            - project: 'satellite6-smoke-{distribution}-{os}'
+            - project: 'satellite6-automation-{distribution}-{os}-tier1'
               predefined-parameters: |
                 SERVER_HOSTNAME=$SERVER_HOSTNAME
                 TOOLS_REPO=$TOOLS_REPO
@@ -119,7 +119,7 @@
                 BUILD_LABEL=$BUILD_LABEL
 
 - job-template:
-    name: 'satellite6-smoke-{distribution}-{os}'
+    name: 'satellite6-automation-{distribution}-{os}-tier1'
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -133,42 +133,18 @@
         - inject:
             properties-content: |
                 DISTRIBUTION={distribution}
-                ENDPOINT=smoke
-    builders:
-        - satellite6-automation-builders
-        - trigger-builds:
-            - project: 'satellite6-automation-{distribution}-{os}-api'
-              current-parameters: true
-    publishers:
-        - satellite6-automation-publishers
-
-- job-template:
-    name: 'satellite6-automation-{distribution}-{os}-api'
-    parameters:
-        - satellite6-automation-parameters
-    scm:
-        - git:
-            url: https://github.com/SatelliteQE/robottelo.git
-            branches:
-                - '{scm-branch}'
-            skip-tag: true
-    wrappers:
-        - satellite6-automation-wrappers
-        - inject:
-            properties-content: |
-                DISTRIBUTION={distribution}
-                ENDPOINT=api
+                ENDPOINT=tier1
     builders:
         - satellite6-automation-builders
         - satellite6-automation-profiling-builder
         - trigger-builds:
-            - project: 'satellite6-automation-{distribution}-{os}-cli'
+            - project: 'satellite6-automation-{distribution}-{os}-tier2'
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
 
 - job-template:
-    name: 'satellite6-automation-{distribution}-{os}-cli'
+    name: 'satellite6-automation-{distribution}-{os}-tier2'
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -182,18 +158,18 @@
         - inject:
             properties-content: |
                 DISTRIBUTION={distribution}
-                ENDPOINT=cli
+                ENDPOINT=tier2
     builders:
         - satellite6-automation-builders
         - satellite6-automation-profiling-builder
         - trigger-builds:
-            - project: 'satellite6-automation-{distribution}-{os}-ui'
+            - project: 'satellite6-automation-{distribution}-{os}-tier3'
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
 
 - job-template:
-    name: 'satellite6-automation-{distribution}-{os}-ui'
+    name: 'satellite6-automation-{distribution}-{os}-tier3'
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -207,7 +183,7 @@
         - inject:
             properties-content: |
                 DISTRIBUTION={distribution}
-                ENDPOINT=ui
+                ENDPOINT=tier3
     builders:
         - satellite6-automation-builders
         - satellite6-automation-profiling-builder
@@ -299,10 +275,9 @@
         - rhel7
     jobs:
         - 'satellite6-provisioning-{distribution}-{os}'
-        - 'satellite6-smoke-{distribution}-{os}'
-        - 'satellite6-automation-{distribution}-{os}-api'
-        - 'satellite6-automation-{distribution}-{os}-cli'
-        - 'satellite6-automation-{distribution}-{os}-ui'
+        - 'satellite6-automation-{distribution}-{os}-tier1'
+        - 'satellite6-automation-{distribution}-{os}-tier2'
+        - 'satellite6-automation-{distribution}-{os}-tier3'
         - 'satellite6-automation-{distribution}-{os}-rhai'
         - 'satellite6-automation-{distribution}-{os}-longrun'
 
