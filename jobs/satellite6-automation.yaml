@@ -105,6 +105,7 @@
                 echo "NETMASK=$NETMASK" >> build_env.properties
                 echo "GATEWAY=$GATEWAY" >> build_env.properties
                 echo "BRIDGE=$BRIDGE" >> build_env.properties
+                echo "DISCOVERY_ISO=$DISCOVERY_ISO" >> build_env.properties
         - inject:
             properties-file: build_env.properties
         - trigger-builds:
@@ -117,6 +118,7 @@
                 GATEWAY=$GATEWAY
                 BRIDGE=$BRIDGE
                 BUILD_LABEL=$BUILD_LABEL
+                DISCOVERY_ISO=$DISCOVERY_ISO
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-tier1'
