@@ -7,5 +7,5 @@
             clear: true
             nature: shell
             command:
-                !include-raw 'automation.sh'
+                !include-raw 'satellite6-automation.sh'
 
