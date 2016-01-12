@@ -22,6 +22,9 @@
         - choice:
             name: TEST_TYPE
             choices:
+                - 'tier1'
+                - 'tier2'
+                - 'tier3'
                 - 'api'
                 - 'cli'
                 - 'ui'
@@ -34,19 +37,15 @@
             description: |
                 Be aware that the all TEST_TYPE will last for more than 4-5 hours
         - string:
-            name: NOSE_OPTIONS
+            name: PYTEST_OPTIONS
             description: |
-                <p>If you know how to run nosetests and want to provide the
+                <p>If you know how to run py.test and want to provide the
                 options for a more granular testing you can specify the options
                 here. For example <code>tests/foreman/cli/test_activationkey.py
-                -m test_positive_create</code> will run all
+                -k test_positive_create</code> will run all
                 test_positive_create variations for Activation Key using
                 hammer.</p>
-                <p>If you need more information on how to run tests
-                using nose, please refer to <a
-                href="http://robottelo.readthedocs.org/en/latest/#testing-with-nose">Testing
-                With Nose</a> on the Robottelo's documentation.</p>
-                <p><strong>If you specify this parameter the TEST_TYPE
+                <p><strong>If this parameter is not blank then the TEST_TYPE
                 parameter will be ignored</strong>.</p>
     scm:
         - git:

@@ -1,6 +1,6 @@
 set -o nounset
 
-pip install -U -r requirements.txt nose PyVirtualDisplay
+pip install -U -r requirements.txt pytest-xdist PyVirtualDisplay
 
 cp "${ROBOTTELO_CONFIG}" ./robottelo.properties
 
@@ -10,24 +10,23 @@ sed -i "s/^ssh_username.*/ssh_username=${SSH_USER}/" robottelo.properties
 sed -i "s/^admin_username.*/admin_username=${FOREMAN_ADMIN_USER}/" robottelo.properties
 sed -i "s/^admin_password.*/admin_password=${FOREMAN_ADMIN_PASSWORD}/" robottelo.properties
 
-NOSETESTS="$(which nosetests) -s --logging-filter=nailgun,robottelo --with-xunit \
-    --xunit-file=foreman-results.xml"
+PYTEST="$(which py.test) -v --junit-xml=foreman-results.xml -m 'not stubbed'"
 
-if [ -n "${NOSE_OPTIONS:-}" ]; then
-    ${NOSETESTS} ${NOSE_OPTIONS}
+if [ -n "${PYTEST_OPTIONS:-}" ]; then
+    ${PYTEST} ${PYTEST_OPTIONS}
     exit 0
 fi
 
 case "${TEST_TYPE}" in
-    api|cli|ui|rhai )
-        make "test-foreman-${TEST_TYPE}"
+    api|cli|ui|rhai|tier1|tier2|tier3 )
+        make "test-foreman-${TEST_TYPE} PYTEST_XDIST_NUMPROCESSES=4"
         ;;
     smoke-api|smoke-cli|smoke-ui )
         TEST_TYPE="$(echo ${TEST_TYPE} | cut -d- -f2)"
-        ${NOSETESTS} "tests/foreman/smoke/test_${TEST_TYPE}_smoke.py"
+        ${PYTEST} "tests/foreman/smoke/test_${TEST_TYPE}_smoke.py"
         ;;
     all )
-        ${NOSETESTS} "tests/foreman/api tests/foreman/cli tests/foreman/ui"
+        ${PYTEST} "tests/foreman/api tests/foreman/cli tests/foreman/ui"
         ;;
     smoke-all )
         make test-foreman-smoke
