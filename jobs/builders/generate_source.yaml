@@ -1,0 +1,5 @@
+- builder:
+    name: generate_source
+    builders:
+        - shell: !include-raw scripts/generate_source.rb
+

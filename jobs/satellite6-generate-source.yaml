@@ -1,0 +1,25 @@
+- job:
+    name: satellite6-generate-source
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    node: sesame
+    parameters:
+      - string:
+          name: repository
+          description: "Repository to build a source tarball or gem for"
+      - string:
+          name: ref
+          description: "Branch or tag to build source for"
+    # Can switch to SCM if git source is using proper certificates or a self-signed certificate
+    # with CA
+    #scm:
+    #  - git:
+    #      wipe-workspace: true
+    #      skip-tag: true
+    #      refspec: '${ref}'
+    #      remotes:
+    #        - origin:
+    #            url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/${repository}.git'
+    builders:
+      - generate_source
