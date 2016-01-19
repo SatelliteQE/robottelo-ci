@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt pytest-xdist PyVirtualDisplay
+pip install -U -r requirements.txt docker-py pytest-xdist
 
 cp ${ROBOTTELO_CONFIG} ./robottelo.properties
 
