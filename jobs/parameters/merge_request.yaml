@@ -2,10 +2,6 @@
     name: merge_request
     parameters:
       - string:
-          name: gitlabSourceRepoURL
-          default: 
-          description: 'Source repository that a merge request is coming from'
-      - string:
           name: gitlabSourceRepoName
           default: 
           description: 'Source repository name (e.g. ehelms/foreman)'

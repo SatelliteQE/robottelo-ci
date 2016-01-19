@@ -8,6 +8,7 @@
       - foreman_docker_gitlab
       - foreman_plugin_gitlab
     builders:
+      - merge_request
       - test_plugin
     publishers:
       - gemset_cleanup
