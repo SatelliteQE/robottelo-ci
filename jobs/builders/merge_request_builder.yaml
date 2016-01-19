@@ -1,0 +1,5 @@
+- builder:
+    name: merge_request
+    builders:
+        - shell: !include-raw scripts/merge_request.sh
+
