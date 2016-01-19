@@ -1,0 +1,18 @@
+sudo: false
+language: ruby
+rvm: 2.0.0
+addons:
+  apt:
+    packages:
+    - yajl-tools
+install:
+  - git clone -b local git://github.com/theforeman/jenkins-job-builder.git
+  - (cd jenkins-job-builder && git remote add openstack git://github.com/openstack-infra/jenkins-job-builder.git)
+  - (cd jenkins-job-builder && git branch)
+  - (cd jenkins-job-builder && git config user.name Foo && git config user.email foo@bar)
+  - (cd jenkins-job-builder && git fetch openstack)
+  - (cd jenkins-job-builder && git merge 1.4.0 > /dev/null)
+  - (cd jenkins-job-builder && pip install --user -r requirements.txt && pip install --user .)
+script:
+  - ./setup_jjb.sh
+  - ./generate_jobs.sh
