@@ -14,6 +14,8 @@
         <li>KOJI_PROFILE: Optional name of Koji configuration profile to use
         </ul>
     node: builders
+    parameters:
+        - gitlab_checkout
     scm:
         - '{project}_gitlab_checkout'
         - robotello-ci_github

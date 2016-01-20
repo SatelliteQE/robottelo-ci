@@ -1,0 +1,7 @@
+- parameter:
+    name: gitlab_checkout
+    parameters:
+      - string:
+          name: gitlabSourceBranch
+          default: 'SATELLITE-6.1.0'
+          description: 'Source repository branch to build'
