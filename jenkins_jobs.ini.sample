@@ -5,7 +5,7 @@ recursive=True
 allow_duplicates=False
 exclude=foreman-infra/yaml/jobs
 
-[jenkins]
-user=<jenkin-user>
-password=<jenkins-api-key>
-url=<jenkins-url>
+#[jenkins]
+#user=<jenkin-user>
+#password=<jenkins-api-key>
+#url=<jenkins-url>
