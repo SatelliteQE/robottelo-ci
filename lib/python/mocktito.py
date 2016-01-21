@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """mocktito.py - Make tito do stuff with Mock
 """
+from __future__ import print_function
+
 import os
 from sys import stderr, exit
 from glob import glob
@@ -101,7 +103,7 @@ def main():
     releasers_config.read(releasers_filename)
     print("Read configuration file: {0}".format(releasers_filename))
     for section in releasers_config.sections():
-        print "  found section: {0}".format(section)
+        print("  found section: {0}".format(section))
         if releasers_config.has_option(section, 'releaser'):
             old_releaser = releasers_config.get(section, 'releaser')
             print("  releaser is set to: {0}".format(old_releaser))
