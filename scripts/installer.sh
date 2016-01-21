@@ -35,7 +35,7 @@ if [ ${DISTRIBUTION} = "DOWNSTREAM" ]; then
     if [ ! -z "$SATELLITE6_CUSTOM_BASEURL" ]; then
         export BASE_URL="${SATELLITE6_CUSTOM_BASEURL}"
     else
-        export BASE_URL="${SATELLITE6_OS_REPO}"
+        export BASE_URL="${SATELLITE6_REPO}"
     fi
 fi
 
