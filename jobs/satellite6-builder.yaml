@@ -54,7 +54,12 @@
         <li>US_GIT_ORGANIZATION: Organization owning upstream Git repos
         <li>KOJI_TOPURL: Optional url of oji package mirror
         <li>KOJI_PROFILE: Optional name of Koji configuration profile to use
+        <li>SATELLITE_SERVER: URL of satellite server to get build dependencies
+            from and upload results to
         </ul>
+        <p>This job also requires that user/password credetails to access the
+        Satellite server will be stored with the id
+        'artefact-satellite-credentials' in Jenkins
     node: builders
     parameters:
         - gitlab_checkout:
@@ -62,6 +67,12 @@
     scm:
         - satellite-packaging_gitlab_checkout
         - robotello-ci_github
+    wrappers:
+        - credentials-binding:
+            - username-password-separated:
+                credential-id: artefact-satellite-credentials
+                username: SATELLITE_USER
+                password: SATELLITE_PWD
     builders:
         - inject:
             properties-content: |
@@ -74,6 +85,11 @@
     publishers:
         - archive:
             artifacts: build_results/**/*
+        - postbuildscript:
+            script-only-if-succeeded: True
+            builders:
+                - shell:
+                    !include-raw-escape upload-built-packages.sh
 
 - project:
     name: 'foreman-packaging-builders'
