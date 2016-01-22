@@ -219,7 +219,7 @@
     builders:
         - satellite6-automation-builders
         - trigger-builds:
-            - project: 'satellite6-automation-{distribution}-{os}-longrun'
+            - project: 'satellite6-automation-{distribution}-{os}-tier4'
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
@@ -237,7 +237,7 @@
             success: true
 
 - job-template:
-    name: 'satellite6-automation-{distribution}-{os}-longrun'
+    name: 'satellite6-automation-{distribution}-{os}-tier4'
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -251,7 +251,7 @@
         - inject:
             properties-content: |
                 DISTRIBUTION={distribution}
-                ENDPOINT=longrun
+                ENDPOINT=tier4
     builders:
         - satellite6-automation-builders
         - satellite6-automation-profiling-builder
@@ -281,7 +281,7 @@
         - 'satellite6-automation-{distribution}-{os}-tier2'
         - 'satellite6-automation-{distribution}-{os}-tier3'
         - 'satellite6-automation-{distribution}-{os}-rhai'
-        - 'satellite6-automation-{distribution}-{os}-longrun'
+        - 'satellite6-automation-{distribution}-{os}-tier4'
 
 #==============================================================================
 # Jobs
