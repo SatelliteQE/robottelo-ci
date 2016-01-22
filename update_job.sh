@@ -1,3 +1,3 @@
 #!/bin/bash
 
-jenkins-jobs --conf jenkins_jobs.ini update -r .:foreman-infra $1
+jenkins-jobs --conf jenkins_jobs.ini update -r jobs:foreman-infra $1
