@@ -1,6 +1,6 @@
 - job-template:
     name: 'satellite6-builder-{project}'
-    display-name: 'Downstream package Builder for {project}'
+    display-name: 'package Builder for {project}'
     description: |
         <p>Job to build the {project} downstream packages</p>
         <p>This job requires a connection to Brew so it can only work inside the
@@ -15,7 +15,8 @@
         </ul>
     node: builders
     parameters:
-        - gitlab_checkout
+        - gitlab_checkout:
+            default-branch: 'SATELLITE-6.1.0'
     scm:
         - '{project}_gitlab_checkout'
         - robotello-ci_github
@@ -37,4 +38,49 @@
     tito-release: 'ruby193-git-sat'
     jobs:
         - 'satellite6-builder-{project}'
+
+- job-template:
+    name: 'satellite6-packaging-builder-{package}'
+    display-name: 'satellite-packaging Builder for {package}'
+    description: |
+        <p>Job to build the {package} downstream packages from the
+        satellite-packaging repo</p>
+        <p>This job requires a connection to Brew so it can only work inside the
+        Red Hat network</p>
+        <p> Some environment variables affect this job and can or need to be set
+        in Jenkins:</p>
+        <ul>
+        <li>US_GIT_HOSTNAME: Hostname of server with upstream Git repos
+        <li>US_GIT_ORGANIZATION: Organization owning upstream Git repos
+        <li>KOJI_TOPURL: Optional url of oji package mirror
+        <li>KOJI_PROFILE: Optional name of Koji configuration profile to use
+        </ul>
+    node: builders
+    parameters:
+        - gitlab_checkout:
+            default-branch: 'SATELLITE-6.2.0'
+    scm:
+        - satellite-packaging_gitlab_checkout
+        - robotello-ci_github
+    builders:
+        - inject:
+            properties-content: |
+                PROJECT_PATH=satellite-packaging
+                TITO_RELEASE={tito-release}
+                COLLECTION={collection}
+                PACKAGE={package}
+        - shell:
+            !include-raw-escape satellite-packaging-builder.sh
+    publishers:
+        - archive:
+            artifacts: build_results/**/*
+
+- project:
+    name: 'foreman-packaging-builders'
+    collection: 'foreman-packaging'
+    package:
+        - 'tfm'
+    tito-release: 'dist-git-sat'
+    jobs:
+        - 'satellite6-packaging-builder-{package}'
 

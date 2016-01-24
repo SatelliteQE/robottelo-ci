@@ -3,5 +3,5 @@
     parameters:
       - string:
           name: gitlabSourceBranch
-          default: 'SATELLITE-6.1.0'
+          default: "{default-branch}"
           description: 'Source repository branch to build'
