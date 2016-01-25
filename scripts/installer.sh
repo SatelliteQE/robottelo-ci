@@ -1,7 +1,7 @@
 pip install -U -r requirements.txt
 
 # Figure out what version of RHEL the server uses
-export OS_VERSION=$(fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:digit:]]" | cut -d ' ' -f 2)
+export OS_VERSION=$(fab -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:digit:]]" | cut -d ' ' -f 2)
 
 
 source ${INSTALL_CONFIG}
@@ -16,11 +16,11 @@ else
 fi
 
 if [ ${FIX_HOSTNAME} = "true" ]; then
-    fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} fix_hostname
+    fab -H root@${SERVER_HOSTNAME} fix_hostname
 fi
 
 if [ ${PARTITION_DISK} = "true" ]; then
-    fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} partition_disk
+    fab -H root@${SERVER_HOSTNAME} partition_disk
 fi
 
 
@@ -39,9 +39,9 @@ if [ ${DISTRIBUTION} = "DOWNSTREAM" ]; then
     fi
 fi
 
-fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} product_install:satellite6-${DISTRIBUTION},sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}
+fab -H root@${SERVER_HOSTNAME} product_install:satellite6-${DISTRIBUTION},sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}
 
 if [ ${SETUP_FAKE_MANIFEST_CERTIFICATE} = "true" ]; then
     source $FAKE_CERT_CONFIG
-    fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} setup_fake_manifest_certificate
+    fab -H root@${SERVER_HOSTNAME} setup_fake_manifest_certificate
 fi

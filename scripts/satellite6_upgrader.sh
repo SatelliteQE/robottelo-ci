@@ -18,4 +18,4 @@ export CAPSULE_URL="${CAPSULE_REPO}"
 export TOOLS_URL="${TOOLS_REPO}"
 
 # Run upgrade
-fab -i ~/.ssh/id_hudson_dsa -u root product_upgrade:"${PRODUCT}","${SSH_KEY_NAME}","${SATELLITE_INSTANCE}","${SATELLITE_IMAGE}","${IMAGE_FLAVOR}","${CAPSULE_INSTANCE}","${CAPSULE_IMAGE}","${IMAGE_FLAVOR}"
+fab -u root product_upgrade:"${PRODUCT}","${SSH_KEY_NAME}","${SATELLITE_INSTANCE}","${SATELLITE_IMAGE}","${IMAGE_FLAVOR}","${CAPSULE_INSTANCE}","${CAPSULE_IMAGE}","${IMAGE_FLAVOR}"

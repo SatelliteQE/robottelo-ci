@@ -18,7 +18,7 @@ Dir.chdir(ENV['repository']) do
     system("git archive | bzip2 -9 > #{artifact}")
   end
 
-  system("scp -i ~/.ssh/id_hudson_dsa #{artifact} jenkins@#{ENV['SOURCE_FILE_HOST']}:/var/www/html/pub/sources/6.2")
+  system("scp #{artifact} jenkins@#{ENV['SOURCE_FILE_HOST']}:/var/www/html/pub/sources/6.2")
 end
 
 system("rm -rf #{ENV['repository']}")
