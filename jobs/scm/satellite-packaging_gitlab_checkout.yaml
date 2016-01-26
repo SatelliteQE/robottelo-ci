@@ -1,0 +1,10 @@
+- scm:
+    name: satellite-packaging_gitlab_checkout
+    scm:
+        - git:
+            url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/satellite-packaging.git'
+            branches:
+                - origin/${gitlabSourceBranch}
+            skip-tag: true
+            wipe-workspace: true
+            basedir: 'satellite-packaging'
