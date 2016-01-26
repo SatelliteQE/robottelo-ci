@@ -15,7 +15,7 @@ Dir.chdir(ENV['repository']) do
     artifact = "#{ENV['repository']}-*.gem"
   else
     artifact = "#{ENV['repository']}-#{ENV['ref']}.tar.bz2"
-    system("git archive | bzip2 -9 > #{artifact}")
+    system("git archive #{ENV['ref']} | bzip2 -9 > #{artifact}")
   end
 
   system("scp #{artifact} jenkins@#{ENV['SOURCE_FILE_HOST']}:/var/www/html/pub/sources/6.2")
