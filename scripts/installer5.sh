@@ -4,15 +4,15 @@ source ${SUBSCRIPTION_CONFIG}
 source ${SAT5_CERT_CONFIG}
 
 if [ ${FIX_HOSTNAME} = "true" ]; then
-    fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} fix_hostname
+    fab -H root@${SERVER_HOSTNAME} fix_hostname
 fi
 
 if [ ${PARTITION_DISK} = "true" ]; then
-    fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} partition_disk
+    fab -H root@${SERVER_HOSTNAME} partition_disk
 fi
 
 # Figure out what version of RHEL the server uses
-OS_VERSION=$(fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:digit:]]" | cut -d ' ' -f 2)
+OS_VERSION=$(fab -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:digit:]]" | cut -d ' ' -f 2)
 # export chosen Jenkins job parameters for usage by fabric
 export RHN_PROFILE="robottelo_${SERVER_HOSTNAME}"
 
@@ -24,4 +24,4 @@ if [ ${DISTRIBUTION} = "CANDIDATE" ]; then
     export ISO_URL="http://download/devel/candidates/latest-link-Satellite-5.7.0-RHEL${OS_VERSION}-x86_64/iso/"
 fi
 
-fab -i ~/.ssh/id_hudson_dsa -H root@${SERVER_HOSTNAME} satellite5_product_install
+fab -H root@${SERVER_HOSTNAME} satellite5_product_install

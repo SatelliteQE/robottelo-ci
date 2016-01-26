@@ -8,7 +8,7 @@
         <p> This ssh key will be added to satellite and capsule instance to execute upgrade steps.</p>
         <p><strong>SSH KEY:</strong></p>
         <pre>
-          ssh-dss AAAAB3NzaC1kc3MAAACBAP2+EVkCT6dJzwL5LFDX0ACzbtlDasmpXbC5dpPNiWmADfdpRdDjWtVA/xjbSOT5tTuLr5fi6cQ2VMLNgVoQUT7tlPAJJU5Z7BngR6CkmonSlczLWbqyJVxg7At/o/kzzYFLE+i1+ReGlXasv4kOlPxhwhqm/wO0hzdImcc866qfAAAAFQDZ8h1+tp6S6KkAahfQUBfgrYhXZQAAAIBJUgNuQZw4ZJ81CPmYDkkYrGbMKxlPn7p/Mycxz+pZi6GbLuaY8rzbhiwS1JcOpUKuB0r4PX6qUoQvhRYZdhfaSEGX81K/3EGpjbzvcFSXa/8ymCcvw9oDoFFV6HWtWxEbjmy9kGrmHMeyFfFAK/tvNbwxDnn2usA4P7UX2NrqUgAAAIEAoVFEn7VZOn7mZZGkBa9Zrtm4AOQEbqd03UoYE1til96Z0Hja8rs6ilqYwuT57VzoePh2uIPfCgzeUxQ+RDjku3YLBsMNRwz3yS49iNiRWF1PAfqscLYyHAFPvvxDE1D/5dHtQGkad618nepycGf+cuSNzZjJdbbbT+qDCm+K6PY= hudson@statler.usersys.redhat.com
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
         </pre>
         <p> If this ssh key is not added already in your openstack project, please add it before running this job. Else the job will fail.</p>
     node: sesame
