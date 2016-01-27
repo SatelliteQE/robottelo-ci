@@ -1,0 +1,78 @@
+- job:
+    name: satellite6-betelgeuse-test-case
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            name: betelgeuse
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw: scripts/satellite6-betelgeuse.sh
+        - shining-panda:
+            build-environment: virtualenv
+            name: betelgeuse
+            python-version: System-CPython-2.7
+            clear: false
+            nature: shell
+            command:
+                !include-raw: scripts/satellite6-betelgeuse-test-case.sh
+        - shell: rm .pylarion
+
+
+- job-template:
+    name: satellite6-betelgeuse-test-run-{os}
+    node: sesame
+    parameters:
+        - string:
+            name: TEST_RUN_ID
+            description: |
+                'The resulting test run id is going to be suffixed with tierN '
+                'to differentiate between all tiers.'
+    wrappers:
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+    builders:
+        - copyartifact:
+            project: satellite6-automation-downstream-{os}-tier1
+            filter: 'foreman-results.xml'
+            which-build: workspace-latest
+        - shell: mv foreman-results.xml tier1-results.xml
+        - copyartifact:
+            project: satellite6-automation-downstream-{os}-tier2
+            filter: 'foreman-results.xml'
+            which-build: workspace-latest
+        - shell: mv foreman-results.xml tier2-results.xml
+        - copyartifact:
+            project: satellite6-automation-downstream-{os}-tier3
+            filter: 'foreman-results.xml'
+            which-build: workspace-latest
+        - shell: mv foreman-results.xml tier3-results.xml
+        - shining-panda:
+            build-environment: virtualenv
+            name: betelgeuse
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape: scripts/satellite6-betelgeuse.sh
+        - shining-panda:
+            build-environment: virtualenv
+            name: betelgeuse
+            python-version: System-CPython-2.7
+            clear: false
+            nature: shell
+            command:
+                !include-raw-escape: scripts/satellite6-betelgeuse-test-run.sh
+        - shell: rm .pylarion
