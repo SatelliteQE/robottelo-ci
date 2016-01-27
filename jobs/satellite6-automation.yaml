@@ -3,6 +3,7 @@
 #==============================================================================
 - job-template:
     name: 'satellite6-provisioning-{distribution}-{os}'
+    node: sesame
     parameters:
         - string:
             name: BASE_URL
@@ -122,6 +123,7 @@
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-tier1'
+    node: sesame
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -147,6 +149,7 @@
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-tier2'
+    node: sesame
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -172,6 +175,7 @@
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-tier3'
+    node: sesame
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -202,6 +206,7 @@
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-rhai'
+    node: sesame
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -238,6 +243,7 @@
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-tier4'
+    node: sesame
     parameters:
         - satellite6-automation-parameters
     scm:
@@ -263,7 +269,6 @@
 #==============================================================================
 - project:
     name: satellite6-automation
-    node: sesame
     scm-branch: origin/master
     distribution:
         - cdn
@@ -289,6 +294,7 @@
 - job:
     name: satellite6-downstream-trigger
     description: Triggers downstream automation for Satellite 6
+    node: sesame
     parameters:
         - string:
             name: RHEL6_SATELLITE_URL
@@ -357,6 +363,7 @@
 - job:
     name: satellite6-iso-trigger
     description: Triggers ISO automation for Satellite 6
+    node: sesame
     parameters:
         - string:
             name: RHEL6_ISO_SATELLITE_URL
@@ -432,6 +439,7 @@
 - job:
     name: satellite6-upstream-trigger
     description: Triggers automation for Satellite 6 upstream
+    node: sesame
     triggers:
         - timed: 'H 19 * * *'
     builders:
