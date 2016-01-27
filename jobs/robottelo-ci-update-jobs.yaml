@@ -1,0 +1,24 @@
+- job:
+    name: robottelo-ci-update-jobs
+    node: sesame
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo-ci.git
+            branches:
+                - origin/master
+            skip-tag: true
+    triggers:
+        - pollscm:
+            cron: 'H/15 * * * *'
+    wrappers:
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw: scripts/robottelo-ci-update-jobs.sh
