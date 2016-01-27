@@ -6,6 +6,9 @@ from __future__ import print_function
 import os
 from sys import stderr, exit
 from glob import glob
+import argparse
+import json
+from glob import fnmatch
 
 from tito.common import debug, chdir, find_git_root, tito_config_dir
 from tito.compat import RawConfigParser, getoutput
@@ -14,6 +17,11 @@ from tito.cli import RELEASERS_CONF_FILENAME
 
 from mock_chroot import MockChroot
 import mock_config
+
+
+# Configuration option names
+EXTRA_YUM_REPOS = 'extra_yum_repos'
+EXTRA_YUM_REPOS_FOR = 'extra_yum_repos_for'
 
 
 class DistGitReleaser(TitoDistGitReleaser):
@@ -67,7 +75,7 @@ class DistGitReleaser(TitoDistGitReleaser):
         print('build output will be written to {0}'.format(out_dir))
         # Logic taken from pyrpkg sources:
         target = '%s-candidate' % branch
-        mock = MockChroot(config=mock_config.compose(
+        mock_conf = mock_config.compose(
             mock_config.from_koji(
                 target=target,
                 topurl=os.environ.get('KOJI_TOPURL', None),
@@ -76,7 +84,11 @@ class DistGitReleaser(TitoDistGitReleaser):
             mock_config.to['resultdir'].set(out_dir),
             mock_config.to['root_cache_enable'].set(True),
             mock_config.to['yum_cache_enable'].set(True)
-        ))
+        )
+        extra_yum_config = self._build_extra_yum_config(branch)
+        if extra_yum_config:
+            mock_conf.append(mock_config.to['yum.conf'].add(extra_yum_config))
+        mock = MockChroot(config=mock_conf)
         debug('Building SRPM in Mock')
         mock.buildsrpm(
             spec=self.builder.spec_file,
@@ -92,11 +104,27 @@ class DistGitReleaser(TitoDistGitReleaser):
         debug('Building RPM in Mock')
         mock.rebuild(src_rpm=srpm, no_clean=True)
 
+    def _build_extra_yum_config(self, branch):
+        """Build extra yum configuration for a branch's mock environment
+        according to values in the releasers configuration file
+        """
+        yum_config = []
+        if self.config.has_option(self.target, EXTRA_YUM_REPOS):
+            yum_config.append(self.config.get(self.target, EXTRA_YUM_REPOS))
+        if self.config.has_option(self.target, EXTRA_YUM_REPOS_FOR):
+            yum_config.extend(
+                yum_conf for pattern, yum_conf
+                in json.loads(self.config.get(self.target, EXTRA_YUM_REPOS_FOR))
+                if fnmatch(branch, pattern)
+            )
+        return '\n'.join(yum_config)
+
 
 def main():
     """The main function allows converting a git repo the is stup for "normal"
     tito to use classed defined here instead
     """
+    options = parse_args()
     rel_eng_dir = os.path.join(find_git_root(), tito_config_dir())
     releasers_filename = os.path.join(rel_eng_dir, RELEASERS_CONF_FILENAME)
     releasers_config = RawConfigParser()
@@ -118,9 +146,47 @@ def main():
             else:
                 stderr.write("Found a releaser type I don't know, aborting\n")
                 exit(1)
+            if options.extra_yum_repos:
+                print("  adding extra yum repos")
+                releasers_config.set(
+                    section,
+                    EXTRA_YUM_REPOS,
+                    "\n".join(options.extra_yum_repos)
+                )
+            if options.extra_yum_repos_for:
+                print("  adding extra yum repos for branches")
+                releasers_config.set(
+                    section,
+                    EXTRA_YUM_REPOS_FOR,
+                    json.dumps(options.extra_yum_repos_for)
+                )
     with open(releasers_filename, 'w') as rfp:
         releasers_config.write(rfp)
 
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Convert a tito using repo to a mocktito using one"
+    )
+    parser.add_argument(
+        '--extra-yum-repos',
+        metavar='YUM_CONF',
+        help='Inject extra yum repo configuration into the mock environment.'
+        + ' This argument can be repeated to add multipile configuration'
+        + ' strings.',
+        action='append'
+    )
+    parser.add_argument(
+        '--extra-yum-repos-for',
+        nargs=2,
+        metavar=('TARGET_PATTERN', 'YUM_CONF'),
+        help='Inject extra yum repo configuration into the mock environment'
+        + ' that builds the distgit branch that matches the Glob patterns given'
+        + ' in TARGET_PATTERN. This argument can be repeated to configure'
+        + ' environments for different branches.',
+        action='append'
+    )
+    return parser.parse_args()
 
 if __name__ == '__main__':
     main()

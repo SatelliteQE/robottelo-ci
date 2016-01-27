@@ -55,5 +55,9 @@ class _ConfigKey(_Config):
         """Returns a string for configuration 'extend' operation"""
         return '{0}.extend({1})'.format(self, pformat(value))
 
+    def add(self, value):
+        """Returns a string for configuration '+=' operation"""
+        return '{0} += {1}'.format(self, pformat(value))
+
 
 to = _Config()
