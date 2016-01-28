@@ -67,7 +67,7 @@ if [[ -n "$SATELLITE_SERVER" ]]; then
         target_sym="$(symbol_str "$target")"
         repo_url="$repo_base/$target_sym/custom/$PRODUCT/$target_sym"
         yum_repo="$(mk_yum_repo "$target" "$repo_url")"
-        mocktito_opts+=( --extra-yum-repos-for="$target","$yum_repo" )
+        mocktito_opts+=( --extra-yum-repos-for "$target" "$yum_repo" )
     done
 fi
 

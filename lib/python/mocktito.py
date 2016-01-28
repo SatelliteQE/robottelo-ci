@@ -87,9 +87,12 @@ class DistGitReleaser(TitoDistGitReleaser):
         )
         extra_yum_config = self._build_extra_yum_config(branch)
         if extra_yum_config:
+            print('Injecting extra yum configuration to Mock')
             mock_conf.append(mock_config.to['yum.conf'].add(extra_yum_config))
+        debug('Dumping mock configuration')
+        debug(str(mock_conf))
         mock = MockChroot(config=mock_conf)
-        debug('Building SRPM in Mock')
+        print('Building SRPM in Mock')
         mock.buildsrpm(
             spec=self.builder.spec_file,
             sources=self.package_workdir,
@@ -101,22 +104,35 @@ class DistGitReleaser(TitoDistGitReleaser):
             raise RuntimeError('multiple srpms found in {0}'.format(out_dir))
         else:
             srpm = srpms[0]
-        debug('Building RPM in Mock')
+        print('Building RPM in Mock')
         mock.rebuild(src_rpm=srpm, no_clean=True)
 
     def _build_extra_yum_config(self, branch):
         """Build extra yum configuration for a branch's mock environment
         according to values in the releasers configuration file
         """
+        debug('looking for extra yum configuration')
         yum_config = []
-        if self.config.has_option(self.target, EXTRA_YUM_REPOS):
-            yum_config.append(self.config.get(self.target, EXTRA_YUM_REPOS))
-        if self.config.has_option(self.target, EXTRA_YUM_REPOS_FOR):
-            yum_config.extend(
-                yum_conf for pattern, yum_conf
-                in json.loads(self.config.get(self.target, EXTRA_YUM_REPOS_FOR))
-                if fnmatch(branch, pattern)
+        if self.releaser_config.has_option(self.target, EXTRA_YUM_REPOS):
+            debug('Appending extra yum configuration')
+            yum_config.append(
+                self.releaser_config.get(self.target, EXTRA_YUM_REPOS)
             )
+        if self.releaser_config.has_option(self.target, EXTRA_YUM_REPOS_FOR):
+            debug('Adding branch-specific extra yum configuraition')
+            for pattern, yum_conf in json.loads(
+                self.releaser_config.get(self.target, EXTRA_YUM_REPOS_FOR)
+            ):
+                debug(
+                    "  matching extra repos pattern '{0}' against '{1}'"
+                    .format(pattern, branch)
+                )
+                if fnmatch.fnmatch(branch, pattern):
+                    debug(
+                        "  found extra yum configuration for '{0}'"
+                        .format(branch)
+                    )
+                    yum_config.append(yum_conf)
         return '\n'.join(yum_config)
 
 
