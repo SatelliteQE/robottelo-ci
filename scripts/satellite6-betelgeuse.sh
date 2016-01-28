@@ -1,4 +1,5 @@
-git clone ${PYLARION_REPO_URL}
+rm -rf pylarion
+git clone --depth 1 ${PYLARION_REPO_URL}
 
 # Make pylarion ready to be installed on a virtual environment
 cd pylarion
@@ -12,7 +13,8 @@ pip install .
 cd ..
 
 # Install testimony from master
-git clone https://github.com/SatelliteQE/testimony.git
+rm -rf testimony
+git clone --depth 1 https://github.com/SatelliteQE/testimony.git
 cd testimony
 pip install .
 cd ..

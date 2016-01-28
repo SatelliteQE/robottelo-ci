@@ -380,6 +380,8 @@
                 TOOLS_URL=${RHEL7_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
                 BUILD_LABEL=${BUILD_LABEL}
+        - trigger-builds:
+            - project: satellite6-betelgeuse-test-case
 
 - job:
     name: satellite6-iso-trigger
