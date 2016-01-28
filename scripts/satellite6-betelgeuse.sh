@@ -25,5 +25,5 @@ url=${POLARION_URL}
 user=${POLARION_USER}
 password=${POLARION_PASSWORD}
 default_project=${POLARION_DEFAULT_PROJECT}
-svn_repo=i${POLARION_SVN_REPO}
+svn_repo=${POLARION_SVN_REPO}
 EOF
