@@ -130,6 +130,7 @@
             script-only-if-failed: true
         - archive:
             artifacts: 'foreman-debug.tar.xz'
+            allow-empty: true
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-tier1'
