@@ -1,0 +1,5 @@
+- builder:
+    name: generate_compose
+    builders:
+        - shell: !include-raw scripts/generate_compose.sh
+
