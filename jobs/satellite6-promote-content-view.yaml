@@ -1,0 +1,20 @@
+- job:
+    name: satellite6-promote-content-view
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    node: rhel
+    parameters:
+      - string:
+          name: version_id
+          description: "Content view version ID to promote"
+      - string:
+          name: lifecycle_environment
+          description: "Name of a lifecycle environment to promote the content view to"
+          default: "Dev"
+      - string:
+          name: organization
+          description: "Satellite organization containing the product"
+          default: "Sat6-CI"
+    builders:
+      - promote_content_view

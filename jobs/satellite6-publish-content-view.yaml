@@ -1,0 +1,23 @@
+- job:
+    name: satellite6-publish-content-view
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    node: rhel
+    parameters:
+      - string:
+          name: content_view_name
+          description: "Name of a content view to publish"
+          default: "Satellite RHEL7"
+      - string:
+          name: organization
+          description: "Satellite organization containing the product"
+          default: "Sat6-CI"
+    builders:
+      - publish_content_view
+    publishers:
+      - trigger-parameterized-builds:
+        - project: satellite6-promote-content-view
+          condition: SUCCESSS
+          property-file: version_properties
+          fail-on-missing: True

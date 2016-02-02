@@ -1,0 +1,4 @@
+- builder:
+    name: publish_content_view
+    builders:
+        - shell: !include-raw scripts/publish_content_view.sh

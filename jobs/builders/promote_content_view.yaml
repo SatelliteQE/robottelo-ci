@@ -1,0 +1,4 @@
+- builder:
+    name: promote_content_view
+    builders:
+        - shell: !include-raw scripts/promote_content_view.sh
