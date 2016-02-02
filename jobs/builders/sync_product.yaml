@@ -1,0 +1,5 @@
+- builder:
+    name: sync_product
+    builders:
+        - shell: !include-raw scripts/sync_product.sh
+

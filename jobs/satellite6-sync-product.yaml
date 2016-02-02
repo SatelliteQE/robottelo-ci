@@ -1,0 +1,17 @@
+- job:
+    name: satellite6-sync-product
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    node: rhel
+    parameters:
+      - string:
+          name: product_name
+          description: "Name of a product in the Satellite to sync"
+          default: "Red Hat Satellite 6.2 Composes"
+      - string:
+          name: organization
+          description: "Satellite organization containing the product"
+          default: "Sat6-CI"
+    builders:
+      - sync_product
