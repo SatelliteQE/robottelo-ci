@@ -48,6 +48,7 @@ mk_yum_repo() {
     echo "baseurl=\"$repourl\""
     echo "enabled=$enabled"
     echo "gpgcheck=$gpgcheck"
+    echo "skip_if_unavailable=True"
 }
 
 symbol_str() {
