@@ -96,7 +96,7 @@
     collection: 'foreman-packaging'
     package:
         - 'tfm'
-    tito-release: 'dist-git-sat'
+    tito-release: 'tfm-dist-git-sat'
     jobs:
         - 'satellite6-packaging-builder-{package}'
 
