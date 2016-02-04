@@ -11,6 +11,9 @@
       - string:
           name: ref
           description: "Branch or tag to build source for"
+      - string:
+          name: source
+          description: "Link to location of a source file that is already generated. This will upload the source to the proper location"
     # Can switch to SCM if git source is using proper certificates or a self-signed certificate
     # with CA
     #scm:

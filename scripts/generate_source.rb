@@ -21,7 +21,7 @@ class SourceBuilder
         puts "Found gemspec; building gem"
         sys_call("gem build *.gemspec")
         artifact = "#{@repository}-*.gem"
-      elsif sys_call('rake -T | grep pkg:generate_source')
+      elsif File.exists?('Rakefile') && sys_call('rake -T | grep pkg:generate_source')
         puts "Found pkg:generate_source rake task; running rake pkg:generate_source"
         sys_call('rake pkg:generate_source')
         artifact = "pkg/#{@repository}-#{@ref}.tar.*"
@@ -31,13 +31,24 @@ class SourceBuilder
         sys_call("git archive --prefix=#{@repository}-#{@ref}/ #{@ref} | bzip2 -9 > #{artifact}")
       end
 
-      sys_call("scp #{artifact} jenkins@#{ENV['SOURCE_FILE_HOST']}:/var/www/html/pub/sources/6.2")
+      scp_artifact(artifact)
     end
 
-    cleanup
+    cleanup(@repository)
+  end
+
+  def upload(location)
+    `wget #{location} --no-check-certificate`
+    filename = File.basename(location)
+    scp_artifact(filename)
+    cleanup(filename)
   end
 
   private
+
+  def scp_artifact(artifact)
+    sys_call("scp #{artifact} jenkins@#{ENV['SOURCE_FILE_HOST']}:/var/www/html/pub/sources/6.2")
+  end
 
   def clone
     sys_call("git -c http.sslVerify=false clone https://#{ENV['GIT_HOSTNAME']}/#{ENV['GIT_ORGANIZATION']}/#{@repository}.git")
@@ -47,9 +58,9 @@ class SourceBuilder
     !Dir.glob('*.gemspec').empty?
   end
 
-  def cleanup
-    puts "Cleaning up #{@repository}"
-    system("rm -rf #{@repository}")
+  def cleanup(files)
+    puts "Cleaning up #{files}"
+    system("rm -rf #{files}")
     exit @exit_code
   end
 
@@ -61,4 +72,9 @@ class SourceBuilder
 end
 
 builder = SourceBuilder.new(ENV['repository'], ENV['ref'])
-builder.build
+
+if ENV['source']
+  builder.upload(ENV['source'])
+else
+  builder.build
+end
