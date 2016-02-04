@@ -6,15 +6,13 @@
     node: rhel
     parameters:
       - string:
-          name: version_id
-          description: "Content view version ID to promote"
+          name: content_view_name
+          description: "Name of a content view to promote"
       - string:
           name: lifecycle_environment
           description: "Name of a lifecycle environment to promote the content view to"
-          default: "Dev"
       - string:
           name: organization
           description: "Satellite organization containing the product"
-          default: "Sat6-CI"
     builders:
       - promote_content_view
