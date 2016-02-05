@@ -1,0 +1,22 @@
+- job:
+    name: satellite6-release-sync-product
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    node: sesame
+    builders:
+      - trigger-builds:
+          - project: satellite6-sync-product
+            current-parameters: true
+            predefined-parameters:
+              product_name=Red Hat Satellite 6.2 Composes
+            block: true
+            block-thresholds:
+              build-step-failure-threshold: FAILURE
+              unstable-threshold: UNSTABLE
+              failure-threshold: FAILURE
+    publishers:
+      - trigger-parameterized-builds:
+          - project: satellite6-release-publish-content-views
+            current-parameters: true
+            condition: SUCCESS
