@@ -19,7 +19,7 @@ fi
 
 case "${TEST_TYPE}" in
     api|cli|ui|rhai|tier1|tier2|tier3 )
-        make "test-foreman-${TEST_TYPE} PYTEST_XDIST_NUMPROCESSES=4"
+        make "test-foreman-${TEST_TYPE}" PYTEST_XDIST_NUMPROCESSES=4
         ;;
     smoke-api|smoke-cli|smoke-ui )
         TEST_TYPE="$(echo ${TEST_TYPE} | cut -d- -f2)"
