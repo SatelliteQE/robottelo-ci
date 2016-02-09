@@ -47,6 +47,12 @@
             description: |
                 Points to RHSM stage for stage installation test. Used only
                 in CDN provisioning.
+        - bool:
+            name: DEBUG
+            default: false
+            description: |
+                Runs installer in debug mode. (Note: Also toggles whether the parameters passed to
+                katello-installer are saved to answers-file.)
         - string:
             name: BUILD_LABEL
     scm:
@@ -347,6 +353,12 @@
             choices:
                 - 'enforcing'
                 - 'permissive'
+        - bool:
+            name: DEBUG
+            default: false
+            description: |
+                Runs installer in debug mode. (Note: Also toggles whether the parameters passed to
+                katello-installer are saved to answers-file.)
         - string:
             name: BUILD_LABEL
     wrappers:
@@ -373,6 +385,7 @@
                 TOOLS_URL=${RHEL6_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
                 BUILD_LABEL=${BUILD_LABEL}
+                DEBUG=${DEBUG}
         - trigger-builds:
             - project: satellite6-provisioning-downstream-rhel7
               predefined-parameters: |
@@ -381,6 +394,7 @@
                 TOOLS_URL=${RHEL7_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
                 BUILD_LABEL=${BUILD_LABEL}
+                DEBUG=${DEBUG}
         - trigger-builds:
             - project: satellite6-betelgeuse-test-case
 
@@ -423,6 +437,12 @@
             default: false
             description: |
                 Check packages' GPG signatures when installing from ISO.
+        - bool:
+            name: DEBUG
+            default: false
+            description: |
+                Runs installer in debug mode. (Note: Also toggles whether the parameters passed to
+                katello-installer are saved to answers-file.)
         - string:
             name: BUILD_LABEL
     wrappers:
@@ -450,6 +470,7 @@
                 SELINUX_MODE=${SELINUX_MODE}
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
                 BUILD_LABEL=${BUILD_LABEL}
+                DEBUG=${DEBUG}
         - trigger-builds:
             - project: satellite6-provisioning-iso-rhel7
               predefined-parameters: |
@@ -459,6 +480,7 @@
                 SELINUX_MODE=${SELINUX_MODE}
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
                 BUILD_LABEL=${BUILD_LABEL}
+                DEBUG=${DEBUG}
 
 - job:
     name: satellite6-upstream-trigger
