@@ -1,0 +1,18 @@
+- job:
+    name: satellite6-sync-repository
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    node: rhel
+    parameters:
+      - string:
+          name: repository
+          description: "Name of a repository in the Satellite to sync"
+      - string:
+          name: product
+          description: "Name of the product the repository belongs to in the Satellite"
+      - string:
+          name: organization
+          description: "Satellite organization containing the product"
+    builders:
+      - sync_repository

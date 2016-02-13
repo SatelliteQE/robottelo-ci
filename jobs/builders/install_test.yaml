@@ -1,0 +1,4 @@
+- builder:
+    name: install_test
+    builders:
+        - shell: !include-raw scripts/install_test.sh
