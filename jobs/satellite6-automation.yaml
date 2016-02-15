@@ -285,6 +285,47 @@
     publishers:
         - satellite6-automation-publishers
 
+- job-template:
+    name: 'satellite6-automation-report-downstream-{os}'
+    triggers:
+        - reverse:
+            jobs: 'satellite6-automation-downstream-{os}-tier4'
+            result: unstable
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo-ci.git
+            branches:
+                - origin/master
+            skip-tag: true
+    builders:
+        - copyartifact:
+            project: 'satellite6-automation-downstream-{os}-tier1'
+            filter: 'robottelo*.log'
+            target: /home/foo
+            which-build: last-successful
+        - copyartifact:
+            project: 'satellite6-automation-downstream-{os}-tier2'
+            filter: 'robottelo*.log'
+            target: /home/foo
+            which-build: last-successful
+        - copyartifact:
+            project: 'satellite6-automation-downstream-{os}-tier3'
+            filter: 'robottelo*.log'
+            target: /home/foo
+            which-build: last-successful
+        - copyartifact:
+            project: 'satellite6-automation-downstream-{os}-tier4'
+            filter: 'robottelo*.log'
+            target: /home/foo
+            which-build: last-successful
+        - shining-panda:
+            build-environment: python
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape: 'satellite6-automation-report.sh'
+
 #==============================================================================
 # Project
 #==============================================================================
@@ -309,6 +350,7 @@
         - 'satellite6-automation-{distribution}-{os}-rhai'
         - 'satellite6-automation-{distribution}-{os}-tier4'
         - 'satellite6-betelgeuse-test-run-{os}'
+        - 'satellite6-automation-report-downstream-{os}'
 
 #==============================================================================
 # Jobs
