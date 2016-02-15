@@ -3,5 +3,5 @@
     parameters:
       - string:
           name: ruby
-          default: 1.9.3
+          default: '2.2'
           description: 'Version of Ruby to test against'
