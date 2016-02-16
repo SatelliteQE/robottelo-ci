@@ -303,6 +303,44 @@
             command:
                 !include-raw-escape: 'satellite6-automation-report.sh'
 
+- job-template:
+    name: 'satellite6-upgrade-downstream-{os}'
+    node: sesame
+    parameters:
+        - choice:
+            name: FROM_VERSION
+            choices:
+                - '6.0'
+                - '6.1'
+            description: |
+                <p>Choose the currently installed Satellite/Capsule version to upgrade to latest available.</p>
+        - string:
+            name: COMPOSE
+            description: |
+                <p>Compose Number of a previous build from which satellite and capsule will be upgraded.</p>
+                <p>e.g: 615, 608</p>
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1439296949513
+                  variable: OPENSTACK_CONFIG
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
+                  variable: SUBSCRIPTION_CONFIG
+        - build-name:
+            name: '#${{BUILD_NUMBER}} Upgrade_from_${{COMPOSE}}_downstream_{os}'
+    builders:
+        - satellite6-upgrade-builders
+    publishers:
+        - archive:
+            artifacts: '*.tar.xz'
+
 #==============================================================================
 # Project
 #==============================================================================
@@ -328,6 +366,7 @@
         - 'satellite6-automation-{distribution}-{os}-tier4'
         - 'satellite6-betelgeuse-test-run-{os}'
         - 'satellite6-automation-report-downstream-{os}'
+        - 'satellite6-upgrade-downstream-{os}'
 
 #==============================================================================
 # Jobs
@@ -368,6 +407,18 @@
                 - 'permissive'
         - string:
             name: BUILD_LABEL
+        - choice:
+            name: UPGRADE_FROM
+            choices:
+                - '6.0'
+                - '6.1'
+            description: |
+                <p>Choose the currently installed Satellite version to upgrade to latest available.</p>
+        - string:
+            name: COMPOSE
+            description: |
+                <p>Compose Number of a previous build from which satellite and capsule will be upgraded.</p>
+                <p>e.g: 615, 608</p>
     wrappers:
         - config-file-provider:
             files:
@@ -402,6 +453,16 @@
                 BUILD_LABEL=${BUILD_LABEL}
         - trigger-builds:
             - project: satellite6-betelgeuse-test-case
+        - trigger-builds:
+            - project: satellite6-upgrade-downstream-rhel6
+              predifined-parameters: |
+                FROM_VERSION=${UPGRADE_FROM}
+                COMPOSE=${COMPOSE}
+        - trigger-builds:
+            - project: satellite6-upgrade-downstream-rhel7
+              predifined-parameters: |
+                FROM_VERSION=${UPGRADE_FROM}
+                COMPOSE=${COMPOSE}
 
 - job:
     name: satellite6-iso-trigger
