@@ -34,3 +34,11 @@ if [[ "${DISTRIBUTION}" != *"cdn"* ]]; then
 fi
 
 make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=4
+
+echo
+echo "========================================"
+echo "Server information"
+echo "========================================"
+echo "Hostname: ${SERVER_HOSTNAME}"
+echo "Credentials: admin/changeme"
+echo "========================================"
