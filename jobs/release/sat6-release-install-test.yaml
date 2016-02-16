@@ -1,0 +1,31 @@
+- job:
+    name: sat6-release-install-test
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    concurrent: true
+    node: sesame
+    parameters:
+      - string:
+          name: organization
+          description: "Satellite organization containing the product"
+      - string:
+          name: rhel
+          description: "Version of RHEL to build for"
+    builders:
+      - conditional-step:
+          condition-kind: always
+          steps:
+            - trigger-builds:
+                - project: satellite6-install-test
+                  current-parameters: true
+                  block: true
+                  block-thresholds:
+                    build-step-failure-threshold: FAILURE
+                    unstable-threshold: UNSTABLE
+                    failure-threshold: FAILURE
+    publishers:
+      - trigger-parameterized-builds:
+          - project: sat6-release-promote-test
+            current-parameters: true
+            condition: SUCCESS
