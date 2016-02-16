@@ -10,7 +10,9 @@ sed -i "s/^ssh_username.*/ssh_username=${SSH_USER}/" robottelo.properties
 sed -i "s/^admin_username.*/admin_username=${FOREMAN_ADMIN_USER}/" robottelo.properties
 sed -i "s/^admin_password.*/admin_password=${FOREMAN_ADMIN_PASSWORD}/" robottelo.properties
 
-PYTEST="$(which py.test) -v --junit-xml=foreman-results.xml -m 'not stubbed'"
+pytest() {
+    $(which py.test) -v --junit-xml=foreman-results.xml -m 'not stubbed' $1
+}
 
 if [ -n "${PYTEST_OPTIONS:-}" ]; then
     ${PYTEST} ${PYTEST_OPTIONS}
@@ -23,10 +25,10 @@ case "${TEST_TYPE}" in
         ;;
     smoke-api|smoke-cli|smoke-ui )
         TEST_TYPE="$(echo ${TEST_TYPE} | cut -d- -f2)"
-        ${PYTEST} "tests/foreman/smoke/test_${TEST_TYPE}_smoke.py"
+        pytest "tests/foreman/smoke/test_${TEST_TYPE}_smoke.py"
         ;;
     all )
-        ${PYTEST} "tests/foreman/api tests/foreman/cli tests/foreman/ui"
+        pytest tests/foreman/api tests/foreman/cli tests/foreman/ui
         ;;
     smoke-all )
         make test-foreman-smoke
