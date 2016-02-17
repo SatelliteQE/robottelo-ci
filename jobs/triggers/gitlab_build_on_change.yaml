@@ -2,7 +2,7 @@
     name: gitlab_build_on_change
     triggers:
       - gitlab:
-          trigger-push: false
+          trigger-push: true
           trigger-merge-request: true
           trigger-open-merge-request-push: both
           ci-skip: true
