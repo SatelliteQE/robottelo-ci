@@ -129,9 +129,14 @@
     builders:
         - satellite6-automation-builders
         - satellite6-automation-profiling-builder
-        - trigger-builds:
-            - project: 'satellite6-automation-{distribution}-{os}-tier2'
-              current-parameters: true
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (upstream|downstream|cdn)
+            label: ${{ENV,var="DISTRIBUTION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'satellite6-automation-{distribution}-{os}-tier2'
+                      current-parameters: true
     publishers:
         - satellite6-automation-publishers
 
