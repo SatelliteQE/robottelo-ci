@@ -6,6 +6,7 @@ cd pylarion
 cp setup.py setup.py.old
 head -n -3 setup.py.old > setup.py
 sed -i "s|'/etc', ||" setup.py
+sed -i "s/cachingpolicy=1/cachingpolicy=0/" src/pylarion/session.py
 
 # Install pylarion and its dependencies
 pip install -r requirements.txt
