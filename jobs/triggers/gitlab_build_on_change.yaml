@@ -4,10 +4,11 @@
       - gitlab:
           trigger-push: true
           trigger-merge-request: true
-          trigger-open-merge-request-push: both
+          trigger-open-merge-request-push: true
           ci-skip: true
           set-build-description: true
           add-note-merge-request: true
           add-vote-merge-request: true
+          add-ci-message: true
           allow-all-branches: true
           accept-merge-request-on-success: false
