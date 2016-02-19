@@ -27,3 +27,7 @@
                     build-step-failure-threshold: FAILURE
                     unstable-threshold: UNSTABLE
                     failure-threshold: FAILURE
+    publishers:
+      - email-ext:
+          recipients: $CI_EMAIL_LIST
+          success: true
