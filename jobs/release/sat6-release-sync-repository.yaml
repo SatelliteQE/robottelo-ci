@@ -27,6 +27,16 @@
               build-step-failure-threshold: FAILURE
               unstable-threshold: UNSTABLE
               failure-threshold: FAILURE
+          - project: satellite6-sync-repository
+            current-parameters: true
+            predefined-parameters: |
+              product=Red Hat Capsule 6.2 Composes
+              repository=RHEL${rhel} Capsule x86_64 os
+            block: true
+            block-thresholds:
+              build-step-failure-threshold: FAILURE
+              unstable-threshold: UNSTABLE
+              failure-threshold: FAILURE
     publishers:
       - trigger-parameterized-builds:
           - project: sat6-release-publish-content-view
