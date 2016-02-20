@@ -14,10 +14,10 @@
           default: 'foreman_docker'
     scm:
       - foreman_docker_gitlab
-      - foreman_plugin_gitlab
     triggers:
       - gitlab_build_on_change
     builders:
+      - clone_gitlab_foreman
       - merge_request
       - test_plugin
     publishers:

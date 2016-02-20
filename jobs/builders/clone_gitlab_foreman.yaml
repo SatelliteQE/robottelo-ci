@@ -1,0 +1,5 @@
+- builder:
+    name: clone_gitlab_foreman
+    builders:
+        - shell: !include-raw scripts/clone_foreman.sh
+
