@@ -4,37 +4,30 @@ class SourceBuilder
 
   attr_accessor :repository, :ref, :exit_code
 
-  def initialize(repository, ref)
-    self.repository = repository
-    self.ref = ref
+  def initialize
     self.exit_code = 0
   end
 
-  def build
-    clone
+  def build(repository, ref)
+    self.repository = repository
+    self.ref = ref
 
-    Dir.chdir(@repository) do
-      sys_call("git -c http.sslVerify=false fetch origin")
-      sys_call("git checkout #{@ref}")
-
-      if gemspec?
-        puts "Found gemspec; building gem"
-        sys_call("gem build *.gemspec")
-        artifact = "#{@repository}-*.gem"
-      elsif File.exists?('Rakefile') && sys_call('rake -T | grep pkg:generate_source')
-        puts "Found pkg:generate_source rake task; running rake pkg:generate_source"
-        sys_call('rake pkg:generate_source')
-        artifact = "pkg/#{@repository}-#{@ref}.tar.*"
-      else
-        puts "Building git archive tarball"
-        artifact = "#{@repository}-#{@ref}.tar.bz2"
-        sys_call("git archive --prefix=#{@repository}-#{@ref}/ #{@ref} | bzip2 -9 > #{artifact}")
-      end
-
-      scp_artifact(artifact)
+    if gemspec?
+      puts "Found gemspec; building gem"
+      sys_call("gem build *.gemspec")
+      artifact = "#{@repository}-*.gem"
+    elsif File.exists?('Rakefile') && system('rake -T | grep pkg:generate_source')
+      puts "Found pkg:generate_source rake task; running rake pkg:generate_source"
+      sys_call('rake pkg:generate_source')
+      artifact = "pkg/*.tar.*"
+    else
+      puts "Building git archive tarball"
+      artifact = "*.tar.bz2"
+      sys_call("git archive --prefix=#{@repository}-#{@ref}/ #{@ref} | bzip2 -9 > #{artifact}")
     end
 
-    cleanup(@repository)
+    scp_artifact(artifact)
+    cleanup
   end
 
   def upload(location)
@@ -58,9 +51,11 @@ class SourceBuilder
     !Dir.glob('*.gemspec').empty?
   end
 
-  def cleanup(files)
-    puts "Cleaning up #{files}"
-    system("rm -rf #{files}")
+  def cleanup(files = nil)
+    if files
+      puts "Cleaning up #{files}"
+      system("rm -rf #{files}")
+    end
     exit @exit_code
   end
 
@@ -71,10 +66,12 @@ class SourceBuilder
   end
 end
 
-builder = SourceBuilder.new(ENV['repository'], ENV['ref'])
+builder = SourceBuilder.new
 
 if ENV['source']
   builder.upload(ENV['source'])
 else
-  builder.build
+  repository = ENV['gitlabSourceRepoName'].split('/').last
+  tag = ENV['gitlabTargetBranch'].split('/').last
+  builder.build(repository, tag)
 end

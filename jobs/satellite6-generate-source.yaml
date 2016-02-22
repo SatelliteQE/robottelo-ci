@@ -6,23 +6,26 @@
     node: rhel
     parameters:
       - string:
-          name: repository
-          description: "Repository to build a source tarball or gem for"
+          name: gitlabSourceRepoName
+          description: "Repository to build a source tarball or gem for (e.g. satellite6/foreman)"
       - string:
-          name: ref
-          description: "Branch or tag to build source for"
+          name: gitlabTargetBranch
+          default: 
+          description: 'Branch or tag to build source for'
       - string:
           name: source
           description: "Link to location of a source file that is already generated. This will upload the source to the proper location"
-    # Can switch to SCM if git source is using proper certificates or a self-signed certificate
-    # with CA
-    #scm:
-    #  - git:
-    #      wipe-workspace: true
-    #      skip-tag: true
-    #      refspec: '${ref}'
-    #      remotes:
-    #        - origin:
-    #            url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/${repository}.git'
+    scm:
+      - git:
+          wipe-workspace: true
+          skip-tag: true
+          refspec: '+refs/tags/*:refs/remotes/origin/tags/*'
+          remotes:
+            - origin:
+                url: 'https://$GIT_HOSTNAME/${gitlabSourceRepoName}.git'
+          branches:
+            - ${gitlabTargetBranch}
+    triggers:
+      - gitlab_build_on_change
     builders:
       - generate_source
