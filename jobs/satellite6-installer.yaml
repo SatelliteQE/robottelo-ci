@@ -95,6 +95,14 @@
             description: |
                 This is required when we need to set a custom DHCP range.
                 Completely Optional but would be helpful to have.
+        - string:
+            name: INSTALLER_OPTIONS
+            description: |
+                Can pass katello-installer options. Helpful to quickly
+                configure ad-hoc stuff without the need to have each installer
+                option separately. This is not validated in any way, so the
+                user needs to provide valid input. Completely Optional.
+                For example: foreman-proxy-dhcp=false,foreman-proxy-dns=false
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
