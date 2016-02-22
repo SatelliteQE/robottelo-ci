@@ -14,3 +14,6 @@ cd ..
 
 cp -rf _build/foreman-infra/puppet/modules/jenkins_job_builder/files/theforeman.org foreman-infra
 rm -rf _build
+
+# Clean up foreman-infra defaults and jobs
+rm -rf foreman-infra/yaml/{defaults,jobs}
