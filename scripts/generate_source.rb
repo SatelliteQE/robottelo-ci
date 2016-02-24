@@ -22,7 +22,7 @@ class SourceBuilder
       artifact = "pkg/*.tar.*"
     else
       puts "Building git archive tarball"
-      artifact = "*.tar.bz2"
+      artifact = "#{repository}-#{ref}.tar.bz2"
       sys_call("git archive --prefix=#{@repository}-#{@ref}/ #{@ref} | bzip2 -9 > #{artifact}")
     end
 
@@ -60,6 +60,7 @@ class SourceBuilder
   end
 
   def sys_call(command)
+    puts command
     success = system(command)
     @exit_code = 1 if !success
     success
@@ -69,9 +70,11 @@ end
 builder = SourceBuilder.new
 
 if ENV['source']
+  puts "Uploading #{source} to #{ENV['SOURCE_FILE_HOST']}"
   builder.upload(ENV['source'])
 else
   repository = ENV['gitlabSourceRepoName'].split('/').last
   tag = ENV['gitlabTargetBranch'].split('/').last
+  puts "Building source for #{repository} with #{tag}"
   builder.build(repository, tag)
 end
