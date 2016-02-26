@@ -19,6 +19,13 @@
                 Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
                 Leaving this blank picks the latest SATTOOLS repo. Override if required.
         - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.2'
+                - '6.1'
+                - '6.0'
+            description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
+        - choice:
             name: SELINUX_MODE
             choices:
                 - 'enforcing'
@@ -35,12 +42,6 @@
             description: |
                 Check packages' GPG signatures when installing from ISO. Used
                 only in ISO provisioning.
-        - choice:
-            name: SATELLITE_VERSION
-            choices:
-                - '6.1'
-                - '6.0'
-            description: Used only in CDN provisioning.
         - bool:
             name: STAGE_TEST
             default: false
@@ -406,6 +407,13 @@
             description: |
                 Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/os
         - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.2'
+                - '6.1'
+                - '6.0'
+            description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
+        - choice:
             name: SELINUX_MODE
             choices:
                 - 'enforcing'
@@ -498,6 +506,13 @@
             name: RHEL7_ISO_TOOLS_URL
             description: |
                 Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/iso
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.2'
+                - '6.1'
+                - '6.0'
+            description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
         - choice:
             name: SELINUX_MODE
             choices:
