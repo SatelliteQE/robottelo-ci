@@ -1,0 +1,25 @@
+- job:
+    name: satellite6-unit-test-foreman-tasks
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    node: rhel
+    parameters:
+      - ruby
+      - database
+      - merge_request
+      - string:
+          name: plugin_name
+          default: 'foreman-tasks'
+    scm:
+      - foreman_tasks_gitlab
+    triggers:
+      - gitlab_build_on_change
+    builders:
+      - clone_gitlab_foreman
+      - merge_request
+      - test_plugin
+    publishers:
+      - gemset_cleanup
+      - junit:
+          results: 'foreman/jenkins/reports/unit/*.xml'

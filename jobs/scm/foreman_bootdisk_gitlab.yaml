@@ -1,0 +1,12 @@
+- scm:
+    name: foreman_bootdisk_gitlab
+    scm:
+      - git:
+          wipe-workspace: true
+          skip-tag: true
+          basedir: 'plugin'
+          branches:
+            - ${gitlabTargetBranch}
+          remotes:
+            - origin:
+                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/foreman_bootdisk.git'

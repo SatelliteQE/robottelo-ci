@@ -4,10 +4,16 @@
       daysToKeep: -1
       numToKeep: 32
     node: rhel
+    parameters:
+      - ruby
+      - database
+      - merge_request
     scm:
       - katello_gitlab
-      - foreman_plugin_gitlab
+    triggers:
+      - gitlab_build_on_change
     builders:
+      - clone_gitlab_foreman
       - merge_request
       - shell: !include-raw scripts/setup_katello_config.sh
       - test_katello
@@ -15,9 +21,3 @@
       - gemset_cleanup
       - junit:
           results: 'foreman/jenkins/reports/unit/*.xml'
-    triggers:
-      - gitlab_build_on_change
-    parameters:
-      - ruby
-      - database
-      - merge_request
