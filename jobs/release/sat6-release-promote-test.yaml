@@ -27,6 +27,16 @@
                     build-step-failure-threshold: FAILURE
                     unstable-threshold: UNSTABLE
                     failure-threshold: FAILURE
+                - project: satellite6-promote-content-view
+                  current-parameters: true
+                  predefined-parameters: |
+                    lifecycle_environment=Test
+                    content_view_name=Capsule RHEL${rhel}
+                  block: true
+                  block-thresholds:
+                    build-step-failure-threshold: FAILURE
+                    unstable-threshold: UNSTABLE
+                    failure-threshold: FAILURE
     publishers:
       - email-ext:
           recipients: $CI_EMAIL_LIST
