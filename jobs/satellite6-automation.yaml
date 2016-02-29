@@ -342,7 +342,13 @@
         - build-name:
             name: '#${{BUILD_NUMBER}} Upgrade_from_${{COMPOSE}}_downstream_{os}'
     builders:
-        - satellite6-upgrade-builders
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw: 'satellite6-upgrade-trigger.sh'
     publishers:
         - archive:
             artifacts: '*.tar.xz'
