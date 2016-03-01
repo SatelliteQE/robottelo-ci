@@ -4,7 +4,6 @@
       - git:
           wipe-workspace: true
           skip-tag: true
-          basedir: 'plugin'
           branches:
             - ${gitlabTargetBranch}
           remotes:
