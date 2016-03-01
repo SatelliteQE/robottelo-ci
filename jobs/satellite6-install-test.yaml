@@ -11,3 +11,8 @@
           description: "Version of RHEL to run installation test for"
     builders:
       - install_test
+    publishers:
+      - postbuildscript:
+          builders:
+            - shell: ssh jenkins@$LIBVIRT_HOST "cd sat-deploy/lago/environment-rhel${rhel} && lago revert initial"
+          script-only-if-succeeded: false
