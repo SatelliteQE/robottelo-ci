@@ -1,0 +1,4 @@
+- builder:
+    name: build_config_file
+    builders:
+        - shell: !include-raw scripts/build_config_file.rb

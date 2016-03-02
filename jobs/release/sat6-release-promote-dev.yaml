@@ -21,6 +21,7 @@
                   current-parameters: true
                   predefined-parameters: |
                     lifecycle_environment=Dev
+                    from_lifecycle_environment=Library
                     content_view_name=Satellite RHEL${rhel}
                   block: true
                   block-thresholds:
@@ -31,6 +32,7 @@
                   current-parameters: true
                   predefined-parameters: |
                     lifecycle_environment=Dev
+                    from_lifecycle_environment=Library
                     content_view_name=Capsule RHEL${rhel}
                   block: true
                   block-thresholds:

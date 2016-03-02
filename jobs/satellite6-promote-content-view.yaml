@@ -12,7 +12,17 @@
           name: lifecycle_environment
           description: "Name of a lifecycle environment to promote the content view to"
       - string:
+          name: from_lifecycle_environment
+          description: "Name of a lifecycle environment to promote the content view from"
+      - string:
           name: organization
           description: "Satellite organization containing the product"
     builders:
+      - build_config_file
+      - compare_content_views
       - promote_content_view
+    publishers:
+      - archive:
+          artifacts: 'package_report.yaml'
+          allow-empty: false
+          only-if-success: true

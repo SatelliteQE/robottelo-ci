@@ -1,0 +1,4 @@
+- builder:
+    name: compare_content_views
+    builders:
+        - shell: !include-raw: scripts/compare_content_views.rb
