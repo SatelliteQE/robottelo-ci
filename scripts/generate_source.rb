@@ -15,7 +15,7 @@ class SourceBuilder
     if gemspec?
       puts "Found gemspec; building gem"
       sys_call("gem build *.gemspec")
-      artifact = "#{@repository}-*.gem"
+      artifact = "*.gem"
     elsif File.exists?('Rakefile') && system('rake -T | grep pkg:generate_source')
       puts "Found pkg:generate_source rake task; running rake pkg:generate_source"
       sys_call('rake pkg:generate_source')
