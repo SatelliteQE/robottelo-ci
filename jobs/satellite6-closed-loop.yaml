@@ -1,0 +1,30 @@
+- job:
+    name: satellite6-closed-loop
+    concurrent: false 
+    description: |
+        <p>Job that runs closed loop process</p>
+    scm:
+        - git:
+            url: 'https://$GIT_HOSTNAME/$GIT_QE_ORGANIZATION/closed-loop.git'
+            branches:
+                - origin/master
+            skip-tag: true
+            wipe-workspace: true
+    triggers:
+        - timed: "@midnight"
+    wrappers:
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw: 'scripts/satellite6-closed-loop.sh'
+        - shell: rm -f ~/.config/user.ini
+    publishers:
+        - email-ext:
+            recipients: $CLOSEDLOOP_EMAIL_LIST
