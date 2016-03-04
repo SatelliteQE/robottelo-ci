@@ -14,7 +14,7 @@
     node: sesame
     parameters:
         - choice:
-            name: PRODUCT
+            name: UPGRADE_PRODUCT
             choices:
                 - satellite
                 - capsule
@@ -46,7 +46,7 @@
                 - cap-upgrade-auto-rhel6
             description: |
                 <p> Openstack Capsule Instance name to create on openstack and to run upgrade. Choose according to <strong>OS</strong> selected above.</p>
-                <p> Provide only in the case of <strong>Capsule upgrade</strong>. i.e PRODUCT = capsule </p>
+                <p> Provide only in the case of <strong>Capsule upgrade</strong>. i.e UPGRADE_PRODUCT = capsule </p>
         - string:
             name: SATELLITE_IMAGE
             description: |
@@ -57,7 +57,7 @@
             description: |
                 <p> Openstack Capsule Image name using which the the above instance will be created. The image should have older capsule version installed to perform upgrade.</p>
                 <p><strong> Please make sure that there is no other instance running on openstack with same Image name. Else the results may vary or fail.</strong></p>
-                <p> Provide only in the case of <strong>Capsule upgrade</strong>. i.e PRODUCT = capsule </p>
+                <p> Provide only in the case of <strong>Capsule upgrade</strong>. i.e UPGRADE_PRODUCT = capsule </p>
         - choice:
             name: IMAGE_FLAVOR
             choices:
@@ -77,7 +77,7 @@
             skip-tag: true
     wrappers:
         - build-name:
-            name: '#${BUILD_NUMBER}  ${ENV,var="PRODUCT"}_${ENV,var="OS"}_Upgrade'
+            name: '#${BUILD_NUMBER}  ${ENV,var="UPGRADE_PRODUCT"}_${ENV,var="OS"}_Upgrade'
         - build-user-vars
         - config-file-provider:
             files:
