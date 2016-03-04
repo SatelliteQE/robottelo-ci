@@ -5,7 +5,7 @@
         <p>Job that runs closed loop process</p>
     scm:
         - git:
-            url: 'https://$GIT_HOSTNAME/$GIT_QE_ORGANIZATION/closed-loop.git'
+            url: 'git@$GIT_HOSTNAME:$GIT_QE_ORGANIZATION/closed-loop.git'
             branches:
                 - origin/master
             skip-tag: true
