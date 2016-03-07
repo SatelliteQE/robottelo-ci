@@ -1,5 +1,4 @@
 - builder:
     name: sync_repository
     builders:
-        - shell: !include-raw scripts/sync_repository.sh
-
+      - shell: !include-raw: scripts/sync_repository.sh

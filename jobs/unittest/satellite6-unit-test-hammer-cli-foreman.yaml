@@ -1,0 +1,34 @@
+- job:
+    name: satellite6-unit-test-hammer-cli-foreman
+    node: rhel
+    project-type: matrix
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    parameters:
+      - merge_request
+    scm:
+      - hammer_cli_foreman_gitlab
+    axes:
+      - axis:
+          type: user-defined
+          name: ruby
+          values:
+            - 1.9.3
+            - 2.0.0
+            - 2.1
+            - 2.2
+      - axis:
+          type: slave
+          name: nodes
+          values:
+            - rhel
+    triggers:
+      - gitlab_build_on_change
+    builders:
+      - merge_request
+      - test_hammer_cli_foreman
+    publishers:
+      - gemset_cleanup
+      - junit:
+          results: 'test/reports/*.xml'
