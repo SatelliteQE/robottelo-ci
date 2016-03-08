@@ -12,14 +12,15 @@ class SourceBuilder
     self.repository = repository
     self.ref = ref
 
-    if gemspec?
+    if File.exists?('Rakefile') && system('rake -T | grep pkg:generate_source')
+      puts "Found pkg:generate_source rake task; running rake pkg:generate_source"
+      sys_call('bundle install')
+      sys_call('rake pkg:generate_source')
+      artifact = "pkg/*"
+    elsif gemspec?
       puts "Found gemspec; building gem"
       sys_call("gem build *.gemspec")
       artifact = "*.gem"
-    elsif File.exists?('Rakefile') && system('rake -T | grep pkg:generate_source')
-      puts "Found pkg:generate_source rake task; running rake pkg:generate_source"
-      sys_call('rake pkg:generate_source')
-      artifact = "pkg/*.tar.*"
     else
       puts "Building git archive tarball"
       artifact = "#{repository}-#{ref}.tar.bz2"
