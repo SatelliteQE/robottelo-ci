@@ -50,21 +50,21 @@
 
             Installation repositories can be found at:
             
-            Satellite: http://${SATELLITE_SERVER}/pulp/repos/${organization}/Test/Satellite_RHEL${rhel}/custom/Red_Hat_Satellite_6_2_Composes/RHEL${rhel}_Satellite_x86_64_os/
-            Capsule: http://${SATELLITE_SERVER}/pulp/repos/${organization}/Test/Capsule_RHEL${rhel}/custom/Red_Hat_Satellite_6_2_Composes/RHEL${rhel}_Capsule_x86_64_os/
-            Tools: http://${SATELLITE_SERVER}/pulp/repos/${organization}/Library/Tools_RHEL${rhel}/custom/Red_Hat_Satellite_Tools_6_2_Composes/RHEL${rhel}_Satellite_Tools_x86_64_os/
+            Satellite: ${SATELLITE_SERVER_HTTP}/pulp/repos/${organization}/Test/Satellite_RHEL${rhel}/custom/Red_Hat_Satellite_6_2_Composes/RHEL${rhel}_Satellite_x86_64_os/
+            Capsule: ${SATELLITE_SERVER_HTTP}/pulp/repos/${organization}/Test/Capsule_RHEL${rhel}/custom/Red_Hat_Satellite_6_2_Composes/RHEL${rhel}_Capsule_x86_64_os/
+            Tools: ${SATELLITE_SERVER_HTTP}/pulp/repos/${organization}/Library/Tools_RHEL${rhel}/custom/Red_Hat_Satellite_Tools_6_2_Composes/RHEL${rhel}_Satellite_Tools_x86_64_os/
 
 
             Installation can also be performed through a pre-configured activation key.
 
             For the Satellite server:
 
-            yum -y localinstall http://${SATELLITE_SERVER}/pub/katello-ca-consumer-latest.noarch.rpm
+            yum -y localinstall ${SATELLITE_SERVER_HTTP}/pub/katello-ca-consumer-latest.noarch.rpm
             subscription-manager register --org ${organization} --activationkey 'Satellite Test RHEL${rhel}'
             yum install satellite
 
             For the Capsule:
 
-            yum -y localinstall http://${SATELLITE_SERVER}/pub/katello-ca-consumer-latest.noarch.rpm
+            yum -y localinstall ${SATELLITE_SERVER_HTTP}/pub/katello-ca-consumer-latest.noarch.rpm
             subscription-manager register --org ${organization} --activationkey 'Capsule Test RHEL${rhel}'
             yum install satellite-capsule
