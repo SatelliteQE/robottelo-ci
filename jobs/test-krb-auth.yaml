@@ -1,0 +1,23 @@
+- job:
+    name: 'test-krb-auth'
+    description: |
+        <p>Job to test functionality of kerberos credentials uploaded to
+        jenkins</p>
+        <p>The job assumes the following is globally predefined in jenkins</p>
+        <ul>
+        <li>KRB_PRINCIPAL environment variable nees to be set to a Kerberos
+        principal for use by Jenkins</li>
+        <li>The keytab file for the kerberos principal must be base64 encoded
+        and uploaded to Jenkins as a secret file with credintials ID set to
+        "krb_keytab"
+        </ul>
+    node: builders
+    wrappers:
+        - 'load_keytab':
+            credential-id: 'krb_keytab'
+    builders:
+        - 'load_keytab'
+        - shell: /usr/bin/klist
+    publishers:
+        - 'destroy_keytab'
+

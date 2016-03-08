@@ -1,0 +1,9 @@
+- publisher:
+    name: "destroy_keytab"
+    publishers:
+        - postbuildscript:
+            script-only-if-succeeded: True
+            mark-unstable-if-failed: True
+            builders:
+                - shell: !include-raw: destroy-keytab.sh
+
