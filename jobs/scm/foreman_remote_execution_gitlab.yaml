@@ -1,0 +1,12 @@
+- scm:
+    name: foreman_remote_execution_gitlab
+    scm:
+      - git:
+          wipe-workspace: true
+          skip-tag: true
+          basedir: 'plugin'
+          branches:
+            - ${gitlabTargetBranch}
+          remotes:
+            - origin:
+                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/foreman_remote_execution.git'
