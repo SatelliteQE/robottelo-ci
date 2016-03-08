@@ -1,0 +1,6 @@
+- builder:
+    name: 'load_keytab'
+    builders:
+        - shell: !include-raw: load-keytab.sh
+        - inject:
+            properties-file: .krb5ccname

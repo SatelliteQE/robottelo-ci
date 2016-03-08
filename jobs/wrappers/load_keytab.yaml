@@ -1,0 +1,8 @@
+- wrapper:
+    name: "load_keytab"
+    wrappers:
+        - credentials-binding:
+            - file:
+                credential-id: '{credential-id}'
+                variable: KEYTAB_FILE
+
