@@ -138,6 +138,21 @@
                 - trigger-builds:
                     - project: 'satellite6-automation-{distribution}-{os}-tier2'
                       current-parameters: true
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (downstream)
+            label: ${{ENV,var="DISTRIBUTION"}}
+            steps:
+              - trigger-builds:
+                - project: 'satellite6-automation-performance-report'
+                  predefined-parameters: |
+                    OS={os}
+                    LABEL=${{LABEL}}
+                  parameter-factories:
+                    - factory: binaryfile
+                      parameter-name: JUNIT
+                      file-pattern: foreman-results.xml
+                      no-files-found-action: FAIL
     publishers:
         - satellite6-automation-publishers
 

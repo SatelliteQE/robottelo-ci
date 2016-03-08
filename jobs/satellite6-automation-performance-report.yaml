@@ -1,0 +1,27 @@
+- job:
+    name: 'satellite6-automation-performance-report'
+    node: sesame
+    parameters:
+        - choice:
+            name: OS
+            choices:
+                - rhel6
+                - rhel7
+        - string:
+            name: LABEL
+        - file:
+            name: JUNIT
+    scm:
+        - git:
+            url: 'git@$GIT_HOSTNAME:$GIT_QE_ORGANIZATION/sat6-reports.git'
+            branches:
+                - origin/master
+            skip-tag: true
+    builders:
+        - shining-panda:
+            build-environment: python
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape: 'satellite6-automation-performance-report.sh'

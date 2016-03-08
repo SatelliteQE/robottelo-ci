@@ -2,7 +2,7 @@
     name: satellite6-automation-publishers
     publishers:
         - archive:
-            artifacts: 'test-foreman-*.svg,robottelo*.log,insights*.log'
+            artifacts: 'test-foreman-*.svg,robottelo*.log,insights*.log,foreman-results.xml'
         - junit:
             results: 'foreman-results.xml'
         - claim-build
