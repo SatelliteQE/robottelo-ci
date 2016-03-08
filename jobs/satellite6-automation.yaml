@@ -284,22 +284,18 @@
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier1'
             filter: 'robottelo*.log'
-            target: /home/foo
             which-build: last-successful
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier2'
             filter: 'robottelo*.log'
-            target: /home/foo
             which-build: last-successful
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier3'
             filter: 'robottelo*.log'
-            target: /home/foo
             which-build: last-successful
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier4'
             filter: 'robottelo*.log'
-            target: /home/foo
             which-build: last-successful
         - shining-panda:
             build-environment: python
