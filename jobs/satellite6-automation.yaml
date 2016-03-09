@@ -147,7 +147,7 @@
                 - project: 'satellite6-automation-performance-report'
                   predefined-parameters: |
                     OS={os}
-                    LABEL=${{LABEL}}
+                    BUILD_LABEL=${{BUILD_LABEL}}
                   parameter-factories:
                     - factory: binaryfile
                       parameter-name: JUNIT

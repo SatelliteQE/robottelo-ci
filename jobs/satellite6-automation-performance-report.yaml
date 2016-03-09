@@ -8,7 +8,7 @@
                 - rhel6
                 - rhel7
         - string:
-            name: LABEL
+            name: BUILD_LABEL
         - file:
             name: JUNIT
     scm:
