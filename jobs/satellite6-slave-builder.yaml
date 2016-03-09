@@ -1,0 +1,81 @@
+- job-template:
+    name: 'slave_template_from_{package}_at_{tag}'
+    node: builders
+    description: |
+        <p>This job creates Jenkins slaves from rhel guest image builds downloaded
+        from Brew</p>
+        <p>This job requires a connection to Brew so it can only work inside the
+        Red Hat network</p>
+        <p>Some environment variables affect this job and can or need to be set
+        in Jenkins:</p>
+        <ul>
+        <li>US_GIT_HOSTNAME: Hostname of server with upstream Git repos
+        <li>US_GIT_ORGANIZATION: Organization owning upstream Git repos
+        <li>KOJI_TOPURL: Optional url of oji package mirror
+        <li>KOJI_PROFILE: Optional name of Koji configuration profile to use
+        <li>JENKINS_URL: Automatically set by Jenkins and is used to configure
+            generated slave images to connect to it
+        </ul>
+        <p>Some creedentials must be configured in jenkins to allow this job to
+        work, the following is a list of credential-IDs that must be defined and
+        links to valis credentials</p>
+        <ul>
+        <li><strong>slave-rhel-reg-credentials</strong>: Credentials used to
+            register slaves from generated images to the Red Hat portal
+        <li><strong>jenkins-swarm-credentials</strong>: Credential used to
+            register slaves to Jenkins (Via the swarm plugin)
+        <li><strong>slave-root-credentials</strong>: Password to set for the
+            root used of the generated slave images
+        </ul>
+    scm:
+        - robotello-ci_github
+    properties:
+        - build-discarder:
+            artifact-num-to-keep: 3
+        - inject:
+            properties-content: |
+                IMAGE_BREW_TAG={tag}
+                IMAGE_BREW_PKG={package}
+                REGISTRATION_DATA={registration_data}
+                PUPPET_REPO=https://github.com/SatelliteQE/puppet-robottelo_slave.git
+                PUPPET_BRANCE=master
+    wrappers:
+        - credentials-binding:
+            - username-password-separated:
+                credential-id: slave-rhel-reg-credentials
+                username: REGISTRATION_USER
+                password: REGISTRATION_PWD
+            - username-password-separated:
+                credential-id: jenkins-swarm-credentials
+                username: JENKINS_USER
+                password: JENKINS_PASS
+            - username-password-separated:
+                credential-id: slave-root-credentials
+                username: IMAGE_ROOT_USER
+                password: IMAGE_ROOT_PWD
+    builders:
+        - shell: |
+            find "$WORKSPACE" -name '*.qcow2' -mtime +1 -delete
+            find "$WORKSPACE" -name '*.qcow2.bz2' -delete
+        - shell: !include-raw-escape mk-slave-template.bash
+    publishers:
+        - postbuildscript:
+            script-only-if-succeeded: True
+            builders:
+                - shell: |
+                    /bin/bash -e
+                    echo "Compressing built image"
+                    bzip2 -v "$WORKSPACE/build_results/"*.qcow2
+        - archive:
+            artifacts: build_results/*.qcow2.bz2
+            only-if-success: true
+
+- project:
+    name: template-builders
+    package: "rhel-guest-image"
+    tag:
+        - "guest-rhel-7.2-candidate":
+            registration_data: 'rhel.7'
+    jobs:
+        - 'slave_template_from_{package}_at_{tag}'
+
