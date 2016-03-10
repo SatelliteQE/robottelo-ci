@@ -132,7 +132,7 @@
         - satellite6-automation-profiling-builder
         - conditional-step:
             condition-kind: regex-match
-            regex: (upstream|downstream|cdn)
+            regex: (upstream|downstream|cdn|zstream)
             label: ${{ENV,var="DISTRIBUTION"}}
             steps:
                 - trigger-builds:
@@ -575,6 +575,81 @@
                 TOOLS_URL=${RHEL7_ISO_TOOLS_URL}
                 SELINUX_MODE=${SELINUX_MODE}
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
+                BUILD_LABEL=${BUILD_LABEL}
+
+- job:
+    name: satellite6-zstream-trigger
+    description: Triggers ZSTREAM automation for Satellite 6
+    node: sesame
+    parameters:
+        - string:
+            name: RHEL6_SATELLITE_URL
+            description: |
+                Leave it blank to install the latest stable.
+        - string:
+            name: RHEL6_CAPSULE_URL
+            description: |
+                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/Capsule/x86_64/iso
+        - string:
+            name: RHEL6_TOOLS_URL
+            description: |
+                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/sattools/x86_64/iso
+        - string:
+            name: RHEL7_SATELLITE_URL
+            description: |
+                Leave it blank to install the latest stable.
+        - string:
+            name: RHEL7_CAPSULE_URL
+            description: |
+                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/Capsule/x86_64/iso
+        - string:
+            name: RHEL7_TOOLS_URL
+            description: |
+                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/iso
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.1'
+                - '6.0'
+            description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
+        - choice:
+            name: SELINUX_MODE
+            choices:
+                - 'enforcing'
+                - 'permissive'
+        - string:
+            name: BUILD_LABEL
+    wrappers:
+        - config-file-provider:
+            files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
+                  variable: SATELLITE6_REPOS_URLS
+    builders:
+        - shell: |
+            source ${SATELLITE6_REPOS_URLS}
+            echo "RHEL6_SATELLITE_URL=${RHEL6_SATELLITE_URL:-${SATELLITE6_RHEL6}}" > properties.txt
+            echo "RHEL6_CAPSULE_URL=${RHEL6_CAPSULE_URL:-${CAPSULE_RHEL6}}" >> properties.txt
+            echo "RHEL6_TOOLS_URL=${RHEL6_TOOLS_URL:-${TOOLS_RHEL6}}" >> properties.txt
+            echo "RHEL7_SATELLITE_URL=${RHEL7_SATELLITE_URL:-${SATELLITE6_RHEL7}}" >> properties.txt
+            echo "RHEL7_CAPSULE_URL=${RHEL7_CAPSULE_URL:-${CAPSULE_RHEL7}}" >> properties.txt
+            echo "RHEL7_TOOLS_URL=${RHEL7_TOOLS_URL:-${TOOLS_RHEL7}}" >> properties.txt
+        - inject:
+            properties-file: properties.txt
+        - trigger-builds:
+            - project: satellite6-provisioning-zstream-rhel6
+              predefined-parameters: |
+                BASE_URL=${RHEL6_SATELLITE_URL}
+                CAPSULE_URL=${RHEL6_CAPSULE_URL}
+                TOOLS_URL=${RHEL6_TOOLS_URL}
+                SELINUX_MODE=${SELINUX_MODE}
+                BUILD_LABEL=${BUILD_LABEL}
+        - trigger-builds:
+            - project: satellite6-provisioning-zstream-rhel7
+              predefined-parameters: |
+                BASE_URL=${RHEL7_SATELLITE_URL}
+                CAPSULE_URL=${RHEL7_CAPSULE_URL}
+                TOOLS_URL=${RHEL7_TOOLS_URL}
+                SELINUX_MODE=${SELINUX_MODE}
                 BUILD_LABEL=${BUILD_LABEL}
 
 - job:
