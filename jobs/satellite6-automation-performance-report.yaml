@@ -24,4 +24,4 @@
             clear: true
             nature: shell
             command:
-                !include-raw-escape: 'satellite6-automation-performance-report.sh'
+                !include-raw: 'satellite6-automation-performance-report.sh'
