@@ -374,7 +374,7 @@
         - cdn
         - downstream
         - zstream:
-            scm-branch: origin/satellite-6.0.z.1
+            scm-branch: origin/6.1.z
         - iso
         - upstream
     os:
