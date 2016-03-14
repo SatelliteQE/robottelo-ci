@@ -1,7 +1,9 @@
-pip install -r requirements.txt
+# pip install -r requirements.txt
 
-if [ ! -f ~/satellite_performance_data.csv ]; then
-   touch ~/satellite_performance_data.csv
+DATA_PATH="${HOME}/satellite_performance_data.csv"
+
+if [ ! -f ${DATA_PATH} ]; then
+   touch ${DATA_PATH}
 fi
 
-./performance_report.py ${OS} ${BUILD_LABEL} JUNIT
+./performance_report.py --data-path ${DATA_PATH} ${OS} ${BUILD_LABEL} JUNIT
