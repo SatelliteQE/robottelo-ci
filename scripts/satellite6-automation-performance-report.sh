@@ -1,4 +1,4 @@
-# pip install -r requirements.txt
+pip install -r requirements.txt
 
 DATA_PATH="${HOME}/satellite_performance_data.csv"
 
