@@ -1,4 +1,8 @@
-pip install -U -r requirements.txt docker-py pytest-xdist
+if [ "${DISTRIBUTION}" == 'zstream' ]; then
+    pip install -U -r requirements-freeze.txt
+else
+    pip install -U -r requirements.txt docker-py pytest-xdist
+fi
 
 cp ${ROBOTTELO_CONFIG} ./robottelo.properties
 
