@@ -15,7 +15,7 @@ pytest() {
 }
 
 if [ -n "${PYTEST_OPTIONS:-}" ]; then
-    ${PYTEST} ${PYTEST_OPTIONS}
+    pytest ${PYTEST_OPTIONS}
     exit 0
 fi
 
