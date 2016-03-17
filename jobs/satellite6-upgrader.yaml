@@ -3,14 +3,19 @@
     concurrent: True
     display-name: 'Satellite6-Upgrader'
     description: |
-        <p> This job Upgrades older version of Satellite6 and Capsule6 on the pre-installed image of Openstack.</p>
-        <p> Please make sure that the following <strong>ssh-key</strong> of jenkins has been added in your <strong>openstack project</strong>.</p>
-        <p> This ssh key will be added to satellite and capsule instance to execute upgrade steps.</p>
+        <p> This job upgrades older version of Satellite6 and Capsule6:
+        <hr>
+        <p><strong> > On the pre-installed images of satellite and capsule on RHEVM:</strong></p>
+        <p> Please make sure that the following ssh-key of jenkins has been added in your <strong>RHEVM images</strong> already.</p>
+        <p>-------or-------</p>
+        <p><strong> > Specific Satellite and Capsule:</strong></p>
+        <p> Please add following ssh-key manually to your satellite and capsule.</p>
+        <hr>
         <p><strong>SSH KEY:</strong></p>
         <pre>
         ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
         </pre>
-        <p> If this ssh key is not added already in your openstack project, please add it before running this job. Else the job will fail.</p>
+        <p><strong>Failing to add ssh-key will result in job fail.</strong></p>
     node: sesame
     parameters:
         - choice:
@@ -19,7 +24,7 @@
                 - satellite
                 - capsule
             description: |
-                <p> Choosing 'satellite' will upgrade only Satellite. Choosing 'capsule' will upgrade both Capsule as well as its associated Satellite.</p>
+                <p><strong>Choosing 'satellite' will upgrade only Satellite. Choosing 'capsule' will upgrade both Capsule as well as its associated Satellite.</strong></p>
         - choice:
             name: FROM_VERSION
             choices:
@@ -28,47 +33,55 @@
             description: |
                 <p> Choose the currently installed Satellite version to upgrade to latest available.</p>
         - choice:
+            name: TO_VERSION
+            choices:
+                - '6.1'
+                - '6.2'
+        - choice:
+            name: DISTRIBUTION
+            choices:
+                - CDN
+                - DOWNSTREAM
+            description: |
+                <p><strong>CDN</strong>-Upgrade to the CDN available version.</p>
+                <p><strong>DOWNSTREAM</strong>-Upgrade to latest stable internal compose.</p>
+        - choice:
             name: OS
             choices:
                 - rhel7
                 - rhel6
-        - choice:
-            name: SATELLITE_INSTANCE
-            choices:
-                - sat-upgrade-auto-rhel7
-                - sat-upgrade-auto-rhel6
+        - string:
+            name: SATELLITE_HOSTNAME
+        - string:
+            name: CAPSULE_HOSTNAME
+        - string:
+            name: CAPSULE_SUBSCRIPTION
             description: |
-                <p> Openstack Satellite Instance name to create on openstack and to run upgrade. Choose according to <strong>OS</strong> selected above.</p>
-        - choice:
-            name: CAPSULE_INSTANCE
-            choices:
-                - cap-upgrade-auto-rhel7
-                - cap-upgrade-auto-rhel6
+                <p>Optional, Applicable only if CAPSULE_HOSTNAME value is provided</p>
+                <p>List of cv_name, environment, ak_name attached to subscription of capsule in given sequence.</p>
+        - string:
+            name: RHEV_SATELLITE
             description: |
-                <p> Openstack Capsule Instance name to create on openstack and to run upgrade. Choose according to <strong>OS</strong> selected above.</p>
-                <p> Provide only in the case of <strong>Capsule upgrade</strong>. i.e UPGRADE_PRODUCT = capsule </p>
+                <p>Optional, If 'SATELLITE HOSTNAME' is not provided above.</p>
+                <p>Runs upgrade on below RHEV Satellite Image</p>
+        - string:
+            name: RHEV_CAPSULE
+            description: |
+                <p>Optional, If 'CAPSULE HOSTNAME' is not provided above.</p>
+                <p>Runs upgrade on below RHEV Capsule Image</p>
         - string:
             name: SATELLITE_IMAGE
             description: |
-                <p> Openstack Satellite Image name using which the the above instance will be created. The image should have older satellite version installed to perform upgrade.</p>
-                <p><strong> Please make sure that there is no other instance running on openstack with same Image name. Else the results may vary or fail.</strong></p>
+                <p> Optional, if 'not' SATELLITE_HOSTNAME and CAPSULE_HOSTNAME</p>
+                <p> RHEV Satellite Image name using which the the above instance will be created. The image should have older satellite version installed to perform upgrade.</p>
+                <p><strong> Please make sure that there is no other instance running on RHEV with same Image name. Else the results will be fail.</strong></p>
         - string:
             name: CAPSULE_IMAGE
             description: |
-                <p> Openstack Capsule Image name using which the the above instance will be created. The image should have older capsule version installed to perform upgrade.</p>
+                <p> Optional, if 'not' SATELLITE_HOSTNAME and CAPSULE_HOSTNAME</p>
+                <p> RHEV Capsule Image name using which the the above instance will be created. The image should have older capsule version installed to perform upgrade.</p>
                 <p><strong> Please make sure that there is no other instance running on openstack with same Image name. Else the results may vary or fail.</strong></p>
                 <p> Provide only in the case of <strong>Capsule upgrade</strong>. i.e UPGRADE_PRODUCT = capsule </p>
-        - choice:
-            name: IMAGE_FLAVOR
-            choices:
-                - m1.large
-                - m1.xlarge
-            description: |
-                <p> Choose the instance flavor/size to create on openstack. Prefer <strong>m1.large</strong></p>
-        - string:
-            name: SSH_KEY_NAME
-            description: |
-                <p> The <strong>name</strong> of jenkins ssh-key, added in openstack project. If not added already, copy it from job status page and add to openstack.</p>
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -77,12 +90,12 @@
             skip-tag: true
     wrappers:
         - build-name:
-            name: '#${BUILD_NUMBER}  ${ENV,var="UPGRADE_PRODUCT"}_${ENV,var="OS"}_Upgrade'
+            name: '#${BUILD_NUMBER} ${ENV,var="UPGRADE_PRODUCT"}_from_${ENV,var="FROM_VERSION"}_to_${ENV,var="TO_VERSION"}_${ENV,var="OS"}_Upgrade'
         - build-user-vars
         - config-file-provider:
             files:
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1439296949513
-                  variable: OPENSTACK_CONFIG
+                - file-id: 273ccbb1-70fa-40cc-8cb7-ec5f284631b0
+                  variable: RHEV_CONFIG
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
                   variable: SATELLITE6_REPOS_URLS
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
@@ -95,4 +108,6 @@
               clear: true
               nature: shell
               command:
-                !include-raw satellite6_upgrader.sh
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6_upgrader.sh'
