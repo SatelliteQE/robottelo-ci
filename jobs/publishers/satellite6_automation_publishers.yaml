@@ -5,4 +5,5 @@
             artifacts: 'test-foreman-*.svg,robottelo*.log,insights*.log,foreman-results.xml'
         - junit:
             results: 'foreman-results.xml'
+            claim-build: true
         - claim-build
