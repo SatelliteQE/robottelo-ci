@@ -1,4 +1,4 @@
-if [ "${DISTRIBUTION}" == 'zstream' ]; then
+if [ "${DISTRIBUTION}" = "zstream" ]; then
     pip install -U -r requirements-freeze.txt
 else
     pip install -U -r requirements.txt docker-py pytest-xdist
