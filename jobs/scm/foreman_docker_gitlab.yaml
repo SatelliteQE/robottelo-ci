@@ -9,4 +9,4 @@
             - ${gitlabTargetBranch}
           remotes:
             - origin:
-                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/foreman-docker.git'
+                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/foreman_docker.git'

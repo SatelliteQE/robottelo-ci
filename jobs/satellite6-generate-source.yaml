@@ -15,6 +15,9 @@
       - string:
           name: source
           description: "Link to location of a source file that is already generated. This will upload the source to the proper location"
+      - string:
+          name: ruby
+          default: '2.0.0'
     scm:
       - git:
           wipe-workspace: true
@@ -28,4 +31,7 @@
     triggers:
       - gitlab_build_on_change
     builders:
+      - setup_gemset
       - generate_source
+    publishers:
+      - gemset_cleanup

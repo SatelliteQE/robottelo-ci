@@ -10,7 +10,7 @@
       - merge_request
       - string:
           name: plugin_name
-          default: 'foreman-remote-execution'
+          default: 'foreman_remote_execution'
     scm:
       - foreman_remote_execution_gitlab
     triggers:
