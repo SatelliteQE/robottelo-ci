@@ -204,7 +204,7 @@
         - satellite6-automation-profiling-builder
         - conditional-step:
             condition-kind: regex-match
-            regex: (cdn|downstream)
+            regex: (cdn|downstream|zstream)
             label: ${{ENV,var="DISTRIBUTION"}}
             steps:
                 - trigger-builds:
