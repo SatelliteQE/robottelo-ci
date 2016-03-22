@@ -1,6 +1,10 @@
 set -o nounset
 
-pip install -U -r requirements.txt docker-py pytest-xdist
+if [ "${ROBOTTELO_BRANCH}" = "6.1.z" ]; then
+    pip install -U -r requirements-freeze.txt
+else
+    pip install -U -r requirements.txt docker-py pytest-xdist
+fi
 
 cp "${ROBOTTELO_CONFIG}" ./robottelo.properties
 
