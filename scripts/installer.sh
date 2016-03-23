@@ -26,7 +26,12 @@ fi
 
 # ISOs require a specific URL
 if [ ${DISTRIBUTION} = "ISO" ]; then
-    export ISO_URL="${SATELLITE6_ISO_REPO}"
+    # If user provided custom baseurl, use it otherwise use the default
+    if [ ! -z "$SATELLITE6_CUSTOM_BASEURL" ]; then
+        export ISO_URL="${SATELLITE6_CUSTOM_BASEURL}"
+    else
+        export ISO_URL="${SATELLITE6_ISO_REPO}"
+    fi  
 fi
 
 # This is only used for downstream builds
