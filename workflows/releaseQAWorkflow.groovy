@@ -8,8 +8,8 @@ node('rhel') {
     computePackageDifference {
       organization = 'Sat6-CI'
       content_view = 'Satellite RHEL7'
-      from_environment = 'Dev'
-      to_environment = 'Test'
+      from_environment = 'Test'
+      to_environment = 'QA'
     }
 
 }
@@ -90,7 +90,7 @@ node {
     [$class: 'StringParameterValue', name: 'RHEL7_TOOLS_URL', value: ''],
     [$class: 'StringParameterValue', name: 'SATELLITE_VERSION', value: '6.2'],
     [$class: 'StringParameterValue', name: 'SELINUX_MODE', value: 'enforcing'],
-    [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Sat6.2.0-Beta-SNAP${env.snap_version}"],
+    [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Sat6.2.0-${snap_version}"],
     [$class: 'StringParameterValue', name: 'UPGRADE_FROM', value: '6.1'],
     [$class: 'StringParameterValue', name: 'COMPOSE', value: '617']
   ]

@@ -1,0 +1,8 @@
+- job:
+    name: sat6-release-qa
+    project-type: workflow
+    parameters:
+      - string:
+          name: snap_version
+          description: "Snap release version"
+    dsl: !include-raw: workflows/releaseQAWorkflow.groovy
