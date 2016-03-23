@@ -8,4 +8,4 @@
             - ${gitlabTargetBranch}
           remotes:
             - origin:
-                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/hammer-cli-katello.git'
+                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/hammer_cli_katello.git'
