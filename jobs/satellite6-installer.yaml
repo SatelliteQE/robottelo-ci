@@ -82,16 +82,19 @@
         - string:
             name: INTERFACE
             description: |
-                This will configure DHCP And DNS capsule services with this interface.
-                Required only when network interface is other than virtual interface virbr.
-                Would be helpful in installing sat6 in VmWare setups to do testing with
-                VmWare compute-resource. Otherwise this is Optional.
+                Default value is virbr1 if not specified. Leave it blank if using a
+                beaker machine for sat6 or any sat6 machine which has a DHCP IP.
+                Used for --foreman-proxy-dns-interface and --foreman-proxy-dhcp-interface installer options.
+                Helpful in configuring sat6 where the interface needed to configure is
+                eth0(feature vm's on rhev), eno33559296(vmware). Otherwise this is Optional.
         - string:
             name: GATEWAY
             description: |
-                This is required when the gateway is other than what is set as default
-                by katello-installer. Would be helpful in installing sat6 in VmWare setups
-                to do testing with VmWare compute-resource. Otherwise this is Optional.
+                Default value is '192.168.100.1', which is automatically set by installer.
+                Used for, --foreman-proxy-dhcp-gateway and --foreman-proxy-dns-reverse installer options.
+                If using isolated vlans explicitly specify the gateway here, which would be in the format
+                'zz.xx.yy.254'. Mandatory if installing sat6 which has isolated VLANs, Otherwise this is Optional.
+
         - string:
             name: DHCP_RANGE
             description: |
@@ -103,8 +106,10 @@
                 Can pass katello-installer options. Helpful to quickly
                 configure ad-hoc stuff without the need to have each installer
                 option separately. This is not validated in any way, so the
-                user needs to provide valid input. Completely Optional.
-                For example: foreman-proxy-dhcp=false,foreman-proxy-dns=false
+                user needs to provide valid input.
+                For example: foreman-websockets-encrypt=false,capsule-reverse-proxy=true
+                Do not specify these installer options related to (Interface, Gateway, DNS, DHCP, TFTP, PUPPET)
+                here, these are already handled.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
