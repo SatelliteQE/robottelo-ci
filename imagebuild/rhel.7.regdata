@@ -1,0 +1,9 @@
+NEEDED_SUBSCRIPTION='Red Hat Satellite Employee Subscription'
+NEEDED_REPOS=(
+    'rhel-7-server-rpms'
+    'rhel-7-server-optional-rpms'
+    'rhel-7-server-extras-rpms'
+    'rhel-server-rhscl-7-rpms'
+    'rhel-7-server-satellite-tools-6.1-rpms'
+)
+
