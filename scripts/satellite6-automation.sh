@@ -40,8 +40,10 @@ fi
 make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=4
 
 if [ "${ENDPOINT}" = "tier1" ]; then
+    set +e
     $(which py.test) -v --junit-xml transitioning-results.xml \
         -m 'not stubbed' tests/foreman/cli/test_import.py
+    set -e
 fi
 
 echo
