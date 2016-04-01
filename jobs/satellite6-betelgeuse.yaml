@@ -59,6 +59,11 @@
             filter: 'foreman-results.xml'
             which-build: workspace-latest
         - shell: mv foreman-results.xml tier3-results.xml
+        - copyartifact:
+            project: satellite6-automation-downstream-{os}-tier4
+            filter: 'foreman-results.xml'
+            which-build: workspace-latest
+        - shell: mv foreman-results.xml tier4-results.xml
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse
