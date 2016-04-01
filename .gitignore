@@ -3,3 +3,4 @@ foreman-infra
 *.pyc
 *.swp
 *.swn
+*.swo

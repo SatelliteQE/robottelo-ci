@@ -1,0 +1,9 @@
+- job:
+    name: 'sat62-release-smart-proxy-dynflow'
+    project-type: workflow
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/smart_proxy_dynflow_repo.groovy
+          - properties/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
