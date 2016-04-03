@@ -8,4 +8,4 @@
             - ${gitlabTargetBranch}
           remotes:
             - origin:
-                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/hammer-cli-foreman.git'
+                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/hammer_cli_foreman.git'
