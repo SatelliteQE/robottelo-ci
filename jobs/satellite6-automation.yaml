@@ -450,6 +450,8 @@
                 <p>Compose Number of a previous build from which satellite and capsule will be upgraded.</p>
                 <p>e.g: 615, 608</p>
     wrappers:
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="BUILD_LABEL"}'
         - config-file-provider:
             files:
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
