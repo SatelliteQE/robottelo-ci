@@ -1,0 +1,30 @@
+- job:
+    name: satellite6-unit-test-puppet-capsule
+    node: rhel
+    project-type: matrix
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 16
+    parameters:
+      - merge_request
+    scm:
+      - puppet_capsule_gitlab
+    axes:
+      - axis:
+          type: user-defined
+          name: ruby
+          values:
+            - 1.9.3
+            - 2.0.0
+      - axis:
+          type: slave
+          name: nodes
+          values:
+            - rhel
+    triggers:
+      - gitlab_build_on_change
+    builders:
+      - merge_request
+      - test_puppet_plugins
+    publishers:
+      - gemset_cleanup
