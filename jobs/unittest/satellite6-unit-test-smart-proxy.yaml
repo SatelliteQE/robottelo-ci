@@ -13,13 +13,13 @@
           type: user-defined
           name: ruby
           values:
-          - 1.9.3
+          - 1.8.7
           - 2.0.0
       - axis:
           type: user-defined
           name: puppet
           values:
-          - 3.6.0
+          - 3.8.0
       - axis:
           type: slave
           name: nodes
@@ -27,8 +27,6 @@
             - rhel
     triggers:
       - gitlab_build_on_change
-    execution-strategy:
-      combination-filter: '!( (ruby ==~ /(1\.9|2).*/ && puppet ==~ /2\.6.*/) || (ruby ==~ /2.*/ && puppet ==~ /(2|3\.[01]).*/) || (ruby ==~ /2\.[^0]/ && puppet ==~ /(2|3\.[0-4]).*/) || (ruby ==~ /2\.2.*/ && puppet ==~ /(2|3).*/) || (ruby ==~ /1\.(8|9\.2).*/ && puppet ==~ /4\..*/) )'
     builders:
       - merge_request
       - test_proxy
