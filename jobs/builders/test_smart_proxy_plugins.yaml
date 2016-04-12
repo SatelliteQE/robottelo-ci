@@ -1,0 +1,4 @@
+- builder:
+    name: test_smart_proxy_plugins
+    builders:
+      - shell: !include-raw: scripts/test_smart_proxy_plugins.sh
