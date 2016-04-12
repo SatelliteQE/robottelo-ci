@@ -4,12 +4,126 @@ import groovy.json.JsonSlurper
 
 stage "Compute Package Changes"
 node('rhel') {
-    
-    computePackageDifference {
+
+    def versionInTest = findContentView {
       organization = 'Sat6-CI'
       content_view = 'Satellite RHEL7'
-      from_environment = 'Test'
-      to_environment = 'QA'
+      lifecycle_environment = 'Test'
+    }
+
+    def versionInQA = findContentView {
+      organization = 'Sat6-CI'
+      content_view = 'Satellite RHEL7'
+      lifecycle_environment = 'QA'
+    }
+ 
+    echo versionInTest.toString()
+    echo versionInQA.toString()
+   
+    if (versionInTest != versionInQA) {
+
+        computePackageDifference {
+          organization = 'Sat6-CI'
+          content_view = 'Satellite RHEL7'
+          from_environment = 'Test'
+          to_environment = 'QA'
+        }
+
+    } else {
+
+        echo "Version already promoted, no package changes calculated"
+
+    }
+
+}
+
+stage "Create Archive Environment"
+node('rhel') {
+
+    // Work around for parameters not being accessible in functions
+    writeFile file: 'previous_snap', text: previousSnapVersion
+    def version = readFile 'previous_snap'
+
+    createLifecycleEnvironment {
+        name = version
+        prior = 'Library'
+        organization = 'Sat6-CI' 
+    }
+
+}
+
+stage "Archive Satellite"
+node('rhel') {
+
+    // Work around for parameters not being accessible in functions
+    writeFile file: 'previous_snap', text: previousSnapVersion
+    def version = readFile 'previous_snap'
+
+    promoteContentView {
+      organization = 'Sat6-CI'
+      content_view = 'Satellite RHEL7'
+      from_lifecycle_environment = 'QA'
+      to_lifecycle_environment = version
+    }
+
+    promoteContentView {
+      organization = 'Sat6-CI'
+      content_view = 'Satellite RHEL6'
+      from_lifecycle_environment = 'QA'
+      to_lifecycle_environment = version
+    }
+
+}
+
+stage "Archive Capsule"
+node('rhel') {
+
+    // Work around for parameters not being accessible in functions
+    writeFile file: 'previous_snap', text: previousSnapVersion
+    def version = readFile 'previous_snap'
+
+    promoteContentView {
+      organization = 'Sat6-CI'
+      content_view = 'Capsule RHEL7'
+      from_lifecycle_environment = 'QA'
+      to_lifecycle_environment = version
+    }
+
+    promoteContentView {
+      organization = 'Sat6-CI'
+      content_view = 'Capsule RHEL6'
+      from_lifecycle_environment = 'QA'
+      to_lifecycle_environment = version
+    }
+
+}
+
+stage "Archive Tools"
+node('rhel') {
+
+    // Work around for parameters not being accessible in functions
+    writeFile file: 'previous_snap', text: previousSnapVersion
+    def version = readFile 'previous_snap'
+
+    promoteContentView {
+      organization = 'Sat6-CI'
+      content_view = 'Tools RHEL7'
+      from_lifecycle_environment = 'QA'
+      to_lifecycle_environment = version
+    }
+
+    promoteContentView {
+      organization = 'Sat6-CI'
+      content_view = 'Tools RHEL6'
+      from_lifecycle_environment = 'QA'
+      to_lifecycle_environment = version
+    }
+
+    promoteContentView {
+      organization = 'Sat6-CI'
+      content_view = 'Tools RHEL5'
+      from_lifecycle_environment = 'QA'
+      to_lifecycle_environment = version
     }
 
 }
@@ -90,13 +204,12 @@ node {
     [$class: 'StringParameterValue', name: 'RHEL7_TOOLS_URL', value: ''],
     [$class: 'StringParameterValue', name: 'SATELLITE_VERSION', value: '6.2'],
     [$class: 'StringParameterValue', name: 'SELINUX_MODE', value: 'enforcing'],
-    [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Sat6.2.0-${snap_version}"],
+    [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Sat6.2.0-${snapVersion}"],
     [$class: 'StringParameterValue', name: 'UPGRADE_FROM', value: '6.1'],
-    [$class: 'StringParameterValue', name: 'COMPOSE', value: '617']
+    [$class: 'StringParameterValue', name: 'COMPOSE', value: '']
   ]
 
 }
-
 
 // Library Methods
 
@@ -124,6 +237,32 @@ def promoteContentView(body) {
 
 }
 
+def findContentView(body) {
+
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
+
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
+        
+        def cmd = [
+          "hammer --output json --username ${env.USERNAME} --password ${env.PASSWORD} --server ${env.SATELLITE_SERVER}",
+          "content-view version list",
+          "--organization '${config.organization}'",
+          "--environment '${config.lifecycle_environment}'",
+          "--content-view '${config.content_view}'"
+        ]
+
+        sh "${cmd.join(' ')} > versions.json"
+        
+        def versions = readFile "versions.json"
+        versions = new JsonSlurper().parseText(versions)
+
+        return versions.first()['ID'];
+    }
+}
+
 def computePackageDifference(body) {
 
     def config = [:]
@@ -147,4 +286,28 @@ def computePackageDifference(body) {
       }
 
     }
+}
+
+def createLifecycleEnvironment(body) {
+
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
+
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
+
+        def cmd = [
+            "hammer --output json",
+            "--username ${env.USERNAME}",
+            "--password ${env.PASSWORD}",
+            "--server ${env.SATELLITE_SERVER}",
+            "lifecycle-environment create",
+            "--organization '${config.organization}'",
+            "--name '${config.name}'",
+            "--prior '${config.prior}'"
+        ]
+
+        sh "${cmd.join(' ')}"
+    }       
 }

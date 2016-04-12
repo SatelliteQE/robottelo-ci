@@ -3,6 +3,9 @@
     project-type: workflow
     parameters:
       - string:
-          name: snap_version
+          name: snapVersion
           description: "Snap release version"
+      - string:
+          name: previousSnapVersion
+          description: "Previous snap release version"
     dsl: !include-raw: workflows/releaseQAWorkflow.groovy
