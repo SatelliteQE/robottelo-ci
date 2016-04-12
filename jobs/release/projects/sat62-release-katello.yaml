@@ -1,0 +1,9 @@
+- job:
+    name: 'sat62-release-katello'
+    project-type: workflow
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/katello_repo.groovy
+          - properties/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy

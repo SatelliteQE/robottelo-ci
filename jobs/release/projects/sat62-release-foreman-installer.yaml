@@ -1,0 +1,9 @@
+- job:
+    name: 'sat62-release-foreman-installer'
+    project-type: workflow
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/foreman_installer_repo.groovy
+          - properties/sourceTypeRake.groovy
+          - workflows/releasePackageWorkflow.groovy
