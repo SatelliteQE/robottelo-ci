@@ -30,13 +30,15 @@ node('rhel') {
         dir(repoName) {
             def ids = readFile 'bz_ids.json'
             ids = new JsonSlurper().parseText(ids)
-            ids = ids.join(' --bug ')
+
+            if (ids.size() > 0) {
+                ids = ids.join(' --bug ')
   
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
     
-                echo ids.toString()
-                sh "../tool_belt/tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids}"
+                    sh "../tool_belt/tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids}"
   
+                }
             }
         }
 

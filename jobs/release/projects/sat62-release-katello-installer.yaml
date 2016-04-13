@@ -1,0 +1,9 @@
+- job:
+    name: 'sat62-release-katello-installer'
+    project-type: workflow
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/katello_installer_repo.groovy
+          - properties/sourceTypeRake.groovy
+          - workflows/releasePackageWorkflow.groovy
