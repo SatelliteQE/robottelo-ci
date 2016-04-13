@@ -72,6 +72,7 @@ node('rhel') {
             artifact = readFile 'artifact'
             
             sh "scp ${artifact} jenkins@${env.SOURCE_FILE_HOST}:/var/www/html/pub/sources/6.2"
+            sh "rm artifact"
 
         }
 

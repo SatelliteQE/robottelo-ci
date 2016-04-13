@@ -1,0 +1,9 @@
+- job:
+    name: 'sat62-release-foreman-discovery'
+    project-type: workflow
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/foreman_discovery_repo.groovy
+          - properties/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
