@@ -5,7 +5,7 @@
           trigger-push: true
           trigger-merge-request: true
           trigger-open-merge-request-push: true
-          ci-skip: true
+          ci-skip: false
           set-build-description: true
           add-note-merge-request: true
           add-vote-merge-request: true
