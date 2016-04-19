@@ -1,0 +1,9 @@
+- job:
+    name: 'sat62-release-foreman-tasks'
+    project-type: workflow
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/foreman_tasks_repo.groovy
+          - properties/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy

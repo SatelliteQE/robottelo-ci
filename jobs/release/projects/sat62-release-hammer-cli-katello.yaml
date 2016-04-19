@@ -1,0 +1,9 @@
+- job:
+    name: 'sat62-release-hammer-cli-katello'
+    project-type: workflow
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/hammer_cli_katello_repo.groovy
+          - properties/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
