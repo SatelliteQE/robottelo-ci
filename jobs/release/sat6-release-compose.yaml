@@ -27,7 +27,7 @@
                     failure-threshold: FAILURE
     publishers:
       - trigger-parameterized-builds:
-          - project: sat6-release-sync-repository
+          - project: sat6-release-sync-repository-rhel{rhel}
             current-parameters: true
             predefined-parameters:
               rhel={rhel}

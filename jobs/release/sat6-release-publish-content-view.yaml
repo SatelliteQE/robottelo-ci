@@ -35,6 +35,15 @@
                     build-step-failure-threshold: FAILURE
                     unstable-threshold: UNSTABLE
                     failure-threshold: FAILURE
+                - project: satellite6-publish-content-view
+                  current-parameters: true
+                  predefined-parameters:
+                    content_view_name=Tools RHEL${rhel}
+                  block: true
+                  block-thresholds:
+                    build-step-failure-threshold: FAILURE
+                    unstable-threshold: UNSTABLE
+                    failure-threshold: FAILURE
     publishers:
       - trigger-parameterized-builds:
           - project: sat6-release-promote-dev

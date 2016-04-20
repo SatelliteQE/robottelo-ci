@@ -4,6 +4,7 @@
       daysToKeep: -1
       numToKeep: 32
     node: sesame
+    concurrent: true
     parameters:
       - choice:
           name: rhel
