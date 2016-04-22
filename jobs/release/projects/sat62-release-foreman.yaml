@@ -1,6 +1,7 @@
 - job:
     name: 'sat62-release-foreman'
     project-type: workflow
+    auth-token: ""
     dsl:
       !include-raw:
           - properties/branch.groovy

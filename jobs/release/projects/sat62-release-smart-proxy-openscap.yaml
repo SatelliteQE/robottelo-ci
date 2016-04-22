@@ -1,10 +1,10 @@
 - job:
-    name: 'sat62-release-foreman-docker'
+    name: 'sat62-release-smart-proxy-openscap'
     project-type: workflow
     auth-token: ""
     dsl:
       !include-raw:
           - properties/branch.groovy
-          - properties/foreman_docker_repo.groovy
+          - properties/smart_proxy_openscap_repo.groovy
           - properties/sourceTypeGem.groovy
           - workflows/releasePackageWorkflow.groovy

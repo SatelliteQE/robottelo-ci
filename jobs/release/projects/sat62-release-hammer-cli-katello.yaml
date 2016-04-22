@@ -1,10 +1,10 @@
 - job:
-    name: 'sat62-release-foreman-docker'
+    name: 'sat62-release-hammer-cli-katello'
     project-type: workflow
     auth-token: ""
     dsl:
       !include-raw:
           - properties/branch.groovy
-          - properties/foreman_docker_repo.groovy
+          - properties/hammer_cli_katello_repo.groovy
           - properties/sourceTypeGem.groovy
           - workflows/releasePackageWorkflow.groovy

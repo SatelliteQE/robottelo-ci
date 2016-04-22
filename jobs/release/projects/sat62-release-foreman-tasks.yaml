@@ -1,10 +1,10 @@
 - job:
-    name: 'sat62-release-foreman-docker'
+    name: 'sat62-release-foreman-tasks'
     project-type: workflow
     auth-token: ""
     dsl:
       !include-raw:
           - properties/branch.groovy
-          - properties/foreman_docker_repo.groovy
+          - properties/foreman_tasks_repo.groovy
           - properties/sourceTypeGem.groovy
           - workflows/releasePackageWorkflow.groovy
