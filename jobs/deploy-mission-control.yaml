@@ -1,0 +1,7 @@
+- job:
+    name: deploy-mission-control
+    project-type: workflow
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - workflows/deployMissionControl.groovy
