@@ -1,0 +1,10 @@
+- job:
+    name: 'sat62-release-foreman-remote-execution'
+    project-type: workflow
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/foreman_remote_execution_repo.groovy
+          - properties/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy

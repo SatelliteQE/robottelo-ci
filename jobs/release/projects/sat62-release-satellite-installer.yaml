@@ -1,0 +1,10 @@
+- job:
+    name: 'sat62-release-satellite-installer'
+    project-type: workflow
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/satellite_installer_repo.groovy
+          - properties/sourceTypeRake.groovy
+          - workflows/releasePackageWorkflow.groovy

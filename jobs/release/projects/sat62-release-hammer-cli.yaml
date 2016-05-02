@@ -1,0 +1,10 @@
+- job:
+    name: 'sat62-release-hammer-cli'
+    project-type: workflow
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/hammer_cli_repo.groovy
+          - properties/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
