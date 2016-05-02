@@ -1,0 +1,10 @@
+- job:
+    name: 'sat62-release-hammer-cli-foreman-discovery'
+    project-type: workflow
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/hammer_cli_foreman_discovery_repo.groovy
+          - properties/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy

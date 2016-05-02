@@ -1,0 +1,10 @@
+- job:
+    name: 'sat62-release-bastion'
+    project-type: workflow
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/bastion_repo.groovy
+          - properties/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
