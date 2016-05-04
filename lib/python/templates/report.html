@@ -1,0 +1,110 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,
+                                   initial-scale=1, maximum-scale=1,
+                                   user-scalable=no">
+
+    <script   src="https://code.jquery.com/jquery-2.2.3.min.js"
+    integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="
+              crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+          crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"
+          crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+
+    <script>
+
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Robottelo - Automation Summary</h1>
+
+      <h2>Jenkins Results</h2>
+
+      <table class="table">
+        <tr>
+          <th>Passed</th>
+          <th>Skipped</th>
+          <th>Failed</th>
+          <th>Errors</th>
+          <th>Total</th>
+        </tr>
+        <tr>
+          <td>{{ passed }}</td>
+          <td>{{ skipped }}</td>
+          <td>{{ failure }}</td>
+          <td>{{ error }}</td>
+          <td>{{ total }}</td>
+        </tr>
+      </table>
+
+      <h2>Failed Tests</h2>
+      <table class="table table-striped table-bordered table-hover">
+        <tr>
+          <th>Test Name</th>
+          <th>Error</th>
+        </tr>
+        {% for failure in failed_tests %}
+        <tr>
+          <td>{{ failure.classname }}.{{ failure.name}}</td>
+          <td>
+            <button type="button" class="btn btn-danger"
+            data-toggle="modal" data-target="#failed{{ loop.index
+            }}">View stacktrace</button>
+            <div class="modal fade" id="failed{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"
+                    id="myModalLabel">Stacktrace for {{ failure.name }}:</h4>
+                  </div>
+                  <div class="modal-body">
+                    {{ failure.message|e }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <h2>Blocked Test Cases</h2>
+      {% if skipped_tests %}
+        {%- for key, value in skipped_tests.items() recursive %}
+          {% if value %}
+            <h3>{{ key|title }}</h3>
+            <table class="table table-striped table-bordered
+                          table-hover">
+              <tr>
+                <th>{{ key }} ID</th>
+                <th>Test Cases</th>
+              </tr>
+              {% for bug_id, count in value %}
+              <tr><td>{{ bug_id }}</td><td>{{ count }}</td></tr>
+            {% endfor %}
+            </table>
+          {% endif %}
+        {%- endfor %}
+      {% else %}
+        <p>None</p>
+      {% endif %}
+    </div>
+
+  </body>
+</html>
