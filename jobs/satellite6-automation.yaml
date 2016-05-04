@@ -296,22 +296,27 @@
                 - origin/master
             skip-tag: true
     builders:
+        - shell: rm *.xml
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier1'
-            filter: 'robottelo*.log'
+            filter: 'foreman-results.xml'
             which-build: last-successful
+        - shell: mv foreman-results.xml tier1-results.xml
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier2'
-            filter: 'robottelo*.log'
+            filter: 'foreman-results.xml'
             which-build: last-successful
+        - shell: mv foreman-results.xml tier2-results.xml
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier3'
-            filter: 'robottelo*.log'
+            filter: 'foreman-results.xml'
             which-build: last-successful
+        - shell: mv foreman-results.xml tier3-results.xml
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier4'
-            filter: 'robottelo*.log'
+            filter: 'foreman-results.xml'
             which-build: last-successful
+        - shell: mv foreman-results.xml tier4-results.xml
         - shining-panda:
             build-environment: virtualenv
             python-version: System-CPython-2.7
@@ -319,6 +324,16 @@
             nature: shell
             command:
                 !include-raw-escape: 'satellite6-automation-report.sh'
+    publishers:
+        - email-ext:
+            recipients: ${{QE_EMAIL_LIST}}
+            success: true
+            failure: false
+            subject: 'Satellite 6 Automation Report for {os}'
+            body: |
+                The build ${{BUILD_URL}} has been completed.
+
+                ${{FILE, path="report.txt"}}
 
 - job-template:
     name: 'satellite6-upgrade-downstream-{os}'
