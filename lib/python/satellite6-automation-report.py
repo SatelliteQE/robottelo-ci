@@ -10,14 +10,19 @@ Usage::
 import click
 import collections
 import itertools
+import os
 import re
 
+from jinja2 import Environment, FileSystemLoader
 from xml.etree import ElementTree
 
 
 BUG_REGEX = re.compile(r'(\w+) bug #(\d+)')
-BUGZILLA_BUG_URL = 'https://bugzilla.redhat.com/show_bug.cgi?id={}'
-REDMINE_BUG_URL = 'http://projects.theforeman.org/issues/{}'
+
+TRACKERS = {
+    'bugzilla': 'https://bugzilla.redhat.com/show_bug.cgi?id={}',
+    'redmine': 'http://projects.theforeman.org/issues/{}',
+}
 
 
 def parse_junit(path):
@@ -77,10 +82,24 @@ def get_skips(testcases):
     """
     skips = []
     for testcase in testcases:
-        match = BUG_REGEX.search(testcase['message'])
-        if match is not None:
-            skips.append(match.groups())
+        if testcase['status'] == 'skipped':
+            match = BUG_REGEX.search(testcase['message'])
+            if match is not None:
+                skips.append(match.groups())
     return skips
+
+
+def get_failed_tests(testcases):
+    """Returns list of all failed test cases"""
+    return [test for test in testcases if test['status'] == 'failure']
+
+
+def get_issue_url(tracker, bug_id):
+    """Returns the absolute URL for an issue
+
+    """
+
+    return TRACKERS[tracker].format(bug_id)
 
 
 def get_skip_bugs(skips):
@@ -100,31 +119,61 @@ def get_skip_bugs(skips):
     return skip_bugs
 
 
+def sort_issues_by_count(bugs):
+    """Sorts all test cases by the number"""
+
+    sorted_bugs = {}
+
+    for key, value in bugs.items():
+        sorted_bugs[key] = sorted(
+            value.items(),
+            key=lambda info: (info[1], info[0]),
+            reverse=True
+        )
+    return sorted_bugs
+
+
 def print_skip_info(skip_bugs):
     """Print information about the skips ordering the results by the highest
     count of tests skipped and then by bug highest bug id.
     """
     title = 'Tests skipped due to bugs'
     click.echo('{0}\n{1}\n'.format(title, '=' * len(title)))
-    redmine_bugs = sorted(
-        skip_bugs['redmine'].items(),
-        key=lambda info: (info[1], info[0]),
-        reverse=True
-    )
-    bugzilla_bugs = sorted(
-        skip_bugs['bugzilla'].items(),
-        key=lambda info: (info[1], info[0]),
-        reverse=True
-    )
-    for bug_id, count in bugzilla_bugs:
+    bugs = sort_issues_by_count(skip_bugs)
+
+    for bug_id, count in bugs['bugzilla']:
         click.echo(' {:2} due to BZ #{} - {}'.format(
-            count, bug_id, BUGZILLA_BUG_URL.format(bug_id)))
-    for bug_id, count in redmine_bugs:
+            count, bug_id, get_issue_url('bugzilla', bug_id)))
+    for bug_id, count in bugs['redmine']:
         click.echo(' {:2} due to Redmine issue #{} - {}'.format(
-            count, bug_id, REDMINE_BUG_URL.format(bug_id)))
+            count, bug_id, get_issue_url('redmine', bug_id)))
 
 
-def print_summary(results):
+def print_html_summary(results):
+    """Prints a summary of the results in HTML format"""
+
+    failures = get_failed_tests(results)
+    skips = sort_issues_by_count(get_skip_bugs(get_skips(results)))
+    summary = collections.Counter(
+        [result['status'] for result in results])
+
+    context = {
+        'passed': summary.get('passed', 0),
+        'skipped': summary.get('skipped', 0),
+        'failure': summary.get('failure', 0),
+        'error': summary.get('error', 0),
+        'total': sum(summary.values()),
+        'failed_tests': failures,
+        'skipped_tests': skips,
+    }
+
+    jinjaenv = Environment(loader=FileSystemLoader(
+        os.path.join(os.path.dirname(__file__), 'templates')))
+    template = jinjaenv.get_template('report.html')
+    click.echo(template.render(context))
+
+
+def print_text_summary(results):
     """Print a summary of the results, how many passes, skips, failures
     and errors."""
     title = 'Summary'
@@ -135,19 +184,24 @@ def print_summary(results):
         ['{0}: {1}'.format(*status) for status in sorted(summary.items())]
     ).title())
     click.echo('Total: {0}'.format(sum(summary.values())))
+    click.echo()
+    print_skip_info(get_skip_bugs(get_skips(results)))
 
 
 @click.command()
+@click.option(
+    '-o', '--output',
+    type=click.Choice(['text', 'html']),
+    default='text'
+)
 @click.argument('junit_result', nargs=-1, type=click.Path(exists=True))
-def cli(junit_result):
+def cli(output, junit_result):
     results = list(itertools.chain(
         *[parse_junit(result) for result in junit_result]))
-    print_summary(results)
-    click.echo()
-    print_skip_info(get_skip_bugs(get_skips([
-        testcase for testcase in results
-        if testcase['status'] == 'skipped'
-    ])))
+    if output == 'text':
+        print_text_summary(results)
+    else:
+        print_html_summary(results)
 
 
 if __name__ == "__main__":
