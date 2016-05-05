@@ -296,7 +296,7 @@
                 - origin/master
             skip-tag: true
     builders:
-        - shell: rm *.xml
+        - shell: rm -f *.xml
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier1'
             filter: 'foreman-results.xml'
