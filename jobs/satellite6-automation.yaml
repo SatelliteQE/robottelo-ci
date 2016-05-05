@@ -329,9 +329,12 @@
             recipients: ${{QE_EMAIL_LIST}}
             success: true
             failure: false
-            content-type: html
             subject: 'Satellite 6 Automation Report for {os}'
-            body: ${{FILE, path="report"}}
+            body: |
+                The build ${{BUILD_URL}} has been completed.
+
+                ${{FILE, path="report.txt"}}
+            attachments: report.html
 
 - job-template:
     name: 'satellite6-upgrade-downstream-{os}'
