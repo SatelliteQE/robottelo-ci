@@ -26,6 +26,12 @@
                 - '6.0'
             description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
         - choice:
+            name: SATELLITE_RELEASE
+            choices:
+                - 'GA'
+                - 'BETA'
+            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
+        - choice:
             name: SELINUX_MODE
             choices:
                 - 'enforcing'
@@ -447,6 +453,12 @@
                 - '6.0'
             description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
         - choice:
+            name: SATELLITE_RELEASE
+            choices:
+                 - 'GA'
+                 - 'BETA'
+            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
+        - choice:
             name: SELINUX_MODE
             choices:
                 - 'enforcing'
@@ -492,6 +504,7 @@
                 SELINUX_MODE=${SELINUX_MODE}
                 BUILD_LABEL=${BUILD_LABEL}
                 SATELLITE_VERSION=${SATELLITE_VERSION}
+                SATELLITE_RELEASE=${SATELLITE_RELEASE}
         - trigger-builds:
             - project: satellite6-provisioning-downstream-rhel7
               predefined-parameters: |
@@ -501,6 +514,7 @@
                 SELINUX_MODE=${SELINUX_MODE}
                 BUILD_LABEL=${BUILD_LABEL}
                 SATELLITE_VERSION=${SATELLITE_VERSION}
+                SATELLITE_RELEASE=${SATELLITE_RELEASE}
         - trigger-builds:
             - project: satellite6-betelgeuse-test-case
         - trigger-builds:
@@ -551,6 +565,12 @@
                 - '6.0'
             description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
         - choice:
+            name: SATELLITE_RELEASE
+            choices:
+                - 'GA'
+                - 'BETA'
+            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
+        - choice:
             name: SELINUX_MODE
             choices:
                 - 'enforcing'
@@ -588,6 +608,7 @@
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
                 BUILD_LABEL=${BUILD_LABEL}
                 SATELLITE_VERSION=${SATELLITE_VERSION}
+                SATELLITE_RELEASE=${SATELLITE_RELEASE}
         - trigger-builds:
             - project: satellite6-provisioning-iso-rhel7
               predefined-parameters: |
@@ -598,6 +619,7 @@
                 CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
                 BUILD_LABEL=${BUILD_LABEL}
                 SATELLITE_VERSION=${SATELLITE_VERSION}
+                SATELLITE_RELEASE=${SATELLITE_RELEASE}
 
 - job:
     name: satellite6-zstream-trigger
@@ -635,6 +657,12 @@
                 - '6.0'
             description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
         - choice:
+            name: SATELLITE_RELEASE
+            choices:
+                - 'GA'
+                - 'BETA'
+            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
+        - choice:
             name: SELINUX_MODE
             choices:
                 - 'enforcing'
@@ -666,6 +694,7 @@
                 SELINUX_MODE=${SELINUX_MODE}
                 BUILD_LABEL=${BUILD_LABEL}
                 SATELLITE_VERSION=${SATELLITE_VERSION}
+                SATELLITE_RELEASE=${SATELLITE_RELEASE}
         - trigger-builds:
             - project: satellite6-provisioning-zstream-rhel7
               predefined-parameters: |
@@ -675,6 +704,7 @@
                 SELINUX_MODE=${SELINUX_MODE}
                 BUILD_LABEL=${BUILD_LABEL}
                 SATELLITE_VERSION=${SATELLITE_VERSION}
+                SATELLITE_RELEASE=${SATELLITE_RELEASE}
 
 - job:
     name: satellite6-upstream-trigger

@@ -38,6 +38,12 @@
                 - '6.0'
             description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
         - choice:
+            name: SATELLITE_RELEASE
+            choices:
+                - 'GA'
+                - 'BETA'
+            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
+        - choice:
             name: SELINUX_MODE
             choices:
                 - 'enforcing'
