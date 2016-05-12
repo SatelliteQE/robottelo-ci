@@ -46,6 +46,6 @@
                     failure-threshold: FAILURE
     publishers:
       - trigger-parameterized-builds:
-          - project: sat6-release-promote-dev
+          - project: sat6-release-install-test
             current-parameters: true
             condition: SUCCESS

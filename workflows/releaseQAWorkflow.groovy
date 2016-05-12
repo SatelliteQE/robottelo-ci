@@ -20,7 +20,7 @@ node('rhel') {
     echo versionInTest.toString()
     echo versionInQA.toString()
    
-    if (versionInTest != versionInQA) {
+    if (versionInTest != versionInQA && versionInTest != null && versionInQA != null) {
 
         computePackageDifference {
           organization = 'Sat6-CI'
@@ -259,7 +259,11 @@ def findContentView(body) {
         def versions = readFile "versions.json"
         versions = new JsonSlurper().parseText(versions)
 
-        return versions.first()['ID'];
+        if (versions.length() == 0) {
+            return null;
+        } else {
+            return versions.first()['ID'];
+        }
     }
 }
 
