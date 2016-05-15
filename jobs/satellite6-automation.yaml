@@ -305,9 +305,11 @@
         - shell: rm -f *.xml
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier1'
-            filter: 'foreman-results.xml'
+            filter: '*-results.xml'
             which-build: last-successful
-        - shell: mv foreman-results.xml tier1-results.xml
+        - shell: |
+            mv foreman-results.xml tier1-results.xml
+            mv transitioning-results.xml tier1-transitioning-results.xml
         - copyartifact:
             project: 'satellite6-automation-downstream-{os}-tier2'
             filter: 'foreman-results.xml'
