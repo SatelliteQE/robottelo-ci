@@ -1,0 +1,9 @@
+- job:
+    name: 'sat62-release-hammer-cli-foreman-bootdisk'
+    project-type: workflow
+    dsl:
+      !include-raw:
+          - properties/branch.groovy
+          - properties/hammer_cli_foreman_bootdisk_repo.groovy
+          - properties/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
