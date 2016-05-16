@@ -28,8 +28,13 @@ node('rhel') {
     stage "Move Bugs to Modified"
     
         dir(repoName) {
-            def ids = readFile 'bz_ids.json'
-            ids = new JsonSlurper().parseText(ids)
+            def ids = []
+            def bzs = readFile 'bz_ids.json'
+            bzs = new JsonSlurper().parseText(bzs)
+
+            for (bz in bzs) {
+                ids << bz['id']
+            }
 
             if (ids.size() > 0) {
                 ids = ids.join(' --bug ')
@@ -37,6 +42,25 @@ node('rhel') {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
     
                     sh "../tool_belt/tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids}"
+  
+                }
+            }
+        }
+
+    stage "Set External Tracker for Commit"
+
+        dir(repoName) {
+            def commits = readFile 'bz_ids.json'
+            commits = new JsonSlurper().parseText(commits)
+
+            for (i = 0; i < commits.size(); i += 1) {
+                def commit = commits[i]
+                def hash = (gitRepository + '/commit/' + commit['commit']).toString()
+                def id = commit['id'].toString()
+
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+    
+                    sh "../tool_belt/tools.rb bugzilla set-gitlab-tracker --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --external-tracker \"${hash}\" --bug ${id}"
   
                 }
             }
