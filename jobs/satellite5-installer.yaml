@@ -77,4 +77,6 @@
             clear: true
             nature: shell
             command:
-                !include-raw installer5.sh
+                !include-raw:
+                    - pip-install-pycurl.sh
+                    - installer5.sh

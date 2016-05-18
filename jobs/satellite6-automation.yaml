@@ -91,7 +91,9 @@
             clear: true
             nature: shell
             command:
-                !include-raw-escape: 'satellite6-provisioning.sh'
+                !include-raw-escape:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-provisioning.sh'
         - inject:
             properties-file: build_env.properties
         - trigger-builds:
@@ -383,7 +385,9 @@
             clear: true
             nature: shell
             command:
-                !include-raw: 'satellite6-upgrade-trigger.sh'
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-upgrade-trigger.sh'
     publishers:
         - archive:
             artifacts: '*.tar.xz'
