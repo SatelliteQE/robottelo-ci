@@ -26,16 +26,7 @@
             python-version: System-CPython-2.7
             clear: true
             nature: shell
-            command: |
-                pip install -U pip
-
-                if [ "$(curl --version | grep NSS 2>/dev/null)" ]; then
-                    pip install --compile --install-option="--with-nss" pycurl
-                else
-                    pip install --compile --install-option="--with-openssl" pycurl
-                fi
-
-                pip install -r requirements.txt
-                source $FAKE_CERT_CONFIG
-                source $SUBSCRIPTION_CONFIG
-                fab -H "root@$MANIFEST_SERVER_HOSTNAME" relink_manifest
+            command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-manifest-downloader.sh'

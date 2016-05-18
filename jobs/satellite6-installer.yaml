@@ -148,4 +148,6 @@
             clear: true
             nature: shell
             command:
-                !include-raw installer.sh
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'installer.sh'
