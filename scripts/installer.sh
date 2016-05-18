@@ -1,3 +1,11 @@
+pip install -U pip
+
+if [ "$(curl --version | grep NSS 2>/dev/null)" ]; then
+    pip install --compile --install-option="--with-nss" pycurl
+else
+    pip install --compile --install-option="--with-openssl" pycurl
+fi
+
 pip install -U -r requirements.txt
 
 # Figure out what version of RHEL the server uses
@@ -31,7 +39,7 @@ if [ ${DISTRIBUTION} = "ISO" ]; then
         export ISO_URL="${SATELLITE6_CUSTOM_BASEURL}"
     else
         export ISO_URL="${SATELLITE6_ISO_REPO}"
-    fi  
+    fi
 fi
 
 # This is only used for downstream builds
