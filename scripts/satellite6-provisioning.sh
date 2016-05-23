@@ -16,6 +16,9 @@ fi
 
 fab -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
 
+# Applying workaround for pulp workers issue.  This patch attempts to reset check services test before each task
+fab -H "root@${PROVISIONING_HOST}" "set_service_check_status"
+
 SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
 
 # Write a properties file to allow passing variables to other build steps
