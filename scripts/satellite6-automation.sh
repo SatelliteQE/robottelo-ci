@@ -38,13 +38,18 @@ if [[ "${DISTRIBUTION}" != *"cdn"* ]]; then
     sed -i "s|sattools_repo.*|sattools_repo=${TOOLS_REPO}|" robottelo.properties
 fi
 
-make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=4
-
-if [ "${ENDPOINT}" = "tier1" ]; then
+if [ "${ENDPOINT}" != "rhai" ]; then
     set +e
-    $(which py.test) -v --junit-xml transitioning-results.xml \
-        -m 'not stubbed' tests/foreman/cli/test_import.py
+    # Run parallel tests
+    $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n 4 \
+        --boxed -m "${ENDPOINT} and not run_in_one_thread and not stubbed"
+
+    # Run sequential tests
+    $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" -n 4 \
+        --boxed -m "${ENDPOINT} and run_in_one_thread and not stubbed"
     set -e
+else
+    make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=4
 fi
 
 echo
