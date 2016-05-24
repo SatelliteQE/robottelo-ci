@@ -48,24 +48,18 @@
             project: satellite6-automation-downstream-{os}-tier1
             filter: '*-results.xml'
             which-build: workspace-latest
-        - shell: |
-            mv foreman-results.xml tier1-results.xml
-            mv transitioning-results.xml tier1-transitioning-results.xml
         - copyartifact:
             project: satellite6-automation-downstream-{os}-tier2
-            filter: 'foreman-results.xml'
+            filter: '*-results.xml'
             which-build: workspace-latest
-        - shell: mv foreman-results.xml tier2-results.xml
         - copyartifact:
             project: satellite6-automation-downstream-{os}-tier3
-            filter: 'foreman-results.xml'
+            filter: '*-results.xml'
             which-build: workspace-latest
-        - shell: mv foreman-results.xml tier3-results.xml
         - copyartifact:
             project: satellite6-automation-downstream-{os}-tier4
-            filter: 'foreman-results.xml'
+            filter: '*-results.xml'
             which-build: workspace-latest
-        - shell: mv foreman-results.xml tier4-results.xml
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse
