@@ -42,11 +42,13 @@ if [ "${ENDPOINT}" != "rhai" ]; then
     set +e
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n 4 \
-        --boxed -m "${ENDPOINT} and not run_in_one_thread and not stubbed"
+        --boxed -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
+        tests/foreman/{api,cli,ui,longrun}
 
     # Run sequential tests
-    $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" -n 4 \
-        --boxed -m "${ENDPOINT} and run_in_one_thread and not stubbed"
+    $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
+        -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
+        tests/foreman/{api,cli,ui,longrun}
     set -e
 else
     make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=4
