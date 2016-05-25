@@ -2,40 +2,6 @@
 
 import groovy.json.JsonSlurper
 
-stage "Compute Package Changes"
-node('rhel') {
-
-    def versionInTest = findContentView {
-      organization = 'Sat6-CI'
-      content_view = 'Satellite RHEL7'
-      lifecycle_environment = 'Test'
-    }
-
-    def versionInQA = findContentView {
-      organization = 'Sat6-CI'
-      content_view = 'Satellite RHEL7'
-      lifecycle_environment = 'QA'
-    }
- 
-    echo versionInTest.toString()
-    echo versionInQA.toString()
-   
-    if (versionInTest != versionInQA && versionInTest != null && versionInQA != null) {
-
-        computePackageDifference {
-          organization = 'Sat6-CI'
-          content_view = 'Satellite RHEL7'
-          from_environment = 'Test'
-          to_environment = 'QA'
-        }
-
-    } else {
-
-        echo "Version already promoted, no package changes calculated"
-
-    }
-
-}
 
 stage "Create Archive Environment"
 node('rhel') {
@@ -54,6 +20,8 @@ node('rhel') {
 
 stage "Archive Satellite"
 node('rhel') {
+
+    def versionInArchive = null
 
     // Work around for parameters not being accessible in functions
     writeFile file: 'previous_snap', text: previousSnapVersion
@@ -131,9 +99,23 @@ node('rhel') {
 stage "Promote Satellite to QA"
 node('rhel') {
 
+    compareContentViews {
+      organization = 'Sat6-CI'
+      content_view = 'Satellite RHEL7'
+      from_lifecycle_environment = 'Test'
+      to_lifecycle_environment = 'QA'
+    }
+
     promoteContentView {
       organization = 'Sat6-CI'
       content_view = 'Satellite RHEL7'
+      from_lifecycle_environment = 'Test'
+      to_lifecycle_environment = 'QA'
+    }
+
+    compareContentViews {
+      organization = 'Sat6-CI'
+      content_view = 'Satellite RHEL6'
       from_lifecycle_environment = 'Test'
       to_lifecycle_environment = 'QA'
     }
@@ -150,9 +132,23 @@ node('rhel') {
 stage "Promote Capsule to QA"
 node('rhel') {
 
+    compareContentViews {
+      organization = 'Sat6-CI'
+      content_view = 'Capsule RHEL7'
+      from_lifecycle_environment = 'Test'
+      to_lifecycle_environment = 'QA'
+    }
+
     promoteContentView {
       organization = 'Sat6-CI'
       content_view = 'Capsule RHEL7'
+      from_lifecycle_environment = 'Test'
+      to_lifecycle_environment = 'QA'
+    }
+
+    compareContentViews {
+      organization = 'Sat6-CI'
+      content_view = 'Capsule RHEL6'
       from_lifecycle_environment = 'Test'
       to_lifecycle_environment = 'QA'
     }
@@ -169,7 +165,7 @@ node('rhel') {
 stage "Promote Tools to QA"
 node('rhel') {
 
-    promoteContentView {
+    compareContentViews {
       organization = 'Sat6-CI'
       content_view = 'Tools RHEL7'
       from_lifecycle_environment = 'Library'
@@ -178,7 +174,28 @@ node('rhel') {
 
     promoteContentView {
       organization = 'Sat6-CI'
+      content_view = 'Tools RHEL7'
+      from_lifecycle_environment = 'Library'
+      to_lifecycle_environment = 'QA'
+    }
+
+    compareContentViews {
+      organization = 'Sat6-CI'
       content_view = 'Tools RHEL6'
+      from_lifecycle_environment = 'Library'
+      to_lifecycle_environment = 'QA'
+    }
+
+    promoteContentView {
+      organization = 'Sat6-CI'
+      content_view = 'Tools RHEL6'
+      from_lifecycle_environment = 'Library'
+      to_lifecycle_environment = 'QA'
+    }
+
+    compareContentViews {
+      organization = 'Sat6-CI'
+      content_view = 'Tools RHEL5'
       from_lifecycle_environment = 'Library'
       to_lifecycle_environment = 'QA'
     }
@@ -232,7 +249,21 @@ def promoteContentView(body) {
           "--force"
         ]
 
-        sh "${cmd.join(' ')}"
+        def versionInToEnv = findContentView {
+          organization = config.organization
+          content_view = config.content_view
+          lifecycle_environment = config.to_lifecycle_environment
+        }
+
+        def versionInFromEnv = findContentView {
+          organization = config.organization
+          content_view = config.content_view
+          lifecycle_environment = config.from_lifecycle_environment
+        }
+
+        if (versionInToEnv != versionInFromEnv) {
+            sh "${cmd.join(' ')}"
+        }
     }
 
 }
@@ -259,7 +290,7 @@ def findContentView(body) {
         def versions = readFile "versions.json"
         versions = new JsonSlurper().parseText(versions)
 
-        if (versions.length() == 0) {
+        if (versions.size() == 0) {
             return null;
         } else {
             return versions.first()['ID'];
@@ -278,6 +309,12 @@ def computePackageDifference(body) {
 
       git url: "https://github.com/ehelms/robottelo-ci.git", branch: 'workflow'
       dir("scripts") {
+        def archive_file = [
+            'package_report_',
+            config.content_view.replaceAll(' ', '_'),
+            '.yaml'
+        ]
+
         env.organization = config.organization
         env.content_view_name = config.content_view
         env.lifecycle_environment = config.to_environment
@@ -285,7 +322,7 @@ def computePackageDifference(body) {
 
         sh "./build_config_file.rb"
         sh "./compare_content_views.rb"
-        archive 'package_report.yaml'
+        archive archive_file.join()
 
       }
 
@@ -314,4 +351,42 @@ def createLifecycleEnvironment(body) {
 
         sh "${cmd.join(' ')}"
     }       
+}
+
+def compareContentViews(body) {
+
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
+
+    def versionInTest = findContentView {
+      organization = config.organization
+      content_view = config.content_view
+      lifecycle_environment = config.from_lifecycle_environment
+    }
+
+    def versionInQA = findContentView {
+      organization = config.organization
+      content_view = config.content_view
+      lifecycle_environment = config.to_lifecycle_environment
+    }
+ 
+    echo versionInTest.toString()
+    echo versionInQA.toString()
+   
+    if (versionInTest != versionInQA && versionInTest != null && versionInQA != null) {
+
+        computePackageDifference {
+          organization = config.organization
+          content_view = config.content_view
+          from_environment = config.from_lifecycle_environment
+          to_environment = config.to_lifecycle_environment
+        }
+
+    } else {
+
+        echo "Version already promoted, no package changes calculated"
+
+    }
 }
