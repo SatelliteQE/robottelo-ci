@@ -15,7 +15,7 @@ sed -i "s/^admin_username.*/admin_username=${FOREMAN_ADMIN_USER}/" robottelo.pro
 sed -i "s/^admin_password.*/admin_password=${FOREMAN_ADMIN_PASSWORD}/" robottelo.properties
 
 pytest() {
-    $(which py.test) -v --junit-xml=foreman-results.xml -m "not stubbed" "$@"
+    $(which py.test) -v --junit-xml=foreman-results.xml -m "${PYTEST_MARKS}" "$@"
 }
 
 if [ -n "${PYTEST_OPTIONS:-}" ]; then

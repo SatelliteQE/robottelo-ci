@@ -48,6 +48,11 @@
                 <p><strong>If this parameter is not blank then the TEST_TYPE
                 parameter will be ignored</strong>.</p>
         - string:
+            name: PYTEST_MARKS
+            default: not stubbed
+            description: |
+                Specify the py.test marks you want to run or skip when specifying PYTEST_OPTIONS.
+        - string:
             name: ROBOTTELO_REPO
             default: https://github.com/SatelliteQE/robottelo.git
             description: |
@@ -59,7 +64,7 @@
                 You can override this to any branch. Example: 6.1.z
     scm:
         - git:
-            url: ${ROBOTTELO_REPO} 
+            url: ${ROBOTTELO_REPO}
             branches:
                 - origin/${ROBOTTELO_BRANCH}
             skip-tag: true
