@@ -1,5 +1,6 @@
 - job:
     name: satellite6-automation-cleanup
+    node: sesame
     concurrent: false 
     description: |
         <p>Job that runs cleanup scripts.  Currently this only runs container cleanup.</p>
@@ -11,6 +12,6 @@
             skip-tag: true
             wipe-workspace: true
     triggers:
-        - timed: "@midnight"
+        - timed: '@midnight'
     builders:
         - shell: '/bin/bash misc/cleanup_scripts/clean_docker.sh'
