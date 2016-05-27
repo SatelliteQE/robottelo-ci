@@ -34,4 +34,22 @@ elif [ -n "${SATELLITE_IMAGE}" ]; then
 		# Run upgrade with above compose urls
 		fab -u root product_upgrade:"${UPGRADE_PRODUCT}","${SATELLITE_IMAGE}","${CAPSULE_IMAGE}"
 	fi
+elif [ ! "${SATELLITE_IMAGE}" ] && [ ! "${CAPSULE_IMAGE}" ]; then
+        if [ "${OS}" = 'rhel6' ]; then
+                # Export required environment var related image and host name
+                export SAT_IMAGE="${SAT_RHEL6_IMAGE}"
+                export SAT_HOST="${SAT_RHEL6_HOSTNAME}"
+                export CAP_IMAGE="${CAP_RHEL6_IMAGE}"
+                export CAP_HOST="${CAP_RHEL6_HOSTNAME}"
+                echo " Run upgrade with above variables"
+                fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
+        elif [ "${OS}" = 'rhel7' ]; then
+                # Export required environment var related image and host name
+                export SAT_IMAGE="${SAT_RHEL7_IMAGE}"
+                export SAT_HOST="${SAT_RHEL7_HOSTNAME}"
+                export CAP_IMAGE="${CAP_RHEL7_IMAGE}"
+                export CAP_HOST="${CAP_RHEL7_HOSTNAME}"
+                # Run upgrade with above variables
+                fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
+	fi
 fi
