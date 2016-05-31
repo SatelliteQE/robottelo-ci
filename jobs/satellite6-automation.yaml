@@ -107,6 +107,7 @@
                 BRIDGE=$BRIDGE
                 BUILD_LABEL=$BUILD_LABEL
                 DISCOVERY_ISO=$DISCOVERY_ISO
+                ROBOTTELO_WORKERS=$ROBOTTELO_WORKERS
     publishers:
         - postbuildscript:
             builders:
@@ -473,6 +474,10 @@
             description: |
                 <p>Compose Number of a previous build from which satellite and capsule will be upgraded.</p>
                 <p>e.g: 615, 608</p>
+        - string:
+            name: ROBOTTELO_WORKERS
+            default: '4'
+            description: Number of workers to use while running robottelo test suite
     wrappers:
         - build-name:
             name: '#${BUILD_NUMBER} ${ENV,var="BUILD_LABEL"}'
@@ -501,6 +506,7 @@
                 BUILD_LABEL=${BUILD_LABEL}
                 SATELLITE_VERSION=${SATELLITE_VERSION}
                 SATELLITE_RELEASE=${SATELLITE_RELEASE}
+                ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
         - trigger-builds:
             - project: satellite6-provisioning-downstream-rhel7
               predefined-parameters: |
@@ -511,6 +517,7 @@
                 BUILD_LABEL=${BUILD_LABEL}
                 SATELLITE_VERSION=${SATELLITE_VERSION}
                 SATELLITE_RELEASE=${SATELLITE_RELEASE}
+                ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
         - trigger-builds:
             - project: satellite6-betelgeuse-test-case
         - trigger-builds:

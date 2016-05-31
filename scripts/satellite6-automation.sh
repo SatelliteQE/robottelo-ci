@@ -41,7 +41,7 @@ fi
 if [ "${ENDPOINT}" != "rhai" ]; then
     set +e
     # Run parallel tests
-    $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n 8 \
+    $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         --boxed -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
         tests/foreman/{api,cli,ui,longrun}
 
