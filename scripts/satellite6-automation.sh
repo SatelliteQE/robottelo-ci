@@ -40,6 +40,13 @@ fi
 
 if [ "${ENDPOINT}" != "rhai" ]; then
     set +e
+    # Reset satellite at the start of tier2, tier3, tier4 jobs
+    if [[ "${ENDPOINT}" =~ tier[234] ]]; then 
+        echo "Resetting Satellite..."
+        ssh root@"${SERVER_HOSTNAME}" "satellite-installer --reset"
+        echo "Satellite Reset Complete"
+    if
+
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n 8 \
         --boxed -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
