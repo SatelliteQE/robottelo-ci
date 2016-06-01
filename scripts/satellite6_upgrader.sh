@@ -49,7 +49,7 @@ elif [ -n "${SATELLITE_IMAGE}" ]; then
         # Run upgrade with above compose urls
         fab -u root product_upgrade:"${UPGRADE_PRODUCT}","${SATELLITE_IMAGE}","${CAPSULE_IMAGE}"
     fi
-elif [ ! "${SATELLITE_IMAGE}" ] && [ ! "${CAPSULE_IMAGE}" ]; then
+elif [ -z "${SATELLITE_IMAGE}" ] && [ -z "${CAPSULE_IMAGE}" ]; then
     if [ "${DISTRIBUTION}" = 'CDN' ]; then
         # Call function to export rhev image/hostname environment variables
         export_rhev_env_var
