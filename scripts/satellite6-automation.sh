@@ -43,7 +43,7 @@ if [ "${ENDPOINT}" != "rhai" ]; then
     # Reset satellite at the start of tier2, tier3, tier4 jobs
     if [[ "${ENDPOINT}" =~ tier[234] ]]; then 
         echo "Resetting Satellite..."
-        ssh root@"${SERVER_HOSTNAME}" "satellite-installer --reset"
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" "satellite-installer --reset"
         echo "Satellite Reset Complete"
     fi
 
