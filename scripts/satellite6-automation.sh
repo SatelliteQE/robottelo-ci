@@ -45,7 +45,7 @@ if [ "${ENDPOINT}" != "rhai" ]; then
         echo "Resetting Satellite..."
         ssh root@"${SERVER_HOSTNAME}" "satellite-installer --reset"
         echo "Satellite Reset Complete"
-    if
+    fi
 
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
