@@ -42,12 +42,11 @@ if [ "${ENDPOINT}" != "rhai" ]; then
     set +e
     # Reset satellite at the start of tier2, tier3, tier4 jobs
     if [[ "${ENDPOINT}" =~ tier[234] ]]; then 
-        echo "Resetting Satellite..."
-        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -T root@"${SERVER_HOSTNAME}" << EOF
-          satellite-installer --reset
-          # Apply workaround for pulp message bus connection issue
-          hammer -u admin -p changeme settings set --name=check_services_before_actions --value=false
-        EOF
+        echo "Resetting Satellite and applying workaround..."
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -T root@"${SERVER_HOSTNAME}" <<-EOF
+		satellite-installer --reset
+		hammer -u admin -p changeme settings set --name=check_services_before_actions --value=false
+	EOF
     fi
 
     # Run parallel tests
