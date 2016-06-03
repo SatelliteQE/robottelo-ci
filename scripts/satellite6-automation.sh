@@ -39,7 +39,6 @@ if [[ "${DISTRIBUTION}" != *"cdn"* ]]; then
 fi
 
 if [ "${ENDPOINT}" != "rhai" ]; then
-    # set +e
     # Reset satellite at the start of tier2, tier3, tier4 jobs
     # if [[ "${ENDPOINT}" =~ tier[234] ]]; then
     #    echo "Resetting Satellite and applying workaround..."
@@ -49,6 +48,7 @@ if [ "${ENDPOINT}" != "rhai" ]; then
     #	EOF
     # fi
 
+    set +e
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         --boxed -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
