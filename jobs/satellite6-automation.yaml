@@ -54,6 +54,9 @@
             description: |
                 Points to RHSM stage for stage installation test. Used only
                 in CDN provisioning.
+        - bool:
+            name: CLEANUP_SATELLITE_ORGS
+            default: true
         - string:
             name: BUILD_LABEL
         - string:
@@ -109,6 +112,7 @@
                 BRIDGE=$BRIDGE
                 BUILD_LABEL=$BUILD_LABEL
                 DISCOVERY_ISO=$DISCOVERY_ISO
+                CLEANUP_SATELLITE_ORGS=$CLEANUP_SATELLITE_ORGS
                 ROBOTTELO_WORKERS=$ROBOTTELO_WORKERS
     publishers:
         - postbuildscript:
@@ -478,6 +482,9 @@
             choices:
                 - '6.0'
                 - '6.1'
+        - bool:
+            name: CLEANUP_SATELLITE_ORGS
+            default: true
         - string:
             name: ROBOTTELO_WORKERS
             default: '4'
@@ -510,6 +517,7 @@
                 BUILD_LABEL=${BUILD_LABEL}
                 SATELLITE_VERSION=${SATELLITE_VERSION}
                 SATELLITE_RELEASE=${SATELLITE_RELEASE}
+                CLEANUP_SATELLITE_ORGS=${CLEANUP_SATELLITE_ORGS}
                 ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
         - trigger-builds:
             - project: satellite6-provisioning-downstream-rhel7
@@ -521,6 +529,7 @@
                 BUILD_LABEL=${BUILD_LABEL}
                 SATELLITE_VERSION=${SATELLITE_VERSION}
                 SATELLITE_RELEASE=${SATELLITE_RELEASE}
+                CLEANUP_SATELLITE_ORGS=${CLEANUP_SATELLITE_ORGS}
                 ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
         - trigger-builds:
             - project: satellite6-betelgeuse-test-case
