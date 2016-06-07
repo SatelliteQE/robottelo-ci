@@ -1,16 +1,26 @@
-pip install -U pip
-
-if [ "$(curl --version | grep NSS 2>/dev/null)" ]; then
-    pip install --compile --install-option="--with-nss" pycurl
-else
-    pip install --compile --install-option="--with-openssl" pycurl
-fi
-
 pip install -r requirements.txt
-source "${{OPENSTACK_CONFIG}}"
+source "${{RHEV_CONFIG}}"
+source "${{SATELLITE6_REPOS_URLS}}"
 source "${{SUBSCRIPTION_CONFIG}}"
-export OS_echo="$(VERSION {os} | cut -dl -f2)"
+
+export OS="{os}"
+
+function export_rhev_env_var {{
+    if [ "${{OS}}" = 'rhel6' ]; then
+        export SAT_IMAGE="${{SAT_RHEL6_IMAGE}}"
+        export SAT_HOST="${{SAT_RHEL6_HOSTNAME}}"
+        export CAP_IMAGE="${{CAP_RHEL6_IMAGE}}"
+        export CAP_HOST="${{CAP_RHEL6_HOSTNAME}}"
+    elif [ "${{OS}}" = 'rhel7' ]; then
+        export SAT_IMAGE="${{SAT_RHEL7_IMAGE}}"
+        export SAT_HOST="${{SAT_RHEL7_HOSTNAME}}"
+        export CAP_IMAGE="${{CAP_RHEL7_IMAGE}}"
+        export CAP_HOST="${{CAP_RHEL7_HOSTNAME}}"
+    fi
+}}
+
 export BASE_URL="${{SATELLITE6_REPO}}"
 export CAPSULE_URL="${{CAPSULE_REPO}}"
 export TOOLS_URL="${{TOOLS_REPO}}"
-fab -u root product_upgrade:'capsule','sat_jenkins','sat_upgrade_{os}_auto',"sat${{COMPOSE}}-qe-{os}",'m1.large','cap-upgrade-{os}-auto',"capsule${{COMPOSE}}-qe-{os}",'m1.large'
+export_rhev_env_var
+fab -u root product_upgrade:'satellite'
