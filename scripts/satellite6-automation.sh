@@ -38,6 +38,10 @@ if [[ "${DISTRIBUTION}" != *"cdn"* ]]; then
     sed -i "s|sattools_repo.*|sattools_repo=${TOOLS_REPO}|" robottelo.properties
 fi
 
+if [ "${CLEANUP_SATELLITE_ORGS}" = 'false' ]; then
+    sed -i "s/^# cleanup.*/cleanup=false/" robottelo.properties
+fi
+
 if [ "${ENDPOINT}" != "rhai" ]; then
     # Reset satellite at the start of tier2, tier3, tier4 jobs
     # if [[ "${ENDPOINT}" =~ tier[234] ]]; then
