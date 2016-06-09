@@ -1,0 +1,6 @@
+- job:
+    name: sat6-cherry-pick
+    project-type: workflow
+    dsl:
+      !include-raw:
+        - workflows/identifyCherryPicksWorkflow.groovy
