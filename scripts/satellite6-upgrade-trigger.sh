@@ -11,16 +11,19 @@ function export_rhev_env_var {{
         export SAT_HOST="${{SAT_RHEL6_HOSTNAME}}"
         export CAP_IMAGE="${{CAP_RHEL6_IMAGE}}"
         export CAP_HOST="${{CAP_RHEL6_HOSTNAME}}"
+        export BASE_URL="${{SATELLITE6_RHEL6}}"
+        export CAPSULE_URL="${{CAPSULE_RHEL6}}"
+        export TOOLS_URL="${{TOOLS_RHEL6}}"
     elif [ "${{OS}}" = 'rhel7' ]; then
         export SAT_IMAGE="${{SAT_RHEL7_IMAGE}}"
         export SAT_HOST="${{SAT_RHEL7_HOSTNAME}}"
         export CAP_IMAGE="${{CAP_RHEL7_IMAGE}}"
         export CAP_HOST="${{CAP_RHEL7_HOSTNAME}}"
+        export BASE_URL="${{SATELLITE6_RHEL7}}"
+        export CAPSULE_URL="${{CAPSULE_RHEL7}}"
+        export TOOLS_URL="${{TOOLS_RHEL7}}"
     fi
 }}
 
-export BASE_URL="${{SATELLITE6_REPO}}"
-export CAPSULE_URL="${{CAPSULE_REPO}}"
-export TOOLS_URL="${{TOOLS_REPO}}"
 export_rhev_env_var
 fab -u root product_upgrade:'satellite'
