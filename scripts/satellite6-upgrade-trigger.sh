@@ -1,9 +1,11 @@
+# Exporting OS variable first to select correct env vars from config files
+# according to OS
+export OS="{os}"
+
 pip install -r requirements.txt
 source "${{RHEV_CONFIG}}"
 source "${{SATELLITE6_REPOS_URLS}}"
 source "${{SUBSCRIPTION_CONFIG}}"
-
-export OS="{os}"
 
 function export_rhev_env_var {{
     if [ "${{OS}}" = 'rhel6' ]; then
