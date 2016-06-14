@@ -27,6 +27,14 @@ function export_rhev_env_var {
     fi
 }
 
+# Set Capsule URL as per OS
+if [ "${OS}" = 'rhel7' ]; then
+    CAPSULE_URL="${CAPSULE_RHEL7}"
+elif [ "${OS}" = 'rhel6' ]; then
+    CAPSULE_URL="${CAPSULE_RHEL6}"
+fi
+
+# Run Satellite/Capsule upgrade on CDN/DOWNSTREAM distribution
 if [ -n "${SATELLITE_HOSTNAME}" ]; then
     if [ "${DISTRIBUTION}" = 'CDN' ]; then
         # Run upgrade without compose urls
@@ -34,7 +42,7 @@ if [ -n "${SATELLITE_HOSTNAME}" ]; then
     elif [ "${DISTRIBUTION}" = 'DOWNSTREAM' ]; then
         # Export required Environment variables
         export BASE_URL="${SATELLITE6_REPO}"
-        export CAPSULE_URL="${CAPSULE_REPO}"
+        export CAPSULE_URL
         # Run upgrade with above compose urls
         fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
     fi
@@ -45,7 +53,7 @@ elif [ -n "${SATELLITE_IMAGE}" ]; then
     elif [ "${DISTRIBUTION}" = 'DOWNSTREAM' ]; then
         # Export required Environment variables
         export BASE_URL="${SATELLITE6_REPO}"
-        export CAPSULE_URL="${CAPSULE_REPO}"
+        export CAPSULE_URL
         # Run upgrade with above compose urls
         fab -u root product_upgrade:"${UPGRADE_PRODUCT}","${SATELLITE_IMAGE}","${CAPSULE_IMAGE}"
     fi
@@ -60,7 +68,7 @@ elif [ -z "${SATELLITE_IMAGE}" ] && [ -z "${CAPSULE_IMAGE}" ]; then
         export_rhev_env_var
         # Export required Environment variables
         export BASE_URL="${SATELLITE6_REPO}"
-        export CAPSULE_URL="${CAPSULE_REPO}"
+        export CAPSULE_URL
         # Run upgrade with above variables
         fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
     fi
