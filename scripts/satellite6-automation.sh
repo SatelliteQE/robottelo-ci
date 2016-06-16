@@ -8,6 +8,7 @@ cp ${ROBOTTELO_CONFIG} ./robottelo.properties
 
 sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
 sed -i "s|# screenshots_path=.*|screenshots_path=$(pwd)/screenshots|" robottelo.properties
+sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottelo.properties
 
 # Robottelo logging configuration
 sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
