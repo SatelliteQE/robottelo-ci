@@ -6,4 +6,8 @@
       changes, check out the
       <a href="https://github.com/SatelliteQE/robottelo-ci">robottelo-ci</a>
       repository.
-    logrotate: {}
+    logrotate:
+        numToKeep: 32
+    properties:
+        - build-discarder:
+            num-to-keep: 32
