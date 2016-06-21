@@ -5,6 +5,8 @@
             files:
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1431607187795
                   variable: ROBOTTELO_CONFIG
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421176025129
+                  variable: PROVISIONING_CONFIG
         - workspace-cleanup:
             include:
                 - 'robottelo*.log'
