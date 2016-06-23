@@ -39,8 +39,8 @@ if [[ "${DISTRIBUTION}" != *"cdn"* ]]; then
     sed -i "s|sattools_repo.*|sattools_repo=${TOOLS_REPO}|" robottelo.properties
 fi
 
-if [ "${CLEANUP_SATELLITE_ORGS}" = 'false' ]; then
-    sed -i "s/^# cleanup.*/cleanup=false/" robottelo.properties
+if [ "${CLEANUP_SATELLITE_ORGS}" = 'true' ]; then
+    sed -i "s/^# cleanup.*/cleanup=true/" robottelo.properties
 fi
 
 if [ "${ENDPOINT}" != "rhai" ]; then

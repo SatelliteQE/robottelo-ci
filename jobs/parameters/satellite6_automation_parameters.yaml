@@ -25,6 +25,6 @@
             description: 'The discovery ISO name.'
         - bool:
             name: CLEANUP_SATELLITE_ORGS
-            default: true
+            default: false
         - string:
             name: ROBOTTELO_WORKERS

@@ -56,7 +56,7 @@
                 in CDN provisioning.
         - bool:
             name: CLEANUP_SATELLITE_ORGS
-            default: true
+            default: false
         - string:
             name: BUILD_LABEL
         - string:
@@ -484,7 +484,7 @@
                 - '6.1'
         - bool:
             name: CLEANUP_SATELLITE_ORGS
-            default: true
+            default: false
         - string:
             name: ROBOTTELO_WORKERS
             default: '4'
