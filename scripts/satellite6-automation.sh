@@ -65,7 +65,12 @@ if [ "${ENDPOINT}" != "rhai" ]; then
         tests/foreman/{api,cli,ui,longrun}
     set -e
 else
-    make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=4
+    make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=${ROBOTTELO_WORKERS}
+fi
+
+if [ "${ROBOTTELO_WORKERS}" -gt 0 ]; then
+    make logs-join
+    make logs-clean
 fi
 
 echo
