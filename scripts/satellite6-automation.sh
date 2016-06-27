@@ -1,8 +1,40 @@
-if [ "${DISTRIBUTION}" = "zstream" ]; then
+# Zstream Job requires it's own requirements and the versions are freezed.
+if [ "${DISTRIBUTION}" = "satellite6-zstream" ]; then
     pip install -U -r requirements-freeze.txt
 else
     pip install -U -r requirements.txt docker-py pytest-xdist
 fi
+
+source ${PROVISIONING_CONFIG}
+
+# Provisioning jobs TARGET_IMAGE becomes the SOURCE_IMAGE for Tier and RHAI jobs.
+export SOURCE_IMAGE="${TARGET_IMAGE}"
+export TARGET_IMAGE=`echo ${TARGET_IMAGE} | cut -d '-' -f1-3`
+
+echo "========================================"
+echo " Remove any running instances if any of ${TARGET_IMAGE} virsh domain."
+echo "========================================"
+set +e
+ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh destroy ${TARGET_IMAGE}
+ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh undefine ${TARGET_IMAGE}
+ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh vol-delete --pool default /var/lib/libvirt/images/${TARGET_IMAGE}.img
+set -e
+
+# Provision the instance using satellite6 base image as the source image
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" \
+snap-guest -b "${SOURCE_IMAGE}" -t "${TARGET_IMAGE}" --hostname "${TARGET_IMAGE}.${VM_DOMAIN}" \
+-m "${VM_RAM}" -c "${VM_CPU}" -d "${VM_DOMAIN}" -f -n bridge="${BRIDGE}" --static-ipaddr "${IPADDR}" \
+--static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
+
+# SSH into the instance to fetch hostname and make sure it is up and running or loop 7 time
+count=1; while [ $count -le 7 ]; do echo "Trying to ssh to ${TARGET_IMAGE}.${VM_DOMAIN}"; (( count++ )); \
+sleep $count ; ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN} hostname"  && exit; done
+
+# SELINUX fix required as after reboot the iptable information is lost. Temporary fix
+ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'iptables -F'
+
+# Restart Satellite6 service for a clean state of the running instance.
+ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'katello-service restart'
 
 cp ${ROBOTTELO_CONFIG} ./robottelo.properties
 
@@ -44,15 +76,6 @@ if [ "${CLEANUP_SATELLITE_ORGS}" = 'true' ]; then
 fi
 
 if [ "${ENDPOINT}" != "rhai" ]; then
-    # Reset satellite at the start of tier2, tier3, tier4 jobs
-    # if [[ "${ENDPOINT}" =~ tier[234] ]]; then
-    #    echo "Resetting Satellite and applying workaround..."
-    #    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -T root@"${SERVER_HOSTNAME}" <<-EOF
-    #		satellite-installer --reset
-    #		hammer -u admin -p changeme settings set --name=check_services_before_actions --value=false
-    #	EOF
-    # fi
-
     set +e
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
@@ -80,3 +103,8 @@ echo "========================================"
 echo "Hostname: ${SERVER_HOSTNAME}"
 echo "Credentials: admin/changeme"
 echo "========================================"
+echo
+echo "Delete the instance of: ${SERVER_HOSTNAME}"
+ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh destroy ${TARGET_IMAGE}
+ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh undefine ${TARGET_IMAGE}
+ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh vol-delete --pool default /var/lib/libvirt/images/${TARGET_IMAGE}.img

@@ -140,13 +140,14 @@
         - satellite6-automation-wrappers
         - inject:
             properties-content: |
-                DISTRIBUTION={distribution}
+                DISTRIBUTION=satellite6-{distribution}
                 ENDPOINT=tier1
+                DISTRO={os}
     builders:
         - satellite6-automation-builders
         - conditional-step:
             condition-kind: regex-match
-            regex: (upstream|downstream|cdn|zstream)
+            regex: (satellite6-upstream|satellite6-downstream|satellite6-cdn|satellite6-zstream)
             label: ${{ENV,var="DISTRIBUTION"}}
             steps:
                 - trigger-builds:
@@ -154,7 +155,7 @@
                       current-parameters: true
         - conditional-step:
             condition-kind: regex-match
-            regex: (downstream)
+            regex: (satellite6-downstream)
             label: ${{ENV,var="DISTRIBUTION"}}
             steps:
               - trigger-builds:
@@ -185,8 +186,9 @@
         - satellite6-automation-wrappers
         - inject:
             properties-content: |
-                DISTRIBUTION={distribution}
+                DISTRIBUTION=satellite6-{distribution}
                 ENDPOINT=tier2
+                DISTRO={os}
     builders:
         - satellite6-automation-builders
         - trigger-builds:
@@ -210,13 +212,14 @@
         - satellite6-automation-wrappers
         - inject:
             properties-content: |
-                DISTRIBUTION={distribution}
+                DISTRIBUTION=satellite6-{distribution}
                 ENDPOINT=tier3
+                DISTRO={os}
     builders:
         - satellite6-automation-builders
         - conditional-step:
             condition-kind: regex-match
-            regex: (cdn|downstream|zstream)
+            regex: (satellite6-cdn|satellite6-downstream|satellite6-zstream)
             label: ${{ENV,var="DISTRIBUTION"}}
             steps:
                 - trigger-builds:
@@ -241,8 +244,9 @@
         - satellite6-automation-wrappers
         - inject:
             properties-content: |
-                DISTRIBUTION={distribution}
+                DISTRIBUTION=satellite6-{distribution}
                 ENDPOINT=rhai
+                DISTRO={os}
     builders:
         - satellite6-automation-builders
         - trigger-builds:
@@ -278,13 +282,14 @@
         - satellite6-automation-wrappers
         - inject:
             properties-content: |
-                DISTRIBUTION={distribution}
+                DISTRIBUTION=satellite6-{distribution}
                 ENDPOINT=tier4
+                DISTRO={os}
     builders:
         - satellite6-automation-builders
         - conditional-step:
             condition-kind: regex-match
-            regex: (downstream)
+            regex: (satellite6-downstream)
             label: ${{ENV,var="DISTRIBUTION"}}
             steps:
                 - trigger-builds:
