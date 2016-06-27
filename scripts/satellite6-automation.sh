@@ -20,17 +20,18 @@ ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh undefine ${TAR
 ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh vol-delete --pool default /var/lib/libvirt/images/${TARGET_IMAGE}.img
 set -e
 
-# Provision the instance using satellite6 base image as the source image
+# Provision the instance using satellite6 base image as the source image.
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" \
 snap-guest -b "${SOURCE_IMAGE}" -t "${TARGET_IMAGE}" --hostname "${TARGET_IMAGE}.${VM_DOMAIN}" \
 -m "${VM_RAM}" -c "${VM_CPU}" -d "${VM_DOMAIN}" -f -n bridge="${BRIDGE}" --static-ipaddr "${IPADDR}" \
 --static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
 
-# SSH into the instance to fetch hostname and make sure it is up and running or loop 7 time
+# SSH into the instance to fetch hostname and make sure it is up and running or loop 7 time.
 count=1; while [ $count -le 7 ]; do echo "Trying to ssh to ${TARGET_IMAGE}.${VM_DOMAIN}"; (( count++ )); \
-sleep $count ; ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN} hostname"  && exit; done
+sleep $count ; ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -T \
+root@"${TARGET_IMAGE}.${VM_DOMAIN}" hostname  && break; done
 
-# SELINUX fix required as after reboot the iptable information is lost. Temporary fix
+# SELINUX fix required as after reboot the iptable information is lost. Temporary fix.
 ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'iptables -F'
 
 # Restart Satellite6 service for a clean state of the running instance.
