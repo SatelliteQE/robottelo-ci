@@ -11,31 +11,38 @@ source ${PROVISIONING_CONFIG}
 export SOURCE_IMAGE="${TARGET_IMAGE}"
 export TARGET_IMAGE=`echo ${TARGET_IMAGE} | cut -d '-' -f1-3`
 
-echo "========================================"
-echo " Remove any running instances if any of ${TARGET_IMAGE} virsh domain."
-echo "========================================"
-set +e
-ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh destroy ${TARGET_IMAGE}
-ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh undefine ${TARGET_IMAGE}
-ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh vol-delete --pool default /var/lib/libvirt/images/${TARGET_IMAGE}.img
-set -e
+function remove-instance () {
+    echo "========================================"
+    echo " Remove any running instances if any of ${TARGET_IMAGE} virsh domain."
+    echo "========================================"
+    set +e
+    ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh destroy ${TARGET_IMAGE}
+    ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh undefine ${TARGET_IMAGE}
+    ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh vol-delete --pool default /var/lib/libvirt/images/${TARGET_IMAGE}.img
+    set -e
+}
 
-# Provision the instance using satellite6 base image as the source image.
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" \
-snap-guest -b "${SOURCE_IMAGE}" -t "${TARGET_IMAGE}" --hostname "${TARGET_IMAGE}.${VM_DOMAIN}" \
--m "${VM_RAM}" -c "${VM_CPU}" -d "${VM_DOMAIN}" -f -n bridge="${BRIDGE}" --static-ipaddr "${IPADDR}" \
---static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
+function setup-instance () {
+    # Provision the instance using satellite6 base image as the source image.
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" \
+    snap-guest -b "${SOURCE_IMAGE}" -t "${TARGET_IMAGE}" --hostname "${TARGET_IMAGE}.${VM_DOMAIN}" \
+    -m "${VM_RAM}" -c "${VM_CPU}" -d "${VM_DOMAIN}" -f -n bridge="${BRIDGE}" --static-ipaddr "${IPADDR}" \
+    --static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
 
-# SSH into the instance to fetch hostname and make sure it is up and running or loop 7 time.
-count=1; while [ $count -le 7 ]; do echo "Trying to ssh to ${TARGET_IMAGE}.${VM_DOMAIN}"; (( count++ )); \
-sleep $count ; ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -T \
-root@"${TARGET_IMAGE}.${VM_DOMAIN}" hostname  && break; done
+    # SSH into the instance to fetch hostname and make sure it is up and running or loop 7 time.
+    count=1; while [ $count -le 7 ]; do echo "Trying to ssh to ${TARGET_IMAGE}.${VM_DOMAIN}"; (( count++ )); \
+    sleep $count ; ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -T \
+    root@"${TARGET_IMAGE}.${VM_DOMAIN}" hostname  && break; if [ $count -eq 8 ]; then exit; fi done
 
-# SELINUX fix required as after reboot the iptable information is lost. Temporary fix.
-ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'iptables -F'
+    # SELINUX fix required as after reboot the iptable information is lost. Temporary fix.
+    ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'iptables -F'
 
-# Restart Satellite6 service for a clean state of the running instance.
-ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'katello-service restart'
+    # Restart Satellite6 service for a clean state of the running instance.
+    ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'katello-service restart'
+}
+
+remove-instance
+setup-instance
 
 cp ${ROBOTTELO_CONFIG} ./robottelo.properties
 
@@ -106,6 +113,10 @@ echo "Credentials: admin/changeme"
 echo "========================================"
 echo
 echo "Delete the instance of: ${SERVER_HOSTNAME}"
-ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh destroy ${TARGET_IMAGE}
-ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh undefine ${TARGET_IMAGE}
-ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh vol-delete --pool default /var/lib/libvirt/images/${TARGET_IMAGE}.img
+
+remove-instance
+# After tier4 is run, let's setup-instance once again for a clean state,
+# so that we can do bug or feature testing if needed on this instance.
+if [ "${ENDPOINT}" == "tier4" ]; then
+    setup-instance
+fi
