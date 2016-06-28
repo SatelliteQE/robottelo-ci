@@ -1,5 +1,6 @@
 - job:
     name: satellite6-betelgeuse-test-case
+    node: sesame
     scm:
         - git:
             url: https://github.com/SatelliteQE/robottelo.git
@@ -18,21 +19,21 @@
             clear: true
             nature: shell
             command:
-                !include-raw: scripts/satellite6-betelgeuse.sh
-        - shining-panda:
-            build-environment: virtualenv
-            name: betelgeuse
-            python-version: System-CPython-2.7
-            clear: false
-            nature: shell
-            command:
-                !include-raw: scripts/satellite6-betelgeuse-test-case.sh
+                !include-raw:
+                    - scripts/satellite6-betelgeuse.sh
+                    - scripts/satellite6-betelgeuse-test-case.sh
         - shell: rm .pylarion
 
 
 - job-template:
     name: satellite6-betelgeuse-test-run-{os}
     node: sesame
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - origin/master
+            skip-tag: true
     parameters:
         - string:
             name: TEST_RUN_ID
@@ -47,19 +48,19 @@
         - copyartifact:
             project: satellite6-automation-downstream-{os}-tier1
             filter: '*-results.xml'
-            which-build: workspace-latest
+            which-build: last-completed
         - copyartifact:
             project: satellite6-automation-downstream-{os}-tier2
             filter: '*-results.xml'
-            which-build: workspace-latest
+            which-build: last-completed
         - copyartifact:
             project: satellite6-automation-downstream-{os}-tier3
             filter: '*-results.xml'
-            which-build: workspace-latest
+            which-build: last-completed
         - copyartifact:
             project: satellite6-automation-downstream-{os}-tier4
             filter: '*-results.xml'
-            which-build: workspace-latest
+            which-build: last-completed
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse
@@ -67,13 +68,7 @@
             clear: true
             nature: shell
             command:
-                !include-raw-escape: scripts/satellite6-betelgeuse.sh
-        - shining-panda:
-            build-environment: virtualenv
-            name: betelgeuse
-            python-version: System-CPython-2.7
-            clear: false
-            nature: shell
-            command:
-                !include-raw-escape: scripts/satellite6-betelgeuse-test-run.sh
+                !include-raw-escape:
+                    - scripts/satellite6-betelgeuse.sh
+                    - scripts/satellite6-betelgeuse-test-run.sh
         - shell: rm .pylarion

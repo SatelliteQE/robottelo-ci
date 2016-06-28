@@ -1,22 +1,10 @@
 rm -rf pylarion
-git clone --depth 1 ${PYLARION_REPO_URL}
-
-# Make pylarion ready to be installed on a virtual environment
-cd pylarion
-cp setup.py setup.py.old
-head -n -3 setup.py.old > setup.py
-sed -i "s|'/etc', ||" setup.py
-sed -i "s/cachingpolicy=1/cachingpolicy=0/" src/pylarion/session.py
+git clone ${PYLARION_REPO_URL}
 
 # Install pylarion and its dependencies
+cd pylarion
+git checkout origin/satelliteqe-pylarion
 pip install -r requirements.txt
-pip install .
-cd ..
-
-# Install testimony from master
-rm -rf testimony
-git clone --depth 1 https://github.com/SatelliteQE/testimony.git
-cd testimony
 pip install .
 cd ..
 

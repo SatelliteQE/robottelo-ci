@@ -16,10 +16,11 @@ for path in tier{1,2,3,4}-{parallel,sequential}-results.xml; do
             ;;
     esac
 
-    betelgeuse -j auto test-run \
+    betelgeuse test-run \
         --path "${path}" \
         --test-run-id "${TEST_RUN_ID} - ${tier}" \
         --test-template-id "${TEST_TEMPLATE_ID}" \
         --user ${POLARION_USER} \
+        --source-code-path tests/foreman \
         ${POLARION_DEFAULT_PROJECT}
 done
