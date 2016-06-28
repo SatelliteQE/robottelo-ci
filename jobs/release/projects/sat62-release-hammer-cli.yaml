@@ -6,5 +6,5 @@
       !include-raw:
           - properties/branch.groovy
           - properties/hammer_cli_repo.groovy
-          - properties/sourceTypeGem.groovy
+          - properties/sourceTypeRake.groovy
           - workflows/releasePackageWorkflow.groovy
