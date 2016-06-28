@@ -11,7 +11,7 @@ source ${PROVISIONING_CONFIG}
 export SOURCE_IMAGE="${TARGET_IMAGE}"
 export TARGET_IMAGE=`echo ${TARGET_IMAGE} | cut -d '-' -f1-3`
 
-function remove-instance () {
+function remove_instance () {
     echo "========================================"
     echo " Remove any running instances if any of ${TARGET_IMAGE} virsh domain."
     echo "========================================"
@@ -22,7 +22,7 @@ function remove-instance () {
     set -e
 }
 
-function setup-instance () {
+function setup_instance () {
     # Provision the instance using satellite6 base image as the source image.
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" \
     snap-guest -b "${SOURCE_IMAGE}" -t "${TARGET_IMAGE}" --hostname "${TARGET_IMAGE}.${VM_DOMAIN}" \
@@ -41,8 +41,8 @@ function setup-instance () {
     ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'katello-service restart'
 }
 
-remove-instance
-setup-instance
+remove_instance
+setup_instance
 
 cp ${ROBOTTELO_CONFIG} ./robottelo.properties
 
@@ -114,9 +114,9 @@ echo "========================================"
 echo
 echo "Delete the instance of: ${SERVER_HOSTNAME}"
 
-remove-instance
-# After tier4 is run, let's setup-instance once again for a clean state,
+remove_instance
+# After tier4 is run, let's setup_instance once again for a clean state,
 # so that we can do bug or feature testing if needed on this instance.
 if [ "${ENDPOINT}" == "tier4" ]; then
-    setup-instance
+    setup_instance
 fi
