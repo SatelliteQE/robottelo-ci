@@ -29,11 +29,11 @@
                 - 'cli'
                 - 'ui'
                 - 'rhai'
-                - 'smoke-api'
-                - 'smoke-cli'
-                - 'smoke-ui'
+                - 'endtoend-api'
+                - 'endtoend-cli'
+                - 'endtoend-ui'
                 - 'all'
-                - 'smoke-all'
+                - 'endtoend-all'
             description: |
                 Be aware that the all TEST_TYPE will last for more than 4-5 hours
         - string:
