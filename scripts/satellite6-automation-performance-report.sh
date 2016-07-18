@@ -6,4 +6,4 @@ if [ ! -f ${DATA_PATH} ]; then
    touch ${DATA_PATH}
 fi
 
-./performance_report.py --data-path ${DATA_PATH} ${OS} ${BUILD_LABEL} JUNIT
+./performance_report.py --data-path "${DATA_PATH}" "${OS}" "${BUILD_LABEL}" JUNIT
