@@ -28,4 +28,4 @@ function export_rhev_env_var {{
 }}
 
 export_rhev_env_var
-fab -u root product_upgrade:'satellite'
+fab -u root product_upgrade:'capsule'
