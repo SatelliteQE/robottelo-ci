@@ -30,7 +30,7 @@ function setup_instance () {
     --static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
 
     # SSH into the instance to fetch hostname and make sure it is up and running or loop 7 time.
-    count=1; while [ $count -le 7 ]; do echo "Trying to ssh to ${TARGET_IMAGE}.${VM_DOMAIN}"; (( count++ )); \
+    sleep 20; count=1; while [ $count -le 7 ]; do echo "Trying to ssh to ${TARGET_IMAGE}.${VM_DOMAIN}"; (( count++ )); \
     sleep $count ; ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -T \
     root@"${TARGET_IMAGE}.${VM_DOMAIN}" hostname  && break; if [ $count -eq 8 ]; then exit; fi done
 
