@@ -29,8 +29,11 @@ function setup_instance () {
     -m "${VM_RAM}" -c "${VM_CPU}" -d "${VM_DOMAIN}" -f -n bridge="${BRIDGE}" --static-ipaddr "${IPADDR}" \
     --static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
 
+    # Let's wait for 60 secs for the instance to be up and along with it it's services
+    sleep 60
+
     # SSH into the instance to fetch hostname and make sure it is up and running or loop 7 time.
-    sleep 20; count=1; while [ $count -le 7 ]; do echo "Trying to ssh to ${TARGET_IMAGE}.${VM_DOMAIN}"; (( count++ )); \
+    count=1; while [ $count -le 7 ]; do echo "Trying to ssh to ${TARGET_IMAGE}.${VM_DOMAIN}"; (( count++ )); \
     sleep $count ; ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -T \
     root@"${TARGET_IMAGE}.${VM_DOMAIN}" hostname  && break; if [ $count -eq 8 ]; then exit; fi done
 
