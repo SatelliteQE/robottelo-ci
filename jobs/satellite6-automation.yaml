@@ -61,6 +61,8 @@
             name: BUILD_LABEL
         - string:
             name: ROBOTTELO_WORKERS
+        - string:
+            name: RELEASE
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -114,6 +116,7 @@
                 DISCOVERY_ISO=$DISCOVERY_ISO
                 CLEANUP_SATELLITE_ORGS=$CLEANUP_SATELLITE_ORGS
                 ROBOTTELO_WORKERS=$ROBOTTELO_WORKERS
+                RELEASE=$RELEASE
     publishers:
         - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
@@ -527,6 +530,12 @@
             name: ROBOTTELO_WORKERS
             default: '8'
             description: Number of workers to use while running robottelo test suite
+        - choice:
+            name: RELEASE
+            choices:
+                - 'Satellite 6.2.z'
+                - 'Satellite 6.3.0'
+            description: This should match the release in Polarion.
     wrappers:
         - build-name:
             name: '#${BUILD_NUMBER} ${ENV,var="BUILD_LABEL"}'
@@ -557,6 +566,7 @@
                 SATELLITE_RELEASE=${SATELLITE_RELEASE}
                 CLEANUP_SATELLITE_ORGS=${CLEANUP_SATELLITE_ORGS}
                 ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
+                RELEASE=${RELEASE}
         - trigger-builds:
             - project: satellite6-provisioning-downstream-rhel7
               predefined-parameters: |
@@ -569,6 +579,7 @@
                 SATELLITE_RELEASE=${SATELLITE_RELEASE}
                 CLEANUP_SATELLITE_ORGS=${CLEANUP_SATELLITE_ORGS}
                 ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
+                RELEASE=${RELEASE}
         - trigger-builds:
             - project: satellite6-betelgeuse-test-case
         - trigger-builds:
