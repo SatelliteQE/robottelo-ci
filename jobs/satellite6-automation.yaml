@@ -517,7 +517,7 @@
             default: false
         - string:
             name: ROBOTTELO_WORKERS
-            default: '4'
+            default: '8'
             description: Number of workers to use while running robottelo test suite
     wrappers:
         - build-name:
