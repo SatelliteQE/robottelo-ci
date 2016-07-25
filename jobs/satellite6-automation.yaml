@@ -238,7 +238,7 @@
             label: ${{ENV,var="DISTRIBUTION"}}
             steps:
                 - trigger-builds:
-                    - project: 'satellite6-automation-{distribution}-{os}-rhai'
+                    - project: 'satellite6-automation-{distribution}-{os}-tier4'
                       current-parameters: true
 
     publishers:
@@ -269,9 +269,6 @@
                 DISTRO={os}
     builders:
         - satellite6-automation-builders
-        - trigger-builds:
-            - project: 'satellite6-automation-{distribution}-{os}-tier4'
-              current-parameters: true
     publishers:
         - satellite6-automation-publishers
         - email-ext:
@@ -312,6 +309,14 @@
                 DISTRO={os}
     builders:
         - satellite6-automation-builders
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (satellite6-cdn|satellite6-downstream|satellite6-zstream)
+            label: ${{ENV,var="DISTRIBUTION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'satellite6-automation-{distribution}-{os}-rhai'
+                      current-parameters: true
         - conditional-step:
             condition-kind: regex-match
             regex: (satellite6-downstream)
