@@ -118,8 +118,8 @@ echo
 echo "Delete the instance of: ${SERVER_HOSTNAME}"
 
 remove_instance
-# After tier4 is run, let's setup_instance once again for a clean state,
+# After rhai is run, let's setup_instance once again for a clean state,
 # so that we can do bug or feature testing if needed on this instance.
-if [ "${ENDPOINT}" == "tier4" ]; then
+if [ "${ENDPOINT}" == "rhai" ]; then
     setup_instance
 fi
