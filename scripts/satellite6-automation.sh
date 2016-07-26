@@ -5,12 +5,6 @@ else
     pip install -U -r requirements.txt docker-py pytest-xdist
 fi
 
-source ${PROVISIONING_CONFIG}
-
-# Provisioning jobs TARGET_IMAGE becomes the SOURCE_IMAGE for Tier and RHAI jobs.
-export SOURCE_IMAGE="${TARGET_IMAGE}"
-export TARGET_IMAGE=`echo ${TARGET_IMAGE} | cut -d '-' -f1-3`
-
 function remove_instance () {
     echo "========================================"
     echo " Remove any running instances if any of ${TARGET_IMAGE} virsh domain."
@@ -44,8 +38,16 @@ function setup_instance () {
     ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'katello-service restart'
 }
 
-remove_instance
-setup_instance
+if [ "${DISTRIBUTION}" = "satellite6-zstream" -o "${DISTRIBUTION}" = "satellite6-downstream" ]; then
+    source ${PROVISIONING_CONFIG}
+
+    # Provisioning jobs TARGET_IMAGE becomes the SOURCE_IMAGE for Tier and RHAI jobs.
+    export SOURCE_IMAGE="${TARGET_IMAGE}"
+    export TARGET_IMAGE=`echo ${TARGET_IMAGE} | cut -d '-' -f1-3`
+
+    remove_instance
+    setup_instance
+fi
 
 cp ${ROBOTTELO_CONFIG} ./robottelo.properties
 
@@ -117,9 +119,11 @@ echo "========================================"
 echo
 echo "Delete the instance of: ${SERVER_HOSTNAME}"
 
-remove_instance
-# After rhai is run, let's setup_instance once again for a clean state,
-# so that we can do bug or feature testing if needed on this instance.
-if [ "${ENDPOINT}" == "rhai" ]; then
-    setup_instance
+if [ "${DISTRIBUTION}" = "satellite6-zstream" -o "${DISTRIBUTION}" = "satellite6-downstream" ]; then
+    remove_instance
+    # After rhai is run, let's setup_instance once again for a clean state,
+    # so that we can do bug or feature testing if needed on this instance.
+    if [ "${ENDPOINT}" == "rhai" ]; then
+        setup_instance
+    fi
 fi
