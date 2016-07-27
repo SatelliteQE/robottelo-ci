@@ -115,15 +115,8 @@
                 CLEANUP_SATELLITE_ORGS=$CLEANUP_SATELLITE_ORGS
                 ROBOTTELO_WORKERS=$ROBOTTELO_WORKERS
     publishers:
-        - postbuildscript:
-            builders:
-                - shell:
-                    !include-raw-escape: satellite6-automation-foreman-debug.sh
-            script-only-if-succeeded: false
-            script-only-if-failed: true
-        - archive:
-            artifacts: 'foreman-debug.tar.xz'
-            allow-empty: true
+        - satellite6-automation-foreman-debug
+        - satellite6-automation-archiver
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-tier1'
@@ -175,6 +168,8 @@
                       no-files-found-action: FAIL
     publishers:
         - satellite6-automation-publishers
+        - satellite6-automation-foreman-debug
+        - satellite6-automation-archiver
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-tier2'
@@ -206,6 +201,8 @@
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
+        - satellite6-automation-foreman-debug
+        - satellite6-automation-archiver
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-tier3'
@@ -243,6 +240,8 @@
 
     publishers:
         - satellite6-automation-publishers
+        - satellite6-automation-foreman-debug
+        - satellite6-automation-archiver
 
 - job-template:
     name: 'satellite6-automation-{distribution}-{os}-rhai'
@@ -271,6 +270,8 @@
         - satellite6-automation-builders
     publishers:
         - satellite6-automation-publishers
+        - satellite6-automation-foreman-debug
+        - satellite6-automation-archiver
         - email-ext:
             recipients: $PROJECT_DEFAULT_RECIPIENTS
             reply-to: $PROJECT_DEFAULT_REPLYTO
@@ -328,6 +329,8 @@
                           TEST_RUN_ID='${{BUILD_LABEL}} {os}'
     publishers:
         - satellite6-automation-publishers
+        - satellite6-automation-foreman-debug
+        - satellite6-automation-archiver
 
 - job-template:
     name: 'satellite6-automation-report-downstream-{os}'

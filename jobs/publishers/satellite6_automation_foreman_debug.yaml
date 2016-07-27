@@ -1,0 +1,9 @@
+- publisher:
+    name: satellite6-automation-foreman-debug
+    publishers:
+        - postbuildscript:
+            builders:
+                - shell:
+                    !include-raw-escape: satellite6-automation-foreman-debug.sh
+            script-only-if-succeeded: false
+            script-only-if-failed: true
