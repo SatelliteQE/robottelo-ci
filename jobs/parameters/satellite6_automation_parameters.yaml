@@ -28,3 +28,5 @@
             default: false
         - string:
             name: ROBOTTELO_WORKERS
+        - string:
+            name: RELEASE
