@@ -62,6 +62,11 @@
             default: master
             description: |
                 You can override this to any branch. Example: 6.1.z
+        - string:
+            name: ROBOTTELO_WORKERS
+            default: '4'
+            description: |
+                You can override this to other value of your choice.
     scm:
         - git:
             url: ${ROBOTTELO_REPO}
