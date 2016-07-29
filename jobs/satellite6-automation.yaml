@@ -328,8 +328,9 @@
             steps:
                 - trigger-builds:
                     - project: 'satellite6-betelgeuse-test-run-{os}'
-                      predefined-parameters:
-                          TEST_RUN_ID='${{BUILD_LABEL}} {os}'
+                      predefined-parameters: |
+                          TEST_RUN_ID=$BUILD_LABEL {os}
+                          RELEASE=$RELEASE
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-foreman-debug
