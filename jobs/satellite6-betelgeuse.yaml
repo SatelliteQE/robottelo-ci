@@ -40,6 +40,8 @@
             description: |
                 'The resulting test run id is going to be suffixed with tierN '
                 'to differentiate between all tiers.'
+        - string:
+            name: RELEASE
     wrappers:
         - inject-passwords:
             global: true

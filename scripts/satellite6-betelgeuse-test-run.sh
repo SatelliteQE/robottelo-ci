@@ -9,6 +9,15 @@ else
         --plan-type iteration "${POLARION_DEFAULT_PROJECT}"
 fi
 
+TEST_PLAN_ID="$(python - <<END
+import re
+import os
+from betelgeuse import INVALID_CHARS_REGEX
+plan_id = re.sub(INVALID_CHARS_REGEX, '_', os.environ['TEST_RUN_ID']).replace(' ', '_')
+print plan_id
+END
+)"
+
 for path in tier{1,2,3,4}-{parallel,sequential}-results.xml; do
     case "$path" in
         tier1*)
@@ -34,7 +43,7 @@ for path in tier{1,2,3,4}-{parallel,sequential}-results.xml; do
         --custom-fields isautomated=True \
         --custom-fields arch=x8664 \
         --custom-fields variant=server \
-        --custom-fields plannedin="${TEST_RUN_ID}" \
+        --custom-fields plannedin="${TEST_PLAN_ID}" \
         "${POLARION_DEFAULT_PROJECT}"
 done
 
