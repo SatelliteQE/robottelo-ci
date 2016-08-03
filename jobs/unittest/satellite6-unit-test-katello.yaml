@@ -15,7 +15,7 @@
     builders:
       - clone_gitlab_foreman
       - merge_request
-      - shell: !include-raw scripts/setup_katello_config.sh
+      - shell: !include-raw scripts/add_foreman_docker_gitlab.sh
       - test_katello
     publishers:
       - gemset_cleanup
