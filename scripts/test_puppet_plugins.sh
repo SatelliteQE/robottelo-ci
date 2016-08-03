@@ -8,6 +8,6 @@ rvm use ruby-${ruby}@${gemset} --create
 rvm gemset empty --force
 gem install bundler --no-ri --no-rdoc
 
-bundle install
+PUPPET_VERSION=${puppet} bundle install
 
-bundle exec rake
+ONLY_OS=redhat-6-x86_64,redhat-7-x86_64 bundle exec rake
