@@ -6,6 +6,9 @@ import groovy.json.JsonSlurper
 stage "Create Archive Environment"
 node('rhel') {
 
+    // Remove old package report
+    sh 'rm -rf package_report.yaml'
+
     // Work around for parameters not being accessible in functions
     writeFile file: 'previous_snap', text: previousSnapVersion
     def version = readFile 'previous_snap'
