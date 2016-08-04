@@ -27,15 +27,15 @@ case "${TEST_TYPE}" in
     api|cli|ui|rhai|tier1|tier2|tier3 )
         make "test-foreman-${TEST_TYPE}" PYTEST_XDIST_NUMPROCESSES="${ROBOTTELO_WORKERS}"
         ;;
-    smoke-api|smoke-cli|smoke-ui )
+    endtoend-api|endtoend-cli|endtoend-ui )
         TEST_TYPE="$(echo ${TEST_TYPE} | cut -d- -f2)"
-        pytest "tests/foreman/smoke/test_${TEST_TYPE}_smoke.py"
+        pytest "tests/foreman/endtoend/test_${TEST_TYPE}_endtoend.py"
         ;;
     all )
         pytest tests/foreman/api tests/foreman/cli tests/foreman/ui
         ;;
-    smoke-all )
-        make test-foreman-smoke
+    endtoend-all )
+        make test-foreman-endtoend
         ;;
     * )
         echo "TEST_TYPE=\"${TEST_TYPE}\" not found."
