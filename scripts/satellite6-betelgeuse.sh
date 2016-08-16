@@ -17,4 +17,5 @@ user=${POLARION_USER}
 password=${POLARION_PASSWORD}
 default_project=${POLARION_DEFAULT_PROJECT}
 svn_repo=${POLARION_SVN_REPO}
+use_logstash=false
 EOF
