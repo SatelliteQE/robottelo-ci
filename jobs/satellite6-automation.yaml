@@ -777,10 +777,22 @@
     name: satellite6-upstream-trigger
     description: Triggers automation for Satellite 6 upstream
     node: sesame
+    parameters:
+        - string:
+            name: ROBOTTELO_WORKERS
+            default: '8'
+            description: Number of workers to use while running robottelo test suite
     triggers:
         - timed: 'H 19 * * *'
     builders:
+        - shell:
+            echo "BUILD_LABEL=Upstream $(date +%Y-%m-%d)" > properties.txt
+        - inject:
+            properties-file: properties.txt
         - trigger-builds:
             - project: |
                 satellite6-provisioning-upstream-rhel6,
                 satellite6-provisioning-upstream-rhel7,
+              predefined-parameters: |
+                BUILD_LABEL=${BUILD_LABEL}
+                ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}

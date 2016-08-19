@@ -14,11 +14,14 @@ if [ "${DISTRIBUTION}" = 'satellite6-zstream' ]; then
     DISTRIBUTION='satellite6-downstream'
 fi
 
+export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
+
 if [ "${DISTRIBUTION}" == 'satellite6-zstream' -o "${DISTRIBUTION}" == 'satellite6-downstream' ]; then
     # For example: The target_image in PROVISIONING_CONFIG file should be "qe-sat6-rhel7-base".
     BTARGET_IMAGE="${TARGET_IMAGE}"
     # Remove "-base" suffix for hostname.
     TARGET_IMAGE=`echo ${TARGET_IMAGE} | cut -d '-' -f1-3`
+    # Update SERVER_HOSTNAME for the snapshot based pipelines
     export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
     set +e
     fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
