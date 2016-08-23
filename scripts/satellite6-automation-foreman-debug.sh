@@ -8,7 +8,7 @@ fi
 # Disable error checking, for more information check the related issue
 # http://projects.theforeman.org/issues/13442
 set +e
-ssh "root@${SERVER_HOSTNAME}" foreman-debug -g -q -d ~/foreman-debug
+ssh "root@${SERVER_HOSTNAME}" foreman-debug -g -q -d "~/foreman-debug"
 set -e
 
-scp -r "root@${SERVER_HOSTNAME}:~/foreman-debug/foreman-debug.tar.xz" .
+scp -r "root@${SERVER_HOSTNAME}:~/foreman-debug.tar.xz" .
