@@ -441,7 +441,8 @@
     scm-branch: origin/master
     distribution:
         - cdn
-        - downstream
+        - downstream:
+            scm-branch: origin/6.2.z
         - zstream:
             scm-branch: origin/6.1.z
         - iso
