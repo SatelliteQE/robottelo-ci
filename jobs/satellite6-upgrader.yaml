@@ -28,15 +28,15 @@
         - choice:
             name: FROM_VERSION
             choices:
-                - '6.0'
                 - '6.1'
+                - '6.0'
             description: |
                 <p> Choose the currently installed Satellite version to upgrade to latest available.</p>
         - choice:
             name: TO_VERSION
             choices:
-                - '6.1'
                 - '6.2'
+                - '6.1'
         - choice:
             name: DISTRIBUTION
             choices:
@@ -59,29 +59,6 @@
             description: |
                 <p>Optional, Applicable only if CAPSULE_HOSTNAME value is provided</p>
                 <p>List of cv_name, environment, ak_name attached to subscription of capsule in given sequence.</p>
-        - string:
-            name: RHEV_SATELLITE
-            description: |
-                <p>Optional, If 'SATELLITE HOSTNAME' is not provided above.</p>
-                <p>Runs upgrade on below RHEV Satellite Image</p>
-        - string:
-            name: RHEV_CAPSULE
-            description: |
-                <p>Optional, If 'CAPSULE HOSTNAME' is not provided above.</p>
-                <p>Runs upgrade on below RHEV Capsule Image</p>
-        - string:
-            name: SATELLITE_IMAGE
-            description: |
-                <p> Optional, if 'not' SATELLITE_HOSTNAME and CAPSULE_HOSTNAME</p>
-                <p> RHEV Satellite Image name using which the the above instance will be created. The image should have older satellite version installed to perform upgrade.</p>
-                <p><strong> Please make sure that there is no other instance running on RHEV with same Image name. Else the results will be fail.</strong></p>
-        - string:
-            name: CAPSULE_IMAGE
-            description: |
-                <p> Optional, if 'not' SATELLITE_HOSTNAME and CAPSULE_HOSTNAME</p>
-                <p> RHEV Capsule Image name using which the the above instance will be created. The image should have older capsule version installed to perform upgrade.</p>
-                <p><strong> Please make sure that there is no other instance running on openstack with same Image name. Else the results may vary or fail.</strong></p>
-                <p> Provide only in the case of <strong>Capsule upgrade</strong>. i.e UPGRADE_PRODUCT = capsule </p>
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -90,7 +67,7 @@
             skip-tag: true
     wrappers:
         - build-name:
-            name: '#${BUILD_NUMBER} ${ENV,var="UPGRADE_PRODUCT"}_from_${ENV,var="FROM_VERSION"}_to_${ENV,var="TO_VERSION"}_${ENV,var="OS"}_Upgrade'
+            name: '#${BUILD_NUMBER} ${ENV,var="UPGRADE_PRODUCT"}_from_${ENV,var="FROM_VERSION"}_to_${ENV,var="TO_VERSION"}_${ENV,var="OS"}_Upgrade:${ENV,var="SATELLITE_HOSTNAME"}'
         - build-user-vars
         - config-file-provider:
             files:
