@@ -1,5 +1,5 @@
 - job:
-    name: satellite6-betelgeuse-test-case
+    name: polarion-test-case
     node: sesame
     scm:
         - git:
@@ -26,7 +26,7 @@
 
 
 - job-template:
-    name: satellite6-betelgeuse-test-run-{os}
+    name: polarion-test-run-{satellite_version}-{os}
     node: sesame
     scm:
         - git:
@@ -41,26 +41,28 @@
                 'The resulting test run id is going to be suffixed with tierN '
                 'to differentiate between all tiers.'
         - string:
-            name: RELEASE
+            name: POLARION_RELEASE
     wrappers:
         - inject-passwords:
             global: true
             mask-password-params: true
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="TEST_RUN_ID"}}'
     builders:
         - copyartifact:
-            project: satellite6-automation-downstream-{os}-tier1
+            project: automation-{satellite_version}-tier1-{os}
             filter: '*-results.xml'
             which-build: last-completed
         - copyartifact:
-            project: satellite6-automation-downstream-{os}-tier2
+            project: automation-{satellite_version}-tier2-{os}
             filter: '*-results.xml'
             which-build: last-completed
         - copyartifact:
-            project: satellite6-automation-downstream-{os}-tier3
+            project: automation-{satellite_version}-tier3-{os}
             filter: '*-results.xml'
             which-build: last-completed
         - copyartifact:
-            project: satellite6-automation-downstream-{os}-tier4
+            project: automation-{satellite_version}-tier4-{os}
             filter: '*-results.xml'
             which-build: last-completed
         - shining-panda:

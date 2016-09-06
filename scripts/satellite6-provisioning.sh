@@ -10,24 +10,34 @@ if [ "${STAGE_TEST}" = 'false' ]; then
 else
     source ${STAGE_CONFIG}
 fi
-if [ "${DISTRIBUTION}" = 'satellite6-zstream' ]; then
-    DISTRIBUTION='satellite6-downstream'
-fi
 
 export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
 
-if [ "${DISTRIBUTION}" == 'satellite6-zstream' -o "${DISTRIBUTION}" == 'satellite6-downstream' ]; then
-    # For example: The target_image in PROVISIONING_CONFIG file should be "qe-sat6-rhel7-base".
-    BTARGET_IMAGE="${TARGET_IMAGE}"
-    # Remove "-base" suffix for hostname.
-    TARGET_IMAGE=`echo ${TARGET_IMAGE} | cut -d '-' -f1-3`
-    # Update SERVER_HOSTNAME for the snapshot based pipelines
-    export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
-    set +e
-    fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
-    set -e
-    # Revert the target_image name for creating and destroying of the base-image.
-    export TARGET_IMAGE="${BTARGET_IMAGE}"
+# For example: The target_image in PROVISIONING_CONFIG file should be "qe-sat6y-rhel7-base".
+BTARGET_IMAGE="${TARGET_IMAGE}"
+# Remove "-base" suffix for hostname.
+TARGET_IMAGE=`echo ${TARGET_IMAGE} | cut -d '-' -f1-3`
+# Update SERVER_HOSTNAME for the snapshot based pipelines
+export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
+set +e
+fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
+set -e
+# Revert the target_image name for creating and destroying of the base-image.
+export TARGET_IMAGE="${BTARGET_IMAGE}"
+
+# Assign DISTRIBUTION to trigger things appropriately from automation-tools.
+if [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL' ]; then
+    export DISTRIBUTION="satellite6-downstream"
+elif [ "${SATELLITE_DISTRIBUTION}" = 'GA' ]; then
+    export DISTRIBUTION="satellite6-cdn"
+elif [ "${SATELLITE_DISTRIBUTION}" = 'BETA' ]; then
+    export DISTRIBUTION="satellite6-beta"
+elif [ "${SATELLITE_DISTRIBUTION}" = 'UPSTREAM' ]; then
+    export DISTRIBUTION="satellite6-upstream"
+elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL REPOFILE' ]; then
+    export DISTRIBUTION="satellite6-repofile"
+elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL AK' ]; then
+    export DISTRIBUTION="satellite6-activationkey"
 fi
 
 # Write a properties file to allow passing variables to other build steps
@@ -38,6 +48,15 @@ echo "NETMASK=${NETMASK}" >> build_env.properties
 echo "GATEWAY=${GATEWAY}" >> build_env.properties
 echo "BRIDGE=${BRIDGE}" >> build_env.properties
 echo "DISCOVERY_ISO=${DISCOVERY_ISO}" >> build_env.properties
+
+
+# POLARION_RELEASE depends upon SATELLITE_VERSION
+if [ "${SATELLITE_VERSION}" = "6.3" ]; then
+    ZRELEASE='0'
+else
+    ZRELEASE='z'
+fi
+echo "POLARION_RELEASE='Satellite ${SATELLITE_VERSION}.${ZRELEASE}'" >> build_env.properties
 
 # Run installation after writing the build_env.properties to make sure the
 # values are available for the post build actions, specially the foreman-debug
@@ -52,18 +71,15 @@ echo "Hostname: ${SERVER_HOSTNAME}"
 echo "Credentials: admin/changeme"
 echo "========================================"
 echo
-
-if [ "${DISTRIBUTION}" == 'satellite6-zstream' -o "${DISTRIBUTION}" == 'satellite6-downstream' ]; then
-    echo "========================================"
-    echo "Shutting down the Base instance of ${SERVER_HOSTNAME} gracefully"
-    # Shutdown the Satellite6 services before shutdown.
-    ssh -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" katello-service stop
-    # Try to shutdown the Satellite6 instance gracefully and sleep for a while.
-    ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh shutdown ${TARGET_IMAGE}
-    sleep 120
-    set +e
-    # Destroy the sat6 instance anyways if for some reason virsh shutdown couldn't gracefully shut it down.
-    ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh destroy ${TARGET_IMAGE}
-    set -e
-    echo "========================================"
-fi
+echo "========================================"
+echo "Shutting down the Base instance of ${SERVER_HOSTNAME} gracefully"
+# Shutdown the Satellite6 services before shutdown.
+ssh -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" katello-service stop
+# Try to shutdown the Satellite6 instance gracefully and sleep for a while.
+ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh shutdown ${TARGET_IMAGE}
+sleep 120
+set +e
+# Destroy the sat6 instance anyways if for some reason virsh shutdown couldn't gracefully shut it down.
+ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh destroy ${TARGET_IMAGE}
+set -e
+echo "========================================"

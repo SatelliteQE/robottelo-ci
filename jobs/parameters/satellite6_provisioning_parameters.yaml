@@ -1,0 +1,28 @@
+- parameter:
+    name: satellite6-provisioning-parameters
+    parameters:
+        - choice:
+            name: SELINUX_MODE
+            choices:
+                - 'enforcing'
+                - 'permissive'
+        - choice:
+            name: PROXY_MODE
+            choices:
+                - 'authenticated'
+                - 'non-authenticated'
+                - 'no-proxy'
+        - string:
+            name: ROBOTTELO_WORKERS
+            default: '8'
+            description: Number of workers to use while running robottelo test suite
+        - string:
+            name: BUILD_LABEL
+            description: Specify the build label of the Satellite
+        - bool:
+            name: STAGE_TEST
+            default: false
+            description: |
+                Points to RHSM stage for stage installation test. Used only
+                in CDN provisioning.
+

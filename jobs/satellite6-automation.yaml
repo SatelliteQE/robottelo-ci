@@ -2,67 +2,35 @@
 # Job Templates
 #==============================================================================
 - job-template:
-    name: 'satellite6-provisioning-{distribution}-{os}'
+    name: 'provisioning-{satellite_version}-{os}'
     node: sesame
+    properties: 
+        - satellite6-build_blocker
     parameters:
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                - 'INTERNAL AK'
+                - 'INTERNAL'
+                - 'INTERNAL REPOFILE'
+                - 'GA'
+                - 'BETA'
+                - 'UPSTREAM'
+            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
         - string:
             name: BASE_URL
-            description: Required for downstream and iso distributions
+            description: Required when Satellite distribution is INTERNAL
         - string:
             name: CAPSULE_URL
-            description: Required for downstream, iso, distributions for latest External Capsule setups. |
+            description: Required when Satellite distribution is INTERNAL and we require latest External Capsule setups. |
                 Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
                 Leaving this blank picks the latest CAPSULE repo. Override if required.
         - string:
             name: TOOLS_URL
-            description: Required for downstream, iso, distributions for latest sattools client packages. |
+            description: Required when Satellite distribution is INTERNAL and we require latest SatTools Client packages. |
                 Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
                 Leaving this blank picks the latest SATTOOLS repo. Override if required.
-        - choice:
-            name: SATELLITE_VERSION
-            choices:
-                - '6.2'
-                - '6.1'
-                - '6.0'
-            description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
-        - choice:
-            name: SATELLITE_RELEASE
-            choices:
-                - 'GA'
-                - 'BETA'
-            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
-        - choice:
-            name: SELINUX_MODE
-            choices:
-                - 'enforcing'
-                - 'permissive'
-        - choice:
-            name: PROXY_MODE
-            choices:
-                - 'authenticated'
-                - 'non-authenticated'
-                - 'no-proxy'
-        - bool:
-            name: CHECK_GPG_SIGNATURES
-            default: false
-            description: |
-                Check packages' GPG signatures when installing from ISO. Used
-                only in ISO provisioning.
-        - bool:
-            name: STAGE_TEST
-            default: false
-            description: |
-                Points to RHSM stage for stage installation test. Used only
-                in CDN provisioning.
-        - bool:
-            name: CLEANUP_SATELLITE_ORGS
-            default: false
-        - string:
-            name: BUILD_LABEL
-        - string:
-            name: ROBOTTELO_WORKERS
-        - string:
-            name: RELEASE
+        - satellite6-provisioning-parameters
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -77,7 +45,7 @@
                   variable: FAKE_CERT_CONFIG
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426617852908
                   variable: PROXY_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421176025129
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421176025444
                   variable: PROVISIONING_CONFIG
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
                   variable: SUBSCRIPTION_CONFIG
@@ -88,7 +56,7 @@
         - inject:
             properties-content: |
                 DISTRO={os}
-                DISTRIBUTION=satellite6-{distribution}
+                SATELLITE_VERSION={satellite_version}
         - build-name:
             name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
     builders:
@@ -104,29 +72,29 @@
         - inject:
             properties-file: build_env.properties
         - trigger-builds:
-            - project: 'satellite6-automation-{distribution}-{os}-tier1'
+            - project: 'automation-{satellite_version}-tier1-{os}'
               predefined-parameters: |
-                SERVER_HOSTNAME=$SERVER_HOSTNAME
-                TOOLS_REPO=$TOOLS_REPO
-                SUBNET=$SUBNET
-                NETMASK=$NETMASK
-                GATEWAY=$GATEWAY
-                BRIDGE=$BRIDGE
-                BUILD_LABEL=$BUILD_LABEL
-                DISCOVERY_ISO=$DISCOVERY_ISO
-                CLEANUP_SATELLITE_ORGS=$CLEANUP_SATELLITE_ORGS
-                ROBOTTELO_WORKERS=$ROBOTTELO_WORKERS
-                RELEASE=$RELEASE
+                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                TOOLS_REPO=${{TOOLS_REPO}}
+                SUBNET=${{SUBNET}}
+                NETMASK=${{NETMASK}}
+                GATEWAY=${{GATEWAY}}
+                BRIDGE=${{BRIDGE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+                DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                POLARION_RELEASE=${{POLARION_RELEASE}}
     publishers:
         - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
-    name: 'satellite6-automation-{distribution}-{os}-tier1'
+    name: 'automation-{satellite_version}-tier1-{os}'
     node: sesame
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -141,45 +109,41 @@
         - satellite6-automation-wrappers
         - inject:
             properties-content: |
-                DISTRIBUTION=satellite6-{distribution}
+                SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier1
                 DISTRO={os}
     builders:
         - satellite6-automation-builders
+        - trigger-builds:
+          - project: 'automation-{satellite_version}-tier2-{os}'
+            current-parameters: true
         - conditional-step:
             condition-kind: regex-match
-            regex: (satellite6-upstream|satellite6-downstream|satellite6-cdn|satellite6-zstream)
-            label: ${{ENV,var="DISTRIBUTION"}}
+            regex: (6\.[123])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
-                    - project: 'satellite6-automation-{distribution}-{os}-tier2'
-                      current-parameters: true
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (satellite6-downstream)
-            label: ${{ENV,var="DISTRIBUTION"}}
-            steps:
-              - trigger-builds:
-                - project: 'satellite6-automation-performance-report'
-                  predefined-parameters: |
-                    OS={os}
-                    BUILD_LABEL=${{BUILD_LABEL}}
-                  parameter-factories:
-                    - factory: binaryfile
-                      parameter-name: JUNIT
-                      file-pattern: tier1-parallel-results.xml
-                      no-files-found-action: FAIL
+                  - project: 'satellite6-automation-performance-report'
+                    predefined-parameters: |
+                      OS={os}
+                      BUILD_LABEL=${{BUILD_LABEL}}
+                    parameter-factories:
+                      - factory: binaryfile
+                        parameter-name: JUNIT
+                        file-pattern: tier1-parallel-results.xml
+                        no-files-found-action: FAIL
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
-    name: 'satellite6-automation-{distribution}-{os}-tier2'
+    name: 'automation-{satellite_version}-tier2-{os}'
     node: sesame
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -194,13 +158,13 @@
         - satellite6-automation-wrappers
         - inject:
             properties-content: |
-                DISTRIBUTION=satellite6-{distribution}
+                SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier2
                 DISTRO={os}
     builders:
         - satellite6-automation-builders
         - trigger-builds:
-            - project: 'satellite6-automation-{distribution}-{os}-tier3'
+            - project: 'automation-{satellite_version}-tier3-{os}'
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
@@ -208,11 +172,12 @@
         - satellite6-automation-archiver
 
 - job-template:
-    name: 'satellite6-automation-{distribution}-{os}-tier3'
+    name: 'automation-{satellite_version}-tier3-{os}'
     node: sesame
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -227,18 +192,18 @@
         - satellite6-automation-wrappers
         - inject:
             properties-content: |
-                DISTRIBUTION=satellite6-{distribution}
+                SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier3
                 DISTRO={os}
     builders:
         - satellite6-automation-builders
         - conditional-step:
             condition-kind: regex-match
-            regex: (satellite6-cdn|satellite6-downstream|satellite6-zstream)
-            label: ${{ENV,var="DISTRIBUTION"}}
+            regex: (6\.[23])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
-                    - project: 'satellite6-automation-{distribution}-{os}-tier4'
+                    - project: 'automation-{satellite_version}-tier4-{os}'
                       current-parameters: true
 
     publishers:
@@ -247,11 +212,12 @@
         - satellite6-automation-archiver
 
 - job-template:
-    name: 'satellite6-automation-{distribution}-{os}-rhai'
+    name: 'automation-{satellite_version}-rhai-{os}'
     node: sesame
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -266,7 +232,7 @@
         - satellite6-automation-wrappers
         - inject:
             properties-content: |
-                DISTRIBUTION=satellite6-{distribution}
+                SATELLITE_VERSION={satellite_version}
                 ENDPOINT=rhai
                 DISTRO={os}
     builders:
@@ -289,11 +255,12 @@
             success: true
 
 - job-template:
-    name: 'satellite6-automation-{distribution}-{os}-tier4'
+    name: 'automation-{satellite_version}-tier4-{os}'
     node: sesame
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -308,39 +275,39 @@
         - satellite6-automation-wrappers
         - inject:
             properties-content: |
-                DISTRIBUTION=satellite6-{distribution}
+                SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier4
                 DISTRO={os}
     builders:
         - satellite6-automation-builders
         - conditional-step:
             condition-kind: regex-match
-            regex: (satellite6-cdn|satellite6-downstream|satellite6-zstream)
-            label: ${{ENV,var="DISTRIBUTION"}}
+            regex: (6\.[123])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
-                    - project: 'satellite6-automation-{distribution}-{os}-rhai'
+                    - project: 'automation-{satellite_version}-rhai-{os}'
                       current-parameters: true
         - conditional-step:
             condition-kind: regex-match
-            regex: (satellite6-downstream)
-            label: ${{ENV,var="DISTRIBUTION"}}
+            regex: (6\.[23])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
-                    - project: 'satellite6-betelgeuse-test-run-{os}'
+                    - project: 'polarion-test-run-{satellite_version}-{os}'
                       predefined-parameters: |
                           TEST_RUN_ID=$BUILD_LABEL {os}
-                          RELEASE=$RELEASE
+                          POLARION_RELEASE=$POLARION_RELEASE
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
-    name: 'satellite6-automation-report-downstream-{os}'
+    name: 'report-automation-results-{satellite_version}-{os}'
     triggers:
         - reverse:
-            jobs: 'satellite6-automation-downstream-{os}-tier4'
+            jobs: 'automation-{satellite_version}-tier4-{os}'
             result: unstable
     scm:
         - git:
@@ -351,19 +318,19 @@
     builders:
         - shell: rm -f *.xml
         - copyartifact:
-            project: 'satellite6-automation-downstream-{os}-tier1'
+            project: 'automation-{satellite_version}-tier4-{os}'
             filter: '*-results.xml'
             which-build: last-successful
         - copyartifact:
-            project: 'satellite6-automation-downstream-{os}-tier2'
+            project: 'automation-{satellite_version}-tier2-{os}'
             filter: '*-results.xml'
             which-build: last-successful
         - copyartifact:
-            project: 'satellite6-automation-downstream-{os}-tier3'
+            project: 'automation-{satellite_version}-tier3-{os}'
             filter: '*-results.xml'
             which-build: last-successful
         - copyartifact:
-            project: 'satellite6-automation-downstream-{os}-tier4'
+            project: 'automation-{satellite_version}-tier4-{os}'
             filter: '*-results.xml'
             which-build: last-successful
         - shining-panda:
@@ -378,7 +345,7 @@
             recipients: ${{QE_EMAIL_LIST}}
             success: true
             failure: false
-            subject: 'Satellite 6 Automation Report for {os}'
+            subject: 'Satellite {satellite_version} Automation Report for {os}'
             body: |
                 The build ${{BUILD_URL}} has been completed.
 
@@ -386,8 +353,10 @@
             attachments: report.html
 
 - job-template:
-    name: 'satellite6-upgrade-downstream-{os}'
+    name: 'automation-upgrade-{os}'
     node: sesame
+    properties:
+        - satellite6-build_blocker
     parameters:
         - choice:
             name: FROM_VERSION
@@ -418,7 +387,7 @@
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
                   variable: SUBSCRIPTION_CONFIG
         - build-name:
-            name: '#${{BUILD_NUMBER}} Upgrade_from_${{FROM_VERSION}}_${{TO_VERSION}}_downstream_{os}'
+            name: '#${{BUILD_NUMBER}} Upgrade_{os}_from_${{FROM_VERSION}}_to_${{TO_VERSION}}'
     builders:
         - shining-panda:
             build-environment: virtualenv
@@ -433,42 +402,22 @@
         - archive:
             artifacts: '*.tar.xz'
 
-#==============================================================================
-# Project
-#==============================================================================
-- project:
-    name: satellite6-automation
-    scm-branch: origin/master
-    distribution:
-        - cdn
-        - downstream:
-            scm-branch: origin/6.2.z
-        - zstream:
-            scm-branch: origin/6.1.z
-        - iso
-        - upstream
-    os:
-        - rhel6
-        - rhel7
-    jobs:
-        - 'satellite6-provisioning-{distribution}-{os}'
-        - 'satellite6-automation-{distribution}-{os}-tier1'
-        - 'satellite6-automation-{distribution}-{os}-tier2'
-        - 'satellite6-automation-{distribution}-{os}-tier3'
-        - 'satellite6-automation-{distribution}-{os}-rhai'
-        - 'satellite6-automation-{distribution}-{os}-tier4'
-        - 'satellite6-betelgeuse-test-run-{os}'
-        - 'satellite6-automation-report-downstream-{os}'
-        - 'satellite6-upgrade-downstream-{os}'
-
-#==============================================================================
-# Jobs
-#==============================================================================
-- job:
-    name: satellite6-downstream-trigger
-    description: Triggers downstream automation for Satellite 6
+- job-template:
+    name: trigger-satellite{satellite_version}
+    description: Triggers automation for Satellite 6
     node: sesame
+    properties:
+        - satellite6-build_blocker
     parameters:
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                 - 'INTERNAL AK'
+                 - 'INTERNAL'
+                 - 'INTERNAL REPOFILE'
+                 - 'GA'
+                 - 'BETA'
+            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
         - string:
             name: RHEL6_SATELLITE_URL
             description: |
@@ -493,296 +442,112 @@
             name: RHEL7_TOOLS_URL
             description: |
                 Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/os
-        - choice:
-            name: SATELLITE_VERSION
-            choices:
-                - '6.2'
-                - '6.1'
-                - '6.0'
-            description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
-        - choice:
-            name: SATELLITE_RELEASE
-            choices:
-                 - 'GA'
-                 - 'BETA'
-            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
-        - choice:
-            name: SELINUX_MODE
-            choices:
-                - 'enforcing'
-                - 'permissive'
-        - string:
-            name: BUILD_LABEL
-        - choice:
-            name: UPGRADE_FROM
-            choices:
-                - '6.0'
-                - '6.1'
-            description: |
-                <p>Choose the currently installed Satellite version to upgrade to latest available.</p>
-        - choice:
-            name: UPGRADE_TO
-            choices:
-                - '6.0'
-                - '6.1'
-        - bool:
-            name: CLEANUP_SATELLITE_ORGS
-            default: false
-        - string:
-            name: ROBOTTELO_WORKERS
-            default: '8'
-            description: Number of workers to use while running robottelo test suite
-        - choice:
-            name: RELEASE
-            choices:
-                - 'Satellite 6.2.z'
-                - 'Satellite 6.3.0'
-            description: This should match the release in Polarion.
+        - satellite6-provisioning-parameters
     wrappers:
+        - config-file-provider:
+            files:
+                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
+                  variable: SATELLITE6_REPOS_URLS
         - build-name:
-            name: '#${BUILD_NUMBER} ${ENV,var="BUILD_LABEL"}'
-        - config-file-provider:
-            files:
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
-                  variable: SATELLITE6_REPOS_URLS
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
     builders:
         - shell: |
-            source ${SATELLITE6_REPOS_URLS}
-            echo "RHEL6_SATELLITE_URL=${RHEL6_SATELLITE_URL:-${SATELLITE6_RHEL6}}" > properties.txt
-            echo "RHEL6_CAPSULE_URL=${RHEL6_CAPSULE_URL:-${CAPSULE_RHEL6}}" >> properties.txt
-            echo "RHEL6_TOOLS_URL=${RHEL6_TOOLS_URL:-${TOOLS_RHEL6}}" >> properties.txt
-            echo "RHEL7_SATELLITE_URL=${RHEL7_SATELLITE_URL:-${SATELLITE6_RHEL7}}" >> properties.txt
-            echo "RHEL7_CAPSULE_URL=${RHEL7_CAPSULE_URL:-${CAPSULE_RHEL7}}" >> properties.txt
-            echo "RHEL7_TOOLS_URL=${RHEL7_TOOLS_URL:-${TOOLS_RHEL7}}" >> properties.txt
+            source ${{SATELLITE6_REPOS_URLS}}
+            echo "RHEL6_SATELLITE_URL=${{RHEL6_SATELLITE_URL:-${{SATELLITE6_RHEL6}}}}" > properties.txt
+            echo "RHEL6_CAPSULE_URL=${{RHEL6_CAPSULE_URL:-${{CAPSULE_RHEL6}}}}" >> properties.txt
+            echo "RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL:-${{TOOLS_RHEL6}}}}" >> properties.txt
+            echo "RHEL7_SATELLITE_URL=${{RHEL7_SATELLITE_URL:-${{SATELLITE6_RHEL7}}}}" >> properties.txt
+            echo "RHEL7_CAPSULE_URL=${{RHEL7_CAPSULE_URL:-${{CAPSULE_RHEL7}}}}" >> properties.txt
+            echo "RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL:-${{TOOLS_RHEL7}}}}" >> properties.txt
         - inject:
             properties-file: properties.txt
         - trigger-builds:
-            - project: satellite6-provisioning-downstream-rhel6
+            - project: provisioning-{satellite_version}-rhel6
               predefined-parameters: |
-                BASE_URL=${RHEL6_SATELLITE_URL}
-                CAPSULE_URL=${RHEL6_CAPSULE_URL}
-                TOOLS_URL=${RHEL6_TOOLS_URL}
-                SELINUX_MODE=${SELINUX_MODE}
-                BUILD_LABEL=${BUILD_LABEL}
-                SATELLITE_VERSION=${SATELLITE_VERSION}
-                SATELLITE_RELEASE=${SATELLITE_RELEASE}
-                CLEANUP_SATELLITE_ORGS=${CLEANUP_SATELLITE_ORGS}
-                ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
-                RELEASE=${RELEASE}
+                BASE_URL=${{RHEL6_SATELLITE_URL}}
+                CAPSULE_URL=${{RHEL6_CAPSULE_URL}}
+                TOOLS_URL=${{RHEL6_TOOLS_URL}}
+                SELINUX_MODE=${{SELINUX_MODE}}
+                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                PROXY_MODE=${{PROXY_MODE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
         - trigger-builds:
-            - project: satellite6-provisioning-downstream-rhel7
+            - project: provisioning-{satellite_version}-rhel7
               predefined-parameters: |
-                BASE_URL=${RHEL7_SATELLITE_URL}
-                CAPSULE_URL=${RHEL7_CAPSULE_URL}
-                TOOLS_URL=${RHEL7_TOOLS_URL}
-                SELINUX_MODE=${SELINUX_MODE}
-                BUILD_LABEL=${BUILD_LABEL}
-                SATELLITE_VERSION=${SATELLITE_VERSION}
-                SATELLITE_RELEASE=${SATELLITE_RELEASE}
-                CLEANUP_SATELLITE_ORGS=${CLEANUP_SATELLITE_ORGS}
-                ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
-                RELEASE=${RELEASE}
+                BASE_URL=${{RHEL7_SATELLITE_URL}}
+                CAPSULE_URL=${{RHEL7_CAPSULE_URL}}
+                TOOLS_URL=${{RHEL7_TOOLS_URL}}
+                SELINUX_MODE=${{SELINUX_MODE}}
+                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                PROXY_MODE=${{PROXY_MODE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
         - trigger-builds:
-            - project: satellite6-betelgeuse-test-case
+            - project: polarion-test-case
         - trigger-builds:
-            - project: satellite6-upgrade-downstream-rhel6
+            - project: automation-upgrade-rhel6
               predifined-parameters: |
-                FROM_VERSION=${UPGRADE_FROM}
-                TO_VERSION=${UPGRADE_TO}
+                TO_VERSION={satellite_version}
+                FROM_VERSION=$(echo $TO_VERSION - 0.1|bc)
         - trigger-builds:
-            - project: satellite6-upgrade-downstream-rhel7
+            - project: automation-upgrade-rhel7
               predifined-parameters: |
-                FROM_VERSION=${UPGRADE_FROM}
-                TO_VERSION=${UPGRADE_TO}
+                TO_VERSION={satellite_version}
+                FROM_VERSION=$(echo $TO_VERSION - 0.1|bc)
 
-- job:
-    name: satellite6-iso-trigger
-    description: Triggers ISO automation for Satellite 6
-    node: sesame
-    parameters:
-        - string:
-            name: RHEL6_ISO_SATELLITE_URL
-            description: |
-                Leave it blank to install the latest stable.
-        - string:
-            name: RHEL6_ISO_CAPSULE_URL
-            description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/Capsule/x86_64/iso
-        - string:
-            name: RHEL6_ISO_TOOLS_URL
-            description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/sattools/x86_64/iso
-        - string:
-            name: RHEL7_ISO_SATELLITE_URL
-            description: |
-                Leave it blank to install the latest stable.
-        - string:
-            name: RHEL7_ISO_CAPSULE_URL
-            description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/Capsule/x86_64/iso
-        - string:
-            name: RHEL7_ISO_TOOLS_URL
-            description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/iso
-        - choice:
-            name: SATELLITE_VERSION
-            choices:
-                - '6.2'
-                - '6.1'
-                - '6.0'
-            description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
-        - choice:
-            name: SATELLITE_RELEASE
-            choices:
-                - 'GA'
-                - 'BETA'
-            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
-        - choice:
-            name: SELINUX_MODE
-            choices:
-                - 'enforcing'
-                - 'permissive'
-        - bool:
-            name: CHECK_GPG_SIGNATURES
-            default: false
-            description: |
-                Check packages' GPG signatures when installing from ISO.
-        - string:
-            name: BUILD_LABEL
-    wrappers:
-        - config-file-provider:
-            files:
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
-                  variable: SATELLITE6_REPOS_URLS
-    builders:
-        - shell: |
-            source ${SATELLITE6_REPOS_URLS}
-            echo "RHEL6_ISO_SATELLITE_URL=${RHEL6_ISO_SATELLITE_URL:-${SATELLITE6_RHEL6_ISO}}" > properties.txt
-            echo "RHEL6_ISO_CAPSULE_URL=${RHEL6_ISO_CAPSULE_URL:-${CAPSULE_RHEL6_ISO}}" >> properties.txt
-            echo "RHEL6_ISO_TOOLS_URL=${RHEL6_ISO_TOOLS_URL:-${TOOLS_RHEL6_ISO}}" >> properties.txt
-            echo "RHEL7_ISO_SATELLITE_URL=${RHEL7_ISO_SATELLITE_URL:-${SATELLITE6_RHEL7_ISO}}" >> properties.txt
-            echo "RHEL7_ISO_CAPSULE_URL=${RHEL7_ISO_CAPSULE_URL:-${CAPSULE_RHEL7_ISO}}" >> properties.txt
-            echo "RHEL7_ISO_TOOLS_URL=${RHEL7_ISO_TOOLS_URL:-${TOOLS_RHEL7_ISO}}" >> properties.txt
-        - inject:
-            properties-file: properties.txt
-        - trigger-builds:
-            - project: satellite6-provisioning-iso-rhel6
-              predefined-parameters: |
-                BASE_URL=${RHEL6_ISO_SATELLITE_URL}
-                CAPSULE_URL=${RHEL6_ISO_CAPSULE_URL}
-                TOOLS_URL=${RHEL6_ISO_TOOLS_URL}
-                SELINUX_MODE=${SELINUX_MODE}
-                CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
-                BUILD_LABEL=${BUILD_LABEL}
-                SATELLITE_VERSION=${SATELLITE_VERSION}
-                SATELLITE_RELEASE=${SATELLITE_RELEASE}
-        - trigger-builds:
-            - project: satellite6-provisioning-iso-rhel7
-              predefined-parameters: |
-                BASE_URL=${RHEL7_ISO_SATELLITE_URL}
-                CAPSULE_URL=${RHEL7_ISO_CAPSULE_URL}
-                TOOLS_URL=${RHEL7_ISO_TOOLS_URL}
-                SELINUX_MODE=${SELINUX_MODE}
-                CHECK_GPG_SIGNATURES=${CHECK_GPG_SIGNATURES}
-                BUILD_LABEL=${BUILD_LABEL}
-                SATELLITE_VERSION=${SATELLITE_VERSION}
-                SATELLITE_RELEASE=${SATELLITE_RELEASE}
+#==============================================================================
+# Project
+#==============================================================================
+- project:
+    name: satellite6-automation
+    scm-branch: origin/master
+    satellite_version:
+        - '6.1':
+            scm-branch: origin/6.1.z
+        - '6.2':
+            scm-branch: origin/6.2.z
+        - '6.3'
+        - 'nightly'
+    os:
+        - 'rhel6'
+        - 'rhel7'
+    jobs:
+        - 'provisioning-{satellite_version}-{os}'
+        - 'automation-{satellite_version}-tier1-{os}'
+        - 'automation-{satellite_version}-tier2-{os}'
+        - 'automation-{satellite_version}-tier3-{os}'
+        - 'automation-{satellite_version}-tier4-{os}'
+        - 'automation-{satellite_version}-rhai-{os}'
+        - 'polarion-test-run-{satellite_version}-{os}'
+        - 'report-automation-results-{satellite_version}-{os}'
+        - 'automation-upgrade-{os}'
 
-- job:
-    name: satellite6-zstream-trigger
-    description: Triggers ZSTREAM automation for Satellite 6
-    node: sesame
-    parameters:
-        - string:
-            name: RHEL6_SATELLITE_URL
-            description: |
-                Leave it blank to install the latest stable.
-        - string:
-            name: RHEL6_CAPSULE_URL
-            description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/Capsule/x86_64/iso
-        - string:
-            name: RHEL6_TOOLS_URL
-            description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/sattools/x86_64/iso
-        - string:
-            name: RHEL7_SATELLITE_URL
-            description: |
-                Leave it blank to install the latest stable.
-        - string:
-            name: RHEL7_CAPSULE_URL
-            description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/Capsule/x86_64/iso
-        - string:
-            name: RHEL7_TOOLS_URL
-            description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/iso
-        - choice:
-            name: SATELLITE_VERSION
-            choices:
-                - '6.2'
-                - '6.1'
-                - '6.0'
-            description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
-        - choice:
-            name: SATELLITE_RELEASE
-            choices:
-                - 'GA'
-                - 'BETA'
-            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
-        - choice:
-            name: SELINUX_MODE
-            choices:
-                - 'enforcing'
-                - 'permissive'
-        - string:
-            name: BUILD_LABEL
-    wrappers:
-        - config-file-provider:
-            files:
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
-                  variable: SATELLITE6_REPOS_URLS
-    builders:
-        - shell: |
-            source ${SATELLITE6_REPOS_URLS}
-            echo "RHEL6_SATELLITE_URL=${RHEL6_SATELLITE_URL:-${SATELLITE6_RHEL6}}" > properties.txt
-            echo "RHEL6_CAPSULE_URL=${RHEL6_CAPSULE_URL:-${CAPSULE_RHEL6}}" >> properties.txt
-            echo "RHEL6_TOOLS_URL=${RHEL6_TOOLS_URL:-${TOOLS_RHEL6}}" >> properties.txt
-            echo "RHEL7_SATELLITE_URL=${RHEL7_SATELLITE_URL:-${SATELLITE6_RHEL7}}" >> properties.txt
-            echo "RHEL7_CAPSULE_URL=${RHEL7_CAPSULE_URL:-${CAPSULE_RHEL7}}" >> properties.txt
-            echo "RHEL7_TOOLS_URL=${RHEL7_TOOLS_URL:-${TOOLS_RHEL7}}" >> properties.txt
-        - inject:
-            properties-file: properties.txt
-        - trigger-builds:
-            - project: satellite6-provisioning-zstream-rhel6
-              predefined-parameters: |
-                BASE_URL=${RHEL6_SATELLITE_URL}
-                CAPSULE_URL=${RHEL6_CAPSULE_URL}
-                TOOLS_URL=${RHEL6_TOOLS_URL}
-                SELINUX_MODE=${SELINUX_MODE}
-                BUILD_LABEL=${BUILD_LABEL}
-                SATELLITE_VERSION=${SATELLITE_VERSION}
-                SATELLITE_RELEASE=${SATELLITE_RELEASE}
-        - trigger-builds:
-            - project: satellite6-provisioning-zstream-rhel7
-              predefined-parameters: |
-                BASE_URL=${RHEL7_SATELLITE_URL}
-                CAPSULE_URL=${RHEL7_CAPSULE_URL}
-                TOOLS_URL=${RHEL7_TOOLS_URL}
-                SELINUX_MODE=${SELINUX_MODE}
-                BUILD_LABEL=${BUILD_LABEL}
-                SATELLITE_VERSION=${SATELLITE_VERSION}
-                SATELLITE_RELEASE=${SATELLITE_RELEASE}
 
+# Let's have a separate project for triggers.
+- project:
+    name: satellite6-triggers
+    satellite_version:
+        - '6.1'
+        - '6.2'
+        - '6.3'
+    jobs:
+        - 'trigger-satellite{satellite_version}'
+#==============================================================================
+# Jobs
+#==============================================================================
 - job:
-    name: satellite6-upstream-trigger
-    description: Triggers automation for Satellite 6 upstream
+    name: trigger-nightly
+    description: Triggers automation for Satellite 6 upstream using katello-deploy.
     node: sesame
     parameters:
         - string:
             name: ROBOTTELO_WORKERS
             default: '8'
             description: Number of workers to use while running robottelo test suite
+        - string:
+            name: SATELLITE_DISTRIBUTION
+            default: 'UPSTREAM'
     triggers:
         - timed: 'H 19 * * *'
     builders:
@@ -792,8 +557,9 @@
             properties-file: properties.txt
         - trigger-builds:
             - project: |
-                satellite6-provisioning-upstream-rhel6,
-                satellite6-provisioning-upstream-rhel7,
+                provisioning-nightly-rhel6,
+                provisioning-nightly-rhel7,
               predefined-parameters: |
                 BUILD_LABEL=${BUILD_LABEL}
                 ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
+                SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}
