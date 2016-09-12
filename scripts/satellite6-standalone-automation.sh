@@ -1,18 +1,22 @@
 set -o nounset
 
-if [ "${ROBOTTELO_BRANCH}" = "6.1.z" ]; then
+if [ -f "requirements-freeze.txt" ]; then
     pip install -U -r requirements-freeze.txt
 else
     pip install -U -r requirements.txt docker-py pytest-xdist
 fi
 
-cp "${ROBOTTELO_CONFIG}" ./robottelo.properties
+if [ -n "${ROBOTTELO_PROPERTIES:-}" ]; then
+    echo "${ROBOTTELO_PROPERTIES}" > ./robottelo.properties
+else
+    cp "${ROBOTTELO_CONFIG}" ./robottelo.properties
 
-sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
-sed -i "s/^ssh_username.*/ssh_username=${SSH_USER}/" robottelo.properties
+    sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
+    sed -i "s/^ssh_username.*/ssh_username=${SSH_USER}/" robottelo.properties
 
-sed -i "s/^admin_username.*/admin_username=${FOREMAN_ADMIN_USER}/" robottelo.properties
-sed -i "s/^admin_password.*/admin_password=${FOREMAN_ADMIN_PASSWORD}/" robottelo.properties
+    sed -i "s/^admin_username.*/admin_username=${FOREMAN_ADMIN_USER}/" robottelo.properties
+    sed -i "s/^admin_password.*/admin_password=${FOREMAN_ADMIN_PASSWORD}/" robottelo.properties
+fi
 
 pytest() {
     $(which py.test) -v --junit-xml=foreman-results.xml -m "${PYTEST_MARKS}" "$@"
