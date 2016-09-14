@@ -67,6 +67,13 @@
             default: '4'
             description: |
                 You can override this to other value of your choice.
+        - text:
+            name: ROBOTTELO_PROPERTIES
+            description: |
+                <p>You can provide robottelo.properties file content here</p>
+                <p><strong>If this parameter is not blank then SERVER_HOSTNAME,
+                SSH_USER, FOREMAN_ADMIN_USER and FOREMAN_ADMIN_PASSWORD
+                will be ignored</strong></p>
     scm:
         - git:
             url: ${ROBOTTELO_REPO}
