@@ -1,8 +1,8 @@
 TEST_TEMPLATE_ID="Empty"
 
 # Create a new iteration for the current run
-if [ ! -z "$RELEASE" ]; then
-    betelgeuse test-plan --name "${TEST_RUN_ID}" --parent-name "${RELEASE}" \
+if [ ! -z "$POLARION_RELEASE" ]; then
+    betelgeuse test-plan --name "${TEST_RUN_ID}" --parent-name "${POLARION_RELEASE}" \
         --plan-type iteration "${POLARION_DEFAULT_PROJECT}"
 else
     betelgeuse test-plan --name "${TEST_RUN_ID}" \
