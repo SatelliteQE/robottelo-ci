@@ -1,6 +1,15 @@
 - parameter:
     name: satellite6-provisioning-parameters
     parameters:
+        - string:
+            name: DOGFOOD_URL
+            description: FQDN for the Satellite containing content to install from
+        - string:
+            name: DOGFOOD_ORG
+            description: Organization to subscribe to
+        - string:
+            name: DOGFOOD_ACTIVATIONKEY
+            description: Activation Key to use when subscribing to a Satellite
         - choice:
             name: SELINUX_MODE
             choices:
@@ -25,4 +34,3 @@
             description: |
                 Points to RHSM stage for stage installation test. Used only
                 in CDN provisioning.
-
