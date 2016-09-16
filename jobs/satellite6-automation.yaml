@@ -448,6 +448,9 @@
             files:
                 - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
                   variable: SATELLITE6_REPOS_URLS
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
         - build-name:
             name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
     builders:
@@ -488,12 +491,12 @@
         - trigger-builds:
             - project: automation-upgrade-rhel6
               predifined-parameters: |
-                TO_VERSION={satellite_version}
+                TO_VERSION=${{SATELLITE_VERSION}}
                 FROM_VERSION=$(echo $TO_VERSION - 0.1|bc)
         - trigger-builds:
             - project: automation-upgrade-rhel7
               predifined-parameters: |
-                TO_VERSION={satellite_version}
+                TO_VERSION=${{SATELLITE_VERSION}}
                 FROM_VERSION=$(echo $TO_VERSION - 0.1|bc)
 
 #==============================================================================
