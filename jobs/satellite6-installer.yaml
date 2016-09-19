@@ -14,35 +14,33 @@
             name: SERVER_HOSTNAME
             description: "FQDN for your server where you want to install Satellite 6."
         - choice:
-            name: DISTRIBUTION
+            name: SATELLITE_DISTRIBUTION
             choices:
-                - DOWNSTREAM
+                - INTERNAL AK
+                - INTERNAL
+                - INTERNAL REPOFILE
                 - CDN
                 - BETA
-                - ISO
                 - UPSTREAM
+                - ISO
             description: |
                 <p>Choose the distribution type:</p>
                 <ul>
-                  <li><strong>DOWNSTREAM</strong>: Install from latest stable internal compose</li>
+                  <li><strong>INTERNALAK</strong>: Install Satellite6.3 via AK from latest stable internal compose</li>
+                  <li><strong>INTERNAL</strong>: Install Satellite6 from latest stable internal compose</li>
+                  <li><strong>INTERNALREPOFILE</strong>: Install Satellite6.3 via REPOFILE from latest stable internal compose</li>
                   <li><strong>CDN</strong>: Install from CDN</li>
                   <li><strong>BETA</strong>: Install from CDN, using the beta repository</li>
-                  <li><strong>ISO</strong>: Install from an ISO image from latest stable internal compose</li>
-                  <li><strong>UPSTREAM</strong>: Install from latest community build</li>
+                  <li><strong>UPSTREAM</strong>: Install from latest community nightly build</li>
                 </ul>
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.3'
                 - '6.2'
                 - '6.1'
                 - '6.0'
             description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
-        - choice:
-            name: SATELLITE_RELEASE
-            choices:
-                - 'GA'
-                - 'BETA'
-            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
         - choice:
             name: SELINUX_MODE
             choices:
