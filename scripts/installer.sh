@@ -65,7 +65,7 @@ if [ ${SATELLITE_DISTRIBUTION} = "INTERNAL" ]; then
     fi
 fi
 
-fab -H root@${SERVER_HOSTNAME} product_install:satellite6-${DISTRIBUTION},sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}
+fab -H root@${SERVER_HOSTNAME} product_install:${DISTRIBUTION},sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}
 
 if [ ${SETUP_FAKE_MANIFEST_CERTIFICATE} = "true" ]; then
     source $FAKE_CERT_CONFIG
