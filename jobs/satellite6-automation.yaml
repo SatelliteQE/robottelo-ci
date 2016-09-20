@@ -197,14 +197,9 @@
                 DISTRO={os}
     builders:
         - satellite6-automation-builders
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[23])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: 'automation-{satellite_version}-tier4-{os}'
-                      current-parameters: true
+        - trigger-builds:
+            - project: 'automation-{satellite_version}-tier4-{os}'
+              current-parameters: true
 
     publishers:
         - satellite6-automation-publishers
@@ -288,16 +283,11 @@
                 - trigger-builds:
                     - project: 'automation-{satellite_version}-rhai-{os}'
                       current-parameters: true
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[23])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: 'polarion-test-run-{satellite_version}-{os}'
-                      predefined-parameters: |
-                          TEST_RUN_ID=$BUILD_LABEL {os}
-                          POLARION_RELEASE=$POLARION_RELEASE
+        - trigger-builds:
+            - project: 'polarion-test-run-{satellite_version}-{os}'
+              predefined-parameters: |
+                  TEST_RUN_ID=$BUILD_LABEL {os}
+                  POLARION_RELEASE=$POLARION_RELEASE
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-foreman-debug
@@ -318,7 +308,7 @@
     builders:
         - shell: rm -f *.xml
         - copyartifact:
-            project: 'automation-{satellite_version}-tier4-{os}'
+            project: 'automation-{satellite_version}-tier1-{os}'
             filter: '*-results.xml'
             which-build: last-successful
         - copyartifact:
@@ -555,7 +545,7 @@
         - timed: 'H 19 * * *'
     builders:
         - shell:
-            echo "BUILD_LABEL=Upstream $(date +%Y-%m-%d)" > properties.txt
+            echo "BUILD_LABEL=Upstream Nightly $(date +%Y-%m-%d)" > properties.txt
         - inject:
             properties-file: properties.txt
         - trigger-builds:
