@@ -18,7 +18,9 @@
             description: Number of workers to use while running robottelo test suite
         - string:
             name: BUILD_LABEL
-            description: Specify the build label of the Satellite
+            description: |
+                Specify the build label of the Satellite. Example Sat6.3.0-1.0
+                Which is Sat6.y.z-SNAP.COMPOSE
         - bool:
             name: STAGE_TEST
             default: false
