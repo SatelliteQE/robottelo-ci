@@ -33,22 +33,24 @@ if [ ${PARTITION_DISK} = "true" ]; then
 fi
 
 # Assign DISTRIBUTION to trigger things appropriately from automation-tools.
-if [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL' ]; then
+if [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL" ]; then
     export DISTRIBUTION="satellite6-downstream"
-elif [ "${SATELLITE_DISTRIBUTION}" = 'GA' ]; then
+elif [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
     export DISTRIBUTION="satellite6-cdn"
-elif [ "${SATELLITE_DISTRIBUTION}" = 'BETA' ]; then
+elif [ "${SATELLITE_DISTRIBUTION}" = "BETA" ]; then
     export DISTRIBUTION="satellite6-beta"
-elif [ "${SATELLITE_DISTRIBUTION}" = 'UPSTREAM' ]; then
+elif [ "${SATELLITE_DISTRIBUTION}" = "UPSTREAM" ]; then
     export DISTRIBUTION="satellite6-upstream"
-elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL REPOFILE' ]; then
+elif [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL REPOFILE" ]; then
     export DISTRIBUTION="satellite6-repofile"
-elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL AK' ]; then
+elif [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL AK" ]; then
     export DISTRIBUTION="satellite6-activationkey"
+elif [ "${SATELLITE_DISTRIBUTION}" = "ISO" ]; then
+    export DISTRIBUTION="satellite6-iso"
 fi
 
 # ISOs require a specific URL
-if [ ${SATELLITE_DISTRIBUTION} = "ISO" ]; then
+if [ "${SATELLITE_DISTRIBUTION}" = "ISO" ]; then
     # If user provided custom baseurl, use it otherwise use the default
     if [ ! -z "$SATELLITE6_CUSTOM_BASEURL" ]; then
         export ISO_URL="${SATELLITE6_CUSTOM_BASEURL}"
@@ -58,7 +60,7 @@ if [ ${SATELLITE_DISTRIBUTION} = "ISO" ]; then
 fi
 
 # This is only used for downstream builds
-if [ ${SATELLITE_DISTRIBUTION} = "INTERNAL" ]; then
+if [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL" ]; then
     # If user provided custom baseurl, use it otherwise use the default
     if [ ! -z "$SATELLITE6_CUSTOM_BASEURL" ]; then
         export BASE_URL="${SATELLITE6_CUSTOM_BASEURL}"
