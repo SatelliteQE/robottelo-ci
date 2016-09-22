@@ -1,0 +1,4 @@
+- builder:
+    name: test_dynflow
+    builders:
+        - shell: !include-raw: scripts/test_dynflow.sh

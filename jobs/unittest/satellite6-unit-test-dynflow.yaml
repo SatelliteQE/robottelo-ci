@@ -1,26 +1,21 @@
 - job:
-    name: satellite6-unit-test-puppet-foreman
-    node: rhel
+    name: satellite6-unit-test-dynflow
     project-type: matrix
     logrotate:
       daysToKeep: -1
-      numToKeep: 16
+      numToKeep: 32
+    concurrent: true
     parameters:
       - merge_request
     scm:
-      - puppet_foreman_gitlab
+      - dynflow_gitlab
     axes:
       - axis:
           type: user-defined
           name: ruby
           values:
-            - 1.8.7
+            - 2.0.0
             - 2.2
-      - axis:
-          type: user-defined
-          name: puppet
-          values:
-          - 3.8.0
       - axis:
           type: slave
           name: nodes
@@ -30,6 +25,9 @@
       - gitlab_build_on_change
     builders:
       - merge_request
-      - test_puppet_plugins
+      - test_dynflow
     publishers:
       - gemset_cleanup
+      - junit:
+          results: 'jenkins/reports/unit/*.xml'
+
