@@ -58,9 +58,9 @@ else
 fi
 
 if [ "${SATELLITE_VERSION}" = "nightly" ]; then
-    echo "POLARION_RELEASE='Upstream Nightly'" >> build_env.properties
+    echo "POLARION_RELEASE=Upstream Nightly" >> build_env.properties
 elif [ "${SATELLITE_VERSION}" != "nightly" ]; then
-    echo "POLARION_RELEASE='Satellite ${SATELLITE_VERSION}.${ZRELEASE}'" >> build_env.properties
+    echo "POLARION_RELEASE=Satellite ${SATELLITE_VERSION}.${ZRELEASE}" >> build_env.properties
 fi
 
 # Run installation after writing the build_env.properties to make sure the
