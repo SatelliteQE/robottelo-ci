@@ -7,12 +7,13 @@ elif [ "${OS}" = 'rhel6' ]; then
     export OS_VERSION='6'
 fi
 
+source ${CONFIG_FILES}
 # Source the Variables from files
 if [ -z "${SATELLITE_HOSTNAME}" ]; then
-    source "${RHEV_CONFIG}"
+    source config/rhev.conf
 fi
-source "${SATELLITE6_REPOS_URLS}"
-source "${SUBSCRIPTION_CONFIG}"
+source config/sat6_repos_urls.conf
+source config/subscription_config.conf
 
 # Set Capsule URL as per OS
 if [ "${OS}" = 'rhel7' ]; then

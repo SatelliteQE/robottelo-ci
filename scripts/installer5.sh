@@ -1,7 +1,8 @@
 pip install -U -r requirements.txt
 
-source ${SUBSCRIPTION_CONFIG}
-source ${SAT5_CERT_CONFIG}
+source ${CONFIG_FILES}
+source config/subscription_config.conf
+source config/sat5_activation_cert.conf
 
 if [ ${FIX_HOSTNAME} = "true" ]; then
     fab -H root@${SERVER_HOSTNAME} fix_hostname

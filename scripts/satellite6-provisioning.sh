@@ -1,29 +1,22 @@
 pip install -r requirements.txt
 
-source ${FAKE_CERT_CONFIG}
-source ${INSTALL_CONFIG}
-source ${PROVISIONING_CONFIG}
-source ${PROXY_CONFIG}
-
-if [ "${STAGE_TEST}" = 'false' ]; then
-    source ${SUBSCRIPTION_CONFIG}
-else
-    source ${STAGE_CONFIG}
+source ${CONFIG_FILES}
+source config/fake_manifest.conf
+source config/installation_environment.conf
+source config/provisioning_environment.conf
+source config/proxy_config_environment.conf
+source config/subscription_config.conf
+if [ "${STAGE_TEST}" = 'true' ]; then
+    source config/stage_environment.conf
 fi
 
-export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
-
-# For example: The target_image in PROVISIONING_CONFIG file should be "qe-sat6y-rhel7-base".
-BTARGET_IMAGE="${TARGET_IMAGE}"
-# Remove "-base" suffix for hostname.
-TARGET_IMAGE=`echo ${TARGET_IMAGE} | cut -d '-' -f1-3`
-# Update SERVER_HOSTNAME for the snapshot based pipelines
-export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
+# The target_image in provisioning_environment.conf should be "qe-sat6y-rhel7-base".
+export TARGET_IMAGE
+# set SERVER_HOSTNAME for the snapshot based pipelines by removing "-base" suffix if there is one
+export SERVER_HOSTNAME="${TARGET_IMAGE%%-base}.${VM_DOMAIN}"
 set +e
-fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
+fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE%%-base},delete_image=true"
 set -e
-# Revert the target_image name for creating and destroying of the base-image.
-export TARGET_IMAGE="${BTARGET_IMAGE}"
 
 # Assign DISTRIBUTION to trigger things appropriately from automation-tools.
 if [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL' ]; then
