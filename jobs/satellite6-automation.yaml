@@ -551,7 +551,7 @@
         - trigger-builds:
             - project: |
                 provisioning-nightly-rhel6,
-                provisioning-nightly-rhel7,
+                provisioning-nightly-rhel7
               predefined-parameters: |
                 BUILD_LABEL=${BUILD_LABEL}
                 ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
