@@ -22,7 +22,7 @@
                   predefined-parameters: |
                     lifecycle_environment=Test
                     from_lifecycle_environment=Library
-                    content_view_name=Satellite RHEL${rhel}
+                    content_view_name=Satellite 6.2 RHEL${rhel}
                   block: true
                   block-thresholds:
                     build-step-failure-threshold: FAILURE
@@ -33,7 +33,7 @@
                   predefined-parameters: |
                     lifecycle_environment=Test
                     from_lifecycle_environment=Library
-                    content_view_name=Capsule RHEL${rhel}
+                    content_view_name=Capsule 6.2 RHEL${rhel}
                   block: true
                   block-thresholds:
                     build-step-failure-threshold: FAILURE
