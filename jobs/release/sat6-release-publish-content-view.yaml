@@ -20,7 +20,7 @@
                 - project: satellite6-publish-content-view
                   current-parameters: true
                   predefined-parameters:
-                    content_view_name=Satellite RHEL${rhel}
+                    content_view_name=Satellite 6.2 RHEL${rhel}
                   block: true
                   block-thresholds:
                     build-step-failure-threshold: FAILURE
@@ -29,7 +29,7 @@
                 - project: satellite6-publish-content-view
                   current-parameters: true
                   predefined-parameters:
-                    content_view_name=Capsule RHEL${rhel}
+                    content_view_name=Capsule 6.2 RHEL${rhel}
                   block: true
                   block-thresholds:
                     build-step-failure-threshold: FAILURE
@@ -38,7 +38,7 @@
                 - project: satellite6-publish-content-view
                   current-parameters: true
                   predefined-parameters:
-                    content_view_name=Tools RHEL${rhel}
+                    content_view_name=Tools 6.2 RHEL${rhel}
                   block: true
                   block-thresholds:
                     build-step-failure-threshold: FAILURE
