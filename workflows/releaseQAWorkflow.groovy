@@ -313,7 +313,7 @@ def computePackageDifference(body) {
         git url: "https://${env.GIT_HOSTNAME}/satellite6/tool_belt.git", branch: 'master'
 
         def type = config.content_view.split(' ')[0]
-        def rhel = config.content_view.split(' ')[1]
+        def rhel = config.content_view.split(' ')[2]
 
         if (type == 'Tools') {
             type = 'Satellite Tools'
