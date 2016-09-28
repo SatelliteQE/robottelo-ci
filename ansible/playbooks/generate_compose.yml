@@ -1,0 +1,12 @@
+---
+- hosts: compose
+  become: true
+  become_user: jenkins
+  tasks:
+    - debug:
+        msg: "Generating for RHEL{{ rhel_version }}"
+
+    - name: "Generate compose"
+      shell: 'sh generate-compose rhel{{ rhel_version }} /home/jenkins'
+      args:
+        chdir: "/home/jenkins/satellite-packaging/compose"

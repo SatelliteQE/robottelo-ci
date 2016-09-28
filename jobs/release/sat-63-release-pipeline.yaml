@@ -1,0 +1,8 @@
+- job:
+    name: sat-63-release-pipeline
+    project-type: workflow
+    dsl:
+      !include-raw:
+        - workflows/6.3/releasePipelineAttributes.groovy
+        - workflows/releaseSatellitePipeline.groovy
+        - workflows/lib/runPlaybook.groovy

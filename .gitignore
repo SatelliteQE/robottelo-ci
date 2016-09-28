@@ -4,3 +4,4 @@ foreman-infra
 *.swp
 *.swn
 *.swo
+*.retry

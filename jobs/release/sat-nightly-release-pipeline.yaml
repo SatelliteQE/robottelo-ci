@@ -1,0 +1,8 @@
+- job:
+    name: sat-nightly-release-pipeline
+    project-type: workflow
+    dsl:
+      !include-raw:
+        - workflows/nightly/releasePipelineAttributes.groovy
+        - workflows/releaseSatellitePipeline.groovy
+        - workflows/lib/runPlaybook.groovy
