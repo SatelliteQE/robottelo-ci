@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  vars:
+    organization: Sat6-CI
+  tasks:
+    - name: "Sync product repositories"
+      katello_sync:
+        username: "{{ username }}"
+        password: "{{ password }}"
+        server_url: "{{ server }}"
+        product: "{{ product }}"
+        organization: "{{ organization }}"

@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  vars:
+    organization: Sat6-CI
+  tasks:
+    - name: "Publish content views"
+      katello_publish:
+        username: "{{ username }}"
+        password: "{{ password }}"
+        server_url: "{{ server }}"
+        content_view: "{{ content_view }}"
+        organization: "{{ organization }}"
