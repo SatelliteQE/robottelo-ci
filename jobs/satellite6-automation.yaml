@@ -13,7 +13,7 @@
                 - 'INTERNAL AK'
                 - 'INTERNAL'
                 - 'INTERNAL REPOFILE'
-                - 'GA'
+                - 'CDN'
                 - 'BETA'
                 - 'UPSTREAM'
             description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
@@ -405,7 +405,7 @@
                  - 'INTERNAL AK'
                  - 'INTERNAL'
                  - 'INTERNAL REPOFILE'
-                 - 'GA'
+                 - 'CDN'
                  - 'BETA'
             description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
         - string:

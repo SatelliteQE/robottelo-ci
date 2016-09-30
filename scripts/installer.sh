@@ -35,7 +35,7 @@ fi
 # Assign DISTRIBUTION to trigger things appropriately from automation-tools.
 if [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL" ]; then
     export DISTRIBUTION="satellite6-downstream"
-elif [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
+elif [ "${SATELLITE_DISTRIBUTION}" = "CDN" ]; then
     export DISTRIBUTION="satellite6-cdn"
 elif [ "${SATELLITE_DISTRIBUTION}" = "BETA" ]; then
     export DISTRIBUTION="satellite6-beta"
