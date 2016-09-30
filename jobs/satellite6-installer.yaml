@@ -19,7 +19,7 @@
                 - INTERNAL AK
                 - INTERNAL
                 - INTERNAL REPOFILE
-                - CDN
+                - GA 
                 - BETA
                 - UPSTREAM
                 - ISO
@@ -29,7 +29,7 @@
                   <li><strong>INTERNALAK</strong>: Install Satellite6.3 via AK from latest stable internal compose</li>
                   <li><strong>INTERNAL</strong>: Install Satellite6 from latest stable internal compose</li>
                   <li><strong>INTERNALREPOFILE</strong>: Install Satellite6.3 via REPOFILE from latest stable internal compose</li>
-                  <li><strong>CDN</strong>: Install from CDN</li>
+                  <li><strong>GA</strong>: Install from CDN</li>
                   <li><strong>BETA</strong>: Install from CDN, using the beta repository</li>
                   <li><strong>UPSTREAM</strong>: Install from latest community nightly build</li>
                 </ul>
