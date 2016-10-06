@@ -40,6 +40,7 @@
                 - '6.2'
                 - '6.1'
                 - '6.0'
+                - 'nightly'
             description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
         - choice:
             name: SELINUX_MODE
@@ -111,7 +112,7 @@
                 configure ad-hoc stuff without the need to have each installer
                 option separately. This is not validated in any way, so the
                 user needs to provide valid input.
-                For example: foreman-websockets-encrypt=false,capsule-reverse-proxy=true
+                For example: foreman-websockets-encrypt=false,capsule-reverse-proxy=true,disable-system-checks
                 Do not specify these installer options related to (Interface, Gateway, DNS, DHCP, TFTP, PUPPET)
                 here, these are already handled.
     scm:
