@@ -39,15 +39,16 @@ function setup_instance () {
     ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'katello-service restart'
 }
 
-source ${PROVISIONING_CONFIG}
+source ${CONFIG_FILES}
+source config/provisioning_environment.conf
 # Provisioning jobs TARGET_IMAGE becomes the SOURCE_IMAGE for Tier and RHAI jobs.
 export SOURCE_IMAGE="${TARGET_IMAGE}"
-export TARGET_IMAGE=`echo ${TARGET_IMAGE} | cut -d '-' -f1-3`
+export TARGET_IMAGE="${TARGET_IMAGE%%-base}"
 
 remove_instance
 setup_instance
 
-cp ${ROBOTTELO_CONFIG} ./robottelo.properties
+cp config/robottelo.properties ./robottelo.properties
 
 sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
 sed -i "s|# screenshots_path=.*|screenshots_path=$(pwd)/screenshots|" robottelo.properties

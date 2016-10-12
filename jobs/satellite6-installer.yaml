@@ -127,18 +127,8 @@
         - build-user-vars
         - config-file-provider:
             files:
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421863970654
-                  variable: FAKE_CERT_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426617852908
-                  variable: PROXY_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
-                  variable: SATELLITE6_REPOS_URLS
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
-                  variable: SUBSCRIPTION_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1439493457257
-                  variable: STAGE_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1440792796745
-                  variable: INSTALL_CONFIG
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
         - default-wrappers
     builders:
         - shining-panda:

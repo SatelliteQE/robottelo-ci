@@ -3,11 +3,15 @@ pip install -U -r requirements.txt
 # Figure out what version of RHEL the server uses
 export OS_VERSION=$(fab -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:digit:]]" | cut -d ' ' -f 2)
 
-source ${INSTALL_CONFIG}
-source ${PROXY_CONFIG}
-# OS_VERSION needs to be defined before sourcing SATELLITE6_REPOS_URLS
-source ${SATELLITE6_REPOS_URLS}
-source ${SUBSCRIPTION_CONFIG}
+source ${CONFIG_FILES}
+source config/installation_environment.conf
+source config/proxy_config_environment.conf
+# OS_VERSION needs to be defined before sourcing sat6_repos_urls.conf
+source config/sat6_repos_urls.conf
+source config/subscription_config.conf
+if [ "$STAGE_TEST" = 'true' ]; then
+    source config/stage_environment.conf
+fi
 
 # Populate DOGFOOD_AACTIVATIONKEY and REPO_FILE_URL ENV_VAR depending upon the OS_VERSION
 if [ "${OS_VERSION}" = '7' ]; then
@@ -16,12 +20,6 @@ if [ "${OS_VERSION}" = '7' ]; then
 elif [ "${OS_VERSION}" = '6' ]; then
     export DOGFOOD_ACTIVATIONKEY="${RHEL6_DOGFOOD_AK}"
     export REPO_FILE_URL="${RHEL6_REPO_FILE_URL}"
-fi
-
-if [ "$STAGE_TEST" = 'false' ]; then
-    source ${SUBSCRIPTION_CONFIG}
-else
-    source ${STAGE_CONFIG}
 fi
 
 if [ ${FIX_HOSTNAME} = "true" ]; then
@@ -72,6 +70,6 @@ fi
 fab -H root@${SERVER_HOSTNAME} product_install:${DISTRIBUTION},sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}
 
 if [ ${SETUP_FAKE_MANIFEST_CERTIFICATE} = "true" ]; then
-    source $FAKE_CERT_CONFIG
+    source config/fake_manifest.conf
     fab -H root@${SERVER_HOSTNAME} setup_fake_manifest_certificate
 fi

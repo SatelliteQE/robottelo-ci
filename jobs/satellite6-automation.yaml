@@ -41,18 +41,8 @@
         - default-wrappers
         - config-file-provider:
             files:
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421863970654
-                  variable: FAKE_CERT_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426617852908
-                  variable: PROXY_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421176025444
-                  variable: PROVISIONING_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
-                  variable: SUBSCRIPTION_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1439493457257
-                  variable: STAGE_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1440792796745
-                  variable: INSTALL_CONFIG
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
         - inject:
             properties-content: |
                 DISTRO={os}
@@ -370,12 +360,8 @@
         - default-wrappers
         - config-file-provider:
             files:
-                - file-id: 273ccbb1-70fa-40cc-8cb7-ec5f284631b0
-                  variable: RHEV_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
-                  variable: SATELLITE6_REPOS_URLS
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1426679847040
-                  variable: SUBSCRIPTION_CONFIG
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
         - build-name:
             name: '#${{BUILD_NUMBER}} Upgrade_{os}_from_${{FROM_VERSION}}_to_${{TO_VERSION}}'
     builders:
@@ -436,8 +422,8 @@
     wrappers:
         - config-file-provider:
             files:
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1430942714372
-                  variable: SATELLITE6_REPOS_URLS
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
         - inject:
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
@@ -445,7 +431,8 @@
             name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
     builders:
         - shell: |
-            source ${{SATELLITE6_REPOS_URLS}}
+            source ${{CONFIG_FILES}}
+            source config/sat6_repos_urls.conf
             echo "RHEL6_SATELLITE_URL=${{RHEL6_SATELLITE_URL:-${{SATELLITE6_RHEL6}}}}" > properties.txt
             echo "RHEL6_CAPSULE_URL=${{RHEL6_CAPSULE_URL:-${{CAPSULE_RHEL6}}}}" >> properties.txt
             echo "RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL:-${{TOOLS_RHEL6}}}}" >> properties.txt

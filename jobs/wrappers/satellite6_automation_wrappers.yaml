@@ -3,10 +3,8 @@
     wrappers:
         - config-file-provider:
             files:
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1431607187795
-                  variable: ROBOTTELO_CONFIG
-                - file-id: org.jenkinsci.plugins.configfiles.custom.CustomConfig1421176025444
-                  variable: PROVISIONING_CONFIG
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
         - workspace-cleanup:
             include:
                 - 'robottelo*.log'

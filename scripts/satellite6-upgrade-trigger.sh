@@ -3,9 +3,11 @@
 export OS="{os}"
 
 pip install -r requirements.txt
-source "${{RHEV_CONFIG}}"
-source "${{SATELLITE6_REPOS_URLS}}"
-source "${{SUBSCRIPTION_CONFIG}}"
+source "${{CONFIG_FILES}}"
+source config/rhev.conf
+source config/sat6_repos_urls.conf
+source config/subscription_config.conf
+
 
 function export_rhev_env_var {{
     if [ "${{OS}}" = 'rhel6' ]; then
