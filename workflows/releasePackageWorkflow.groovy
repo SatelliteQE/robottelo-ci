@@ -41,7 +41,7 @@ node('rhel') {
   
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
     
-                    sh "../tool_belt/tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids}"
+                    sh "../tool_belt/tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids} --flags ../tool_belt/configs/search_flags/6.2.z.yaml"
   
                 }
             }
