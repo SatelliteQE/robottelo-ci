@@ -27,6 +27,8 @@ fi
 if [ "${DISTRIBUTION}" = 'DOWNSTREAM' ]; then
     export BASE_URL="${SATELLITE6_REPO}"
     export CAPSULE_URL
+    export TOOLS_URL_RHEL6="${TOOLS_RHEL6}"
+    export TOOLS_URL_RHEL7="${TOOLS_RHEL7}"
 fi
 
 # Run upgrade for CDN/Downstream
