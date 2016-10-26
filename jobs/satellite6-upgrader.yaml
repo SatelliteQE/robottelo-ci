@@ -3,13 +3,13 @@
     concurrent: True
     display-name: 'Satellite6-Upgrader'
     description: |
-        <p> This job upgrades older version of Satellite6 and Capsule6:
+        <p> This job upgrades older version of Satellite6, Capsule6 and Clients </p>
         <hr>
-        <p><strong> > On the pre-installed images of satellite and capsule on RHEVM:</strong></p>
-        <p> Please make sure that the following ssh-key of jenkins has been added in your <strong>RHEVM images</strong> already.</p>
+        <p><strong> > On the pre-installed images of satellite, capsule and clients on RHEVM:</strong></p>
+        <p> Please make sure that the following ssh-key of jenkins has been added in <strong>RHEVM images</strong> already.</p>
         <p>-------or-------</p>
-        <p><strong> > Specific Satellite and Capsule:</strong></p>
-        <p> Please add following ssh-key manually to your satellite and capsule.</p>
+        <p><strong> > Specific Satellite, Capsule and Clients:</strong></p>
+        <p> Please add following ssh-key manually to your satellite, capsule and clients.</p>
         <hr>
         <p><strong>SSH KEY:</strong></p>
         <pre>
@@ -23,20 +23,27 @@
             choices:
                 - satellite
                 - capsule
+                - client
             description: |
-                <p><strong>Choosing 'satellite' will upgrade only Satellite. Choosing 'capsule' will upgrade both Capsule as well as its associated Satellite.</strong></p>
+                <p><strong>Choosing 'satellite' will upgrade only Satellite.</strong></p>
+                <p><strong>Choosing 'capsule' will upgrade both Capsule as well as its associated Satellite.</strong></p>
+                <p><strong>Choosing 'client' will upgrade Clients as well as its associated Satellite.</strong></p>
         - choice:
             name: FROM_VERSION
             choices:
+                - '6.2'
                 - '6.1'
                 - '6.0'
             description: |
-                <p> Choose the currently installed Satellite version to upgrade to latest available.</p>
+                <p> Choose the currently installed Satellite version.</p>
         - choice:
             name: TO_VERSION
             choices:
+                - '6.3'
                 - '6.2'
                 - '6.1'
+            description: |
+                <p> Choose the upgrade to Satellite version.</p>
         - choice:
             name: DISTRIBUTION
             choices:
@@ -51,14 +58,27 @@
                 - rhel7
                 - rhel6
         - string:
+            name: CLIENTS_COUNT
+            description: |
+                <p>The number of RHEL6 and RHEL7 clients to Generate</p>
+                <p>The number of clients will be devided in equal amount for RHEL6 and RHEL7. e.g if 10 is given then 5 each.</p>
+        - string:
             name: SATELLITE_HOSTNAME
         - string:
-            name: CAPSULE_HOSTNAME
+            name: CAPSULE_HOSTNAMES
         - string:
             name: CAPSULE_SUBSCRIPTION
             description: |
                 <p>Optional, Applicable only if CAPSULE_HOSTNAME value is provided</p>
                 <p>List of cv_name, environment, ak_name attached to subscription of capsule in given sequence.</p>
+        - string:
+            name: CLIENT6_HOSTS
+            description: |
+                <p>User defined client hostnames on RHEL6 to upgrade, separated by comma(,).</p>
+        - string:
+            name: CLIENT7_HOSTS
+            description: |
+                <p>User defined client hostnames on RHEL7 to upgrade, separated by comma(,).</p>
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
