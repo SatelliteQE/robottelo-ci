@@ -17,6 +17,16 @@ function remove_instance () {
     set -e
 }
 
+
+function destroy_instance () {
+    echo "========================================"
+    echo " Destroy any running instances if any of ${TARGET_IMAGE} virsh domain."
+    echo "========================================"
+    set +e
+    ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh destroy ${TARGET_IMAGE}
+    set -e
+}
+
 function setup_instance () {
     # Provision the instance using satellite6 base image as the source image.
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" \
@@ -27,14 +37,6 @@ function setup_instance () {
     # Let's wait for 60 secs for the instance to be up and along with it it's services
     sleep 60
 
-    # SSH into the instance to fetch hostname and make sure it is up and running or loop 7 time.
-    count=1; while [ $count -le 7 ]; do echo "Trying to ssh to ${TARGET_IMAGE}.${VM_DOMAIN}"; (( count++ )); \
-    sleep $count ; ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -T \
-    root@"${TARGET_IMAGE}.${VM_DOMAIN}" hostname  && break; if [ $count -eq 8 ]; then exit; fi done
-
-    # SELINUX fix required as after reboot the iptable information is lost. Temporary fix.
-    ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'iptables -F'
-
     # Restart Satellite6 service for a clean state of the running instance.
     ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'katello-service restart'
 }
@@ -43,7 +45,7 @@ source ${CONFIG_FILES}
 source config/provisioning_environment.conf
 # Provisioning jobs TARGET_IMAGE becomes the SOURCE_IMAGE for Tier and RHAI jobs.
 export SOURCE_IMAGE="${TARGET_IMAGE}"
-export TARGET_IMAGE="${TARGET_IMAGE%%-base}"
+export TARGET_IMAGE="${TARGET_IMAGE%%-base}-${ENDPOINT}"
 
 remove_instance
 setup_instance
@@ -112,11 +114,29 @@ echo "Hostname: ${SERVER_HOSTNAME}"
 echo "Credentials: admin/changeme"
 echo "========================================"
 echo
-echo "Delete the instance of: ${SERVER_HOSTNAME}"
 
-remove_instance
+
+# Remove any previous instances of foreman-debug tar file
+rm -rf foreman-debug.tar.xz
+# Disable error checking, for more information check the related issue
+# http://projects.theforeman.org/issues/13442
+# Let's continue to use this till we stop testing Satellite6.1 completely.
+set +e
+ssh "root@${SERVER_HOSTNAME}" foreman-debug -g -q -d "~/foreman-debug"
+set -e
+scp -r "root@${SERVER_HOSTNAME}:~/foreman-debug.tar.xz" .
+
+
+echo "Deleting the instance of: ${SERVER_HOSTNAME}"
+# Only destroy the instance so that we can start up the instance if required for testcase
+# analysis.
+destroy_instance
+
 # After rhai is run, let's setup_instance once again for a clean state,
 # so that we can do bug or feature testing if needed on this instance.
 if [ "${ENDPOINT}" == "rhai" ]; then
+    # Create a generic instance from the base image and not modify the rhai image.
+    TARGET_IMAGE="${TARGET_IMAGE%%-rhai}"
+    remove_instance
     setup_instance
 fi

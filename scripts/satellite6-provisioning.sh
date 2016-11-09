@@ -70,6 +70,19 @@ echo "Credentials: admin/changeme"
 echo "========================================"
 echo
 echo "========================================"
+
+
+# Remove any previous instances of foreman-debug tar file
+rm -rf foreman-debug.tar.xz
+# Disable error checking, for more information check the related issue
+# http://projects.theforeman.org/issues/13442
+# Let's continue to use this till we stop testing Satellite6.1 completely.
+set +e
+ssh "root@${SERVER_HOSTNAME}" foreman-debug -g -q -d "~/foreman-debug"
+set -e
+scp -r "root@${SERVER_HOSTNAME}:~/foreman-debug.tar.xz" .
+
+
 echo "Shutting down the Base instance of ${SERVER_HOSTNAME} gracefully"
 # Shutdown the Satellite6 services before shutdown.
 ssh -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" katello-service stop

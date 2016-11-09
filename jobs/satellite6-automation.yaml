@@ -4,8 +4,6 @@
 - job-template:
     name: 'provisioning-{satellite_version}-{os}'
     node: sesame
-    properties: 
-        - satellite6-build_blocker
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -63,6 +61,7 @@
             properties-file: build_env.properties
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier1-{os}'
+              block: true
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
                 TOOLS_REPO=${{TOOLS_REPO}}
@@ -75,7 +74,13 @@
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
                 POLARION_RELEASE=${{POLARION_RELEASE}}
     publishers:
-        - satellite6-automation-foreman-debug
+        - email-ext:
+            recipients: ${{QE_EMAIL_LIST}}
+            success: false
+            failure: true
+            subject: 'Provisioning of Satellite {satellite_version} {os} Job has failed'
+            body: |
+                This build ${{BUILD_URL}} has failed, may need to fix and re-trigger.
         - satellite6-automation-archiver
 
 - job-template:
@@ -84,7 +89,6 @@
     logrotate:
         numToKeep: 16
     properties:
-        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -106,6 +110,7 @@
         - satellite6-automation-builders
         - trigger-builds:
           - project: 'automation-{satellite_version}-tier2-{os}'
+            block: true
             current-parameters: true
         - conditional-step:
             condition-kind: regex-match
@@ -124,7 +129,6 @@
                         no-files-found-action: FAIL
     publishers:
         - satellite6-automation-publishers
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
@@ -133,7 +137,6 @@
     logrotate:
         numToKeep: 16
     properties:
-        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -155,10 +158,10 @@
         - satellite6-automation-builders
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier3-{os}'
+              block: true
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
@@ -167,7 +170,6 @@
     logrotate:
         numToKeep: 16
     properties:
-        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -189,11 +191,11 @@
         - satellite6-automation-builders
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier4-{os}'
+              block: true
               current-parameters: true
 
     publishers:
         - satellite6-automation-publishers
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
@@ -202,7 +204,6 @@
     logrotate:
         numToKeep: 16
     properties:
-        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -224,7 +225,6 @@
         - satellite6-automation-builders
     publishers:
         - satellite6-automation-publishers
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
         - email-ext:
             recipients: $PROJECT_DEFAULT_RECIPIENTS
@@ -245,7 +245,6 @@
     logrotate:
         numToKeep: 16
     properties:
-        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -272,6 +271,7 @@
             steps:
                 - trigger-builds:
                     - project: 'automation-{satellite_version}-rhai-{os}'
+                      block: true
                       current-parameters: true
         - trigger-builds:
             - project: 'polarion-test-run-{satellite_version}-{os}'
@@ -280,7 +280,6 @@
                   POLARION_RELEASE=$POLARION_RELEASE
     publishers:
         - satellite6-automation-publishers
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
@@ -335,8 +334,6 @@
 - job-template:
     name: 'automation-upgrade-{os}'
     node: sesame
-    properties:
-        - satellite6-build_blocker
     parameters:
         - choice:
             name: FROM_VERSION
@@ -382,8 +379,6 @@
     name: trigger-satellite{satellite_version}
     description: Triggers automation for Satellite 6
     node: sesame
-    properties:
-        - satellite6-build_blocker
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
