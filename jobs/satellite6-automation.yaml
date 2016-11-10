@@ -4,8 +4,6 @@
 - job-template:
     name: 'provisioning-{satellite_version}-{os}'
     node: sesame
-    properties: 
-        - satellite6-build_blocker
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -63,6 +61,7 @@
             properties-file: build_env.properties
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier1-{os}'
+              block: true
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
                 TOOLS_REPO=${{TOOLS_REPO}}
@@ -91,7 +90,6 @@
     logrotate:
         numToKeep: 16
     properties:
-        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -113,6 +111,7 @@
         - satellite6-automation-builders
         - trigger-builds:
           - project: 'automation-{satellite_version}-tier2-{os}'
+            block: true
             current-parameters: true
         - conditional-step:
             condition-kind: regex-match
@@ -140,7 +139,6 @@
     logrotate:
         numToKeep: 16
     properties:
-        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -162,6 +160,7 @@
         - satellite6-automation-builders
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier3-{os}'
+              block: true
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
@@ -174,7 +173,6 @@
     logrotate:
         numToKeep: 16
     properties:
-        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -196,6 +194,7 @@
         - satellite6-automation-builders
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier4-{os}'
+              block: true
               current-parameters: true
 
     publishers:
@@ -209,7 +208,6 @@
     logrotate:
         numToKeep: 16
     properties:
-        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -252,7 +250,6 @@
     logrotate:
         numToKeep: 16
     properties:
-        - satellite6-build_blocker
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -279,6 +276,7 @@
             steps:
                 - trigger-builds:
                     - project: 'automation-{satellite_version}-rhai-{os}'
+                      block: true
                       current-parameters: true
         - trigger-builds:
             - project: 'polarion-test-run-{satellite_version}-{os}'
@@ -342,8 +340,6 @@
 - job-template:
     name: 'automation-upgrade-{os}'
     node: sesame
-    properties:
-        - satellite6-build_blocker
     parameters:
         - choice:
             name: FROM_VERSION
@@ -389,8 +385,6 @@
     name: trigger-satellite{satellite_version}
     description: Triggers automation for Satellite 6
     node: sesame
-    properties:
-        - satellite6-build_blocker
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
