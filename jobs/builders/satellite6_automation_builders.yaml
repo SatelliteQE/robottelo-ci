@@ -7,4 +7,9 @@
             clear: true
             nature: shell
             command:
-              !include-raw: 'satellite6-automation.sh'
+              !include-raw:
+                  - 'satellite6-automation.sh'
+                  - 'satellite6-foreman-debug.sh'
+                  - 'satellite6-graceful-shutdown.sh'
+ 
+

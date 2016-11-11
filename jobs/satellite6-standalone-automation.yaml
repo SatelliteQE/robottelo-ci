@@ -89,7 +89,9 @@
             clear: true
             nature: shell
             command:
-                !include-raw 'satellite6-standalone-automation.sh'
+                !include-raw:
+                    - 'satellite6-standalone-automation.sh'
+                    - 'satellite6-foreman-debug.sh'
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-archiver
