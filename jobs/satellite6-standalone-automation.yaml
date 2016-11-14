@@ -92,3 +92,4 @@
                 !include-raw 'satellite6-standalone-automation.sh'
     publishers:
         - satellite6-automation-publishers
+        - satellite6-automation-archiver
