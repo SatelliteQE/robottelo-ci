@@ -47,3 +47,13 @@ case "${TEST_TYPE}" in
         exit 1
         ;;
 esac
+
+# Remove any previous instances of foreman-debug tar file
+rm -rf foreman-debug.tar.xz
+# Disable error checking, for more information check the related issue
+# http://projects.theforeman.org/issues/13442
+# Let's continue to use this till we stop testing Satellite6.1 completely.
+set +e
+ssh "root@${SERVER_HOSTNAME}" foreman-debug -g -q -d "~/foreman-debug"
+set -e
+scp -r "root@${SERVER_HOSTNAME}:~/foreman-debug.tar.xz" .
