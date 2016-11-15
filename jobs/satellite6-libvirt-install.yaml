@@ -1,0 +1,74 @@
+- job:
+    name: 'satellite6-libvirt-install'
+    description: |
+        Quickly up an instance using VLANs for feature and Bug testing. We could use the two new physical hardware which were
+        recently procured. This would help fully automate sat6 installation to do Libvirt, RHEVM and Openstack CR Testing.
+    node: sesame
+    parameters:
+        - choice:
+            name: SERVER_ID
+            choices:
+                - 'testing-rhel7'
+                - 'testing-rhel6'
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                - 'INTERNAL AK'
+                - 'INTERNAL'
+                - 'INTERNAL REPOFILE'
+                - 'GA'
+        - choice:
+            name: SAT_VERSION
+            choices:
+                - '6.3'
+                - '6.2'
+                - '6.1'
+                - '6.0'
+        - choice:
+            name: DISTRO
+            choices:
+                - 'rhel7'
+                - 'rhel6'
+        - string:
+            name: BASE_URL
+            description: Required when Satellite distribution is INTERNAL
+        - choice:
+            name: SELINUX_MODE
+            choices:
+                - 'enforcing'
+                - 'permissive'
+        - choice:
+            name: PROXY_MODE
+            choices:
+                - 'authenticated'
+                - 'non-authenticated'
+                - 'no-proxy'
+        - bool:
+            name: STAGE_TEST
+            default: false
+            description: |
+                Points to RHSM stage for stage installation test. Used only
+                in CDN provisioning.
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-libvirt-install.sh'
+
