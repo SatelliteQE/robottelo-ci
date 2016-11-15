@@ -1,0 +1,5 @@
+- publisher:
+    name: cleanup_vagrant
+    publishers:
+      - postbuildscript:
+          generic-script: !include-raw: scripts/cleanup_vagrant.sh
