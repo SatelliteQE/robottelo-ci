@@ -11,3 +11,5 @@
           description: "Version of RHEL to run installation test for"
     builders:
       - install_test
+    publishers:
+      - cleanup_vagrant
