@@ -16,6 +16,7 @@
       - clone_gitlab_foreman
       - merge_request
       - shell: !include-raw scripts/add_foreman_docker_gitlab.sh
+      - shell: !include-raw scripts/add_bastion_gitlab.sh
       - test_katello
     publishers:
       - gemset_cleanup
