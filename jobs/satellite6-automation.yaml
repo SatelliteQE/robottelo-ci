@@ -16,6 +16,7 @@
                 - 'GA'
                 - 'BETA'
                 - 'UPSTREAM'
+                - 'ISO'
             description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
         - string:
             name: BASE_URL
