@@ -20,7 +20,7 @@ function remove_instance () {
 function setup_instance () {
     # Provision the instance using satellite6 base image as the source image.
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" \
-    snap-guest -b "${SOURCE_IMAGE}" -t "${TARGET_IMAGE}" --hostname "${TARGET_IMAGE}.${VM_DOMAIN}" \
+    snap-guest -b "${SOURCE_IMAGE}" -t "${TARGET_IMAGE}" --hostname "${SERVER_HOSTNAME}" \
     -m "${VM_RAM}" -c "${VM_CPU}" -d "${VM_DOMAIN}" -f -n bridge="${BRIDGE}" --static-ipaddr "${IPADDR}" \
     --static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
 
@@ -28,7 +28,7 @@ function setup_instance () {
     sleep 60
 
     # Restart Satellite6 service for a clean state of the running instance.
-    ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'katello-service restart'
+    ssh -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" 'katello-service restart'
 }
 
 source ${CONFIG_FILES}
