@@ -31,6 +31,17 @@ elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL REPOFILE' ]; then
     export DISTRIBUTION="satellite6-repofile"
 elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL AK' ]; then
     export DISTRIBUTION="satellite6-activationkey"
+elif [ "${SATELLITE_DISTRIBUTION}" = "ISO" ]; then
+    export DISTRIBUTION="satellite6-iso"
+fi
+
+# ISOs require a specific URL
+if [ "${SATELLITE_DISTRIBUTION}" = "ISO" ]; then
+    if [ ! -z "${BASE_URL}" ]; then
+        export ISO_URL="${BASE_URL}"
+    else
+        export ISO_URL="${SATELLITE6_ISO_REPO}"
+    fi
 fi
 
 # Write a properties file to allow passing variables to other build steps
