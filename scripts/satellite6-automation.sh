@@ -27,14 +27,6 @@ function setup_instance () {
     # Let's wait for 60 secs for the instance to be up and along with it it's services
     sleep 60
 
-    # SSH into the instance to fetch hostname and make sure it is up and running or loop 7 time.
-    count=1; while [ $count -le 7 ]; do echo "Trying to ssh to ${TARGET_IMAGE}.${VM_DOMAIN}"; (( count++ )); \
-    sleep $count ; ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -T \
-    root@"${TARGET_IMAGE}.${VM_DOMAIN}" hostname  && break; if [ $count -eq 8 ]; then exit; fi done
-
-    # SELINUX fix required as after reboot the iptable information is lost. Temporary fix.
-    ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'iptables -F'
-
     # Restart Satellite6 service for a clean state of the running instance.
     ssh -o StrictHostKeyChecking=no root@"${TARGET_IMAGE}.${VM_DOMAIN}" 'katello-service restart'
 }
@@ -42,8 +34,10 @@ function setup_instance () {
 source ${CONFIG_FILES}
 source config/provisioning_environment.conf
 # Provisioning jobs TARGET_IMAGE becomes the SOURCE_IMAGE for Tier and RHAI jobs.
+# source-image at this stage for example: qe-sat63-rhel7-base
 export SOURCE_IMAGE="${TARGET_IMAGE}"
-export TARGET_IMAGE="${TARGET_IMAGE%%-base}"
+# target-image at this stage for example: qe-sat63-rhel7-tier1
+export TARGET_IMAGE="${TARGET_IMAGE%%-base}-${ENDPOINT}"
 
 remove_instance
 setup_instance
@@ -112,11 +106,4 @@ echo "Hostname: ${SERVER_HOSTNAME}"
 echo "Credentials: admin/changeme"
 echo "========================================"
 echo
-echo "Delete the instance of: ${SERVER_HOSTNAME}"
-
-remove_instance
-# After rhai is run, let's setup_instance once again for a clean state,
-# so that we can do bug or feature testing if needed on this instance.
-if [ "${ENDPOINT}" == "rhai" ]; then
-    setup_instance
-fi
+echo "========================================"

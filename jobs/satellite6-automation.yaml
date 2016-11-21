@@ -57,6 +57,8 @@
                 !include-raw-escape:
                     - 'pip-install-pycurl.sh'
                     - 'satellite6-provisioning.sh'
+                    - 'satellite6-foreman-debug.sh'
+                    - 'satellite6-graceful-shutdown.sh'
         - inject:
             properties-file: build_env.properties
         - trigger-builds:
@@ -81,7 +83,6 @@
             subject: 'Provisioning of Satellite {satellite_version} {os} Job has failed'
             body: |
                 This build ${{BUILD_URL}} has failed, may need to fix and re-trigger.
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
@@ -130,7 +131,6 @@
                         no-files-found-action: FAIL
     publishers:
         - satellite6-automation-publishers
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
@@ -164,7 +164,6 @@
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
@@ -199,7 +198,6 @@
 
     publishers:
         - satellite6-automation-publishers
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
@@ -229,7 +227,6 @@
         - satellite6-automation-builders
     publishers:
         - satellite6-automation-publishers
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
         - email-ext:
             recipients: $PROJECT_DEFAULT_RECIPIENTS
@@ -285,7 +282,6 @@
                   POLARION_RELEASE=$POLARION_RELEASE
     publishers:
         - satellite6-automation-publishers
-        - satellite6-automation-foreman-debug
         - satellite6-automation-archiver
 
 - job-template:
