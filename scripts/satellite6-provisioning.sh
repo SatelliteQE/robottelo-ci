@@ -15,6 +15,7 @@ export TARGET_IMAGE
 # set SERVER_HOSTNAME for the snapshot based pipelines by removing "-base" suffix if there is one
 export SERVER_HOSTNAME="${TARGET_IMAGE%%-base}.${VM_DOMAIN}"
 set +e
+fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
 for endpoint in tier1 tier2 tier3 tier4 rhai; do fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE%%-base}-$endpoint,delete_image=true"; done
 set -e
 
@@ -31,6 +32,17 @@ elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL REPOFILE' ]; then
     export DISTRIBUTION="satellite6-repofile"
 elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL AK' ]; then
     export DISTRIBUTION="satellite6-activationkey"
+elif [ "${SATELLITE_DISTRIBUTION}" = "ISO" ]; then
+    export DISTRIBUTION="satellite6-iso"
+fi
+
+# ISOs require a specific URL
+if [ "${SATELLITE_DISTRIBUTION}" = "ISO" ]; then
+    if [ ! -z "${BASE_URL}" ]; then
+        export ISO_URL="${BASE_URL}"
+    else
+        export ISO_URL="${SATELLITE6_ISO_REPO}"
+    fi
 fi
 
 # Write a properties file to allow passing variables to other build steps
