@@ -4,7 +4,7 @@
     auth-token: ""
     dsl:
       !include-raw:
-          - properties/branch.groovy
-          - properties/foreman_discovery_repo.groovy
-          - properties/sourceTypeGem.groovy
+          - branch.groovy
+          - ../repos/foreman_discovery_repo.groovy
+          - ../source_types/sourceTypeGem.groovy
           - workflows/releasePackageWorkflow.groovy

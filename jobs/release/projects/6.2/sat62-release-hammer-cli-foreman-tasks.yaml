@@ -3,7 +3,7 @@
     project-type: workflow
     dsl:
       !include-raw:
-          - properties/branch.groovy
-          - properties/hammer_cli_foreman_tasks_repo.groovy
-          - properties/sourceTypeGem.groovy
+          - branch.groovy
+          - ../repos/hammer_cli_foreman_tasks_repo.groovy
+          - ../source_types/sourceTypeGem.groovy
           - workflows/releasePackageWorkflow.groovy

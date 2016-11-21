@@ -1,0 +1,10 @@
+- job:
+    name: 'sat63-release-foreman'
+    project-type: workflow
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - branch.groovy
+          - ../repos/foreman_repo.groovy
+          - ../source_types/sourceTypeTar.groovy
+          - workflows/6.3/releasePackageWorkflow.groovy

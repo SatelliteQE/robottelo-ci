@@ -4,7 +4,7 @@
     auth-token: ""
     dsl:
       !include-raw:
-          - properties/branch.groovy
-          - properties/hammer_cli_katello_repo.groovy
-          - properties/sourceTypeGem.groovy
+          - branch.groovy
+          - ../repos/hammer_cli_katello_repo.groovy
+          - ../source_types/sourceTypeGem.groovy
           - workflows/releasePackageWorkflow.groovy
