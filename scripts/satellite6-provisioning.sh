@@ -15,6 +15,7 @@ export TARGET_IMAGE
 # set SERVER_HOSTNAME for the snapshot based pipelines by removing "-base" suffix if there is one
 export SERVER_HOSTNAME="${TARGET_IMAGE%%-base}.${VM_DOMAIN}"
 set +e
+fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
 for endpoint in tier1 tier2 tier3 tier4 rhai; do fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE%%-base}-$endpoint,delete_image=true"; done
 set -e
 
