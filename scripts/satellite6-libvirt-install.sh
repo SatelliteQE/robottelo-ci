@@ -39,7 +39,7 @@ echo "BRIDGE=${BRIDGE}" >> build_env.properties
 # Run installation after writing the build_env.properties to make sure the
 # values are available for the post build actions, specially the foreman-debug
 # capturing.
-fab -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_cdn_version=${SAT_VERSION},test_in_stage=${STAGE_TEST}"
+fab -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
 
 echo
 echo "========================================"
