@@ -1,0 +1,46 @@
+- job:
+    name: 'satellite6-launch-tier-instance'
+    description: |
+        Quickly launch the tier instance of various jobs.
+    node: sesame
+    parameters:
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.3'
+                - '6.2'
+                - '6.1'
+                - 'nightly'
+        - choice:
+            name: DISTRO
+            choices:
+                - 'rhel7'
+                - 'rhel6'
+        - choice:
+            name: ENDPOINT
+            choices:
+                - 'tier1'
+                - 'tier2'
+                - 'tier3'
+                - 'tier4'
+                - 'rhai'
+        - choice:
+            name: ACTION
+            choices:
+                - 'start'
+                - 'destroy'
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'satellite6-handle-tier-instances.sh'
