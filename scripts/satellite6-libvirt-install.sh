@@ -10,8 +10,9 @@ if [ "${STAGE_TEST}" = 'true' ]; then
     source config/stage_environment.conf
 fi
 
-# For Example: The TARGET_IMAGE in provision_libvirt_install.conf should be "qe-testing-rhel7".
+# For Example: The TARGET_IMAGE in provision_libvirt_install.conf should be "qe-test-rhel7".
 export TARGET_IMAGE
+export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
 set +e
 fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
 set -e
