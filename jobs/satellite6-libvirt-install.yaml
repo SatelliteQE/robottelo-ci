@@ -18,7 +18,7 @@
                 - 'INTERNAL REPOFILE'
                 - 'GA'
         - choice:
-            name: SAT_VERSION
+            name: SATELLITE_VERSION
             choices:
                 - '6.3'
                 - '6.2'
