@@ -1,7 +1,7 @@
 - job:
-    name: 'satellite6-launch-tier-instance'
+    name: 'satellite6-handle-tier-instances'
     description: |
-        Quickly launch the tier instance of various jobs.
+        Quickly launch or destroy the tier instances of various jobs.
     node: sesame
     parameters:
         - choice:
@@ -35,6 +35,8 @@
             files:
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
                   variable: CONFIG_FILES
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="ACTION"} ${ENV,var="SATELLITE_VERSION"} ${ENV,var="DISTRO"} ${ENV,var="ENDPOINT"}'
     builders:
         - shining-panda:
             build-environment: virtualenv
