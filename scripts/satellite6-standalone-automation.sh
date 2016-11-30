@@ -17,6 +17,9 @@ else
 
     sed -i "s/^admin_username.*/admin_username=${FOREMAN_ADMIN_USER}/" robottelo.properties
     sed -i "s/^admin_password.*/admin_password=${FOREMAN_ADMIN_PASSWORD}/" robottelo.properties
+
+    sed -i "s/# bz_password=.*/bz_password=${BUGZILLA_PASSWORD}/" robottelo.properties
+    sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
 fi
 
 pytest() {
