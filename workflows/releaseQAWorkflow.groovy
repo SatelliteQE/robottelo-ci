@@ -303,6 +303,11 @@ def computePackageDifference(body) {
 
         git url: "https://${env.GIT_HOSTNAME}/satellite6/tool_belt.git", branch: 'master'
 
+        sh "rvm gemset create temp_gemset"
+        sh "rvm gemset use temp_gemset"
+        sh "gem install bundler"
+        sh "bundle install"
+
         def type = config.content_view.split(' ')[0]
         def rhel = config.content_view.split(' ')[2]
 
@@ -331,6 +336,7 @@ def computePackageDifference(body) {
         sh "${cmd.join(' ')}"
         archive archive_file
 
+        sh "rvm gemset delete temp_gemset --force"
     }
 
 }
