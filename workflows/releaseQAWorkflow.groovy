@@ -302,17 +302,6 @@ def computePackageDifference(body) {
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'SATELLITE_PASSWORD', usernameVariable: 'SATELLITE_USERNAME']]) {
 
         git url: "https://${env.GIT_HOSTNAME}/satellite6/tool_belt.git", branch: 'master'
-
-        def type = config.content_view.split(' ')[0]
-        def rhel = config.content_view.split(' ')[2]
-
-        if (type == 'Tools') {
-            type = 'Satellite Tools'
-        }
-
-        def product = "Red Hat ${type} 6.2 Composes"
-        def repo = "${rhel} ${type} x86_64 os"
-
         def archive_file = 'package_report.yaml'
 
         def cmd = [
@@ -321,8 +310,6 @@ def computePackageDifference(body) {
             "--username ${env.SATELLITE_USERNAME} --password ${env.SATELLITE_PASSWORD}",
             "--organization '${config.organization}'",
             "--content-view '${config.content_view}'",
-            "--product 'Red Hat ${type} 6.2 Composes'",
-            "--repository '${repo}'",
             "--from-environment '${config.from_environment}'",
             "--to-environment '${config.to_environment}'",
             "--output ${archive_file}"
