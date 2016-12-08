@@ -13,4 +13,4 @@ echo "gem 'rubocop'" >> Gemfile.local
 
 bundle install
 
-bundle exec rubocop
+bundle exec rake
