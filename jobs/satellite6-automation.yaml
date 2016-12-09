@@ -64,7 +64,6 @@
             properties-file: build_env.properties
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier1-{os}'
-              block: true
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
                 TOOLS_REPO=${{TOOLS_REPO}}
@@ -113,7 +112,6 @@
         - satellite6-automation-builders
         - trigger-builds:
           - project: 'automation-{satellite_version}-tier2-{os}'
-            block: true
             current-parameters: true
         - conditional-step:
             condition-kind: regex-match
@@ -161,7 +159,6 @@
         - satellite6-automation-builders
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier3-{os}'
-              block: true
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
@@ -194,7 +191,6 @@
         - satellite6-automation-builders
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier4-{os}'
-              block: true
               current-parameters: true
 
     publishers:
@@ -274,7 +270,6 @@
             steps:
                 - trigger-builds:
                     - project: 'automation-{satellite_version}-rhai-{os}'
-                      block: true
                       current-parameters: true
         - trigger-builds:
             - project: 'polarion-test-run-{satellite_version}-{os}'
