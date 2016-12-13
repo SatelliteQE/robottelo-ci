@@ -81,10 +81,9 @@
         - string:
             name: CAPSULE_HOSTNAMES
         - string:
-            name: CAPSULE_SUBSCRIPTION
+            name: CAPSULE_AK
             description: |
                 <p>Optional, Applicable only if CAPSULE_HOSTNAME value is provided</p>
-                <p>List of cv_name, environment, ak_name attached to subscription of capsule in given sequence.</p>
         - string:
             name: CLIENT6_HOSTS
             description: |
