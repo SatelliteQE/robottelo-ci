@@ -6,10 +6,20 @@
     node: sesame
     parameters:
         - choice:
+            name: PROVISIONING_ID
+            choices:
+                - 'basil'
+                - 'paprika'
+                - 'rosemary'
+        - choice:
             name: SERVER_ID
             choices:
                 - 'testing-rhel7'
                 - 'testing-rhel6'
+                - 'sat-feature-rhel7'
+                - 'cap-feature-rhel7'
+                - 'sat-feature-rhel6'
+                - 'cap-feature-rhel6'
         - choice:
             name: SATELLITE_DISTRIBUTION
             choices:
@@ -61,6 +71,8 @@
             files:
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
                   variable: CONFIG_FILES
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="PROVISIONING_ID"} ${ENV,var="SERVER_ID"} ${ENV,var="SATELLITE_VERSION"} ${ENV,var="DISTRO"}'
     builders:
         - shining-panda:
             build-environment: virtualenv
