@@ -27,3 +27,7 @@
             description: |
                 Points to RHSM stage for stage installation test. Used only
                 in CDN provisioning.
+        - string:
+            name: OS_UPGRADE_REPO
+            description: |
+                Upgrade OS using this repo URL, typically RHEL candidate repo.
