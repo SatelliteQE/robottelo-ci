@@ -9,21 +9,13 @@ source config/installation_environment.conf
 source config/proxy_config_environment.conf
 # OS_VERSION needs to be defined before sourcing sat6_repos_urls.conf
 source config/sat6_repos_urls.conf
+# DISTRO needs to be defined before sourcing subscription_config.conf
 source config/subscription_config.conf
 if [ "$STAGE_TEST" = 'true' ]; then
     source config/stage_environment.conf
 fi
 if [ "${PUPPET4}" = 'true' ]; then
     export PUPPET4_REPO # sourced from installation_environment.conf
-fi
-
-# Populate DOGFOOD_AACTIVATIONKEY and REPO_FILE_URL ENV_VAR depending upon the OS_VERSION
-if [ "${OS_VERSION}" = '7' ]; then
-    export DOGFOOD_ACTIVATIONKEY="${RHEL7_DOGFOOD_AK}"
-    export REPO_FILE_URL="${RHEL7_REPO_FILE_URL}"
-elif [ "${OS_VERSION}" = '6' ]; then
-    export DOGFOOD_ACTIVATIONKEY="${RHEL6_DOGFOOD_AK}"
-    export REPO_FILE_URL="${RHEL6_REPO_FILE_URL}"
 fi
 
 if [ ${FIX_HOSTNAME} = "true" ]; then
