@@ -10,12 +10,18 @@ if [ "${STAGE_TEST}" = 'true' ]; then
     source config/stage_environment.conf
 fi
 
-# For Example: The TARGET_IMAGE in provision_libvirt_install.conf should be "qe-test-rhel7".
-export TARGET_IMAGE
-export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
-set +e
-fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
-set -e
+function remove_instance () {
+    # For Example: The TARGET_IMAGE in provision_libvirt_install.conf should be "qe-test-rhel7".
+    export TARGET_IMAGE
+    export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
+    set +e
+    fab -H "root@$1" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
+    set -e
+}
+
+# Clean up the running instances on all the hosts, if any. This is required so that there is no
+# IP conflict, while provisioning the host on a different PROVISIONING_HOST.
+for host in ${CLEANUP_PROVISIONING_HOSTS} ; do remove_instance $host; done
 
 # Assign DISTRIBUTION to trigger things appropriately from automation-tools.
 if [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL' ]; then
