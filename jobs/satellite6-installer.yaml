@@ -119,6 +119,11 @@
             name: OS_UPGRADE_REPO
             description: |
                 Upgrade OS using this repo URL, typically RHEL candidate repo.
+        - bool:
+            name: PUPPET4
+            default: false
+            description: |
+                Install Satellite with Puppet v4 (for Satellite 6.3+ only).
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git

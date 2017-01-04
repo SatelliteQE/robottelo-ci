@@ -9,6 +9,9 @@ source config/subscription_config.conf
 if [ "${STAGE_TEST}" = 'true' ]; then
     source config/stage_environment.conf
 fi
+if [ "${PUPPET4}" = 'true' ]; then
+    export PUPPET4_REPO # sourced from installation_environment.conf
+fi
 
 # The target_image in provisioning_environment.conf should be "qe-sat6y-rhel7-base".
 export TARGET_IMAGE
