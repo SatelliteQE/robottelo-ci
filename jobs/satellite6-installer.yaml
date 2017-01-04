@@ -115,6 +115,10 @@
                 For example: foreman-websockets-encrypt=false,capsule-reverse-proxy=true,disable-system-checks
                 Do not specify these installer options related to (Interface, Gateway, DNS, DHCP, TFTP, PUPPET)
                 here, these are already handled.
+        - string:
+            name: OS_UPGRADE_REPO
+            description: |
+                Upgrade OS using this repo URL, typically RHEL candidate repo.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
