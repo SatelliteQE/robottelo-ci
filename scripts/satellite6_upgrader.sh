@@ -12,6 +12,7 @@ source ${CONFIG_FILES}
 if [ -z "${SATELLITE_HOSTNAME}" ]; then
     source config/rhev.conf
 fi
+export SATELLITE_VERSION="${TO_VERSION}"
 source config/sat6_repos_urls.conf
 source config/subscription_config.conf
 
@@ -35,9 +36,14 @@ fi
 if [ ! -z "${CUSTOMER_SAT_HOSTNAME}" ]; then
     # Clone the 'satellite-clone' project that includes the ansible playbook to install sat server along with customer DB.
     git clone https://github.com/RedHatSatellite/satellite-clone.git
+    source config/preupgrade_entities.conf
     pushd satellite-clone
+    # Copy the inventory.sample to inventory
+    cp -a inventory.sample inventory
     # Configuration Updates in inventory file
     sed -i -e 2s/.*/"${SATELLITE_HOSTNAME}"/ inventory
+    # Copy the main.sample.yml to main.yml
+    cp -a roles/sat6repro/vars/main.sample.yml roles/sat6repro/vars/main.yml
     # Configuration updates in vars file
     sed -i -e "s/^hostname.*/hostname: "${CUSTOMER_SAT_HOSTNAME}"/" roles/sat6repro/vars/main.yml
     sed -i -e "s/^rhelversion.*/rhelversion: $OS_VERSION/" roles/sat6repro/vars/main.yml
@@ -50,20 +56,20 @@ if [ ! -z "${CUSTOMER_SAT_HOSTNAME}" ]; then
     sed -i -e '/subscribe the VM.*/a\ \ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/sat6repro/tasks/main.yml
     sed -i -e '/subscription-manager register.*/a- name: subscribe machine' roles/sat6repro/tasks/main.yml
     sed -i -e '/subscribe machine.*/a\ \ command: subscription-manager subscribe --pool={{ rhn_pool }}' roles/sat6repro/tasks/main.yml
-    if [ "${FROM_VERSION}" = '6.1' ]; then
+    if [[ "${FROM_VERSION}" = '6.1' && ! -z "${DHCP_INTERFACE}" ]]; then
         sed -i -e "s/katello-installer.*/katello-installer --capsule-dhcp-interface "${DHCP_INTERFACE}"/" roles/sat6repro/tasks/main.yml
     fi
     # Download the Customer DB data Backup files
     echo "Copying Customer Data DB's from Server, This may take while depending on the network ....."
-    source config/preupgrade_entities.conf
     scp root@"${cust_db_server}":/customer-databases/"${CUSTOMER_NAME}"/* roles/sat6repro/files/
     # Renaming the data backup files as we need
     mv roles/sat6repro/files/*conf* roles/sat6repro/files/config_files.tar.gz | echo
     mv roles/sat6repro/files/*pg* roles/sat6repro/files/pgsql_data.tar.gz | echo
     mv roles/sat6repro/files/*mongo* roles/sat6repro/files/mongo_data.tar.gz | echo
     # Run Ansible command to install satellite with cust DB
+    export ANSIBLE_HOST_KEY_CHECKING=False
     ansible all -i inventory -m ping -u root
-    ansible-playbook -i inventory deploy-clone-playbook.yml
+    ansible-playbook -i inventory satellite-clone-playbook.yml
     # Return to the parent directory
     popd
 fi
