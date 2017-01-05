@@ -2,6 +2,7 @@ pip install -U -r requirements.txt
 
 # Figure out what version of RHEL the server uses
 export OS_VERSION=$(fab -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:digit:]]" | cut -d ' ' -f 2)
+DISTRO="rhel${OS_VERSION}"
 
 source ${CONFIG_FILES}
 source config/installation_environment.conf
@@ -11,6 +12,9 @@ source config/sat6_repos_urls.conf
 source config/subscription_config.conf
 if [ "$STAGE_TEST" = 'true' ]; then
     source config/stage_environment.conf
+fi
+if [ "${PUPPET4}" = 'true' ]; then
+    export PUPPET4_REPO # sourced from installation_environment.conf
 fi
 
 # Populate DOGFOOD_AACTIVATIONKEY and REPO_FILE_URL ENV_VAR depending upon the OS_VERSION
