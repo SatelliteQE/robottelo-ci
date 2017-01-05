@@ -46,7 +46,7 @@ echo "Credentials: admin/changeme"
 echo "========================================"
 
 # Download the Satellite6 Configure Template.
-#wget ${HTTP_SERVER_HOSTNAME}/pub/sat6_configure_template.sh
+wget ${HTTP_SERVER_HOSTNAME}/pub/sat6_configure_template.sh
 
 echo
 echo "============================================="
