@@ -1,33 +1,25 @@
-# Exporting OS variable first to select correct env vars from config files
-# according to OS
-export OS="{os}"
-
+# Setting Prerequisites
 pip install -r requirements.txt
+
+#Setting up required Variables
+export OS="{os}"
+export OS_VERSION="${{OS: -1}}"
+export SATELLITE_VERSION="${{SATELLITE_VERSION:-$TO_VERSION}}"
+
+# Sourcing and exporting required env vars
 source "${{CONFIG_FILES}}"
 source config/rhev.conf
 source config/sat6_repos_urls.conf
 source config/subscription_config.conf
 
+# Fetching correct BASE_URL and CAPSULE_URL
+export BASE_URL="${{SATELLITE6_REPO}}"
+export CAPSULE_URL="${{CAPSULE_REPO}}"
 
-function export_rhev_env_var {{
-    if [ "${{OS}}" = 'rhel6' ]; then
-        export SAT_IMAGE="${{SAT_RHEL6_IMAGE}}"
-        export SAT_HOST="${{SAT_RHEL6_HOSTNAME}}"
-        export CAP_IMAGE="${{CAP_RHEL6_IMAGE}}"
-        export CAP_HOST="${{CAP_RHEL6_HOSTNAME}}"
-        export BASE_URL="${{SATELLITE6_RHEL6}}"
-        export CAPSULE_URL="${{CAPSULE_RHEL6}}"
-        export TOOLS_URL="${{TOOLS_RHEL6}}"
-    elif [ "${{OS}}" = 'rhel7' ]; then
-        export SAT_IMAGE="${{SAT_RHEL7_IMAGE}}"
-        export SAT_HOST="${{SAT_RHEL7_HOSTNAME}}"
-        export CAP_IMAGE="${{CAP_RHEL7_IMAGE}}"
-        export CAP_HOST="${{CAP_RHEL7_HOSTNAME}}"
-        export BASE_URL="${{SATELLITE6_RHEL7}}"
-        export CAPSULE_URL="${{CAPSULE_RHEL7}}"
-        export TOOLS_URL="${{TOOLS_RHEL7}}"
-    fi
-}}
+if [ "${{TO_VERSION}}" = '6.1' ]; then
+    echo "ALERT!! The upgrade from 6.0 to 6.1 is not supported! Please perform it manually"
+    exit 1
+fi
 
-export_rhev_env_var
+# Run Capsule Upgrade to run both satellite and capsule upgrade
 fab -u root product_upgrade:'capsule'
