@@ -82,6 +82,9 @@
             skip-tag: true
     wrappers:
         - satellite6-automation-wrappers
+        - inject-passwords:
+            global: true
+            mask-password-params: true
     builders:
         - shining-panda:
             build-environment: virtualenv
