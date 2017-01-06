@@ -28,3 +28,5 @@
                 !include-raw:
                     - 'pip-install-pycurl.sh'
                     - 'satellite6-manifest-downloader.sh'
+    publishers:
+        - satellite6-automation-mails

@@ -76,13 +76,7 @@
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
                 POLARION_RELEASE=${{POLARION_RELEASE}}
     publishers:
-        - email-ext:
-            recipients: ${{QE_EMAIL_LIST}}
-            success: false
-            failure: true
-            subject: 'Provisioning of Satellite {satellite_version} {os} Job has failed'
-            body: |
-                This build ${{BUILD_URL}} has failed, may need to fix and re-trigger.
+        - satellite6-automation-mails
         - satellite6-automation-archiver
 
 - job-template:

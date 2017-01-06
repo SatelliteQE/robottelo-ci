@@ -22,3 +22,5 @@
             nature: shell
             command:
                 !include-raw: scripts/robottelo-ci-update-jobs.sh
+    publishers:
+        - satellite6-automation-mails
