@@ -33,7 +33,7 @@ if [ "${DISTRIBUTION}" = 'DOWNSTREAM' ]; then
 fi
 
 # Customer DB Setup
-if [ ! -z "${CUSTOMER_SAT_HOSTNAME}" ]; then
+if [ ! -z "${CUSTOMER_NAME}" ]; then
     # Clone the 'satellite-clone' project that includes the ansible playbook to install sat server along with customer DB.
     git clone https://github.com/RedHatSatellite/satellite-clone.git
     source config/preupgrade_entities.conf
@@ -45,7 +45,6 @@ if [ ! -z "${CUSTOMER_SAT_HOSTNAME}" ]; then
     # Copy the main.sample.yml to main.yml
     cp -a roles/sat6repro/vars/main.sample.yml roles/sat6repro/vars/main.yml
     # Configuration updates in vars file
-    sed -i -e "s/^hostname.*/hostname: "${CUSTOMER_SAT_HOSTNAME}"/" roles/sat6repro/vars/main.yml
     sed -i -e "s/^rhelversion.*/rhelversion: $OS_VERSION/" roles/sat6repro/vars/main.yml
     sed -i -e "s/^satelliteversion.*/satelliteversion: "${FROM_VERSION}"/" roles/sat6repro/vars/main.yml
     sed -i -e "/org.*/arhn_pool: "${RHN_POOLID}"" roles/sat6repro/vars/main.yml
@@ -66,6 +65,9 @@ if [ ! -z "${CUSTOMER_SAT_HOSTNAME}" ]; then
     mv roles/sat6repro/files/*conf* roles/sat6repro/files/config_files.tar.gz | echo
     mv roles/sat6repro/files/*pg* roles/sat6repro/files/pgsql_data.tar.gz | echo
     mv roles/sat6repro/files/*mongo* roles/sat6repro/files/mongo_data.tar.gz | echo
+    # Update the hostname as per Customer DB
+    CUSTOMER_SAT_HOSTNAME="$(tar -zxf roles/sat6repro/files/config_files.tar.gz etc/httpd/conf/httpd.conf -O | grep ServerName | awk -F'"' '{print $2}')"
+    sed -i -e "s/^hostname.*/hostname: "${CUSTOMER_SAT_HOSTNAME}"/" roles/sat6repro/vars/main.yml
     # Run Ansible command to install satellite with cust DB
     export ANSIBLE_HOST_KEY_CHECKING=False
     ansible all -i inventory -m ping -u root
