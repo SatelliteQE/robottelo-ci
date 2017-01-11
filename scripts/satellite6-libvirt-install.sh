@@ -57,21 +57,26 @@ echo
 cp sat6_configure_template.sh sat6_configure.sh
 chmod 755 sat6_configure.sh
 
-# Update the subnet information
-sed -i "s|SUBNET_NAME=.*|SUBNET_NAME=${SUBNET}|" sat6_configure.sh
-sed -i "s|SUBNET_IP=.*|SUBNET_IP=${IPADDR}|" sat6_configure.sh
+# Populate the Subnet Information
+sed -i "s|SUBNET_NAME=.*|SUBNET_NAME=${BRIDGE}|" sat6_configure.sh
+sed -i "s|SUBNET_RANGE=.*|SUBNET_RANGE=${SUBNET}|" sat6_configure.sh
 sed -i "s|SUBNET_MASK=.*|SUBNET_MASK=${NETMASK}|" sat6_configure.sh
 sed -i "s|SUBNET_GATEWAY=.*|SUBNET_GATEWAY=${GATEWAY}|" sat6_configure.sh
 
-# Updates the REPO URLS automatically depending upon the satellite6 version choosen in the job.
+# Updates the REPO URLS automatically depending upon the Satellite6 Version selected in the job.
 # This is done by using the already maintained sat6_repo_url config file.
 sed -i "s|RHEL6_TOOLS_URL=.*|RHEL6_TOOLS_URL=${TOOLS_RHEL6}|" sat6_configure.sh
 sed -i "s|RHEL7_TOOLS_URL=.*|RHEL7_TOOLS_URL=${TOOLS_RHEL7}|" sat6_configure.sh
 sed -i "s|CAPSULE6_URL=.*|CAPSULE6_URL=${CAPSULE_RHEL6}|" sat6_configure.sh
 sed -i "s|CAPSULE7_URL=.*|CAPSULE7_URL=${CAPSULE_RHEL7}|" sat6_configure.sh
 
-# Set Satellite6 minor version so that right Tools and Capsule repos are created and synced.
+# Set Satellite6 Version, So that MEDIUM-ID is used accordingly. Note, Sat6.3 may not use MEDIUM.
 sed -i "s|SAT_VERSION=.*|SAT_VERSION=${SATELLITE_VERSION}|" sat6_configure.sh
+
+# By default RHEL 6Server-x86_64 and RHEL 7Server-x86_64 content only is planned to be synced.
+# This shall be called as minimal install and by default it would sync only these content.
+sed -i "s|MINIMAL_INSTALL=.*|MINIMAL_INSTALL=${MINIMAL_INSTALL}|" sat6_configure.sh
+
 
 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no sat6_configure.sh root@${SERVER_HOSTNAME}:/root/
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@${SERVER_HOSTNAME} /root/sat6_configure.sh
