@@ -69,10 +69,6 @@
                 <p> -- OR -- </p>
                 <p>2. This can be the RHEL machine onto which satellite with customer DB will be installed and upgraded.</p>
         - string:
-            name: CUSTOMER_SAT_HOSTNAME
-            description: |
-                <p>Satellite Hostname in Customer Database/Environment.</p>
-        - string:
             name: CUSTOMER_NAME
             description: |
                 <p>Customer name of which the DB's will be picked to perform upgrade.</p>
