@@ -2,10 +2,10 @@
     name: satellite6-automation-mails
     publishers:
         - email-ext:
-            recipients: ${{QE_EMAIL_LIST}}
+            recipients: ${QE_EMAIL_LIST}
             success: false
             failure: true
-            subject: 'The Build Number ${{BUILD_NUMBER}} of JOB ${{JOB_NAME}} has failed.'
+            subject: 'The Build Number ${BUILD_NUMBER} of JOB ${JOB_NAME} has failed.'
             body: |
-                This build ${{BUILD_URL}} has failed, may need to fix and re-trigger.
+                This build ${BUILD_URL} has failed, may need to fix and re-trigger.
 
