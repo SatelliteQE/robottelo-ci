@@ -8,7 +8,8 @@ export SATELLITE_VERSION="${{SATELLITE_VERSION:-$TO_VERSION}}"
 
 # Sourcing and exporting required env vars
 source "${{CONFIG_FILES}}"
-source config/rhev.conf
+source config/compute_resources.conf
+source config/sat6_upgrade.conf
 source config/sat6_repos_urls.conf
 source config/subscription_config.conf
 
