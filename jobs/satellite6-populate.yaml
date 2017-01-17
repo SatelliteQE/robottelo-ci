@@ -1,0 +1,84 @@
+- job:
+    name: 'satellite6-populate'
+    concurrent: true
+    display-name: 'Satellite 6 Populate'
+    description: |
+        <p>Job that just Populates an already installed <strong>Satellite 6</strong> on a machine. This job imports manifest, syncs RHEL content, creates CV, Publishes it, promotes it, Creates Ak, Creates Host-Groups and finally Creates Hosts on Libvirt.</p>
+        <p>Please make sure to add the following <strong>ssh key</strong> to your server so that this <strong>Jenkins</strong> job can access it.</p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+    node: sesame
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo-ci.git
+            branches:
+                - origin/master
+            skip-tag: true
+    parameters:
+        - string:
+            name: SERVER_HOSTNAME
+            description: "FQDN for your server where you want to populate Satellite 6 content."
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.3'
+                - '6.2'
+            description: "Currently this job populates completely for 6.2 and 6.3 only. As a lot of hammer-cli options differ for 6.1"
+        - bool:
+            name: MINIMAL_INSTALL
+            default: true
+            description: "By default, Minimal Install is selected and it only syncs content of RHEL6-x86_64 and RHEL7-x86_64."
+        - string:
+            name: SUBNET_RANGE
+            description: "The Subnet range for the sat6 to provide a DHCP IP to the hosts."
+        - string:
+            name: SUBNET_MASK
+            description: "The Subnet mask for the Subnet Range defined. Example: 255.255.255.0"
+        - string:
+            name: SUBNET_GATEWAY
+            description: "The Subnet gateway for the Subnet Range defined. Example: 192.168.100.1 for NAT Based and x.x.x.254 for Bridge Based networks."
+        - bool:
+            name: DEFAULT_COMPUTE_RESOURCES
+            default: true
+            description: "Default is true, If unchecked we need to provide the below Libvirt, RHEV and OpenStack Information."
+        - string:
+            name: LIBVIRT_HOSTNAME
+            description: "The Libvirt Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+        - string:
+            name: RHEV_HOSTNAME
+            description: "The RHEV Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+        - string:
+            name: RHEV_USER
+            description: "The RHEV User login to add the Compute Resource. Note: Provide User in the format user@internal."
+        - string:
+            name: RHEV_PASSWD
+            description: "The RHEV Password to add the Compute Resource."
+        - string:
+            name: OSP_HOSTNAME
+            description: "The Openstack Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+        - string:
+            name: OS_USERNAME
+            description: "The OpenStack Platform User login to add the Compute Resource."
+        - string:
+            name: OS_PASSWORD
+            description: "The OpenStack Platform Password to add the Compute Resource."
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="SERVER_HOSTNAME"} ${ENV,var="SATELLITE_VERSION"}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'scripts/satellite6-configure.sh'
+    publishers:
+        - satellite6-automation-mails
