@@ -127,6 +127,42 @@
         - satellite6-automation-archiver
 
 - job-template:
+    name: 'upgrade-{satellite_version}-tier1-{os}'
+    node: sesame
+    logrotate:
+        numToKeep: 16
+    properties:
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier1
+                OS={os}
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+              !include-raw:
+                  - 'satellite6-automation-upgrade.sh'
+    publishers:
+        - archive:
+            artifacts: '*.tar.xz'
+
+- job-template:
     name: 'automation-{satellite_version}-tier2-{os}'
     node: sesame
     logrotate:
@@ -324,7 +360,7 @@
             attachments: report.html
 
 - job-template:
-    name: 'automation-upgrade-{os}'
+    name: 'automation-{satellite_version}-upgrade-{os}'
     node: sesame
     parameters:
         - choice:
@@ -363,6 +399,19 @@
                 !include-raw:
                     - 'pip-install-pycurl.sh'
                     - 'satellite6-upgrade-trigger.sh'
+        - trigger-builds:
+            - project: 'upgrade-{satellite_version}-tier1-{os}'
+              predefined-parameters: |
+                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                TOOLS_REPO=${{TOOLS_REPO}}
+                SUBNET=${{SUBNET}}
+                NETMASK=${{NETMASK}}
+                GATEWAY=${{GATEWAY}}
+                BRIDGE=${{BRIDGE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+                DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                POLARION_RELEASE=${{POLARION_RELEASE}}
     publishers:
         - archive:
             artifacts: '*.tar.xz'
@@ -488,7 +537,7 @@
         - 'automation-{satellite_version}-rhai-{os}'
         - 'polarion-test-run-{satellite_version}-{os}'
         - 'report-automation-results-{satellite_version}-{os}'
-        - 'automation-upgrade-{os}'
+        - 'automation-{satellite_version}-upgrade-{os}'
 
 
 # Let's have a separate project for triggers.
