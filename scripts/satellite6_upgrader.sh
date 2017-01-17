@@ -10,7 +10,8 @@ fi
 source ${CONFIG_FILES}
 # Source the Variables from files
 if [ -z "${SATELLITE_HOSTNAME}" ]; then
-    source config/rhev.conf
+    source config/compute_resources.conf
+    source config/sat6_upgrade.conf
 fi
 export SATELLITE_VERSION="${TO_VERSION}"
 source config/sat6_repos_urls.conf
