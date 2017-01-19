@@ -394,7 +394,6 @@
             name: RHEL7_TOOLS_URL
             description: |
                 Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/os
-        - satellite6-upgrade-triggers-parameters
         - satellite6-provisioning-parameters
     wrappers:
         - config-file-provider:
@@ -410,7 +409,8 @@
         - shell: |
             source ${{CONFIG_FILES}}
             source config/sat6_repos_urls.conf
-            echo "RHEL6_SATELLITE_URL=${{RHEL6_SATELLITE_URL:-${{SATELLITE6_RHEL6}}}}" > properties.txt
+            echo "FROM_VERSION=$(echo ${{SATELLITE_VERSION}} - 0.1 | bc)" > properties.txt
+            echo "RHEL6_SATELLITE_URL=${{RHEL6_SATELLITE_URL:-${{SATELLITE6_RHEL6}}}}" >> properties.txt
             echo "RHEL6_CAPSULE_URL=${{RHEL6_CAPSULE_URL:-${{CAPSULE_RHEL6}}}}" >> properties.txt
             echo "RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL:-${{TOOLS_RHEL6}}}}" >> properties.txt
             echo "RHEL7_SATELLITE_URL=${{RHEL7_SATELLITE_URL:-${{SATELLITE6_RHEL7}}}}" >> properties.txt
@@ -446,12 +446,12 @@
             - project: automation-upgrade-rhel6
               predifined-parameters: |
                 TO_VERSION=${{SATELLITE_VERSION}}
-                FROM_VERSION=$(echo $TO_VERSION - 0.1|bc)
+                FROM_VERSION=${{FROM_VERSION}}
         - trigger-builds:
             - project: automation-upgrade-rhel7
               predifined-parameters: |
                 TO_VERSION=${{SATELLITE_VERSION}}
-                FROM_VERSION=$(echo $TO_VERSION - 0.1|bc)
+                FROM_VERSION=${{FROM_VERSION}}
 
 #==============================================================================
 # Project
