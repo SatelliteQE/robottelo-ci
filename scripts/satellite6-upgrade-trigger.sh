@@ -1,7 +1,7 @@
 # Setting Prerequisites
 pip install -r requirements.txt
 
-#Setting up required Variables
+#Setting up required Variables for populating the Sat6 Repos needed by config/sat6_repos_urls.conf file.
 export OS="{os}"
 export OS_VERSION="${{OS: -1}}"
 export SATELLITE_VERSION="${{SATELLITE_VERSION:-$TO_VERSION}}"

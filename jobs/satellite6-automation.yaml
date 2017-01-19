@@ -327,18 +327,7 @@
     name: 'automation-upgrade-{os}'
     node: sesame
     parameters:
-        - choice:
-            name: FROM_VERSION
-            choices:
-                - '6.1'
-                - '6.2'
-            description: |
-                <p>Choose the currently installed Satellite/Capsule version to upgrade to latest available.</p>
-        - choice:
-            name: TO_VERSION
-            choices:
-                - '6.2'
-                - '6.3'
+        - satellite6-upgrade-triggers-parameters
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -405,6 +394,7 @@
             name: RHEL7_TOOLS_URL
             description: |
                 Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/os
+        - satellite6-upgrade-triggers-parameters
         - satellite6-provisioning-parameters
     wrappers:
         - config-file-provider:
