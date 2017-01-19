@@ -21,7 +21,7 @@ cp ${PWD}/scripts/satellite6-populate-template.sh satellite6-populate.sh
 chmod 755 satellite6-populate.sh
 
 # Populates the HTTP Server information.
-sed -i "s|HTTP_SERVER_NAME=.*|HTTP_SERVER_NAME=${HTTP_SERVER_NAME}|" satellite6-populate.sh
+sed -i "s|HTTP_SERVER_HOSTNAME=.*|HTTP_SERVER_HOSTNAME=${HTTP_SERVER_HOSTNAME}|" satellite6-populate.sh
 
 # Populates the Compute Resource Information.
 
