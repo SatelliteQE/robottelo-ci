@@ -6,11 +6,11 @@ ADMIN_PASSWORD="changeme"
 # The below values get populated from the compute_resources.conf file.
 # Compute Resource Variables.
 COMPUTE_RESOURCE_NAME_LIBVIRT="libvirt"
-LIBVIRT_HOSTNAME=""
 LIBVIRT_URL=""
 
 if [[ -z "$LIBVIRT_URL" ]]; then
     echo "You need to specify the LIBVIRT_URL to be used as Compute Resource."
+    exit 1
 fi
 
 # RHEVM Compute Resource Variables.
@@ -20,6 +20,7 @@ RHEV_PASSWORD=""
 
 if [[ -z "$RHEV_URL" || -z "$RHEV_USERNAME" || -z "$RHEV_PASSWORD" ]]; then
     echo "You need to specify RHEV_URL, RHEV_USERNAME and RHEV_PASSWORD to be used as Compute Resource."
+    exit 1
 fi
 
 # Openstack Compute Resource.
@@ -29,6 +30,7 @@ OS_PASSWORD=""
 
 if [[ -z "$OS_URL" || -z "OS_USERNAME" || -z "$OS_PASSWORD" ]]; then
     echo "You need to specify OS_URL, OS_USERNAME, OS_PASSWORD to be used as Compute Resource."
+    exit 1
 fi
 
 
@@ -41,6 +43,7 @@ SUBNET_GATEWAY=""
 
 if [[ -z "$SUBNET_NAME" || -z "$SUBNET_RANGE" || -z "$SUBNET_MASK" || -z "$SUBNET_GATEWAY" ]]; then
     echo "You need to specify SUBNET_NAME, SUBNET_RANGE, SUBNET_MASK and SUBNET_GATEWAY to be added as a subnet."
+    exit 1
 fi
 
 # Manifest details
