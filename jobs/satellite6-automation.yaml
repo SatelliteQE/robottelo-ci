@@ -444,12 +444,12 @@
             - project: polarion-test-case
         - trigger-builds:
             - project: automation-upgrade-rhel6
-              predifined-parameters: |
+              predefined-parameters: |
                 TO_VERSION=${{SATELLITE_VERSION}}
                 FROM_VERSION=${{FROM_VERSION}}
         - trigger-builds:
             - project: automation-upgrade-rhel7
-              predifined-parameters: |
+              predefined-parameters: |
                 TO_VERSION=${{SATELLITE_VERSION}}
                 FROM_VERSION=${{FROM_VERSION}}
 
