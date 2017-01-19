@@ -46,6 +46,13 @@ if [[ -z "$SUBNET_NAME" || -z "$SUBNET_RANGE" || -z "$SUBNET_MASK" || -z "$SUBNE
     exit 1
 fi
 
+HTTP_SERVER_NAME=""
+
+if [[ -z "$HTTP_SERVER_NAME" ]]; then
+    echo "You need to specify HTTP_SERVER_NAME which hosts the manifest file."
+    exit 1
+fi
+
 # Manifest details
 MANIFEST_LOCATION="${HTTP_SERVER_NAME}/manifests/manifest-latest.zip"
 
