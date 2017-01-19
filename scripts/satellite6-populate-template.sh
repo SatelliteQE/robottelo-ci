@@ -46,15 +46,15 @@ if [[ -z "$SUBNET_NAME" || -z "$SUBNET_RANGE" || -z "$SUBNET_MASK" || -z "$SUBNE
     exit 1
 fi
 
-HTTP_SERVER_NAME=""
+HTTP_SERVER_HOSTNAME=""
 
-if [[ -z "$HTTP_SERVER_NAME" ]]; then
-    echo "You need to specify HTTP_SERVER_NAME which hosts the manifest file."
+if [[ -z "$HTTP_SERVER_HOSTNAME" ]]; then
+    echo "You need to specify HTTP_SERVER_HOSTNAME which hosts the manifest file."
     exit 1
 fi
 
 # Manifest details
-MANIFEST_LOCATION="${HTTP_SERVER_NAME}/manifests/manifest-latest.zip"
+MANIFEST_LOCATION="${HTTP_SERVER_HOSTNAME}/manifests/manifest-latest.zip"
 
 # Below are the default ID's of various Satellite6 entities.
 # Basic Variables.
