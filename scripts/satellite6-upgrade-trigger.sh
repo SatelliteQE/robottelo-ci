@@ -3,10 +3,12 @@ pip install -r requirements.txt
 
 #Setting up required Variables for populating the Sat6 Repos needed by config/sat6_repos_urls.conf file.
 export OS="{os}"
+export SATELLITE_VERSION="{satellite_version}"
 # Specify DISTRO as subscription_config file requires it.
 export DISTRO="${{OS}}"
 export OS_VERSION="${{OS: -1}}"
-export SATELLITE_VERSION="${{SATELLITE_VERSION:-${{TO_VERSION}}}}"
+export TO_VERSION="${{SATELLITE_VERSION}}"
+export FROM_VERSION=$(echo ${{SATELLITE_VERSION}} - 0.1 | bc)
 
 # Sourcing and exporting required env vars
 source "${{CONFIG_FILES}}"

@@ -324,17 +324,15 @@
             attachments: report.html
 
 - job-template:
-    name: 'automation-upgrade-{os}'
+    name: 'upgrade-to-{satellite_version}-{os}'
     concurrent: true
     node: sesame
     parameters:
-        - satellite6-upgrade-triggers-parameters
         - string:
             name: BUILD_LABEL
             description: |
                 Specify the build label of the Satellite. Example Sat6.3.0-1.0
                 Which is Sat6.y.z-SNAP.COMPOSE
-
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -348,7 +346,7 @@
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
                   variable: CONFIG_FILES
         - build-name:
-            name: '#${{BUILD_NUMBER}} Upgrade_{os}_from_${{FROM_VERSION}}_to_${{TO_VERSION}} ${{BUILD_LABEL}}'
+            name: '#${{BUILD_NUMBER}} Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
     builders:
         - shining-panda:
             build-environment: virtualenv
@@ -362,7 +360,7 @@
         - inject:
             properties-file: properties.txt
         - trigger-builds:
-            - project: 'upgrade-{satellite_version}-tier1-{os}'
+            - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
                 TOOLS_REPO=${{TOOLS_REPO}}
@@ -378,7 +376,7 @@
             artifacts: '*.tar.xz'
 
 - job-template:
-    name: 'upgrade-{satellite_version}-tier1-{os}'
+    name: 'automation-upgraded-{satellite_version}-tier1-{os}'
     node: sesame
     logrotate:
         numToKeep: 16
@@ -468,7 +466,6 @@
         - shell: |
             source ${{CONFIG_FILES}}
             source config/sat6_repos_urls.conf
-            echo "FROM_VERSION=$(echo ${{SATELLITE_VERSION}} - 0.1 | bc)" > properties.txt
             echo "RHEL6_SATELLITE_URL=${{RHEL6_SATELLITE_URL:-${{SATELLITE6_RHEL6}}}}" >> properties.txt
             echo "RHEL6_CAPSULE_URL=${{RHEL6_CAPSULE_URL:-${{CAPSULE_RHEL6}}}}" >> properties.txt
             echo "RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL:-${{TOOLS_RHEL6}}}}" >> properties.txt
@@ -502,16 +499,12 @@
         - trigger-builds:
             - project: polarion-test-case
         - trigger-builds:
-            - project: automation-upgrade-rhel6
+            - project: upgrade-to-{satellite_version}-rhel6
               predefined-parameters: |
-                TO_VERSION=${{SATELLITE_VERSION}}
-                FROM_VERSION=${{FROM_VERSION}}
                 BUILD_LABEL=${{BUILD_LABEL}}
         - trigger-builds:
-            - project: automation-upgrade-rhel7
+            - project: upgrade-to-{satellite_version}-rhel7
               predefined-parameters: |
-                TO_VERSION=${{SATELLITE_VERSION}}
-                FROM_VERSION=${{FROM_VERSION}}
                 BUILD_LABEL=${{BUILD_LABEL}}
 
 #==============================================================================
@@ -539,8 +532,8 @@
         - 'automation-{satellite_version}-rhai-{os}'
         - 'polarion-test-run-{satellite_version}-{os}'
         - 'report-automation-results-{satellite_version}-{os}'
-        - 'automation-upgrade-{os}'
-        - 'upgrade-{satellite_version}-tier1-{os}'
+        - 'upgrade-to-{satellite_version}-{os}'
+        - 'automation-upgraded-{satellite_version}-tier1-{os}'
 
 
 # Let's have a separate project for triggers.
@@ -552,6 +545,7 @@
         - '6.3'
     jobs:
         - 'trigger-satellite{satellite_version}'
+
 #==============================================================================
 # Jobs
 #==============================================================================
