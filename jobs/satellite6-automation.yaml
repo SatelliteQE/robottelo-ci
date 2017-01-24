@@ -123,6 +123,7 @@
                         file-pattern: tier1-parallel-results.xml
                         no-files-found-action: FAIL
     publishers:
+        - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
 
@@ -155,6 +156,7 @@
             - project: 'automation-{satellite_version}-tier3-{os}'
               current-parameters: true
     publishers:
+        - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
 
@@ -188,6 +190,7 @@
               current-parameters: true
 
     publishers:
+        - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
 
@@ -271,6 +274,7 @@
                   TEST_RUN_ID=$BUILD_LABEL {os}
                   POLARION_RELEASE=$POLARION_RELEASE
     publishers:
+        - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
 
@@ -372,6 +376,7 @@
                 DISCOVERY_ISO=${{DISCOVERY_ISO}}
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
     publishers:
+        - satellite6-automation-mails
         - archive:
             artifacts: '*.tar.xz'
 
@@ -409,6 +414,7 @@
                  - 'satellite6-upgrade-source.sh'
                  - 'satellite6-automation.sh'
     publishers:
+        - satellite6-automation-mails
         - archive:
             artifacts: '*.tar.xz'
 
