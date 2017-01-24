@@ -11,6 +11,9 @@
                 - 'basil'
                 - 'paprika'
                 - 'rosemary'
+            description: |
+                Though all the 3 are valid choices, the recommended one to choose is paprika for the below Server ID's, basil is used for
+                robottelo-automation and rosemary is planned for Sat6 HA.
         - choice:
             name: SERVER_ID
             choices:
@@ -20,6 +23,9 @@
                 - 'cap-feature-rhel7'
                 - 'sat-feature-rhel6'
                 - 'cap-feature-rhel6'
+            description: |
+                All the Server ID's here except the capsules have a bare-metal box in it's VLAN. Those bare-metal boxes can
+                be accessed via the Management console to power ON and OFF. Look out for RDU Lab link for more details.
         - choice:
             name: SATELLITE_DISTRIBUTION
             choices:
@@ -27,6 +33,8 @@
                 - 'INTERNAL'
                 - 'INTERNAL REPOFILE'
                 - 'GA'
+            description: |
+                INTERNAL AK and INTERNAL REPOFILE choices are valid currently only for sat6.3
         - choice:
             name: SATELLITE_VERSION
             choices:
