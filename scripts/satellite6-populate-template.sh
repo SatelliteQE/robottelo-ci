@@ -17,9 +17,10 @@ fi
 RHEV_URL=""
 RHEV_USERNAME=""
 RHEV_PASSWORD=""
+RHEV_DATACENTER_UUID=""
 
-if [[ -z "$RHEV_URL" || -z "$RHEV_USERNAME" || -z "$RHEV_PASSWORD" ]]; then
-    echo "You need to specify RHEV_URL, RHEV_USERNAME and RHEV_PASSWORD to be used as Compute Resource."
+if [[ -z "$RHEV_URL" || -z "$RHEV_USERNAME" || -z "$RHEV_PASSWORD" || -z "$RHEV_DATACENTER_UUID" ]]; then
+    echo "You need to specify RHEV_URL, RHEV_USERNAME, RHEV_PASSWORD and RHEV_DATACENTER_UUID to be used as Compute Resource."
     exit 1
 fi
 
@@ -198,26 +199,27 @@ satellite  activation-key update --name "ak-capsule-${RHELOS}" --auto-attach no 
 
 # Add subscriptions and host collection to activation key
 # RHEL 7 activation key
+RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Premium (8 sockets) (Unlimited guests)" |  awk -F "," '{print $1}' | grep -vi id)
 TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-satellite  activation-key add-subscription --name='ak-rhel-7' --organization-id="$ORG" --subscription-id=1
+satellite  activation-key add-subscription --name='ak-rhel-7' --organization-id="$ORG" --subscription-id="${RHEL_SUBS_ID}"
 satellite  activation-key add-subscription --name='ak-rhel-7' --organization-id="$ORG" --subscription-id="${TOOLS7_SUBS_ID}"
 
 
 # RHEL 6 activation key
 TOOLS6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL6_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-satellite  activation-key add-subscription --name='ak-rhel-6' --organization-id="$ORG" --subscription-id=1
+satellite  activation-key add-subscription --name='ak-rhel-6' --organization-id="$ORG" --subscription-id="${RHEL_SUBS_ID}"
 satellite  activation-key add-subscription --name='ak-rhel-6' --organization-id="$ORG" --subscription-id="${TOOLS6_SUBS_ID}"
 
 if [ "${RHELOS}" = "7" ]; then
     # Capsule 7 activation key
     CAPSULE7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
-    satellite  activation-key add-subscription --name='ak-capsule-7' --organization-id="$ORG" --subscription-id=1
+    satellite  activation-key add-subscription --name='ak-capsule-7' --organization-id="$ORG" --subscription-id="${RHEL_SUBS_ID}"
     satellite  activation-key add-subscription --name='ak-capsule-7' --organization-id="$ORG" --subscription-id="${CAPSULE7_SUBS_ID}"
     satellite  activation-key add-subscription --name='ak-capsule-7' --organization-id="$ORG" --subscription-id="${TOOLS7_SUBS_ID}"
 else
     # Capsule 6 activation key
     CAPSULE6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C6_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
-    satellite  activation-key add-subscription --name='ak-capsule-6' --organization-id="$ORG" --subscription-id=1
+    satellite  activation-key add-subscription --name='ak-capsule-6' --organization-id="$ORG" --subscription-id="${RHEL_SUBS_ID}"
     satellite  activation-key add-subscription --name='ak-capsule-6' --organization-id="$ORG" --subscription-id="${CAPSULE6_SUBS_ID}"
     satellite  activation-key add-subscription --name='ak-capsule-6' --organization-id="$ORG" --subscription-id="${TOOLS6_SUBS_ID}"
 fi
@@ -236,7 +238,7 @@ satellite subnet create --name "$SUBNET_NAME" --network "$SUBNET_RANGE" --mask "
 satellite compute-resource create --name "$COMPUTE_RESOURCE_NAME_LIBVIRT" --provider Libvirt --url "$LIBVIRT_URL" --location-ids "$LOC" --organization-ids "$ORG" --set-console-password false
 
 # Create Ovirt CR
-satellite compute-resource create --provider Ovirt --url "$RHEV_URL" --name "rhevm1" --user "$RHEV_USERNAME" --password "$RHEV_PASSWORD" --location-ids "$LOC" --organization-ids "$ORG"
+satellite compute-resource create --provider Ovirt --url "$RHEV_URL" --name "rhevm1" --user "$RHEV_USERNAME" --password "$RHEV_PASSWORD" --location-ids "$LOC" --organization-ids "$ORG" --uuid "$RHEV_DATACENTER_UUID"
 
 # Create OpenStack CR
 satellite compute-resource create --name openstack_provider --provider Openstack --url "$OS_URL" --location-ids $LOC --organization-ids $ORG --user "$OS_USERNAME" --password "$OS_PASSWORD"
@@ -299,6 +301,6 @@ else
 fi
 
 # Provision a host with Libvirt Provider.
-satellite host create --name='rhel-7-libvirt' --root-pass='changeme' --organization="${ORG}" --location="${LOC}" --hostgroup="RHEL 7 Server 64-bit HG" --compute-resource=$COMPUTE_RESOURCE_NAME_LIBVIRT --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
+satellite host create --name='rhel-7-libvirt' --root-pass='changeme' --organization-id="${ORG}" --location-id="${LOC}" --hostgroup="RHEL 7 Server 64-bit HG" --compute-resource="$COMPUTE_RESOURCE_NAME_LIBVIRT" --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
 
-satellite host create --name='rhel-6-libvirt' --root-pass='changeme' --organization="${ORG}" --location="${LOC}" --hostgroup="RHEL 6 Server 64-bit HG" --compute-resource=$COMPUTE_RESOURCE_NAME_LIBVIRT --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
+satellite host create --name='rhel-6-libvirt' --root-pass='changeme' --organization-id="${ORG}" --location-id="${LOC}" --hostgroup="RHEL 6 Server 64-bit HG" --compute-resource="$COMPUTE_RESOURCE_NAME_LIBVIRT" --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"

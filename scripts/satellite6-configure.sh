@@ -32,6 +32,7 @@ sed -i "s|LIBVIRT_URL=.*|LIBVIRT_URL=${LIBVIRT_URL}|" satellite6-populate.sh
 sed -i "s|RHEV_URL=.*|RHEV_URL=${RHEV_URL}|" satellite6-populate.sh
 sed -i "s|RHEV_USERNAME=.*|RHEV_USERNAME=${RHEV_USER}|" satellite6-populate.sh
 sed -i "s|RHEV_PASSWORD=.*|RHEV_PASSWORD=${RHEV_PASSWD}|" satellite6-populate.sh
+sed -i "s|RHEV_DATACENTER_UUID=.*|RHEV_DATACENTER_UUID=${RHEV_DATACENTER_UUID}|" satellite6-populate.sh
 
 # Populate the OSP CR Information.
 sed -i "s|OS_URL=.*|OS_URL=${OS_URL}|" satellite6-populate.sh

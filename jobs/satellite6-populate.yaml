@@ -55,6 +55,9 @@
             name: RHEV_PASSWD
             description: "The RHEV Password to add the Compute Resource."
         - string:
+            name: RHEV_DATACENTER_UUID
+            description: "The RHEV UUID to load the Datacenter and quota for the Compute Resource."
+        - string:
             name: OSP_HOSTNAME
             description: "The Openstack Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
         - string:
