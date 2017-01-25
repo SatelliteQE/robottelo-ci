@@ -50,6 +50,10 @@
         - string:
             name: BASE_URL
             description: Required when Satellite distribution is INTERNAL
+        - bool:
+            name: MINIMAL_INSTALL
+            default: true
+            description: "By default, Minimal Install is selected and it only syncs content of RHEL6-x86_64 and RHEL7-x86_64."
         - choice:
             name: SELINUX_MODE
             choices:
