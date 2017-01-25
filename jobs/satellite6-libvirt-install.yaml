@@ -91,4 +91,5 @@
                 !include-raw:
                     - 'pip-install-pycurl.sh'
                     - 'satellite6-libvirt-install.sh'
+                    - 'satellite6-configure-variables.sh'
 
