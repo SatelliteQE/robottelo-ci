@@ -1,9 +1,4 @@
-# Zstream Job requires it's own requirements and the versions are freezed.
-if [ -f requirements-freeze.txt ]; then
-    pip install -U -r requirements-freeze.txt
-else
-    pip install -U -r requirements.txt docker-py pytest-xdist
-fi
+pip install -U -r requirements.txt docker-py pytest-xdist
 
 cp config/robottelo.properties ./robottelo.properties
 
