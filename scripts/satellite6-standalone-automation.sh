@@ -1,10 +1,6 @@
 set -o nounset
 
-if [ -f "requirements-freeze.txt" ]; then
-    pip install -U -r requirements-freeze.txt
-else
-    pip install -U -r requirements.txt docker-py pytest-xdist
-fi
+pip install -U -r requirements.txt docker-py pytest-xdist
 
 if [ -n "${ROBOTTELO_PROPERTIES:-}" ]; then
     echo "${ROBOTTELO_PROPERTIES}" > ./robottelo.properties
