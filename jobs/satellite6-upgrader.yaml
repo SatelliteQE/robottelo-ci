@@ -73,8 +73,6 @@
             description: |
                 <p>Customer name of which the DB's will be picked to perform upgrade.</p>
         - string:
-            name: DHCP_INTERFACE
-        - string:
             name: CAPSULE_HOSTNAMES
         - string:
             name: CAPSULE_AK
