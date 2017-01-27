@@ -29,3 +29,16 @@
           - project: sat6-release-promote-test
             current-parameters: true
             condition: SUCCESS
+      - email-ext:
+          recipients: ehelms@redhat.com zhunting@redhat.com $CI_EMAIL_LIST
+          success: false
+          failure: true
+          subject: "RHEL${rhel} Satellite 6.2.0 release install test failed"
+          body: |
+            The RHEL${rhel} Satellite 6.2.0 release install test ${BUILD_DISPLAY_NAME} has failed.
+
+            The failing build can be found at:
+
+            ${BUILD_URL}
+        
+            
