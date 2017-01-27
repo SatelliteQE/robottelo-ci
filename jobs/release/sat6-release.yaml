@@ -16,7 +16,7 @@
           description: "Satellite organization containing the product"
           default: "Sat6-CI"
     triggers:
-      - timed: 0 22 0 0 0
+      - timed: "0 22 * * *"
     builders:
       - conditional-step:
           condition-kind: always
