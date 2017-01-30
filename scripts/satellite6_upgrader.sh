@@ -45,29 +45,28 @@ if [ ! -z "${CUSTOMER_NAME}" ]; then
     sed -i -e 2s/.*/"${SATELLITE_HOSTNAME}"/ inventory
     # Copy the main.sample.yml to main.yml
     cp -a roles/sat6repro/vars/main.sample.yml roles/sat6repro/vars/main.yml
+    # Define  Backup directory for customer DB 
+    BACKUP_DIR="\/var\/tmp\/backup"
     # Configuration updates in vars file
     sed -i -e "s/^rhelversion.*/rhelversion: $OS_VERSION/" roles/sat6repro/vars/main.yml
     sed -i -e "s/^satelliteversion.*/satelliteversion: "${FROM_VERSION}"/" roles/sat6repro/vars/main.yml
+    sed -i -e "s/^backup_dir.*/backup_dir: $BACKUP_DIR/" roles/sat6repro/vars/main.yml
+    sed -i -e "s/^include_pulp_data.*/include_pulp_data: false/" roles/sat6repro/vars/main.yml
     sed -i -e "/org.*/arhn_pool: "${RHN_POOLID}"" roles/sat6repro/vars/main.yml
     sed -i -e "/org.*/arhn_password: "${RHN_PASSWORD}"" roles/sat6repro/vars/main.yml
     sed -i -e "/org.*/arhn_user: "${RHN_USERNAME}"" roles/sat6repro/vars/main.yml
     # Configuration updates in tasks file wrt vars file
     sed -i -e '/subscription-manager register.*/d' roles/sat6repro/tasks/main.yml
-    sed -i -e '/subscribe the VM.*/a\ \ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/sat6repro/tasks/main.yml
+    sed -i -e '/register host.*/a\ \ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/sat6repro/tasks/main.yml
     sed -i -e '/subscription-manager register.*/a- name: subscribe machine' roles/sat6repro/tasks/main.yml
     sed -i -e '/subscribe machine.*/a\ \ command: subscription-manager subscribe --pool={{ rhn_pool }}' roles/sat6repro/tasks/main.yml
-    if [[ "${FROM_VERSION}" = '6.1' && ! -z "${DHCP_INTERFACE}" ]]; then
-        sed -i -e "s/katello-installer.*/katello-installer --capsule-dhcp-interface "${DHCP_INTERFACE}"/" roles/sat6repro/tasks/main.yml
-    fi
+    # Customer DB URL
+    DB_URL="http://"${cust_db_server}"/pub/customer-databases/"${CUSTOMER_NAME}""
     # Download the Customer DB data Backup files
-    echo "Copying Customer Data DB's from Server, This may take while depending on the network ....."
-    scp root@"${cust_db_server}":/customer-databases/"${CUSTOMER_NAME}"/* roles/sat6repro/files/
-    # Renaming the data backup files as we need
-    mv roles/sat6repro/files/*conf* roles/sat6repro/files/config_files.tar.gz | echo
-    mv roles/sat6repro/files/*pg* roles/sat6repro/files/pgsql_data.tar.gz | echo
-    mv roles/sat6repro/files/*mongo* roles/sat6repro/files/mongo_data.tar.gz | echo
+    echo "Downloading Customer Data DB's from Server, This may take while depending on the network ....."
+    ssh -o "StrictHostKeyChecking no" root@"${SATELLITE_HOSTNAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar.gz' "${DB_URL}"" 
     # Update the hostname as per Customer DB
-    CUSTOMER_SAT_HOSTNAME="$(tar -zxf roles/sat6repro/files/config_files.tar.gz etc/httpd/conf/httpd.conf -O | grep ServerName | awk -F'"' '{print $2}')"
+    CUSTOMER_SAT_HOSTNAME="$(ssh -o 'StrictHostKeyChecking no' root@"${SATELLITE_HOSTNAME}" "tar -zxf "${BACKUP_DIR}"/config_files.tar.gz etc/httpd/conf/httpd.conf -O" | grep ServerName | awk -F'"' '{print $2}')"
     sed -i -e "s/^hostname.*/hostname: "${CUSTOMER_SAT_HOSTNAME}"/" roles/sat6repro/vars/main.yml
     # Run Ansible command to install satellite with cust DB
     export ANSIBLE_HOST_KEY_CHECKING=False
