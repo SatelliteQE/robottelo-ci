@@ -1,0 +1,31 @@
+- job:
+    name: satellite6-unit-test-test-repo
+    node: rhel
+    project-type: matrix
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    parameters:
+      - merge_request
+    scm:
+      - test_repo_gitlab
+    axes:
+      - axis:
+          type: user-defined
+          name: ruby
+          values:
+            - 2.2
+      - axis:
+          type: slave
+          name: nodes
+          values:
+            - rhel
+    triggers:
+      - gitlab_build_on_change
+    builders:
+      - merge_request
+      - test_repo
+    publishers:
+      - gemset_cleanup
+      - junit:
+          results: 'test/reports/*.xml'
