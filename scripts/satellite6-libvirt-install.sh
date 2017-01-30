@@ -52,3 +52,7 @@ wget ${HTTP_SERVER_HOSTNAME}/pub/satellite6-populate-template.sh
 
 cp satellite6-populate-template.sh satellite6-populate.sh
 chmod 755 satellite6-populate.sh
+
+export SUBNET_RANGE="${SUBNET}"
+export SUBNET_MASK="${NETMASK}"
+export SUBNET_GATEWAY="${GATEWAY}"
