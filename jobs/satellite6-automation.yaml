@@ -406,18 +406,18 @@
     builders:
         - shining-panda:
            build-environment: virtualenv
-           python-version: System-Cpython-2.7
+           python-version: System-CPython-2.7
            clear: true
            nature: shell
            command:
-              !include-raw-escape:
-                 - 'satellite6-upgrade-source.sh'
-                 - 'satellite6-automation.sh'
+               !include-raw-escape:
+                   - 'satellite6-upgrade-source.sh'
+                   - 'satellite6-automation.sh'
+                   - 'satellite6-foreman-debug.sh'
     publishers:
         - satellite6-automation-mails
-        - archive:
-            artifacts: '*.tar.xz'
-
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
 
 - job-template:
     name: trigger-satellite{satellite_version}
