@@ -20,7 +20,7 @@
           type: user-defined
           name: puppet
           values:
-            - 3.8.0
+            - 3.8
       - axis:
           type: slave
           name: nodes
