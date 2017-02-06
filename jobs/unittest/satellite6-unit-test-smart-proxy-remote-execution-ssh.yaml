@@ -1,0 +1,28 @@
+- job:
+    name: satellite6-unit-test-smart-proxy-remote-execution-ssh
+    project-type: matrix
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 16
+    parameters:
+      - merge_request
+    scm:
+      - smart_proxy_remote_execution_ssh_gitlab
+    axes:
+      - axis:
+          type: user-defined
+          name: ruby
+          values:
+          - 2.2
+      - axis:
+          type: slave
+          name: nodes
+          values:
+            - rhel
+    triggers:
+      - gitlab_build_on_change
+    builders:
+      - merge_request
+      - test_smart_proxy_remote_execution_ssh
+    publishers:
+      - gemset_cleanup
