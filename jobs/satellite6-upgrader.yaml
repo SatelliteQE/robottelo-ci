@@ -111,3 +111,6 @@
                 !include-raw:
                     - 'pip-install-pycurl.sh'
                     - 'satellite6_upgrader.sh'
+    publishers:
+        - archive:
+            artifacts: '*.tar.xz'

@@ -78,3 +78,8 @@ fi
 
 # Run upgrade for CDN/Downstream
 fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
+
+# Post Upgrade archive logs from log analyzer tool
+if [ -d upgrade-diff-logs ]; then
+    tar -czf Log_Analyzer_Logs.tar.xz upgrade-diff-logs
+fi
