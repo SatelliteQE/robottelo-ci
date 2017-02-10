@@ -62,16 +62,18 @@
             description: |
                 <p>The number of RHEL6 and RHEL7 clients to Generate.</p>
                 <p>The number of clients will be devided in equal amount for RHEL6 and RHEL7. e.g if 10 is given then 5 each.</p>
+        - choice:
+            name: CUSTOMERDB_NAME
+            choices:
+                - 'None'
+                - 'Lidl'
+                - 'ExpressScripts'
+            description: |
+                Select the Customer DB for upgrade
         - string:
             name: SATELLITE_HOSTNAME
             description: |
                 <p>1. This can be the user satellite onto which upgrade will be formered.</p>
-                <p> -- OR -- </p>
-                <p>2. This can be the RHEL machine onto which satellite with customer DB will be installed and upgraded.</p>
-        - string:
-            name: CUSTOMER_NAME
-            description: |
-                <p>Customer name of which the DB's will be picked to perform upgrade.</p>
         - string:
             name: CAPSULE_HOSTNAMES
         - string:
