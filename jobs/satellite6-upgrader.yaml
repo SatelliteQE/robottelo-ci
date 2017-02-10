@@ -69,11 +69,13 @@
                 - 'Lidl'
                 - 'ExpressScripts'
             description: |
-                Select the Customer DB for upgrade
+                <p>Select the Customer DB for upgrade</p>
+                <p>For Lidl, <b>From version</b> should be <b>6.1</b> and OS should be <b>RHEL7</b></p>
+                <p>For ExpressScript, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
         - string:
             name: SATELLITE_HOSTNAME
             description: |
-                <p>1. This can be the user satellite onto which upgrade will be formered.</p>
+                <p>This can be the user satellite onto which upgrade will be performed.</p>
         - string:
             name: CAPSULE_HOSTNAMES
         - string:
