@@ -337,6 +337,12 @@
             description: |
                 Specify the build label of the Satellite. Example Sat6.3.0-1.0
                 Which is Sat6.y.z-SNAP.COMPOSE
+        - string:
+            name: ROBOTTELO_WORKERS
+            default: '8'
+            description: |
+                Number of workers to use while running robottelo tier1 test suite
+                after the upgrade.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -508,10 +514,12 @@
             - project: upgrade-to-{satellite_version}-rhel6
               predefined-parameters: |
                 BUILD_LABEL=${{BUILD_LABEL}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
         - trigger-builds:
             - project: upgrade-to-{satellite_version}-rhel7
               predefined-parameters: |
                 BUILD_LABEL=${{BUILD_LABEL}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
 
 #==============================================================================
 # Project
