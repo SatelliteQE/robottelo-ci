@@ -37,8 +37,12 @@ fi
 if [ "${CUSTOMERDB_NAME}" != 'None' ]; then
     source config/preupgrade_entities.conf
     INSTANCE_NAME="${CUSTOMERDB_NAME}_customerdb_instance"
+    # Delete  if an instance with same name is already there in rhevm
+    fab -u root delete_rhevm_instance:"${INSTANCE_NAME}"
     # Create a RHEV instance of RHEL6/7 with given template, datacenter, quota and cluster
-    SAT_INSTANCE_FQDN=$(fab -u root create_rhevm_instance:"${INSTANCE_NAME}", 'custdb-"${OS}"-base','SAT-QE','SAT-QE','SAT-QE')
+    fab -u root create_rhevm_instance:"${INSTANCE_NAME}","custdb-${OS}-base",'SAT-QE','SAT-QE','SAT-QE'
+    # To get the value of SAT_INSTANCE_FQDN variable
+    source /tmp/rhev_instance.txt
     # Clone the 'satellite-clone' project that includes the ansible playbook to install sat server along with customer DB.
     git clone -b satellite-clone-1.0 https://github.com/RedHatSatellite/satellite-clone.git
     pushd satellite-clone
