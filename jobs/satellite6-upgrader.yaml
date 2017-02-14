@@ -24,10 +24,12 @@
                 - satellite
                 - capsule
                 - client
+                - longrun
             description: |
                 <p><strong>Choosing 'satellite' will upgrade only Satellite.</strong></p>
                 <p><strong>Choosing 'capsule' will upgrade both Capsule as well as its associated Satellite.</strong></p>
                 <p><strong>Choosing 'client' will upgrade Clients as well as its associated Satellite.</strong></p>
+                <p><strong>Choosing 'longrun' will upgrade all i.e Satellite, Capsule and Clients</strong></p>
         - choice:
             name: FROM_VERSION
             choices:
@@ -118,3 +120,13 @@
     publishers:
         - archive:
             artifacts: '*.tar.xz'
+        - email-ext:
+            recipients: $BUILD_USER_EMAIL
+            success: true
+            failure: true
+            subject: 'Your $UPGRADE_PRODUCT upgrade from $FROM_VERSION to $TO_VERSION on $OS finished'
+            body: |
+
+                ${FILE, path="upgrade_highlights"}
+                Build URL: $BUILD_URL
+            attachments: full_upgrade, Log_Analyzer_Logs.tar.xz
