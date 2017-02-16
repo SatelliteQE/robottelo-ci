@@ -5,6 +5,7 @@ export OS_VERSION=$(fab -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:d
 DISTRO="rhel${OS_VERSION}"
 
 source ${CONFIG_FILES}
+source config/idm_server.conf
 source config/installation_environment.conf
 source config/proxy_config_environment.conf
 # OS_VERSION needs to be defined before sourcing sat6_repos_urls.conf
@@ -17,6 +18,9 @@ fi
 if [ "${PUPPET4}" = 'true' ]; then
     export PUPPET4_REPO # sourced from installation_environment.conf
 fi
+
+export IDM_EXTERNAL_AUTH
+export IDM_REALM
 
 if [ ${FIX_HOSTNAME} = "true" ]; then
     fab -H root@${SERVER_HOSTNAME} fix_hostname

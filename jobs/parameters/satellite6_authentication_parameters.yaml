@@ -1,0 +1,21 @@
+- parameter:
+    name: satellite6-authentication-parameters
+    parameters:
+        - bool:
+            name: IDM_EXTERNAL_AUTH
+            default: false
+            description: |
+                Enrolls Sat6 to IDM and configures External Authentication using IDM as the Auth source.
+                Requires the same Sat6 and IDM Server domain, to work out of the box.
+                The Sat6 Server's first nameserver should be pointing to the IDM Server.
+                One can use test-external-auth VM to test this feature quickly.
+                This will be useful for testing Kerberos/SSO, 2FA, e.t.c features with IDM.
+                Please note, this is not LDAP Authentication.
+        - bool:
+            name: IDM_REALM
+            default: false
+            description: |
+                Enrolls sat6 to IDM and configures Sat6 for REALM Integration.
+                Requires the same Sat6 and IDM Server domain, to work out of the box.
+                The Sat6 Server's first nameserver should be pointing to the IDM Server.
+                This is also called, External Authentication for Provisioned Hosts.
