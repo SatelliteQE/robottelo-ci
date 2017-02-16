@@ -71,6 +71,7 @@
             description: |
                 Points to RHSM stage for stage installation test. Used only
                 in CDN provisioning.
+        - satellite6-authentication-parameters
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git

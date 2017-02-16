@@ -124,6 +124,7 @@
             default: false
             description: |
                 Install Satellite with Puppet v4 (for Satellite 6.3+ only).
+        - satellite6-authentication-parameters
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git

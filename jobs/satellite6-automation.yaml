@@ -30,6 +30,7 @@
                 Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
                 Leaving this blank picks the latest SATTOOLS repo. Override if required.
         - satellite6-provisioning-parameters
+        - satellite6-authentication-parameters
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
@@ -464,6 +465,8 @@
             description: |
                 Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/os
         - satellite6-provisioning-parameters
+        - satellite6-authentication-parameters
+
     wrappers:
         - config-file-provider:
             files:
@@ -497,6 +500,8 @@
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
                 PROXY_MODE=${{PROXY_MODE}}
                 BUILD_LABEL=${{BUILD_LABEL}}
+                IDM_EXTERNAL_AUTH=${{IDM_EXTERNAL_AUTH}}
+                IDM_REALM=${{IDM_REALM}}
         - trigger-builds:
             - project: provisioning-{satellite_version}-rhel7
               predefined-parameters: |
@@ -508,6 +513,8 @@
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
                 PROXY_MODE=${{PROXY_MODE}}
                 BUILD_LABEL=${{BUILD_LABEL}}
+                IDM_EXTERNAL_AUTH=${{IDM_EXTERNAL_AUTH}}
+                IDM_REALM=${{IDM_REALM}}
         - trigger-builds:
             - project: polarion-test-case
         - trigger-builds:

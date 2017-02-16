@@ -2,6 +2,7 @@ pip install -r requirements.txt
 
 source ${CONFIG_FILES}
 source config/fake_manifest.conf
+source config/idm_server.conf
 source config/installation_environment.conf
 source config/provisioning_environment.conf
 source config/proxy_config_environment.conf
@@ -12,6 +13,8 @@ fi
 if [ "${PUPPET4}" = 'true' ]; then
     export PUPPET4_REPO # sourced from installation_environment.conf
 fi
+export IDM_EXTERNAL_AUTH
+export IDM_REALM
 
 # The target_image in provisioning_environment.conf should be "qe-sat6y-rhel7-base".
 export TARGET_IMAGE
