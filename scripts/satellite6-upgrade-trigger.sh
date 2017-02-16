@@ -36,5 +36,5 @@ if [ "${{TO_VERSION}}" = '6.1' ]; then
     exit 1
 fi
 
-# Run Capsule Upgrade to run both satellite and capsule upgrade
-fab -u root product_upgrade:'capsule'
+# Longrun to run upgrade on Satellite, capsule and clients
+fab -u root product_upgrade:'longrun'
