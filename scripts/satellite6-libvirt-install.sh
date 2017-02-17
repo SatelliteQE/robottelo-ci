@@ -3,7 +3,7 @@ pip install -r requirements.txt
 source ${CONFIG_FILES}
 source config/fake_manifest.conf
 source config/installation_environment.conf
-source config/idm_server.conf
+source config/auth_servers.conf
 source config/provision_libvirt_install.conf
 source config/proxy_config_environment.conf
 source config/subscription_config.conf
@@ -14,6 +14,7 @@ if [ "${STAGE_TEST}" = 'true' ]; then
     source config/stage_environment.conf
 fi
 
+export AD_EXTERNAL_AUTH
 export IDM_EXTERNAL_AUTH
 export IDM_REALM
 
