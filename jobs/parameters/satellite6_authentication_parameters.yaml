@@ -19,3 +19,13 @@
                 Requires the same Sat6 and IDM Server domain, to work out of the box.
                 The Sat6 Server's first nameserver should be pointing to the IDM Server.
                 This is also called, External Authentication for Provisioned Hosts.
+        - bool:
+            name: AD_EXTERNAL_AUTH
+            default: false
+            description: |
+                Enrolls Sat6 to AD and configures External Authentication using AD as the Auth Source.
+                Requires the same Sat6 and AD Server domain, to work out of the box.
+                The Sat6 Server's first nameserver should be pointing to the AD Server.
+                One can use test-externalad-auth VM to test this feature quickly.
+                This will be useful for testing Kerbero/SSO, 2FA, e.t.c features with AD.
+                Please note, this is not AD Authentication.
