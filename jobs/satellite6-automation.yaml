@@ -383,17 +383,9 @@
                 DISCOVERY_ISO=${{DISCOVERY_ISO}}
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
     publishers:
+        - satellite6-automation-mails
         - archive:
             artifacts: '*.tar.xz'
-        - email-ext:
-            recipients: ${{QE_EMAIL_LIST}}
-            success: true
-            failure: true
-            subject: 'Upgrade Status to {satellite_version} on {os} ${{BUILD_LABEL}}'
-            body: |
-                ${{FILE, path="upgrade_highlights"}}
-                Build URL: ${{BUILD_URL}}
-            attachments: full_upgrade, Log_Analyzer_Logs.tar.xz
 
 - job-template:
     name: 'automation-upgraded-{satellite_version}-tier1-{os}'
