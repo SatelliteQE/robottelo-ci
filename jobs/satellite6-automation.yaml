@@ -441,6 +441,10 @@
                  - 'BETA'
             description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
         - string:
+            name: RHEL6_IMAGE
+            description: |
+                Specify RHEL6 source image to be used for automation.
+        - string:
             name: RHEL6_SATELLITE_URL
             description: |
                 Leave it blank to install the latest stable.
@@ -452,6 +456,10 @@
             name: RHEL6_TOOLS_URL
             description: |
                 Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/sattools/x86_64/os
+        - string:
+            name: RHEL7_IMAGE
+            description: |
+                Specify RHEL7 source image to be used for automation.
         - string:
             name: RHEL7_SATELLITE_URL
             description: |
@@ -487,6 +495,8 @@
             echo "RHEL7_SATELLITE_URL=${{RHEL7_SATELLITE_URL:-${{SATELLITE6_RHEL7}}}}" >> properties.txt
             echo "RHEL7_CAPSULE_URL=${{RHEL7_CAPSULE_URL:-${{CAPSULE_RHEL7}}}}" >> properties.txt
             echo "RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL:-${{TOOLS_RHEL7}}}}" >> properties.txt
+            echo "RHEL6_IMAGE=${{RHEL6_IMAGE}}" >> properties.txt
+            echo "RHEL7_IMAGE=${{RHEL7_IMAGE}}" >> properties.txt
         - inject:
             properties-file: properties.txt
         - trigger-builds:
@@ -502,6 +512,7 @@
                 BUILD_LABEL=${{BUILD_LABEL}}
                 IDM_EXTERNAL_AUTH=${{IDM_EXTERNAL_AUTH}}
                 IDM_REALM=${{IDM_REALM}}
+                IMAGE=${{RHEL6_IMAGE}}
         - trigger-builds:
             - project: provisioning-{satellite_version}-rhel7
               predefined-parameters: |
@@ -515,6 +526,7 @@
                 BUILD_LABEL=${{BUILD_LABEL}}
                 IDM_EXTERNAL_AUTH=${{IDM_EXTERNAL_AUTH}}
                 IDM_REALM=${{IDM_REALM}}
+                IMAGE=${{RHEL7_IMAGE}}
         - trigger-builds:
             - project: polarion-test-case
         - trigger-builds:
