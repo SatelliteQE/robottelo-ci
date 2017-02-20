@@ -36,7 +36,3 @@
             default: false
             description: |
                 Install Satellite with Puppet v4 (for Satellite 6.3+ only).
-        - string:
-            name: IMAGE
-            description: |
-                Specify RHEL source image to be used for automation.

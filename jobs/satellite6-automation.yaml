@@ -28,6 +28,10 @@
             name: TOOLS_URL
             description: Required when Satellite distribution is INTERNAL and we require latest SatTools Client packages. |
                 Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
+        - string:
+            name: IMAGE
+            description: |
+                Specify RHEL source image to be used for automation.
                 Leaving this blank picks the latest SATTOOLS repo. Override if required.
         - satellite6-provisioning-parameters
         - satellite6-authentication-parameters
