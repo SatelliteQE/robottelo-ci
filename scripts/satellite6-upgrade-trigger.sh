@@ -9,6 +9,7 @@ export DISTRO="${{OS}}"
 export OS_VERSION="${{OS: -1}}"
 export TO_VERSION="${{SATELLITE_VERSION}}"
 export FROM_VERSION=$(echo ${{SATELLITE_VERSION}} - 0.1 | bc)
+export CLIENTS_COUNT=8
 
 # Sourcing and exporting required env vars
 source "${{CONFIG_FILES}}"
