@@ -1,2 +1,2 @@
 betelgeuse --token-prefix "@" test-case \
-    --path tests/foreman "${POLARION_DEFAULT_PROJECT}"
+    --path tests/foreman "${POLARION_PROJECT}"
