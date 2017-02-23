@@ -9,13 +9,3 @@ pip install .
 cd ..
 
 pip install betelgeuse
-
-cat > .pylarion <<EOF
-[webservice]
-url=${POLARION_URL}
-user=${POLARION_USER}
-password=${POLARION_PASSWORD}
-default_project=${POLARION_DEFAULT_PROJECT}
-svn_repo=${POLARION_SVN_REPO}
-use_logstash=false
-EOF
