@@ -16,6 +16,12 @@ sed -i "s/^# domain.*/domain=${DDNS_DOMAIN}/" robottelo.properties
 sed -i "s/^# hash.*/hash=${DDNS_HASH}/" robottelo.properties
 sed -i "s|^# ddns_package_url.*|ddns_package_url=${DDNS_PACKAGE_URL}|" robottelo.properties
 
+if [ -n "${IMAGE}" ]; then
+    sed -i "s/^# \[distro\].*/[distro]/" robottelo.properties
+    sed -i "s/^# image_el6.*/image_el6=${IMAGE}/" robottelo.properties
+    sed -i "s/^# image_el7.*/image_el7=${IMAGE}/" robottelo.properties
+fi
+
 # Robottelo logging configuration
 sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 
