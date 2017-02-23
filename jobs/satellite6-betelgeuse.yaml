@@ -22,7 +22,6 @@
                 !include-raw:
                     - scripts/satellite6-betelgeuse.sh
                     - scripts/satellite6-betelgeuse-test-case.sh
-        - shell: rm .pylarion
 
 
 - job-template:
@@ -75,4 +74,3 @@
                 !include-raw-escape:
                     - scripts/satellite6-betelgeuse.sh
                     - scripts/satellite6-betelgeuse-test-run.sh
-        - shell: rm .pylarion
