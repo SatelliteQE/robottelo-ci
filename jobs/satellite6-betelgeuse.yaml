@@ -22,6 +22,8 @@
                 !include-raw:
                     - scripts/satellite6-betelgeuse.sh
                     - scripts/satellite6-betelgeuse-test-case.sh
+    publishers:
+        - satellite6-automation-mails
 
 
 - job-template:
@@ -74,3 +76,5 @@
                 !include-raw-escape:
                     - scripts/satellite6-betelgeuse.sh
                     - scripts/satellite6-betelgeuse-test-run.sh
+    publishers:
+        - satellite6-automation-mails
