@@ -36,37 +36,45 @@ fi
 # Customer DB Setup
 if [ "${CUSTOMERDB_NAME}" != 'None' ]; then
     source config/preupgrade_entities.conf
-    INSTANCE_NAME="${CUSTOMERDB_NAME}_customerdb_instance"
-    # Delete  if an instance with same name is already there in rhevm
-    fab -u root delete_rhevm_instance:"${INSTANCE_NAME}"
-    # Create a RHEV instance of RHEL6/7 with given template, datacenter, quota and cluster
-    fab -u root create_rhevm_instance:"${INSTANCE_NAME}","custdb-${OS}-base",'SAT-QE','SAT-QE','SAT-QE'
-    # To get the value of SAT_INSTANCE_FQDN variable
-    source /tmp/rhev_instance.txt
-    # Clone the 'satellite-clone' project that includes the ansible playbook to install sat server along with customer DB.
-    git clone -b satellite-clone-1.0 https://github.com/RedHatSatellite/satellite-clone.git
+    if [ -n "${SATELLITE_HOSTNAME}" ]; then
+        INSTANCE_NAME="${SATELLITE_HOSTNAME}"
+    elif [ -z "${SATELLITE_HOSTNAME}" ]; then
+        RHEV_INSTANCE_NAME="${CUSTOMERDB_NAME}_customerdb_instance"
+        # Delete  if an instance with same name is already there in rhevm
+        fab -u root delete_rhevm_instance:"${RHEV_INSTANCE_NAME}"
+        # Create a RHEV instance of RHEL6/7 with given template, datacenter, quota and cluster
+        fab -u root create_rhevm_instance:"${RHEV_INSTANCE_NAME}","custdb-${OS}-base",'SAT-QE','SAT-QE','SAT-QE'
+        # To get the value of SAT_INSTANCE_FQDN variable
+        source /tmp/rhev_instance.txt
+        INSTANCE_NAME="${SAT_INSTANCE_FQDN}"
+    # Clone the 'satellite-clone' w/ tag 1.0.1 that includes the ansible playbook to install sat server along with customer DB.
+    git clone -b 1.0.1 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
     pushd satellite-clone
     # Copy the inventory.sample to inventory
     cp -a inventory.sample inventory
+    # Copy the satellite-clone-vars.sample.yml to satellite-clone-vars.yml
+    cp -a satellite-clone-vars.sample.yml satellite-clone-vars.yml
     # Configuration Updates in inventory file
-    sed -i -e 2s/.*/"${SAT_INSTANCE_FQDN}"/ inventory
-    # Copy the main.sample.yml to main.yml
-    cp -a roles/sat6repro/vars/main.sample.yml roles/sat6repro/vars/main.yml
+    sed -i -e 2s/.*/"${INSTANCE_NAME}"/ inventory
     # Define  Backup directory for customer DB 
     BACKUP_DIR="\/var\/tmp\/backup"
     # Configuration updates in vars file
-    sed -i -e "s/^rhelversion.*/rhelversion: $OS_VERSION/" roles/sat6repro/vars/main.yml
-    sed -i -e "s/^satelliteversion.*/satelliteversion: "${FROM_VERSION}"/" roles/sat6repro/vars/main.yml
-    sed -i -e "s/^backup_dir.*/backup_dir: $BACKUP_DIR/" roles/sat6repro/vars/main.yml
-    sed -i -e "s/^include_pulp_data.*/include_pulp_data: false/" roles/sat6repro/vars/main.yml
-    sed -i -e "/org.*/arhn_pool: "${RHN_POOLID}"" roles/sat6repro/vars/main.yml
-    sed -i -e "/org.*/arhn_password: "${RHN_PASSWORD}"" roles/sat6repro/vars/main.yml
-    sed -i -e "/org.*/arhn_user: "${RHN_USERNAME}"" roles/sat6repro/vars/main.yml
+    sed -i -e "s/^satellite_version.*/satellite_version: "${FROM_VERSION}"/" satellite-clone-vars.yml
+    sed -i -e "s/^activationkey.*/activationkey: "test_ak"/" satellite-clone-vars.yml
+    sed -i -e "s/^org.*/org: "Default\ Organization"/" satellite-clone-vars.yml
+    sed -i -e "s/^#backup_dir.*/backup_dir: "${BACKUP_DIR}"/" satellite-clone-vars.yml
+    sed -i -e "s/^#include_pulp_data.*/include_pulp_data: false/" satellite-clone-vars.yml
+    # Note: Statements related to RHN_POOLID, RHN_PASSWORD, RHN_USERNAME and OS_VERSION added to support satellite6 upgrade through CDN
+    # There are no such variables defined in satellite-clone-vars-sample.yaml
+    sed -i -e "/org.*/arhn_pool: "${RHN_POOLID}"" satellite-clone-vars.yml
+    sed -i -e "/org.*/arhn_password: "${RHN_PASSWORD}"" satellite-clone-vars.yml
+    sed -i -e "/org.*/arhn_user: "${RHN_USERNAME}"" satellite-clone-vars.yml
+    sed -i -e "/org.*/arhelversion: "${OS_VERSION}"" satellite-clone-vars.yml
     # Configuration updates in tasks file wrt vars file
-    sed -i -e '/subscription-manager register.*/d' roles/sat6repro/tasks/main.yml
-    sed -i -e '/register host.*/a\ \ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/sat6repro/tasks/main.yml
-    sed -i -e '/subscription-manager register.*/a- name: subscribe machine' roles/sat6repro/tasks/main.yml
-    sed -i -e '/subscribe machine.*/a\ \ command: subscription-manager subscribe --pool={{ rhn_pool }}' roles/sat6repro/tasks/main.yml
+    sed -i -e '/subscription-manager register.*/d' roles/satellite-clone/tasks/main.yml
+    sed -i -e '/register host.*/a\ \ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/satellite-clone/tasks/main.yml
+    sed -i -e '/subscription-manager register.*/a- name: subscribe machine' roles/satellite-clone/tasks/main.yml
+    sed -i -e '/subscribe machine.*/a\ \ command: subscription-manager subscribe --pool={{ rhn_pool }}' roles/satellite-clone/tasks/main.yml
     # Prepare Customer DB URL
     if [ "${CUSTOMERDB_NAME}" = 'Lidl' ]; then
         DB_URL="http://"${cust_db_server}"/pub/customer-databases/lidl"
@@ -75,10 +83,7 @@ if [ "${CUSTOMERDB_NAME}" != 'None' ]; then
     fi
     # Download the Customer DB data Backup files
     echo "Downloading Customer Data DB's from Server, This may take while depending on the network ....."
-    ssh -o "StrictHostKeyChecking no" root@"${SAT_INSTANCE_FQDN}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar.gz' "${DB_URL}"" 
-    # Update the hostname as per Customer DB
-    CUSTOMER_SAT_HOSTNAME="$(ssh -o 'StrictHostKeyChecking no' root@"${SAT_INSTANCE_FQDN}" "tar -zxf "${BACKUP_DIR}"/config_files.tar.gz etc/httpd/conf/httpd.conf -O" | grep ServerName | awk -F'"' '{print $2}')"
-    sed -i -e "s/^hostname.*/hostname: "${CUSTOMER_SAT_HOSTNAME}"/" roles/sat6repro/vars/main.yml
+    ssh -o "StrictHostKeyChecking no" root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar.gz' "${DB_URL}"" 
     # Run Ansible command to install satellite with cust DB
     export ANSIBLE_HOST_KEY_CHECKING=False
     ansible all -i inventory -m ping -u root
