@@ -3,7 +3,7 @@
 #==============================================================================
 - job-template:
     name: 'provisioning-{satellite_version}-{os}'
-    node: sesame
+    node: sat6-rhel6
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -86,7 +86,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-tier1-{os}'
-    node: sesame
+    node: sat6-rhel6
     logrotate:
         numToKeep: 16
     properties:
@@ -134,7 +134,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-tier2-{os}'
-    node: sesame
+    node: sat6-rhel6
     logrotate:
         numToKeep: 16
     properties:
@@ -167,7 +167,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-tier3-{os}'
-    node: sesame
+    node: sat6-rhel6
     logrotate:
         numToKeep: 16
     properties:
@@ -201,7 +201,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-rhai-{os}'
-    node: sesame
+    node: sat6-rhel6
     logrotate:
         numToKeep: 16
     properties:
@@ -242,7 +242,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-tier4-{os}'
-    node: sesame
+    node: sat6-rhel6
     logrotate:
         numToKeep: 16
     properties:
@@ -335,7 +335,7 @@
 - job-template:
     name: 'upgrade-to-{satellite_version}-{os}'
     concurrent: true
-    node: sesame
+    node: sat6-rhel6
     parameters:
         - string:
             name: BUILD_LABEL
@@ -402,7 +402,7 @@
 
 - job-template:
     name: 'automation-upgraded-{satellite_version}-tier1-{os}'
-    node: sesame
+    node: sat6-rhel6
     logrotate:
         numToKeep: 16
     properties:
@@ -442,7 +442,7 @@
 - job-template:
     name: trigger-satellite{satellite_version}
     description: Triggers automation for Satellite 6
-    node: sesame
+    node: sat6-rhel6
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -598,7 +598,7 @@
 - job:
     name: trigger-nightly
     description: Triggers automation for Satellite 6 upstream using katello-deploy.
-    node: sesame
+    node: sat6-rhel6
     parameters:
         - string:
             name: ROBOTTELO_WORKERS

@@ -1,6 +1,6 @@
 - job:
     name: satellite6-automation-cleanup
-    node: sesame
+    node: sat6-rhel6
     concurrent: false 
     description: |
         <p>Job that runs cleanup scripts.  Currently this only runs container cleanup.</p>

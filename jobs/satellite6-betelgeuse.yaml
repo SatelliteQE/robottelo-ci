@@ -1,6 +1,6 @@
 - job:
     name: polarion-test-case
-    node: sesame
+    node: sat6-rhel6
     scm:
         - git:
             url: https://github.com/SatelliteQE/robottelo.git
@@ -28,7 +28,7 @@
 
 - job-template:
     name: polarion-test-run-{satellite_version}-{os}
-    node: sesame
+    node: sat6-rhel6
     scm:
         - git:
             url: https://github.com/SatelliteQE/robottelo.git
