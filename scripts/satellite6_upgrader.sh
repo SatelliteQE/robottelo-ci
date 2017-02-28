@@ -47,6 +47,7 @@ if [ "${CUSTOMERDB_NAME}" != 'None' ]; then
         # To get the value of SAT_INSTANCE_FQDN variable
         source /tmp/rhev_instance.txt
         INSTANCE_NAME="${SAT_INSTANCE_FQDN}"
+    fi
     # Clone the 'satellite-clone' w/ tag 1.0.1 that includes the ansible playbook to install sat server along with customer DB.
     git clone -b 1.0.1 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
     pushd satellite-clone
