@@ -8,7 +8,11 @@ export SATELLITE_VERSION="{satellite_version}"
 export DISTRO="${{OS}}"
 export OS_VERSION="${{OS: -1}}"
 export TO_VERSION="${{SATELLITE_VERSION}}"
-export FROM_VERSION=$(echo ${{SATELLITE_VERSION}} - 0.1 | bc)
+if [ "${{ZSTREAM_UPGRADE}}" = 'true' ]; then
+    export FROM_VERSION="${{TO_VERSION}}"
+else
+    export FROM_VERSION=$(echo ${{SATELLITE_VERSION}} - 0.1 | bc)
+fi
 export CLIENTS_COUNT=8
 
 # Sourcing and exporting required env vars
