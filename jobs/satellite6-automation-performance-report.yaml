@@ -1,6 +1,6 @@
 - job:
     name: 'satellite6-automation-performance-report'
-    node: sesame
+    node: sat6-rhel6
     parameters:
         - choice:
             name: OS

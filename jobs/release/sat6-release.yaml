@@ -3,7 +3,7 @@
     logrotate:
       daysToKeep: -1
       numToKeep: 32
-    node: sesame
+    node: sat6-rhel6
     parameters:
       - choice:
           name: version
