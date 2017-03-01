@@ -64,7 +64,7 @@ if [ "${CUSTOMERDB_NAME}" != 'None' ]; then
     sed -i -e "s/^activationkey.*/activationkey: "test_ak"/" satellite-clone-vars.yml
     sed -i -e "s/^org.*/org: "Default\ Organization"/" satellite-clone-vars.yml
     sed -i -e "s/^#backup_dir.*/backup_dir: "${BACKUP_DIR}"/" satellite-clone-vars.yml
-    sed -i -e "s/^#include_pulp_data.*/include_pulp_data: false/" satellite-clone-vars.yml
+    sed -i -e "s/^#include_pulp_data.*/include_pulp_data: "${INCLUDE_PULP_DATA}"/" satellite-clone-vars.yml
     # Note: Statements related to RHN_POOLID, RHN_PASSWORD, RHN_USERNAME and OS_VERSION added to support satellite6 upgrade through CDN
     # There are no such variables defined in satellite-clone-vars-sample.yaml
     sed -i -e "/org.*/arhn_pool: "${RHN_POOLID}"" satellite-clone-vars.yml
