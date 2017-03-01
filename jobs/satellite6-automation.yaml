@@ -348,6 +348,12 @@
             description: |
                 Number of workers to use while running robottelo tier1 test suite
                 after the upgrade.
+        - bool:
+            name: ZSTREAM_UPGRADE
+            default: false
+            description: |
+                This option is helpful in manually triggering this job for zStream upgrade.
+                e.g 6.2.7 to 6.2.8
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
