@@ -74,6 +74,12 @@
                 <p>Select the Customer DB for upgrade</p>
                 <p>For Lidl, <b>From version</b> should be <b>6.1</b> and OS should be <b>RHEL7</b></p>
                 <p>For ExpressScript, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
+        - bool:
+            name: INCLUDE_PULP_DATA
+            default: false
+            description: 
+                <p>Select if you would like to perfrom Customer DB upgrade with pulp data</p>
+                <p>Make sure the selected DB should have the pulp data before selecting this check</p>
         - string:
             name: SATELLITE_HOSTNAME
             description: |
