@@ -514,8 +514,6 @@
             echo "RHEL7_SATELLITE_URL=${{RHEL7_SATELLITE_URL:-${{SATELLITE6_RHEL7}}}}" >> properties.txt
             echo "RHEL7_CAPSULE_URL=${{RHEL7_CAPSULE_URL:-${{CAPSULE_RHEL7}}}}" >> properties.txt
             echo "RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL:-${{TOOLS_RHEL7}}}}" >> properties.txt
-            echo "RHEL6_IMAGE=${{RHEL6_IMAGE}}" >> properties.txt
-            echo "RHEL7_IMAGE=${{RHEL7_IMAGE}}" >> properties.txt
         - inject:
             properties-file: properties.txt
         - trigger-builds:

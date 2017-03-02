@@ -19,8 +19,9 @@
         - string:
             name: BUILD_LABEL
             description: |
-                Specify the build label of the Satellite. Example Sat6.3.0-1.0
-                Which is Sat6.y.z-SNAP.COMPOSE
+                Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.
         - bool:
             name: STAGE_TEST
             default: false

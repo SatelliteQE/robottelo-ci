@@ -62,18 +62,10 @@ echo "GATEWAY=${GATEWAY}" >> build_env.properties
 echo "BRIDGE=${BRIDGE}" >> build_env.properties
 echo "DISCOVERY_ISO=${DISCOVERY_ISO}" >> build_env.properties
 
-
-# POLARION_RELEASE depends upon SATELLITE_VERSION
-if [ "${SATELLITE_VERSION}" = "6.3" ]; then
-    ZRELEASE='0'
-else
-    ZRELEASE='z'
-fi
-
 if [ "${SATELLITE_VERSION}" = "nightly" ]; then
     echo "POLARION_RELEASE=Upstream Nightly" >> build_env.properties
 elif [ "${SATELLITE_VERSION}" != "nightly" ]; then
-    echo "POLARION_RELEASE=Satellite ${SATELLITE_VERSION}.${ZRELEASE}" >> build_env.properties
+    echo "POLARION_RELEASE=${BUILD_LABEL%%-*}" >> build_env.properties
 fi
 
 # Run installation after writing the build_env.properties to make sure the
