@@ -107,6 +107,9 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier1
                 DISTRO={os}
+        - inject-passwords:
+            global: true
+            mask-password-params: true
     builders:
         - satellite6-automation-builders
         - trigger-builds:
@@ -155,6 +158,9 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier2
                 DISTRO={os}
+        - inject-passwords:
+            global: true
+            mask-password-params: true
     builders:
         - satellite6-automation-builders
         - trigger-builds:
@@ -188,6 +194,9 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier3
                 DISTRO={os}
+        - inject-passwords:
+            global: true
+            mask-password-params: true
     builders:
         - satellite6-automation-builders
         - trigger-builds:
@@ -222,6 +231,9 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=rhai
                 DISTRO={os}
+        - inject-passwords:
+            global: true
+            mask-password-params: true
     builders:
         - satellite6-automation-builders
     publishers:
@@ -263,6 +275,9 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier4
                 DISTRO={os}
+        - inject-passwords:
+            global: true
+            mask-password-params: true
     builders:
         - satellite6-automation-builders
         - conditional-step:
