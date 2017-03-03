@@ -14,7 +14,7 @@ sed -i "s/^# \[capsule\].*/[capsule]/" robottelo.properties
 sed -i "s/^# instance_name.*/instance_name=${SERVER_HOSTNAME%%.*}-capsule/" robottelo.properties
 sed -i "s/^# domain.*/domain=${DDNS_DOMAIN}/" robottelo.properties
 sed -i "s/^# hash.*/hash=${DDNS_HASH}/" robottelo.properties
-sed -i "s/^# ddns_package_url=${DDNS_PACKAGE_URL}/" robottelo.properties
+sed -i "s|^# ddns_package_url.*|ddns_package_url=${DDNS_PACKAGE_URL}|" robottelo.properties
 
 # Robottelo logging configuration
 sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
