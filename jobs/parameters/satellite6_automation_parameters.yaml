@@ -20,10 +20,12 @@
             description: 'The bridge of the vlan network, for the above Server Hostname.'
         - string:
             name: BUILD_LABEL
+            description: |
+                Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.
         - string:
             name: DISCOVERY_ISO
             description: 'The discovery ISO name.'
         - string:
             name: ROBOTTELO_WORKERS
-        - string:
-            name: POLARION_RELEASE
