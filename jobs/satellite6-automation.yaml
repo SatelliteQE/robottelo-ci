@@ -4,11 +4,11 @@
 - job-template:
     disabled: false
     name: 'provisioning-{satellite_version}-{os}'
-    node: sat6-rhel7
     properties:
         - satellite6-build_blocker:
             satellite_version: "{satellite_version}"
             os: "{os}"
+    node: sat6-{os}
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -92,7 +92,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-tier1-{os}'
-    node: sat6-rhel7
+    node: sat6-{os}
     logrotate:
         numToKeep: 16
     properties:
@@ -147,7 +147,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-tier2-{os}'
-    node: sat6-rhel7
+    node: sat6-{os}
     logrotate:
         numToKeep: 16
     properties:
@@ -187,7 +187,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-tier3-{os}'
-    node: sat6-rhel7
+    node: sat6-{os}
     logrotate:
         numToKeep: 16
     properties:
@@ -228,7 +228,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-rhai-{os}'
-    node: sat6-rhel7
+    node: sat6-{os}
     logrotate:
         numToKeep: 16
     properties:
@@ -276,7 +276,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-tier4-{os}'
-    node: sat6-rhel7
+    node: sat6-{os}
     logrotate:
         numToKeep: 16
     properties:
@@ -380,11 +380,11 @@
     disabled: false
     name: 'upgrade-to-{satellite_version}-{os}'
     concurrent: true
-    node: sat6-rhel7
     properties:
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
             os: "{os}"
+    node: sat6-{os}
     parameters:
         - string:
             name: BUILD_LABEL
@@ -458,7 +458,7 @@
 - job-template:
     disabled: false
     name: 'automation-upgraded-{satellite_version}-tier1-{os}'
-    node: sat6-rhel7
+    node: sat6-{os}
     logrotate:
         numToKeep: 16
     properties:
@@ -504,7 +504,7 @@
 - job-template:
     disabled: false
     name: 'automation-upgraded-{satellite_version}-tier2-{os}'
-    node: sat6-rhel7
+    node: sat6-{os}
     logrotate:
         numToKeep: 16
     properties:
