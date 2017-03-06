@@ -62,12 +62,6 @@ echo "GATEWAY=${GATEWAY}" >> build_env.properties
 echo "BRIDGE=${BRIDGE}" >> build_env.properties
 echo "DISCOVERY_ISO=${DISCOVERY_ISO}" >> build_env.properties
 
-if [ "${SATELLITE_VERSION}" = "nightly" ]; then
-    echo "POLARION_RELEASE=Upstream Nightly" >> build_env.properties
-elif [ "${SATELLITE_VERSION}" != "nightly" ]; then
-    echo "POLARION_RELEASE=${BUILD_LABEL%%-*}" >> build_env.properties
-fi
-
 # Run installation after writing the build_env.properties to make sure the
 # values are available for the post build actions, specially the foreman-debug
 # capturing.
