@@ -29,9 +29,3 @@
             description: 'The discovery ISO name.'
         - string:
             name: ROBOTTELO_WORKERS
-        - string:
-            name: POLARION_RELEASE
-            description: |
-                This release version will be used to create a parent-plan in polarion.
-                It depends upon current Satellite6 release and needs to be of the form
-                Satellite 6.2.7 or Satellite 6.2.8 or Satellite 6.3.0 only.
