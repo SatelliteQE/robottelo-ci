@@ -632,7 +632,7 @@
         - timed: 'H 19 * * *'
     builders:
         - shell:
-            echo "BUILD_LABEL=Upstream Nightly $(date +%Y-%m-%d)" > properties.txt
+            echo "BUILD_LABEL=Upstream Nightly-$(date +%Y-%m-%d)" > properties.txt
         - inject:
             properties-file: properties.txt
         - trigger-builds:
