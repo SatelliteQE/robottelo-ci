@@ -457,6 +457,48 @@
                    - 'satellite6-upgrade-source.sh'
                    - 'satellite6-automation.sh'
                    - 'satellite6-foreman-debug.sh'
+        - trigger-builds:
+            - project: 'automation-upgraded-{satellite_version}-tier2-{os}'
+              current-parameters: true
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
+
+- job-template:
+    name: 'automation-upgraded-{satellite_version}-tier2-{os}'
+    node: sat6-rhel6
+    logrotate:
+        numToKeep: 16
+    properties:
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier2
+                OS={os}
+    builders:
+        - shining-panda:
+           build-environment: virtualenv
+           python-version: System-CPython-2.7
+           clear: true
+           nature: shell
+           command:
+               !include-raw-escape:
+                   - 'satellite6-upgrade-source.sh'
+                   - 'satellite6-automation.sh'
+                   - 'satellite6-foreman-debug.sh'
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -601,6 +643,7 @@
         - 'report-automation-results-{satellite_version}-{os}'
         - 'upgrade-to-{satellite_version}-{os}'
         - 'automation-upgraded-{satellite_version}-tier1-{os}'
+        - 'automation-upgraded-{satellite_version}-tier2-{os}'
 
 
 # Let's have a separate project for triggers.
