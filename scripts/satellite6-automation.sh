@@ -23,7 +23,7 @@ sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 # upstream = 0 for Distributions: DOWNSTREAM, CDN, BETA, ISO
 if [[ "${SATELLITE_DISTRIBUTION}" != *"nightly"* ]]; then
    sed -i "s/^upstream.*/upstream=false/" robottelo.properties
-    if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
+    if [[ "${SATELLITE_DISTRIBUTION}" != *"CDN"* ]]; then
        sed -i "s/^# \[vlan_networking\].*/[vlan_networking]/" robottelo.properties
        sed -i "s/^# subnet.*/subnet=${SUBNET}/" robottelo.properties
        sed -i "s/^# netmask.*/netmask=${NETMASK}/" robottelo.properties
@@ -35,10 +35,10 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"nightly"* ]]; then
     fi
 fi
 
-# cdn = 1 for Distributions: GA (default in robottelo.properties)
+# cdn = 1 for Distributions: CDN (default in robottelo.properties)
 # cdn = 0 for Distributions: INTERNAL, BETA, ISO
-# Sync content and use the below repos only when DISTRIBUTION is not GA
-if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
+# Sync content and use the below repos only when DISTRIBUTION is not CDN 
+if [[ "${SATELLITE_DISTRIBUTION}" != *"CDN"* ]]; then
     # The below cdn flag is required by automation to flip between RH & custom syncs.
     sed -i "s/cdn.*/cdn=0/" robottelo.properties
     # Usage of '|' is intentional as TOOLS_REPO can bring in http url which has '/'
