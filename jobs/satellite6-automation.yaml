@@ -28,11 +28,11 @@
             name: TOOLS_URL
             description: Required when Satellite distribution is INTERNAL and we require latest SatTools Client packages. |
                 Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
+                Leaving this blank picks the latest SATTOOLS repo. Override if required.
         - string:
             name: IMAGE
             description: |
-                Specify RHEL source image to be used for automation.
-                Leaving this blank picks the latest SATTOOLS repo. Override if required.
+                Specify custom RHEL source image to be used for automation.
         - satellite6-provisioning-parameters
         - satellite6-authentication-parameters
     scm:
@@ -79,6 +79,7 @@
                 BUILD_LABEL=${{BUILD_LABEL}}
                 DISCOVERY_ISO=${{DISCOVERY_ISO}}
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                IMAGE=${{IMAGE}}
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-archiver

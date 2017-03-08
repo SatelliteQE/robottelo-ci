@@ -1,7 +1,7 @@
 # Create a new release with POLARION_RELEASE as the parent-plan.
 
 if [ -n "$POLARION_RELEASE" ]; then
-    betelgeuse test-plan --name "${POLARION_RELEASE}" --plan-type release
+    betelgeuse test-plan --name "${POLARION_RELEASE}" --plan-type release \
     "${POLARION_PROJECT}"
 else
     echo "Please specify the POLARION_RELEASE"

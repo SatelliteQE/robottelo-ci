@@ -29,3 +29,6 @@
             description: 'The discovery ISO name.'
         - string:
             name: ROBOTTELO_WORKERS
+        - string:
+            name: IMAGE
+            description: 'The custom image name, for the content-host test-cases.'
