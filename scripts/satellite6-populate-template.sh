@@ -61,6 +61,13 @@ if [[ -z "$DOWNLOAD_POLICY" ]]; then
     exit 1
 fi
 
+SATELLITE_DISTRIBUTION=""
+
+if [[ -z "$SATELLITE_DISTRIBUTION" ]]; then
+    echo "You need to speciy SATELLITE_DISTRIBUTION to sync the content from."
+    exit 1
+fi
+
 # Manifest details
 MANIFEST_LOCATION="${HTTP_SERVER_HOSTNAME}/manifests/manifest-latest.zip"
 
@@ -90,21 +97,29 @@ MINIMAL_INSTALL="true"
 
 # The below values get populated from the sat6_repo_urls.conf file.
 # Sat6 Tools and Capsule Repo Variables
-RHEL6_TOOLS_PRD=Sat6Tools6
-RHEL6_TOOLS_REPO=sat6tool6
-RHEL6_TOOLS_URL="rhel6_tools_url"
-
-RHEL7_TOOLS_PRD=Sat6Tools7
-RHEL7_TOOLS_REPO=sat6tool7
-RHEL7_TOOLS_URL="rhel7_tools_url"
-
-SAT6C6_PRODUCT=Sat6Capsule6
-CAPSULE6_REPO=capsule6
-CAPSULE6_URL="capsule6_url"
-
-SAT6C7_PRODUCT=Sat6Capsule7
-CAPSULE7_REPO=capsule7
-CAPSULE7_URL="capsule7_url"
+if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
+    RHEL6_TOOLS_PRD="Red Hat Enterprise Linux Server"
+    RHEL6_TOOLS_REPO="Red Hat Satellite Tools ${SAT_VERSION} for RHEL 6 Server RPMs x86_64"
+    RHEL7_TOOLS_PRD="Red Hat Enterprise Linux Server"
+    RHEL7_TOOLS_REPO="Red Hat Satellite Tools ${SAT_VERSION} for RHEL 7 Server RPMs x86_64"
+    SAT6C6_PRODUCT="Red Hat Satellite Capsule"
+    CAPSULE6_REPO="Red Hat Satellite Capsule ${SAT_VERSION} for RHEL 6 Server RPMs x86_64"
+    SAT6C7_PRODUCT="Red Hat Satellite Capsule"
+    CAPSULE7_REPO="Red Hat Satellite Capsule ${SAT_VERSION} for RHEL 7 Server RPMs x86_64"
+else
+    RHEL6_TOOLS_PRD=Sat6Tools6
+    RHEL6_TOOLS_REPO=sat6tool6
+    RHEL6_TOOLS_URL="rhel6_tools_url"
+    RHEL7_TOOLS_PRD=Sat6Tools7
+    RHEL7_TOOLS_REPO=sat6tool7
+    RHEL7_TOOLS_URL="rhel7_tools_url"
+    SAT6C6_PRODUCT=Sat6Capsule6
+    CAPSULE6_REPO=capsule6
+    CAPSULE6_URL="capsule6_url"
+    SAT6C7_PRODUCT=Sat6Capsule7
+    CAPSULE7_REPO=capsule7
+    CAPSULE7_URL="capsule7_url"
+fi
 
 
 function satellite () {
@@ -148,6 +163,16 @@ satellite repository-set enable --name="Red Hat Enterprise Linux 6 Server (Kicks
 satellite repository-set enable --name="Red Hat Enterprise Linux 7 Server (RPMs)" --basearch="x86_64" --releasever="7Server" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
 satellite repository-set enable --name="Red Hat Enterprise Linux 6 Server (RPMs)" --basearch="x86_64" --releasever="6Server" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
 
+# Satellite6 CDN RPMS
+if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
+    # Satellite6 Tools RPMS
+    satellite repository-set enable --name="Red Hat Satellite Tools ${SAT_VERSION} (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+    satellite repository-set enable --name="Red Hat Satellite Tools ${SAT_VERSION} (for RHEL 6 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+    # Satellite6 Capsule RPMS
+    satellite repository-set enable --name="Red Hat Satellite Capsule ${SAT_VERSION} (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+    satellite repository-set enable --name="Red Hat Satellite Capsule ${SAT_VERSION} (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+fi
+
 # Synchronize all repositories except for Puppet repositories which don't have URLs
 for repo in $(satellite --csv repository list --organization-id="${ORG}" --per-page=1000 | grep -vi 'puppet' | cut -d ',' -f 1 | grep -vi '^ID'); do
     satellite repository synchronize --id "${repo}" --organization-id="${ORG}"
@@ -156,10 +181,12 @@ done
 # Create Repos and Sync Repositories.
 # Create both Tools for RHEL6 and RHEL7 and Capsule for RHEL6 and RHEL7
 
-create-repo "${RHEL6_TOOLS_PRD}" "${RHEL6_TOOLS_REPO}" "${RHEL6_TOOLS_URL}"
-create-repo "${RHEL7_TOOLS_PRD}" "${RHEL7_TOOLS_REPO}" "${RHEL7_TOOLS_URL}"
-create-repo "${SAT6C6_PRODUCT}" "${CAPSULE6_REPO}" "${CAPSULE6_URL}"
-create-repo "${SAT6C7_PRODUCT}" "${CAPSULE7_REPO}" "${CAPSULE7_URL}"
+if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+    create-repo "${RHEL6_TOOLS_PRD}" "${RHEL6_TOOLS_REPO}" "${RHEL6_TOOLS_URL}"
+    create-repo "${RHEL7_TOOLS_PRD}" "${RHEL7_TOOLS_REPO}" "${RHEL7_TOOLS_URL}"
+    create-repo "${SAT6C6_PRODUCT}" "${CAPSULE6_REPO}" "${CAPSULE6_URL}"
+    create-repo "${SAT6C7_PRODUCT}" "${CAPSULE7_REPO}" "${CAPSULE7_URL}"
+fi
 
 #Create content views
 satellite content-view create --name 'RHEL 7 CV' --organization-id="${ORG}"
