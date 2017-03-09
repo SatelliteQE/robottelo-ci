@@ -7,6 +7,9 @@ echo
 # Populates the HTTP Server information.
 sed -i "s|HTTP_SERVER_HOSTNAME=.*|HTTP_SERVER_HOSTNAME=${HTTP_SERVER_HOSTNAME}|" satellite6-populate.sh
 
+# Populates the DOWNLOAD_POLICY setting.
+sed -i "s|DOWNLOAD_POLICY=.*|DOWNLOAD_POLICY=${DOWNLOAD_POLICY}|" satellite6-populate.sh
+
 # Populates the Compute Resource Information.
 
 # Populate the Libvirt CR Info
@@ -25,7 +28,7 @@ sed -i "s|OS_PASSWORD=.*|OS_PASSWORD=${OS_PASSWORD}|" satellite6-populate.sh
 
 # Populate the Subnet Information.
 # If BRIDGE is Not specified then assume it is Nested-Virt and configure foreman as the network.
-# Note: foreman network is already configured via satellite6-installer, using the below command,
+# Note: foreman network is already configured via satellite6-installer Job, using the below command,
 # "puppet module install -i /tmp sat6qe/katellovirt"
 if [ -z "${BRIDGE}" ]; then
     export BRIDGE="foreman"

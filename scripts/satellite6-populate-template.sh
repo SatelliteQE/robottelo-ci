@@ -54,6 +54,13 @@ if [[ -z "$HTTP_SERVER_HOSTNAME" ]]; then
     exit 1
 fi
 
+DOWNLOAD_POLICY=""
+
+if [[ -z "$DOWNLOAD_POLICY" ]]; then
+    echo "You need to specify DOWNLOAD_POLICY for syncing content."
+    exit 1
+fi
+
 # Manifest details
 MANIFEST_LOCATION="${HTTP_SERVER_HOSTNAME}/manifests/manifest-latest.zip"
 
@@ -122,6 +129,9 @@ function create-repo () {
 satellite lifecycle-environment create --name='DEV' --prior='Library' --organization-id="${ORG}"
 satellite lifecycle-environment create --name='QE' --prior='DEV' --organization-id="${ORG}"
 satellite lifecycle-environment create --name='PROD' --prior='QE' --organization-id="${ORG}"
+
+# Update the DOWNLOAD_POLICY to sync content.
+satellite settings set --name default_download_policy --value "${DOWNLOAD_POLICY}"
 
 # Fetch the manifest from server.
 wget -O "${HOME}"/manifest-latest.zip "${MANIFEST_LOCATION}"
