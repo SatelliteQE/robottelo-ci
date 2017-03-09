@@ -24,7 +24,13 @@ sed -i "s|OS_USERNAME=.*|OS_USERNAME=${OS_USERNAME}|" satellite6-populate.sh
 sed -i "s|OS_PASSWORD=.*|OS_PASSWORD=${OS_PASSWORD}|" satellite6-populate.sh
 
 # Populate the Subnet Information.
-sed -i "s|SUBNET_NAME=.*|SUBNET_NAME=subnet|" satellite6-populate.sh
+# If BRIDGE is Not specified then assume it is Nested-Virt and configure foreman as the network.
+# Note: foreman network is already configured via satellite6-installer, using the below command,
+# "puppet module install -i /tmp sat6qe/katellovirt"
+if [ -z "${BRIDGE}" ]; then
+    export BRIDGE="foreman"
+fi
+sed -i "s|SUBNET_NAME=.*|SUBNET_NAME=${BRIDGE}|" satellite6-populate.sh
 sed -i "s|SUBNET_RANGE=.*|SUBNET_RANGE=${SUBNET_RANGE}|" satellite6-populate.sh
 sed -i "s|SUBNET_MASK=.*|SUBNET_MASK=${SUBNET_MASK}|" satellite6-populate.sh
 sed -i "s|SUBNET_GATEWAY=.*|SUBNET_GATEWAY=${SUBNET_GATEWAY}|" satellite6-populate.sh
