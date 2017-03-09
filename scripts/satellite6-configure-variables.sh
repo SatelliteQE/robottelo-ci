@@ -10,6 +10,9 @@ sed -i "s|HTTP_SERVER_HOSTNAME=.*|HTTP_SERVER_HOSTNAME=${HTTP_SERVER_HOSTNAME}|"
 # Populates the DOWNLOAD_POLICY setting.
 sed -i "s|DOWNLOAD_POLICY=.*|DOWNLOAD_POLICY=${DOWNLOAD_POLICY}|" satellite6-populate.sh
 
+# Populates the SATELLITE_DISTRIBUTION method.
+sed -i "s|SATELLITE_DISTRIBUTION=.*|SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}|" satellite6-populate.sh
+
 # Populates the Compute Resource Information.
 
 # Populate the Libvirt CR Info

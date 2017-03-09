@@ -36,6 +36,13 @@
                 For satellite 6.3 - the default installation setup is on_demand
                 The chosen download policy will override the installation download policy on your satellite.
                 Immediate is the default choice for this job as this is more stable option.
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                - 'INTERNAL'
+                - 'GA'
+            description: |
+                Depending upon INTERNAL and GA, either DOGFOOD or CDN content is synced.
         - bool:
             name: MINIMAL_INSTALL
             default: true
