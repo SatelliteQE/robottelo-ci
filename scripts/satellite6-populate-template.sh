@@ -234,31 +234,61 @@ satellite  activation-key update --name 'ak-rhel-7' --auto-attach no --organizat
 satellite  activation-key update --name 'ak-rhel-6' --auto-attach no --organization-id="${ORG}"
 satellite  activation-key update --name "ak-capsule-${RHELOS}" --auto-attach no --organization-id="${ORG}"
 
-# Add subscriptions and host collection to activation key
+# Add both RHEL6 and RHEL7 Activation keys.
 # RHEL 7 activation key
 RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Premium (8 sockets) (Unlimited guests)" |  awk -F "," '{print $1}' | grep -vi id)
 TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
 satellite  activation-key add-subscription --name='ak-rhel-7' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
-satellite  activation-key add-subscription --name='ak-rhel-7' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID}"
+
+# As SATELLITE TOOLS REPO is already part of RHEL subscription.
+if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+    satellite  activation-key add-subscription --name='ak-rhel-7' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID}"
+fi
 
 
 # RHEL 6 activation key
 TOOLS6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL6_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
 satellite  activation-key add-subscription --name='ak-rhel-6' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
-satellite  activation-key add-subscription --name='ak-rhel-6' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID}"
 
+# As SATELLITE TOOLS REPO is already part of RHEL subscription.
+if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+    satellite  activation-key add-subscription --name='ak-rhel-6' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID}"
+fi
+
+
+# Add both RHEL6 and RHEL7 Capsule Activation keys.
+SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
 if [ "${RHELOS}" = "7" ]; then
+
     # Capsule 7 activation key
-    CAPSULE7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+        CAPSULE7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+    else
+	CAPSULE7_SUBS_ID="${SATELLITE_SUBS_ID}"
+    fi
+
     satellite  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
     satellite  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${CAPSULE7_SUBS_ID}"
-    satellite  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID}"
+
+    # As SATELLITE TOOLS REPO is already part of RHEL subscription.
+    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+        satellite  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID}"
+    fi
 else
     # Capsule 6 activation key
-    CAPSULE6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C6_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+        CAPSULE6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C6_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+    else
+	CAPSULE6_SUBS_ID="${SATELLITE_SUBS_ID}"
+    fi
+
     satellite  activation-key add-subscription --name='ak-capsule-6' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
     satellite  activation-key add-subscription --name='ak-capsule-6' --organization-id="${ORG}" --subscription-id="${CAPSULE6_SUBS_ID}"
-    satellite  activation-key add-subscription --name='ak-capsule-6' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID}"
+
+    # As SATELLITE TOOLS REPO is already part of RHEL subscription.
+    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+        satellite  activation-key add-subscription --name='ak-capsule-6' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID}"
+    fi
 fi
 
 # Update Domain with Capsule's ID.
