@@ -14,8 +14,7 @@ if [ "${STAGE_TEST}" = 'true' ]; then
     source config/stage_environment.conf
 fi
 
-export AD_EXTERNAL_AUTH
-export IDM_EXTERNAL_AUTH
+export EXTERNAL_AUTH
 export IDM_REALM
 
 function remove_instance () {
