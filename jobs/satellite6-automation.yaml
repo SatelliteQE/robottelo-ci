@@ -587,7 +587,7 @@
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
                 PROXY_MODE=${{PROXY_MODE}}
                 BUILD_LABEL=${{BUILD_LABEL}}
-                IDM_EXTERNAL_AUTH=${{IDM_EXTERNAL_AUTH}}
+                EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
                 IDM_REALM=${{IDM_REALM}}
                 IMAGE=${{RHEL6_IMAGE}}
         - trigger-builds:
@@ -601,7 +601,7 @@
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
                 PROXY_MODE=${{PROXY_MODE}}
                 BUILD_LABEL=${{BUILD_LABEL}}
-                IDM_EXTERNAL_AUTH=${{IDM_EXTERNAL_AUTH}}
+                EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
                 IDM_REALM=${{IDM_REALM}}
                 IMAGE=${{RHEL7_IMAGE}}
         - trigger-builds:

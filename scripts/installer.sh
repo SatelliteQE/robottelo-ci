@@ -19,8 +19,7 @@ if [ "${PUPPET4}" = 'true' ]; then
     export PUPPET4_REPO # sourced from installation_environment.conf
 fi
 
-export AD_EXTERNAL_AUTH
-export IDM_EXTERNAL_AUTH
+export EXTERNAL_AUTH
 export IDM_REALM
 
 if [ ${FIX_HOSTNAME} = "true" ]; then
