@@ -1,0 +1,27 @@
+- parameter:
+    name: satellite6-upgrade-parameters
+    parameters:
+        - choice:
+            name: FROM_VERSION
+            choices:
+                - '6.2'
+                - '6.1'
+            description: |
+                <p>Select currently installed Satellite version</p>
+        - choice:
+            name: TO_VERSION
+            choices:
+                - '6.2'
+                - '6.3'
+            description: |
+                <p>Select the Satellite version to upgrade</p>
+        - choice:
+            name: DISTRIBUTION
+            choices:
+                - CDN
+                - DOWNSTREAM
+            description: |
+                <p><strong>CDN</strong>-Upgrade to released version from CDN.</p>
+                <p><strong>DOWNSTREAM</strong>-Upgrade to latest stable internal compose.</p>
+
+

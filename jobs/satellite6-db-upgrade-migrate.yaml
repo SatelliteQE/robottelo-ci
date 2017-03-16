@@ -1,0 +1,100 @@
+- job:
+    name: 'satellite6_db_upgrade_migrate'
+    concurrent: True
+    display-name: 'Satellite6 DB Upgrade & Migrate'
+    description: |
+        <p> Job to perform Customer DB upgrade and migrate RHEL6 Satellite to RHEL7 instance </p>
+        <p> Please make sure to add following ssh-key manually to your Satellite Host otherwise job will fail.</p>
+        <hr>
+        <p><strong>SSH KEY:</strong></p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+    node: sat6-rhel6
+    parameters:
+        - choice:
+            name: UPGRADE_PRODUCT
+            choices:
+                - satellite
+            description: |
+                <p><strong>Performs Satellite upgrade.</strong></p>
+        - satellite6-upgrade-parameters
+        - choice:
+            name: OS
+            choices:
+                - rhel7
+                - rhel6
+            description: |
+                <p> Select OS version of target Satellite </p>
+                <p>For <b>Customer DB upgrade</b>, the OS version of target satellite should be similar to OS of Source DB satellite</p>
+                <p>For <b>Migration</b>, the OS of target Satellite machine should always be RHEL7</p>
+        - choice:
+            name: CUSTOMERDB_NAME
+            choices:
+                - 'NoDB'
+                - 'Lidl'
+                - 'ExpressScripts'
+                - 'Sat62RHEL6Migrate'
+            description: |
+                <p>Select the Customer DB for <b>Upgrade</b> OR <b>Migration</b></p>
+                <p>For Lidl, <b>From version</b> should be <b>6.1</b> and OS should be <b>RHEL7</b></p>
+                <p>For ExpressScript, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
+                <p>For Sat62RHEL6Migrate, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
+        - bool:
+            name: INCLUDE_PULP_DATA
+            default: false
+            description: 
+                <p>Select if you would like to perfrom Cutomer DB upgrade or migration with pulp data</p>
+                <p>Make sure the selected DB should have the pulp data before selecting this check</p>
+        - bool:
+            name: RHEL_MIGRATION
+            default: false
+            description: |
+                <p>Select if you would like to perfrom migration of rhel6 Satellite server to rhel7 machine</p>
+                <p>Make sure the selected DB should have the backup files created via katello-backup</p>
+                <p>and foreman.dump and candlepin.dump files</p>
+        - bool:
+            name: PERFORM_UPGRADE
+            default: true
+            description: |
+                <p>Un-Check if you do not want to perform upgrade post Satellite Clone or Migration</p>
+        - string:
+            name: SATELLITE_HOSTNAME
+            description: |
+                <p>This can be the user satellite onto which Satellite-clone, Migrate and Upgrade will be performed.</p>
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="UPGRADE_PRODUCT"}_from_${ENV,var="FROM_VERSION"}_to_${ENV,var="TO_VERSION"}_${ENV,var="OS"}_CustDB_Upgrade:${ENV,var="SATELLITE_HOSTNAME"}'
+        - build-user-vars
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - default-wrappers
+    builders:
+          - shining-panda:
+              build-environment: virtualenv
+              python-version: System-CPython-2.7
+              clear: true
+              nature: shell
+              command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6_db_upgrade_migrate.sh'
+    publishers:
+        - email-ext:
+            recipients: $BUILD_USER_EMAIL
+            success: true
+            failure: true
+            subject: 'Your $UPGRADE_PRODUCT Upgrade OR migration from $FROM_VERSION to $TO_VERSION on $OS finished'
+            body: |
+                
+                ${FILE, path="upgrade_highlights"}
+                Build URL: $BUILD_URL
+            attachments: full_upgrade, Log_Analyzer_Logs.tar.xz
