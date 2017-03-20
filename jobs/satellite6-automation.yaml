@@ -673,7 +673,7 @@
             name: SATELLITE_DISTRIBUTION
             default: 'UPSTREAM'
     triggers:
-        - timed: 'H 19 * * */2'
+        - timed: 'H 19 * * 0,2,4'
     builders:
         - shell:
             echo "BUILD_LABEL=Upstream Nightly-$(date +%Y-%m-%d)" > properties.txt
