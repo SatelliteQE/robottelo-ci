@@ -35,6 +35,10 @@
             branches:
                 - origin/master
             skip-tag: true
+    properties:
+        - satellite6-polarion-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
     parameters:
         - string:
             name: TEST_RUN_ID

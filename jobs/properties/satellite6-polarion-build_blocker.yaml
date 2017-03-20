@@ -1,0 +1,6 @@
+- property:
+    name: satellite6-polarion-build_blocker
+    properties:
+      - build-blocker:
+          blocking-jobs:
+            - "polarion-test-run-{satellite_version}-{os}"
