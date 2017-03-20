@@ -4,6 +4,10 @@
 - job-template:
     name: 'provisioning-{satellite_version}-{os}'
     node: sat6-rhel6
+    properties:
+        - satellite6-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -90,6 +94,9 @@
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -141,6 +148,9 @@
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -177,6 +187,9 @@
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -214,6 +227,9 @@
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -258,6 +274,9 @@
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -354,6 +373,10 @@
     name: 'upgrade-to-{satellite_version}-{os}'
     concurrent: true
     node: sat6-rhel6
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
     parameters:
         - string:
             name: BUILD_LABEL
@@ -430,6 +453,9 @@
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -472,6 +498,9 @@
     logrotate:
         numToKeep: 16
     properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:

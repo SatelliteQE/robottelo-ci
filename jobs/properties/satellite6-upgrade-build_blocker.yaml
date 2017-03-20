@@ -1,0 +1,8 @@
+- property:
+    name: satellite6-upgrade-build_blocker
+    properties:
+      - build-blocker:
+          blocking-jobs:
+            - "upgrade-to-{satellite_version}-{os}"
+            - "automation-upgraded-{satellite_version}-tier1-{os}"
+            - "automation-upgraded-{satellite_version}-tier2-{os}"
