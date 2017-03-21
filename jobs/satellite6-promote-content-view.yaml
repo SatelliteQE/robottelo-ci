@@ -3,7 +3,7 @@
     logrotate:
       daysToKeep: -1
       numToKeep: 32
-    node: rhel
+    node: rhsm-qe-2
     parameters:
       - string:
           name: content_view_name
@@ -19,10 +19,4 @@
           description: "Satellite organization containing the product"
     builders:
       - build_config_file
-      - compare_content_views
       - promote_content_view
-    publishers:
-      - archive:
-          artifacts: 'package_report.yaml'
-          allow-empty: false
-          only-if-success: true
