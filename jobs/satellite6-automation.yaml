@@ -701,11 +701,28 @@
         - string:
             name: SATELLITE_DISTRIBUTION
             default: 'UPSTREAM'
+
+    wrappers:
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION=nightly
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="BUILD_LABEL"}'
+
     triggers:
         - timed: 'H 19 * * 0,2,4'
+
     builders:
         - shell:
-            echo "BUILD_LABEL=Upstream Nightly-$(date +%Y-%m-%d)" > properties.txt
+            source ${CONFIG_FILES}
+            source config/sat6_repos_urls.conf
+            echo "RHEL6_TOOLS_URL=${RHEL6_TOOLS_URL:-${TOOLS_RHEL6}}" >> properties.txt
+            echo "RHEL7_TOOLS_URL=${RHEL7_TOOLS_URL:-${TOOLS_RHEL7}}" >> properties.txt
+            echo "BUILD_LABEL=Upstream Nightly-$(date +%Y-%m-%d)" >> properties.txt
         - inject:
             properties-file: properties.txt
         - trigger-builds:
@@ -715,3 +732,4 @@
                 BUILD_LABEL=${BUILD_LABEL}
                 ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
                 SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}
+                TOOLS_URL=${RHEL7_TOOLS_URL}
