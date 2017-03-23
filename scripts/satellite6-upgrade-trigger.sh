@@ -21,6 +21,7 @@ source config/compute_resources.conf
 source config/sat6_upgrade.conf
 source config/sat6_repos_urls.conf
 source config/subscription_config.conf
+source config/fake_manifest.conf
 
 # Fetching correct BASE_URL and CAPSULE_URL
 export BASE_URL="${{SATELLITE6_REPO}}"
