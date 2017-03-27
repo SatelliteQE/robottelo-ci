@@ -1,11 +1,12 @@
 - job:
+    disabled: false
     name: 'satellite6-manifest-downloader'
     display-name: 'Satellite6-Manifest-Downloader'
     description: |
         Downloads the Satellite6 Manifest from access.redhat.com
     triggers:
         - timed: '00 17 * * 0'
-    node: sat6-rhel6
+    node: sat6-rhel7
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git

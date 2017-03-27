@@ -1,4 +1,5 @@
 - job:
+    disabled: false
     name: satellite6-closed-loop
     concurrent: false 
     description: |

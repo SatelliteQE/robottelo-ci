@@ -1,4 +1,5 @@
 - job:
+    disabled: false
     name: sat6-release-qa
     project-type: workflow
     parameters:

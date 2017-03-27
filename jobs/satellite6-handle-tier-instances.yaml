@@ -1,8 +1,9 @@
 - job:
+    disabled: false
     name: 'satellite6-handle-tier-instances'
     description: |
         Quickly launch or destroy the tier instances of various jobs.
-    node: sat6-rhel6
+    node: sat6-rhel7
     parameters:
         - choice:
             name: SATELLITE_VERSION

@@ -1,4 +1,5 @@
 - job-template:
+    disabled: false
     name: 'satellite6-builder-{project}'
     display-name: 'package Builder for {project}'
     description: |
@@ -40,6 +41,7 @@
         - 'satellite6-builder-{project}'
 
 - job-template:
+    disabled: false
     name: 'satellite6-packaging-builder-{package}'
     display-name: 'satellite-packaging Builder for {package}'
     description: |

@@ -1,9 +1,10 @@
 - job:
+    disabled: false
     name: 'satellite6-libvirt-install'
     description: |
         Quickly up an instance using VLANs for feature and Bug testing. We could use the two new physical hardware which were
         recently procured. This would help fully automate sat6 installation to do Libvirt, RHEVM and Openstack CR Testing.
-    node: sat6-rhel6
+    node: sat6-rhel7
     parameters:
         - choice:
             name: PROVISIONING_ID

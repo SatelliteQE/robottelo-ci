@@ -1,4 +1,5 @@
 - job:
+    disabled: false
     name: 'sat62-release-bastion'
     project-type: workflow
     auth-token: ""

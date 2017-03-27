@@ -1,4 +1,5 @@
 - job-template:
+    disabled: false
     name: 'slave_template_from_{package}_at_{tag}'
     node: builders
     description: |

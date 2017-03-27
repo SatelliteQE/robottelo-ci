@@ -1,6 +1,7 @@
 - job:
+    disabled: false
     name: satellite6-automation-cleanup
-    node: sat6-rhel6
+    node: sat6-rhel7
     concurrent: false 
     description: |
         <p>Job that runs cleanup scripts.  Currently this only runs container cleanup.</p>

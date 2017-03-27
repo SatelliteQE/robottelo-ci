@@ -1,4 +1,5 @@
 - job:
+    disabled: false
     name: 'sat62-release-katello-installer'
     project-type: workflow
     auth-token: ""

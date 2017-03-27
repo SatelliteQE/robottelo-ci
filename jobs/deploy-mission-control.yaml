@@ -1,4 +1,5 @@
 - job:
+    disabled: false
     name: deploy-mission-control
     project-type: workflow
     auth-token: ""

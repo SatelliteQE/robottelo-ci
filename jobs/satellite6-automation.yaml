@@ -2,8 +2,9 @@
 # Job Templates
 #==============================================================================
 - job-template:
+    disabled: false
     name: 'provisioning-{satellite_version}-{os}'
-    node: sat6-rhel6
+    node: sat6-rhel7
     properties:
         - satellite6-build_blocker:
             satellite_version: "{satellite_version}"
@@ -89,8 +90,9 @@
         - satellite6-automation-archiver
 
 - job-template:
+    disabled: false
     name: 'automation-{satellite_version}-tier1-{os}'
-    node: sat6-rhel6
+    node: sat6-rhel7
     logrotate:
         numToKeep: 16
     properties:
@@ -143,8 +145,9 @@
         - satellite6-automation-archiver
 
 - job-template:
+    disabled: false
     name: 'automation-{satellite_version}-tier2-{os}'
-    node: sat6-rhel6
+    node: sat6-rhel7
     logrotate:
         numToKeep: 16
     properties:
@@ -182,8 +185,9 @@
         - satellite6-automation-archiver
 
 - job-template:
+    disabled: false
     name: 'automation-{satellite_version}-tier3-{os}'
-    node: sat6-rhel6
+    node: sat6-rhel7
     logrotate:
         numToKeep: 16
     properties:
@@ -222,8 +226,9 @@
         - satellite6-automation-archiver
 
 - job-template:
+    disabled: false
     name: 'automation-{satellite_version}-rhai-{os}'
-    node: sat6-rhel6
+    node: sat6-rhel7
     logrotate:
         numToKeep: 16
     properties:
@@ -269,8 +274,9 @@
             success: true
 
 - job-template:
+    disabled: false
     name: 'automation-{satellite_version}-tier4-{os}'
-    node: sat6-rhel6
+    node: sat6-rhel7
     logrotate:
         numToKeep: 16
     properties:
@@ -321,6 +327,7 @@
         - satellite6-automation-archiver
 
 - job-template:
+    disabled: false
     name: 'report-automation-results-{satellite_version}-{os}'
     triggers:
         - reverse:
@@ -370,9 +377,10 @@
             attachments: report.html
 
 - job-template:
+    disabled: false
     name: 'upgrade-to-{satellite_version}-{os}'
     concurrent: true
-    node: sat6-rhel6
+    node: sat6-rhel7
     properties:
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
@@ -448,8 +456,9 @@
             attachments: full_upgrade, Log_Analyzer_Logs.tar.xz
 
 - job-template:
+    disabled: false
     name: 'automation-upgraded-{satellite_version}-tier1-{os}'
-    node: sat6-rhel6
+    node: sat6-rhel7
     logrotate:
         numToKeep: 16
     properties:
@@ -493,8 +502,9 @@
         - satellite6-automation-archiver
 
 - job-template:
+    disabled: false
     name: 'automation-upgraded-{satellite_version}-tier2-{os}'
-    node: sat6-rhel6
+    node: sat6-rhel7
     logrotate:
         numToKeep: 16
     properties:
@@ -535,9 +545,10 @@
         - satellite6-automation-archiver
 
 - job-template:
+    disabled: false
     name: trigger-satellite{satellite_version}
     description: Triggers automation for Satellite 6
-    node: sat6-rhel6
+    node: sat6-rhel7
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -690,9 +701,10 @@
 # Jobs
 #==============================================================================
 - job:
+    disabled: false
     name: trigger-nightly
     description: Triggers automation for Satellite 6 upstream using katello-deploy.
-    node: sat6-rhel6
+    node: sat6-rhel7
     parameters:
         - string:
             name: ROBOTTELO_WORKERS
