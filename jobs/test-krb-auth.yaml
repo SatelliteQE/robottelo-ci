@@ -1,4 +1,5 @@
 - job:
+    disabled: false
     name: 'test-krb-auth'
     description: |
         <p>Job to test functionality of kerberos credentials uploaded to

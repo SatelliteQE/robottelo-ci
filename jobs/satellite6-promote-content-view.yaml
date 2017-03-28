@@ -1,4 +1,5 @@
 - job:
+    disabled: false
     name: satellite6-promote-content-view
     logrotate:
       daysToKeep: -1

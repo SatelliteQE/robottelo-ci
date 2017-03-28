@@ -1,10 +1,11 @@
 - job:
+    disabled: false
     name: sat6-release-install-test
     logrotate:
       daysToKeep: -1
       numToKeep: 32
     concurrent: true
-    node: sat6-rhel6
+    node: sat6-rhel7
     parameters:
       - string:
           name: organization

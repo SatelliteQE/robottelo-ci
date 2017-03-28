@@ -1,9 +1,10 @@
 - job:
+    disabled: false
     name: sat6-release
     logrotate:
       daysToKeep: -1
       numToKeep: 32
-    node: sat6-rhel6
+    node: sat6-rhel7
     parameters:
       - choice:
           name: version

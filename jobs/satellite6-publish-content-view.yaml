@@ -1,4 +1,5 @@
 - job:
+    disabled: false
     name: satellite6-publish-content-view
     logrotate:
       daysToKeep: -1

@@ -1,9 +1,10 @@
 - job:
+    disabled: false
     name: satellite6-generate-compose
     logrotate:
       daysToKeep: -1
       numToKeep: 32
-    node: sat6-rhel6
+    node: sat6-rhel7
     concurrent: true
     parameters:
       - choice:

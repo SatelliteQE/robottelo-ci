@@ -10,7 +10,7 @@
         <pre>
         ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
         </pre>
-    node: sat6-rhel6
+    node: sat6-rhel7
     parameters:
         - choice:
             name: UPGRADE_PRODUCT

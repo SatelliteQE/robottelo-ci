@@ -1,4 +1,5 @@
 - job:
+    disabled: false
     name: satellite6-sync-repository
     logrotate:
       daysToKeep: -1

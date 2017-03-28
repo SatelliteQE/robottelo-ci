@@ -1,6 +1,7 @@
 - job:
+    disabled: false
     name: 'satellite6-automation-performance-report'
-    node: sat6-rhel6
+    node: sat6-rhel7
     parameters:
         - choice:
             name: OS
