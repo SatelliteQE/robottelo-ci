@@ -39,13 +39,14 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     # We may remove this check later w/ next stable release of satellite-clone
     if [ "${RHEL_MIGRATION}" = "true" ]; then
         git clone https://github.com/RedHatSatellite/satellite-clone.git
+        pushd satellite-clone
     else
         # Clone the 'satellite-clone' w/ tag 1.0.1 that includes the ansible playbook to install sat server along with customer DB.
         git clone -b 1.0.1 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
+        pushd satellite-clone
+        # Copy the inventory.sample to inventory
+        cp -a inventory.sample inventory
     fi
-    pushd satellite-clone
-    # Copy the inventory.sample to inventory
-    cp -a inventory.sample inventory
     # Copy the satellite-clone-vars.sample.yml to satellite-clone-vars.yml
     cp -a satellite-clone-vars.sample.yml satellite-clone-vars.yml
     # Configuration Updates in inventory file
