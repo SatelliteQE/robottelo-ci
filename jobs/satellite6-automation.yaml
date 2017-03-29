@@ -729,7 +729,7 @@
         - timed: 'H 19 * * 0,2,4'
 
     builders:
-        - shell:
+        - shell: |
             source ${CONFIG_FILES}
             source config/sat6_repos_urls.conf
             echo "RHEL6_TOOLS_URL=${RHEL6_TOOLS_URL:-${TOOLS_RHEL6}}" >> properties.txt
@@ -738,7 +738,7 @@
         - inject:
             properties-file: properties.txt
         - trigger-builds:
-            - project: |
+            - project:
                 provisioning-nightly-rhel7
               predefined-parameters: |
                 BUILD_LABEL=${BUILD_LABEL}
