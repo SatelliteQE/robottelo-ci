@@ -81,6 +81,11 @@
             description: 
                 <p>Select if you would like to perfrom Customer DB upgrade with pulp data</p>
                 <p>Make sure the selected DB should have the pulp data before selecting this check</p>
+        - bool:
+            name: RUN_EXISTANCE_TESTS
+            default: false
+            description: |
+                 <p>Run tests to verify if the entities and there relations are existing post upgrade.</p>
         - string:
             name: SATELLITE_HOSTNAME
             description: |
@@ -125,6 +130,7 @@
                     - 'pip-install-pycurl.sh'
                     - 'satellite6_upgrader.sh'
     publishers:
+        - satellite6-automation-publishers
         - archive:
             artifacts: '*.tar.xz'
         - email-ext:
