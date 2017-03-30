@@ -99,6 +99,10 @@ fi
 if [ "${PERFORM_UPGRADE}" = "true" ]; then
     # Run upgrade for CDN/Downstream
     fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
+    # Run existance tests
+    if [ "${RUN_EXISTENCE_TESTS}" == 'true' ]; then
+        $(which py.test) -v --junit-xml=test_existance-results.xml upgrade_tests/test_existance_relations/
+    fi
     # Post Upgrade archive logs from log analyzer tool
     if [ -d upgrade-diff-logs ]; then
         tar -czf Log_Analyzer_Logs.tar.xz upgrade-diff-logs
