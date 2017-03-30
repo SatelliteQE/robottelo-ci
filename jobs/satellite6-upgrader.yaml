@@ -4,19 +4,17 @@
     concurrent: True
     display-name: 'Satellite6-Upgrader'
     description: |
-        <p> This job upgrades older version of Satellite6, Capsule6 and Clients </p>
+        <p> Job to perform Satellite6, Capsule6 and Clients upgrade to newer available version through Compose or CDN </p>
         <hr>
-        <p><strong> > On the pre-installed images of satellite, capsule and clients on RHEVM:</strong></p>
-        <p> Please make sure that the following ssh-key of jenkins has been added in <strong>RHEVM images</strong> already.</p>
+        <p> Please make sure to add following ssh-key of jenkins in pre-installed<strong>RHEVM templates</strong></p>
         <p>-------or-------</p>
-        <p><strong> > Specific Satellite, Capsule and Clients:</strong></p>
+        <p><strong> > User specific Satellite, Capsule and Clients:</strong></p>
         <p> Please add following ssh-key manually to your satellite, capsule and clients.</p>
         <hr>
         <p><strong>SSH KEY:</strong></p>
         <pre>
         ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
         </pre>
-        <p><strong>Failing to add ssh-key will result in job fail.</strong></p>
     node: sat6-rhel7
     parameters:
         - choice:
@@ -27,10 +25,10 @@
                 - client
                 - longrun
             description: |
-                <p><strong>Choosing 'satellite' will upgrade only Satellite.</strong></p>
-                <p><strong>Choosing 'capsule' will upgrade both Capsule as well as its associated Satellite.</strong></p>
-                <p><strong>Choosing 'client' will upgrade Clients as well as its associated Satellite.</strong></p>
-                <p><strong>Choosing 'longrun' will upgrade all i.e Satellite, Capsule and Clients</strong></p>
+                <p>Select 'satellite' to perform only <b>Satellite</b>upgrade</p>
+                <p>Select 'capsule' to perform both <b>Capsule as well as its associated Satellite</b>upgrade</p>
+                <p>Select 'client' to perform <b>Clients as well as its associated Satellite</b>upgrade</p>
+                <p>Select 'longrun' to perform <b>Satellite, Capsule and Clients</b>upgrade</p>
         - choice:
             name: FROM_VERSION
             choices:
@@ -38,7 +36,7 @@
                 - '6.1'
                 - '6.0'
             description: |
-                <p> Choose the currently installed Satellite version.</p>
+                <p>Select the currently installed Satellite version.</p>
         - choice:
             name: TO_VERSION
             choices:
@@ -46,14 +44,14 @@
                 - '6.2'
                 - '6.1'
             description: |
-                <p> Choose the upgrade to Satellite version.</p>
+                <p>Select the Satellite <b>TO_VERSION</b> to upgrade.</p>
         - choice:
             name: DISTRIBUTION
             choices:
                 - CDN
                 - DOWNSTREAM
             description: |
-                <p><strong>CDN</strong>-Upgrade to the CDN available version.</p>
+                <p><strong>CDN</strong>-Upgrade to released version available from CDN.</p>
                 <p><strong>DOWNSTREAM</strong>-Upgrade to latest stable internal compose.</p>
         - choice:
             name: OS
@@ -63,33 +61,17 @@
         - string:
             name: CLIENTS_COUNT
             description: |
-                <p>The number of RHEL6 and RHEL7 clients to Generate.</p>
+                <p>The number of RHEL6 and RHEL7 docker clients to Generate.</p>
                 <p>The number of clients will be devided in equal amount for RHEL6 and RHEL7. e.g if 10 is given then 5 each.</p>
-        - choice:
-            name: CUSTOMERDB_NAME
-            choices:
-                - 'None'
-                - 'Lidl'
-                - 'ExpressScripts'
-            description: |
-                <p>Select the Customer DB for upgrade</p>
-                <p>For Lidl, <b>From version</b> should be <b>6.1</b> and OS should be <b>RHEL7</b></p>
-                <p>For ExpressScript, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
-        - bool:
-            name: INCLUDE_PULP_DATA
-            default: false
-            description: 
-                <p>Select if you would like to perfrom Customer DB upgrade with pulp data</p>
-                <p>Make sure the selected DB should have the pulp data before selecting this check</p>
         - bool:
             name: RUN_EXISTANCE_TESTS
             default: false
             description: |
-                 <p>Run tests to verify if the entities and there relations are existing post upgrade.</p>
+                 <p>Run tests to verify if the entities and their associations exists post upgrade.</p>
         - string:
             name: SATELLITE_HOSTNAME
             description: |
-                <p>This can be the user satellite onto which upgrade will be performed.</p>
+                <p>User provided Satellite on which upgrade will be performed.</p>
         - string:
             name: CAPSULE_HOSTNAMES
         - string:
