@@ -234,13 +234,15 @@ def promoteContentView(body) {
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
         
         def cmd = [
+          "/bin/bash --login -c",
+          "'rvm system && ",
           "hammer --username ${env.USERNAME} --password ${env.PASSWORD} --server ${env.SATELLITE_SERVER}",
           "content-view version promote",
-          "--organization '${config.organization}'",
-          "--content-view '${config.content_view}'",
-          "--to-lifecycle-environment '${config.to_lifecycle_environment}'",
+          "--organization \"${config.organization}\"",
+          "--content-view \"${config.content_view}\"",
+          "--to-lifecycle-environment \"${config.to_lifecycle_environment}\"",
           "--from-lifecycle-environment ${config.from_lifecycle_environment}",
-          "--force"
+          "--force'"
         ]
 
         def versionInToEnv = findContentView {
@@ -272,11 +274,13 @@ def findContentView(body) {
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
         
         def cmd = [
+          "/bin/bash --login -c",
+          "'rvm system && ",
           "hammer --output json --username ${env.USERNAME} --password ${env.PASSWORD} --server ${env.SATELLITE_SERVER}",
           "content-view version list",
-          "--organization '${config.organization}'",
-          "--environment '${config.lifecycle_environment}'",
-          "--content-view '${config.content_view}'"
+          "--organization \"${config.organization}\"",
+          "--environment \"${config.lifecycle_environment}\"",
+          "--content-view \"${config.content_view}\"'"
         ]
 
         sh "${cmd.join(' ')} > versions.json"
@@ -305,15 +309,17 @@ def computePackageDifference(body) {
         def archive_file = 'package_report.yaml'
 
         def cmd = [
-            './tools.rb release compare-content-view',
-            "--server '${env.SATELLITE_SERVER}'",
+            "/bin/bash --login -c",
+            "'./tools.rb release compare-content-view",
+            "--server \"${env.SATELLITE_SERVER}\"",
             "--username ${env.SATELLITE_USERNAME} --password ${env.SATELLITE_PASSWORD}",
-            "--organization '${config.organization}'",
-            "--content-view '${config.content_view}'",
-            "--from-environment '${config.from_environment}'",
-            "--to-environment '${config.to_environment}'",
-            "--output ${archive_file}"
+            "--organization \"${config.organization}\"",
+            "--content-view \"${config.content_view}\"",
+            "--from-environment \"${config.from_environment}\"",
+            "--to-environment \"${config.to_environment}\"",
+            "--output ${archive_file}'"
         ]
+
 
         sh "${cmd.join(' ')}"
         archive archive_file
@@ -332,14 +338,16 @@ def createLifecycleEnvironment(body) {
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
         def cmd = [
+            "/bin/bash --login -c",
+            "'rvm system && ",
             "hammer --output json",
             "--username ${env.USERNAME}",
             "--password ${env.PASSWORD}",
             "--server ${env.SATELLITE_SERVER}",
             "lifecycle-environment create",
-            "--organization '${config.organization}'",
-            "--name '${config.name}'",
-            "--prior '${config.prior}'"
+            "--organization \"${config.organization}\"",
+            "--name \"${config.name}\"",
+            "--prior \"${config.prior}\"'"
         ]
 
         sh "${cmd.join(' ')}"
