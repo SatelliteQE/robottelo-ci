@@ -13,7 +13,7 @@ sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
 sed -i "s/^# \[capsule\].*/[capsule]/" robottelo.properties
 sed -i "s/^# instance_name.*/instance_name=${SERVER_HOSTNAME%%.*}-capsule/" robottelo.properties
 sed -i "s/^# domain.*/domain=${DDNS_DOMAIN}/" robottelo.properties
-sed -i "s/^# hash.*/hash=${DDNS_HASH}/" robottelo.properties
+sed -i "s/^# hash.*/hash=${CAPSULE_DDNS_HASH}/" robottelo.properties
 sed -i "s|^# ddns_package_url.*|ddns_package_url=${DDNS_PACKAGE_URL}|" robottelo.properties
 
 if [ -n "${IMAGE}" ]; then
@@ -27,7 +27,7 @@ sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 
 # upstream = 1 for Distributions: UPSTREAM (default in robottelo.properties)
 # upstream = 0 for Distributions: DOWNSTREAM, CDN, BETA, ISO
-if [[ "${SATELLITE_DISTRIBUTION}" != *"nightly"* ]]; then
+if [[ "${SATELLITE_DISTRIBUTION}" != *"UPSTREAM"* ]]; then
    sed -i "s/^upstream.*/upstream=false/" robottelo.properties
     if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
        sed -i "s/^# \[vlan_networking\].*/[vlan_networking]/" robottelo.properties

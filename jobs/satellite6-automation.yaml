@@ -546,7 +546,7 @@
 
 - job-template:
     disabled: false
-    name: trigger-satellite{satellite_version}
+    name: trigger-satellite-{satellite_version}
     description: Triggers automation for Satellite 6
     node: sat6-rhel7
     parameters:
@@ -669,7 +669,8 @@
         - '6.2':
             scm-branch: origin/6.2.z
         - '6.3'
-        - 'nightly'
+        - 'upstream-nightly'
+        - 'downstream-nightly'
     os:
         - 'rhel6'
         - 'rhel7'
@@ -694,15 +695,16 @@
         - '6.1'
         - '6.2'
         - '6.3'
+        - 'downstream-nightly'
     jobs:
-        - 'trigger-satellite{satellite_version}'
+        - 'trigger-satellite-{satellite_version}'
 
 #==============================================================================
 # Jobs
 #==============================================================================
 - job:
     disabled: false
-    name: trigger-nightly
+    name: trigger-upstream-nightly
     description: Triggers automation for Satellite 6 upstream using katello-deploy.
     node: sat6-rhel7
     parameters:
@@ -713,7 +715,6 @@
         - string:
             name: SATELLITE_DISTRIBUTION
             default: 'UPSTREAM'
-
     wrappers:
         - config-file-provider:
             files:
@@ -721,13 +722,11 @@
                   variable: CONFIG_FILES
         - inject:
             properties-content: |
-                SATELLITE_VERSION=nightly
+                SATELLITE_VERSION=upstream-nightly
         - build-name:
             name: '#${BUILD_NUMBER} ${ENV,var="BUILD_LABEL"}'
-
     triggers:
         - timed: 'H 19 * * 0,2,4'
-
     builders:
         - shell: |
             source ${CONFIG_FILES}
@@ -738,8 +737,8 @@
         - inject:
             properties-file: properties.txt
         - trigger-builds:
-            - project:
-                provisioning-nightly-rhel7
+            - project: |
+                provisioning-upstream-nightly-rhel7
               predefined-parameters: |
                 BUILD_LABEL=${BUILD_LABEL}
                 ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
