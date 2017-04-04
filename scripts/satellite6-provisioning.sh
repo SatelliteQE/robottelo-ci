@@ -15,6 +15,7 @@ if [ "${PUPPET4}" = 'true' ]; then
 fi
 
 export EXTERNAL_AUTH
+export HOTFIX
 export IDM_REALM
 
 # The target_image in provisioning_environment.conf should be "qe-sat6y-rhel7-base".

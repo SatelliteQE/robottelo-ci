@@ -28,6 +28,16 @@
             description: |
                 Points to RHSM stage for stage installation test. Used only
                 in CDN provisioning.
+        - bool:
+            name: HOTFIX
+            choices:
+                - 'NO_HOTFIX'
+                - 'DEFAULT'
+                - 'CUSTOM'
+            description: |
+                In case DEFAULT, the hotfix should be in hotfix_rhel6.repo, hotfix_rhel7.repo format
+                however, in case of CUSTOM hotfix should be in the form of hotfix_rhel6.sh hotfix_rhel7.sh scripts.
+                These files should be placed in the above mentioned format only, at http://sat6-rhel6/pub/hotfix/ path.
         - string:
             name: OS_UPGRADE_REPO
             description: |
