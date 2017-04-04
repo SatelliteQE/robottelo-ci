@@ -58,6 +58,8 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         DB_URL="http://"${cust_db_server}"/pub/customer-databases/lidl"
     elif [ "${CUSTOMERDB_NAME}" = 'ExpressScripts' ]; then
         DB_URL="http://"${cust_db_server}"/pub/customer-databases/express-scripts/6.2-NOV-28-2016"
+    elif [ "${CUSTOMERDB_NAME}" = 'Walmart' ]; then
+        DB_URL="http://"${cust_db_server}"/pub/customer-databases/walmart/sat62_backup"
     elif [ "${CUSTOMERDB_NAME}" = 'Sat62RHEL6Migrate' ]; then
         DB_URL="http://"${cust_db_server}"/pub/qe/sat62-rhel6-db"
     fi

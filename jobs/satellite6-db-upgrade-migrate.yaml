@@ -34,11 +34,13 @@
                 - 'NoDB'
                 - 'Lidl'
                 - 'ExpressScripts'
+                - 'Walmart'
                 - 'Sat62RHEL6Migrate'
             description: |
                 <p>Select the Customer DB for <b>Upgrade</b> OR <b>Migration</b></p>
                 <p>For Lidl, <b>From version</b> should be <b>6.1</b> and OS should be <b>RHEL7</b></p>
                 <p>For ExpressScript, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
+                <p>For Walmart, <b> From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For Sat62RHEL6Migrate, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
         - bool:
             name: INCLUDE_PULP_DATA
