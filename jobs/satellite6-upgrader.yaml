@@ -24,11 +24,13 @@
                 - capsule
                 - client
                 - longrun
+                - n-1
             description: |
                 <p>Select 'satellite' to perform only <b>Satellite</b>upgrade</p>
                 <p>Select 'capsule' to perform both <b>Capsule as well as its associated Satellite</b>upgrade</p>
                 <p>Select 'client' to perform <b>Clients as well as its associated Satellite</b>upgrade</p>
                 <p>Select 'longrun' to perform <b>Satellite, Capsule and Clients</b>upgrade</p>
+                <p>Select 'n-1' to perform only satellite upgrade, by keeping capsule at last released zStream version.</p>
         - choice:
             name: FROM_VERSION
             choices:
