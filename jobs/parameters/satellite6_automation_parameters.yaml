@@ -3,6 +3,10 @@
     parameters:
         - string:
             name: SERVER_HOSTNAME
+            description: 'The server hostname against which the tests are supposed to be run.'
+        - string:
+            name: SATELLITE_DISTRIBUTION
+            description: 'Make sure to select the right Satellite Distribution you want to install, otherwise the job can fail.'
         - string:
             name: TOOLS_REPO
             description: 'The URL to the latest Satellite Custom tools repo'
@@ -21,14 +25,15 @@
         - string:
             name: BUILD_LABEL
             description: |
-                Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
                 Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
-                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
         - string:
             name: DISCOVERY_ISO
             description: 'The discovery ISO name.'
         - string:
             name: ROBOTTELO_WORKERS
+            description: 'The number of testcase threads to run automation.'
         - string:
             name: IMAGE
             description: 'The custom image name, for the content-host test-cases.'
