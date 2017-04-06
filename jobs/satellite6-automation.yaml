@@ -76,6 +76,7 @@
             - project: 'automation-{satellite_version}-tier1-{os}'
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
                 TOOLS_REPO=${{TOOLS_REPO}}
                 SUBNET=${{SUBNET}}
                 NETMASK=${{NETMASK}}

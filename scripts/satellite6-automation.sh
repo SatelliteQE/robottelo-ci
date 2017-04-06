@@ -27,18 +27,16 @@ sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 
 # upstream = 1 for Distributions: UPSTREAM (default in robottelo.properties)
 # upstream = 0 for Distributions: DOWNSTREAM, CDN, BETA, ISO
-if [[ "${SATELLITE_DISTRIBUTION}" != *"UPSTREAM"* ]]; then
+if [[ "${SATELLITE_VERSION}" != *"upstream-nightly"* ]]; then
    sed -i "s/^upstream.*/upstream=false/" robottelo.properties
-    if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
-       sed -i "s/^# \[vlan_networking\].*/[vlan_networking]/" robottelo.properties
-       sed -i "s/^# subnet.*/subnet=${SUBNET}/" robottelo.properties
-       sed -i "s/^# netmask.*/netmask=${NETMASK}/" robottelo.properties
-       sed -i "s/^# gateway.*/gateway=${GATEWAY}/" robottelo.properties
-       sed -i "s/^# bridge.*/bridge=${BRIDGE}/" robottelo.properties
-       # To set the discovery ISO name in properties file
-       sed -i "s/^# \[discovery\].*/[discovery]/" robottelo.properties
-       sed -i "s/^# discovery_iso.*/discovery_iso=${DISCOVERY_ISO}/" robottelo.properties
-    fi
+   sed -i "s/^# \[vlan_networking\].*/[vlan_networking]/" robottelo.properties
+   sed -i "s/^# subnet.*/subnet=${SUBNET}/" robottelo.properties
+   sed -i "s/^# netmask.*/netmask=${NETMASK}/" robottelo.properties
+   sed -i "s/^# gateway.*/gateway=${GATEWAY}/" robottelo.properties
+   sed -i "s/^# bridge.*/bridge=${BRIDGE}/" robottelo.properties
+   # To set the discovery ISO name in properties file
+   sed -i "s/^# \[discovery\].*/[discovery]/" robottelo.properties
+   sed -i "s/^# discovery_iso.*/discovery_iso=${DISCOVERY_ISO}/" robottelo.properties
 fi
 
 # cdn = 1 for Distributions: GA (default in robottelo.properties)
@@ -46,7 +44,7 @@ fi
 # Sync content and use the below repos only when DISTRIBUTION is not GA
 if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     # The below cdn flag is required by automation to flip between RH & custom syncs.
-    sed -i "s/cdn.*/cdn=0/" robottelo.properties
+    sed -i "s/cdn.*/cdn=false/" robottelo.properties
     # Usage of '|' is intentional as TOOLS_REPO can bring in http url which has '/'
     sed -i "s|sattools_repo.*|sattools_repo=${TOOLS_REPO}|" robottelo.properties
 fi
