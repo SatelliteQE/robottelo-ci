@@ -11,6 +11,9 @@
             name: TOOLS_REPO
             description: 'The URL to the latest Satellite Custom tools repo'
         - string:
+            name: CAPSULE_REPO
+            description: 'The URL to the latest Satellite Capsule repo'
+        - string:
             name: SUBNET
             description: 'The subnet of the vlan network, for the above Server Hostname.'
         - string:
