@@ -47,6 +47,7 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     sed -i "s/cdn.*/cdn=false/" robottelo.properties
     # Usage of '|' is intentional as TOOLS_REPO can bring in http url which has '/'
     sed -i "s|sattools_repo.*|sattools_repo=${TOOLS_REPO}|" robottelo.properties
+    sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
 if [ "${ENDPOINT}" != "rhai" ]; then

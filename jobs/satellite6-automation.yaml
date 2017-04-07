@@ -78,6 +78,7 @@
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
                 SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
                 TOOLS_REPO=${{TOOLS_REPO}}
+                CAPSULE_REPO=${{CAPSULE_REPO}}
                 SUBNET=${{SUBNET}}
                 NETMASK=${{NETMASK}}
                 GATEWAY=${{GATEWAY}}
@@ -435,6 +436,7 @@
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
                 TOOLS_REPO=${{TOOLS_REPO}}
+                CAPSULE_REPO=${{CAPSULE_REPO}}
                 SUBNET=${{SUBNET}}
                 NETMASK=${{NETMASK}}
                 GATEWAY=${{GATEWAY}}
