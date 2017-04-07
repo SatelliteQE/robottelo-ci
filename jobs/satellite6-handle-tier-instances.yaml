@@ -25,6 +25,7 @@
                 - 'tier3'
                 - 'tier4'
                 - 'rhai'
+                - 'destructive'
         - choice:
             name: ACTION
             choices:

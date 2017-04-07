@@ -221,7 +221,6 @@
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier4-{os}'
               current-parameters: true
-
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -259,6 +258,9 @@
             mask-password-params: true
     builders:
         - satellite6-automation-builders
+        - trigger-builds:
+            - project: 'automation-{satellite_version}-destructive-{os}'
+              current-parameters: true
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-archiver
@@ -330,6 +332,43 @@
 
 - job-template:
     disabled: false
+    name: 'automation-{satellite_version}-destructive-{os}'
+    node: sat6-{os}
+    logrotate:
+        numToKeep: 16
+    properties:
+        - satellite6-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=destructive
+                DISTRO={os}
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+    builders:
+        - satellite6-automation-builders
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
+
+- job-template:
+    disabled: false
     name: 'report-automation-results-{satellite_version}-{os}'
     triggers:
         - reverse:
@@ -357,6 +396,10 @@
             which-build: last-successful
         - copyartifact:
             project: 'automation-{satellite_version}-tier4-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-destructive-{os}'
             filter: '*-results.xml'
             which-build: last-successful
         - shining-panda:
@@ -596,7 +639,6 @@
                 Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/os
         - satellite6-provisioning-parameters
         - satellite6-authentication-parameters
-
     wrappers:
         - config-file-provider:
             files:
@@ -684,6 +726,7 @@
         - 'automation-{satellite_version}-tier3-{os}'
         - 'automation-{satellite_version}-tier4-{os}'
         - 'automation-{satellite_version}-rhai-{os}'
+        - 'automation-{satellite_version}-destructive-{os}'
         - 'polarion-test-run-{satellite_version}-{os}'
         - 'report-automation-results-{satellite_version}-{os}'
         - 'upgrade-to-{satellite_version}-{os}'
