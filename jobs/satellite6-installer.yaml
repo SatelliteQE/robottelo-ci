@@ -41,6 +41,7 @@
                 - '6.2'
                 - '6.1'
                 - '6.0'
+                - 'downstream-nightly'
                 - 'nightly'
             description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
         - choice:
