@@ -34,13 +34,8 @@ fi
 fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
 
 # Run upgrade for CDN/Downstream
-if [ -z "${SATELLITE_HOSTNAME}" ]; then
-    # If satellite_hostname is not provided, the upgrade will run on rhevm instances with the help of images
-    fab -u root product_upgrade:"${UPGRADE_PRODUCT}","${RHEV_SAT_HOST}","${RHEV_CAP_HOST}"
-else
-    # Else user provided Satellite, Capsule and client will be upgraded
-    fab -u root product_upgrade:"${UPGRADE_PRODUCT}","${SATELLITE_HOSTNAME}","${CAPSULE_HOSTNAMES}","${CLIENT6_HOSTS}","${CLIENT7_HOSTS}"
-fi
+fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
+
 
 # Run existance tests
 if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
