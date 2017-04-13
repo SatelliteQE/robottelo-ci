@@ -215,7 +215,7 @@ node('rhel') {
 stage "Run Automation"
 node {
 
-  build job: 'trigger-satellite6.2', parameters: [
+  build job: 'trigger-satellite-6.2', parameters: [
     [$class: 'StringParameterValue', name: 'SATELLITE_DISTRIBUTION', value: 'INTERNAL'],
     [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${snapVersion}"],
   ]
