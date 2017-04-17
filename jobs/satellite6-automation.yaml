@@ -398,10 +398,6 @@
             project: 'automation-{satellite_version}-tier4-{os}'
             filter: '*-results.xml'
             which-build: last-successful
-        - copyartifact:
-            project: 'automation-{satellite_version}-destructive-{os}'
-            filter: '*-results.xml'
-            which-build: last-successful
         - shining-panda:
             build-environment: virtualenv
             python-version: System-CPython-2.7
