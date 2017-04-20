@@ -50,7 +50,7 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
-if [ "${ENDPOINT}" != "rhai" || "${ENDPOINT}" != "destructive" ]; then
+if [ "${ENDPOINT}" != "rhai" ] || [ "${ENDPOINT}" != "destructive" ]; then
     set +e
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
