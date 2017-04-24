@@ -35,18 +35,9 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         source /tmp/rhev_instance.txt
         INSTANCE_NAME="${SAT_INSTANCE_FQDN}"
     fi
-    # This check is because currently Migration changes are in master branch of Satellite-clone.
-    # We may remove this check later w/ next stable release of satellite-clone
-    if [ "${RHEL_MIGRATION}" = "true" ]; then
-        git clone https://github.com/RedHatSatellite/satellite-clone.git
-        pushd satellite-clone
-    else
-        # Clone the 'satellite-clone' w/ tag 1.0.1 that includes the ansible playbook to install sat server along with customer DB.
-        git clone -b 1.0.1 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
-        pushd satellite-clone
-        # Copy the inventory.sample to inventory
-        cp -a inventory.sample inventory
-    fi
+    # Clone the 'satellite-clone' w/ tag 1.0.1 that includes the ansible playbook to install sat server along with customer DB.
+    git clone -b 1.1.0.rc1 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
+    pushd satellite-clone
     # Copy the satellite-clone-vars.sample.yml to satellite-clone-vars.yml
     cp -a satellite-clone-vars.sample.yml satellite-clone-vars.yml
     # Configuration Updates in inventory file
@@ -59,7 +50,7 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     elif [ "${CUSTOMERDB_NAME}" = 'ExpressScripts' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/express-scripts/6.2-NOV-28-2016"
     elif [ "${CUSTOMERDB_NAME}" = 'Walmart' ]; then
-        DB_URL="http://"${cust_db_server}"/customer-databases/walmart/sat62_backup"
+        DB_URL="http://"${cust_db_server}"/customer-databases/walmart/sat62_apr11_working_from_beav/"
     elif [ "${CUSTOMERDB_NAME}" = 'Sat62RHEL6Migrate' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/qe-rhel6-db/sat62-rhel6-db"
     fi
@@ -88,7 +79,11 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     sed -i -e '/subscribe machine.*/a\ \ command: subscription-manager subscribe --pool={{ rhn_pool }}' roles/satellite-clone/tasks/main.yml
     # Download the Customer DB data Backup files
     echo "Downloading Customer Data DB's from Server, This may take while depending on the network ....."
-    ssh -o "StrictHostKeyChecking no" root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar.gz' "${DB_URL}"" 
+    if [ "${CUSTOMERDB_NAME}" = 'Walmart' ]; then
+        ssh -o "StrictHostKeyChecking no" root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q /var/tmp/backup --include customer-databases/walmart/sat62_apr11_working_from_beav/ -nH --cut-dirs=3 -r --no-parent --reject="index.html*" --continue "${DB_URL}"" 
+    else
+        ssh -o "StrictHostKeyChecking no" root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar.gz' "${DB_URL}"" 
+    fi
     # Run Ansible command to install satellite with cust DB
     export ANSIBLE_HOST_KEY_CHECKING=False
     ansible all -i inventory -m ping -u root
@@ -99,6 +94,8 @@ fi
 
 # Run satellite upgrade only when PERORM_UPGRADE flag is set.
 if [ "${PERFORM_UPGRADE}" = "true" ]; then
+    # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
+    fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
     # Run upgrade for CDN/Downstream
     fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
     # Run existance tests
