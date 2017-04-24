@@ -4,8 +4,6 @@
     logrotate:
       daysToKeep: -1
       numToKeep: 16
-    parameters:
-      - merge_request
     scm:
       - smart_proxy_remote_execution_ssh_gitlab
     axes:

@@ -7,7 +7,6 @@
     parameters:
       - ruby
       - database
-      - merge_request
     scm:
       - katello_gitlab
     triggers:

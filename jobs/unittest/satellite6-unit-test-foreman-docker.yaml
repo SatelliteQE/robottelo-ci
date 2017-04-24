@@ -8,7 +8,6 @@
     parameters:
       - ruby
       - database
-      - merge_request
       - string:
           name: plugin_name
           default: 'foreman_docker'

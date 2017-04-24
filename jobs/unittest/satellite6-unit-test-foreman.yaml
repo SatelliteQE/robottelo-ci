@@ -8,7 +8,6 @@
     parameters:
       - ruby
       - database
-      - merge_request
     scm:
       - foreman_gitlab
     wrappers:

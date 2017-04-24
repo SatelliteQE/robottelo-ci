@@ -5,8 +5,6 @@
       numToKeep: 32
     concurrent: true
     node: rhel
-    parameters:
-      - merge_request
     scm:
       - bastion_gitlab
     triggers:

@@ -4,8 +4,6 @@
     logrotate:
       daysToKeep: -1
       numToKeep: 32
-    parameters:
-      - merge_request
     scm:
       - tool_belt_gitlab
     triggers:

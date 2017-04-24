@@ -5,8 +5,6 @@
     logrotate:
       daysToKeep: -1
       numToKeep: 32
-    parameters:
-      - merge_request
     scm:
       - test_repo_gitlab
     axes:
