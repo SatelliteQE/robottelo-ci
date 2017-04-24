@@ -485,6 +485,7 @@
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
     publishers:
         - satellite6-automation-mails
+        - satellite6-automation-publishers
         - archive:
             artifacts: '*.tar.xz'
         - email-ext:
