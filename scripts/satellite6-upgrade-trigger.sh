@@ -27,7 +27,6 @@ fi
 
 # Fix variables
 export CLIENTS_COUNT=8
-export RUN_EXISTANCE_TESTS=true
 
 # Sourcing and exporting required env vars
 source "${{CONFIG_FILES}}"
@@ -61,7 +60,4 @@ fab -u root setup_products_for_upgrade:'longrun',"{os}"
 
 # Longrun to run upgrade on Satellite, capsule and clients
 fab -u root product_upgrade:'longrun'
-
-# Run Existance Tests
-$(which py.test) -v --junit-xml=test_existance-results.xml upgrade_tests/test_existance_relations/
 
