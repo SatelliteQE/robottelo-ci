@@ -50,17 +50,17 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
-if [ "${ENDPOINT}" != "rhai" ] || [ "${ENDPOINT}" != "destructive" ]; then
+if [ "${ENDPOINT}" != "rhai" ]; then
     set +e
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
-        tests/foreman/{api,cli,ui,longrun}
+        tests/foreman/{api,cli,ui,longrun,sys}
 
     # Run sequential tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
-        tests/foreman/{api,cli,ui,longrun}
+        tests/foreman/{api,cli,ui,longrun,sys}
     set -e
 else
     make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=${ROBOTTELO_WORKERS}
