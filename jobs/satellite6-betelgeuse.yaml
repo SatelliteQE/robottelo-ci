@@ -35,7 +35,7 @@
         - git:
             url: https://github.com/SatelliteQE/robottelo.git
             branches:
-                - origin/master
+                - '{scm-branch}'
             skip-tag: true
     properties:
         - satellite6-polarion-build_blocker:
