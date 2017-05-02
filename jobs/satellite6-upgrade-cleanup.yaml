@@ -1,0 +1,26 @@
+- job:
+    disabled: false
+    name: satellite6-upgrade-cleanup
+    node: sat6-rhel7
+    concurrent: false
+    description: |
+        <p>Job that runs cleanup scripts. currently this only runs container
+        cleanup on docker VM</p>
+    scm:
+        - git:
+            url: 'https://github.com/SatelliteQE/satellite6-upgrade.git'
+            branches:
+                - origin/master
+            skip-tag: true
+            wipe-workspace: true
+    triggers:
+        - timed: 'H 0 * * 7'
+    builders:
+          - shining-panda:
+              build-environment: virtualenv
+              python-version: System-CPython-2.7
+              clear: true
+              nature: shell
+              command:
+                !include-raw:
+                    - 'satellite6-upgrade-cleanup.sh'
