@@ -12,6 +12,5 @@
                   - 'satellite6-automation-instances.sh'
                   - 'satellite6-automation.sh'
                   - 'satellite6-foreman-debug.sh'
+                  - 'satellite6-code-coverage.sh'
                   - 'satellite6-graceful-shutdown.sh'
- 
-
