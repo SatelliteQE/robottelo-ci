@@ -145,6 +145,7 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
+        - satellite6-automation-coverage
 
 - job-template:
     disabled: false
@@ -185,6 +186,7 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
+        - satellite6-automation-coverage
 
 - job-template:
     disabled: false
@@ -225,6 +227,7 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
+        - satellite6-automation-coverage
 
 - job-template:
     disabled: false
@@ -264,6 +267,7 @@
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-archiver
+        - satellite6-automation-coverage
         - email-ext:
             recipients: $PROJECT_DEFAULT_RECIPIENTS
             reply-to: $PROJECT_DEFAULT_REPLYTO
@@ -329,6 +333,7 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
+        - satellite6-automation-coverage
 
 - job-template:
     disabled: false
@@ -366,6 +371,7 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
+        - satellite6-automation-coverage
 
 - job-template:
     disabled: false
@@ -540,6 +546,7 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
+        - satellite6-automation-coverage
 
 - job-template:
     disabled: false
@@ -583,6 +590,7 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
+        - satellite6-automation-coverage
 
 - job-template:
     disabled: false
