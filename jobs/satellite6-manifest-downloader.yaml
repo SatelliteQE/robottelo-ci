@@ -5,7 +5,7 @@
     description: |
         Downloads the Satellite6 Manifest from access.redhat.com
     triggers:
-        - timed: '00 17 * * 0'
+        - timed: 'H 17 * * 0,2,4'
     node: sat6-rhel7
     scm:
         - git:
