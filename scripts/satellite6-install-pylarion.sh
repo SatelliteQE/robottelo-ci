@@ -7,5 +7,3 @@ git checkout origin/satelliteqe-pylarion
 pip install -r requirements.txt
 pip install .
 cd ..
-
-pip install betelgeuse

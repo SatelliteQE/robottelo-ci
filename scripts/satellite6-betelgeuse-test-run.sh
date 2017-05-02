@@ -1,3 +1,12 @@
+# Populate token-prefix and betelgeuse depending upon Satellite6 Version.
+if [[ "${SATELLITE_VERSION}" = "6.1" ]] || [[ "${SATELLITE_VERSION}" = "6.2" ]] ; then
+    pip install "betelgeuse<0.8"
+    TOKEN_PREFIX="--token-prefix \"@\""
+else
+    pip install betelgeuse
+    TOKEN_PREFIX=""
+fi
+
 # Create a new release with POLARION_RELEASE as the parent-plan.
 
 if [ -n "$POLARION_RELEASE" ]; then
@@ -23,7 +32,7 @@ SANITIZED_ITERATION_ID="$(echo ${TEST_RUN_ID} | sed 's|\.|_|g' | sed 's| |_|g')"
 # Prepare the XML files
 for tier in $(seq 1 4); do
    for run in parallel sequential; do
-        betelgeuse xml-test-run \
+        betelgeuse "${TOKEN_PREFIX}" xml-test-run \
             --custom-fields "isautomated=true" \
             --custom-fields "arch=x8664" \
             --custom-fields "variant=server" \

@@ -21,7 +21,7 @@
             nature: shell
             command:
                 !include-raw:
-                    - scripts/satellite6-betelgeuse.sh
+                    - scripts/satellite6-install-pylarion.sh
                     - scripts/satellite6-betelgeuse-test-case.sh
     publishers:
         - satellite6-automation-mails
@@ -55,6 +55,9 @@
             mask-password-params: true
         - build-name:
             name: '#${{BUILD_NUMBER}} ${{ENV,var="TEST_RUN_ID"}}'
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
     builders:
         - copyartifact:
             project: automation-{satellite_version}-tier1-{os}
@@ -80,7 +83,7 @@
             nature: shell
             command:
                 !include-raw-escape:
-                    - scripts/satellite6-betelgeuse.sh
+                    - scripts/satellite6-install-pylarion.sh
                     - scripts/satellite6-betelgeuse-test-run.sh
     publishers:
         - satellite6-automation-mails
