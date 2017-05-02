@@ -7,7 +7,7 @@ rvm use ruby-${ruby}@${gemset} --create
 rvm gemset empty --force
 gem install bundler --no-ri --no-rdoc
 
-sed -e '/smart_proxy/ s/^#*/#/' -i Gemfile
+sed -e '/gem .*smart_proxy/ s/^#*/#/' -i Gemfile
 
 echo "gem 'smart_proxy', :git => 'https://${GIT_HOSTNAME}/${GIT_ORGANIZATION}/smart-proxy.git', :ref => '${gitlabTargetBranch}'" > Gemfile.local.rb
 
