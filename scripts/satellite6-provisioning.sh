@@ -56,7 +56,8 @@ fi
 # Write a properties file to allow passing variables to other build steps
 echo "SERVER_HOSTNAME=${SERVER_HOSTNAME}" > build_env.properties
 echo "SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}" >> build_env.properties
-echo "TOOLS_REPO=${TOOLS_URL}" >> build_env.properties
+echo "TOOLS_URL[6]=${RHEL6_TOOLS_URL:-${TOOLS_URL[6]}}" >> build_env.properties
+echo "TOOLS_URL[7]=${RHEL7_TOOLS_URL:-${TOOLS_URL[7]}}" >> build_env.properties
 echo "CAPSULE_REPO=${CAPSULE_URL}" >> build_env.properties
 echo "SUBNET=${SUBNET}" >> build_env.properties
 echo "NETMASK=${NETMASK}" >> build_env.properties

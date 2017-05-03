@@ -46,7 +46,8 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     # The below cdn flag is required by automation to flip between RH & custom syncs.
     sed -i "s/cdn.*/cdn=false/" robottelo.properties
     # Usage of '|' is intentional as TOOLS_REPO can bring in http url which has '/'
-    sed -i "s|sattools_repo.*|sattools_repo=${TOOLS_REPO}|" robottelo.properties
+    TOOLS_URLS=$(for el in ${!TOOLS_URL[*]}; do printf "rhel$el=${TOOLS_URL[$el]},"; done)
+    sed -i "s|sattools_repo.*|sattools_repo=${TOOLS_URLS}|" robottelo.properties
     sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
