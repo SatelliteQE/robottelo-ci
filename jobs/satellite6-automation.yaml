@@ -471,6 +471,50 @@
         - inject:
             properties-file: properties.txt
         - trigger-builds:
+            - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+    publishers:
+        - archive:
+            artifacts: '*.tar.xz'
+        - email-ext:
+            recipients: ${{QE_EMAIL_LIST}}
+            success: true
+            subject: 'Upgrade Status to {satellite_version} on {os} ${{BUILD_LABEL}} - $BUILD_STATUS'
+            body: |
+                ${{FILE, path="upgrade_highlights"}}
+                Build URL: ${{BUILD_URL}}
+            attachments: full_upgrade, Log_Analyzer_Logs.tar.xz
+
+- job-template:
+    disabled: false
+    name: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+    node: sat6-{os}
+    logrotate:
+        numToKeep: 16
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    builders:
+        - shining-panda:
+           build-environment: virtualenv
+           python-version: System-CPython-2.7
+           clear: true
+           nature: shell
+           shell : |
+                $(which py.test) -v --junit-xml=test_existance-results.xml upgrade_tests/test_existance_relations/
+        - inject:
+           properties-file: properties.txt
+        - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
@@ -483,17 +527,6 @@
                 BUILD_LABEL=${{BUILD_LABEL}}
                 DISCOVERY_ISO=${{DISCOVERY_ISO}}
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
-    publishers:
-        - archive:
-            artifacts: '*.tar.xz'
-        - email-ext:
-            recipients: ${{QE_EMAIL_LIST}}
-            success: true
-            subject: 'Upgrade Status to {satellite_version} on {os} ${{BUILD_LABEL}} - $BUILD_STATUS'
-            body: |
-                ${{FILE, path="upgrade_highlights"}}
-                Build URL: ${{BUILD_URL}}
-            attachments: full_upgrade, Log_Analyzer_Logs.tar.xz
 
 - job-template:
     disabled: false
