@@ -423,6 +423,58 @@
                 ${{FILE, path="report.txt"}}
             attachments: report.html
 
+
+- job-template:
+    name: 'report-consolidated-coverage-{satellite_version}-{os}'
+    triggers:
+        - reverse:
+            jobs: 'automation-{satellite_version}-tier4-{os}'
+            result: unstable
+    builders:
+        - shell: rm -f coverage.*.tar
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier1-{os}'
+            filter: 'coverage.tier1.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier2-{os}'
+            filter: 'coverage.tier2.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier3-{os}'
+            filter: 'coverage.tier3.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier4-{os}'
+            filter: 'coverage.tier4.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-rhai-{os}'
+            filter: 'coverage.rhai.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-destructive-{os}'
+            filter: 'coverage.destructive.tar'
+            which-build: last-successful
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape: 'satellite6-consolidated-coverage-report.sh'
+    publishers:
+        - satellite6-automation-coverage
+        - email-ext:
+            recipients: ${{QE_EMAIL_LIST}}
+            success: true
+            failure: false
+            subject: 'Satellite {satellite_version} Coverage Report for {os}'
+            body: |
+                The build ${{BUILD_URL}} has been completed.
+            attachments: coverage_report.txt
+
+
 - job-template:
     disabled: false
     name: 'upgrade-to-{satellite_version}-{os}'
