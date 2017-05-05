@@ -428,7 +428,7 @@
     name: 'report-consolidated-coverage-{satellite_version}-{os}'
     triggers:
         - reverse:
-            jobs: 'automation-{satellite_version}-tier4-{os}'
+            jobs: 'automation-{satellite_version}-destructive-{os}'
             result: unstable
     builders:
         - shell: rm -f coverage.*.tar
