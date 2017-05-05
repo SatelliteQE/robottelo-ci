@@ -4,7 +4,7 @@
       - gitlab:
           trigger-push: true
           trigger-merge-request: true
-          trigger-open-merge-request-push: true
+          trigger-open-merge-request-push: source
           ci-skip: false
           set-build-description: true
           add-note-merge-request: true
