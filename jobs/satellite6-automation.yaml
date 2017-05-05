@@ -504,7 +504,7 @@
                 e.g 6.2.7 to 6.2.8
     scm:
         - git:
-            url: https://github.com/SatelliteQE/automation-tools.git
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
             branches:
                 - origin/master
             skip-tag: true

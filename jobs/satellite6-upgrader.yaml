@@ -90,7 +90,7 @@
                 <p>User defined client hostnames on RHEL7 to upgrade, separated by comma(,).</p>
     scm:
         - git:
-            url: https://github.com/SatelliteQE/automation-tools.git
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
             branches:
                 - origin/master
             skip-tag: true
