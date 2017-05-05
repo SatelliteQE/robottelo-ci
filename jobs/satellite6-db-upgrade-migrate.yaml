@@ -71,7 +71,7 @@
                 <p>This can be the user satellite onto which Satellite-clone, Migrate and Upgrade will be performed.</p>
     scm:
         - git:
-            url: https://github.com/SatelliteQE/automation-tools.git
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
             branches:
                 - origin/master
             skip-tag: true
