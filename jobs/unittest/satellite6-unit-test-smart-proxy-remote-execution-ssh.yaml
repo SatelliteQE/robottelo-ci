@@ -4,6 +4,8 @@
     logrotate:
       daysToKeep: -1
       numToKeep: 16
+    properties:
+      - gitlab_variables
     parameters:
       - merge_request
     scm:

@@ -5,6 +5,8 @@
       daysToKeep: -1
       numToKeep: 32
     concurrent: true
+    properties:
+      - gitlab_variables
     parameters:
       - merge_request
     scm:
