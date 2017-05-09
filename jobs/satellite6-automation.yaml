@@ -367,6 +367,9 @@
             mask-password-params: true
     builders:
         - satellite6-automation-builders
+        - trigger-builds:
+            - project: 'report-consolidated-coverage-{satellite_version}-{os}'
+              current-parameters: true
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -426,10 +429,13 @@
 
 - job-template:
     name: 'report-consolidated-coverage-{satellite_version}-{os}'
-    triggers:
-        - reverse:
-            jobs: 'automation-{satellite_version}-destructive-{os}'
-            result: unstable
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=coverage
+                DISTRO={os}
     builders:
         - shell: rm -f coverage.*.tar
         - copyartifact:
@@ -462,7 +468,11 @@
             clear: true
             nature: shell
             command:
-                !include-raw-escape: 'satellite6-consolidated-coverage-report.sh'
+                !include-raw-escape:
+                    - 'satellite6-automation-source.sh'
+                    - 'satellite6-automation-instances.sh'
+                    - 'satellite6-consolidated-coverage-report.sh'
+                    - 'satellite6-graceful-shutdown.sh'
     publishers:
         - satellite6-automation-coverage
         - email-ext:
