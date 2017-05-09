@@ -570,7 +570,7 @@
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
             branches:
-                - '{scm-branch}'
+                - origin/master
             skip-tag: true
     builders:
         - shining-panda:
