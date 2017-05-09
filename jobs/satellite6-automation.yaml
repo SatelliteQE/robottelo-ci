@@ -818,6 +818,7 @@
         - 'report-automation-results-{satellite_version}-{os}'
         - 'report-consolidated-coverage-{satellite_version}-{os}'
         - 'upgrade-to-{satellite_version}-{os}'
+        - 'automation-upgraded-{satellite_version}-existence-tests-{os}'
         - 'automation-upgraded-{satellite_version}-tier1-{os}'
         - 'automation-upgraded-{satellite_version}-tier2-{os}'
 
