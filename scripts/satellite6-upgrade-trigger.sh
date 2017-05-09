@@ -27,6 +27,7 @@ fi
 
 # Fix variables
 export CLIENTS_COUNT=8
+export RUN_EXISTANCE_TESTS=true
 
 # Sourcing and exporting required env vars
 source "${{CONFIG_FILES}}"
