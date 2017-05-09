@@ -379,6 +379,7 @@
 - job-template:
     disabled: false
     name: 'report-automation-results-{satellite_version}-{os}'
+    node: sat6-{os}
     triggers:
         - reverse:
             jobs: 'automation-{satellite_version}-tier4-{os}'
@@ -429,6 +430,9 @@
 
 - job-template:
     name: 'report-consolidated-coverage-{satellite_version}-{os}'
+    node: sat6-{os}
+    parameters:
+        - satellite6-automation-parameters
     wrappers:
         - satellite6-automation-wrappers
         - inject:
