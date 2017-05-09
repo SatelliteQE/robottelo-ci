@@ -5,8 +5,6 @@ for i in tier1 tier2 tier3 tier4 rhai destructive; do
     tar -xvf ../coverage.$i.tar
 done
 
-
-
 cat > .coveragerc <<EOF
 [run]
 source=
@@ -32,5 +30,10 @@ output=${PWD}/coverage.xml
 EOF
 
 coverage combine
-coverage report > coverage_report.txt
-coverage xml
+
+scp -o StrictHostKeyChecking=no "${PWD}"/.coverage "root@${SERVER_HOSTNAME}:/etc/coverage/"
+ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cd /etc/coverage/ ; coverage report > coverage_report.txt"
+ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cd /etc/coverage/ ; coverage xml"
+
+scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:/etc/coverage/coverage_report.txt" .
+scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:/etc/coverage/coverage.xml" .
