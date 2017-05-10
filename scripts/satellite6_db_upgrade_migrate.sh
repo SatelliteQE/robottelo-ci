@@ -36,7 +36,7 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         INSTANCE_NAME="${SAT_INSTANCE_FQDN}"
     fi
     # Clone the 'satellite-clone' w/ tag 1.0.1 that includes the ansible playbook to install sat server along with customer DB.
-    git clone -b 1.1.0.rc1 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
+    git clone -b 1.1.0 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
     pushd satellite-clone
     # Copy the satellite-clone-vars.sample.yml to satellite-clone-vars.yml
     cp -a satellite-clone-vars.sample.yml satellite-clone-vars.yml
