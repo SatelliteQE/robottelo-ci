@@ -483,10 +483,13 @@
             recipients: ${{QE_EMAIL_LIST}}
             success: true
             failure: false
-            subject: 'Satellite {satellite_version} Coverage Report for {os}'
+            subject: 'Satellite {satellite_version} Consolidated Coverage Report for {os}'
             body: |
                 The build ${{BUILD_URL}} has been completed.
-            attachments: coverage_report.txt
+
+                Please refer the attachment for the consolidated coverage report from,
+                Tier1, Tier2, Tier3, Tier4, Rhai and Destructive.
+            attachments: coverage/coverage_report.txt
 
 
 - job-template:
