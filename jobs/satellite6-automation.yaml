@@ -145,7 +145,8 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
-        - satellite6-automation-coverage
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
 
 - job-template:
     disabled: false
@@ -186,7 +187,8 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
-        - satellite6-automation-coverage
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
 
 - job-template:
     disabled: false
@@ -227,7 +229,8 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
-        - satellite6-automation-coverage
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
 
 - job-template:
     disabled: false
@@ -267,7 +270,8 @@
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-archiver
-        - satellite6-automation-coverage
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
         - email-ext:
             recipients: $PROJECT_DEFAULT_RECIPIENTS
             reply-to: $PROJECT_DEFAULT_REPLYTO
@@ -333,7 +337,8 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
-        - satellite6-automation-coverage
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
 
 - job-template:
     disabled: false
@@ -374,7 +379,8 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
-        - satellite6-automation-coverage
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
 
 - job-template:
     disabled: false
@@ -478,7 +484,8 @@
                     - 'satellite6-consolidated-coverage-report.sh'
                     - 'satellite6-graceful-shutdown.sh'
     publishers:
-        - satellite6-automation-coverage
+        - satellite6-automation-coverage:
+            file_path: "coverage/coverage.xml"
         - email-ext:
             recipients: ${{QE_EMAIL_LIST}}
             success: true
@@ -488,7 +495,7 @@
                 The build ${{BUILD_URL}} has been completed.
 
                 Please refer the attachment for the consolidated coverage report from,
-                Tier1, Tier2, Tier3, Tier4, Rhai and Destructive.
+                tier1, tier2, tier3, tier4, rhai and destructive jobs.
             attachments: coverage/coverage_report.txt
 
 
@@ -646,7 +653,6 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
-        - satellite6-automation-coverage
 
 - job-template:
     disabled: false
@@ -690,7 +696,6 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
-        - satellite6-automation-coverage
 
 - job-template:
     disabled: false
