@@ -1,0 +1,8 @@
+- property:
+    name: gitlab_variables
+    properties:
+        - inject:
+              groovy-content: |
+                  if (!binding.variables.containsKey('gitlabSourceBranch')) {
+                      return ["gitlabSourceBranch": "$sourceBranch", "gitlabTargetBranch": "$targetBranch", "gitlabSourceRepoName": "$sourceRepoName"]
+                  }

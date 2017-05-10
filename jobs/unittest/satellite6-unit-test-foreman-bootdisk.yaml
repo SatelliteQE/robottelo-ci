@@ -4,6 +4,8 @@
       daysToKeep: -1
       numToKeep: 32
     node: rhel
+    properties:
+      - gitlab_variables
     parameters:
       - ruby
       - database

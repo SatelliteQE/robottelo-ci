@@ -5,6 +5,8 @@
       numToKeep: 32
     concurrent: true
     node: rhel
+    properties:
+      - gitlab_variables
     parameters:
       - merge_request
     scm:

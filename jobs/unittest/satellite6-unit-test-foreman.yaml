@@ -5,6 +5,8 @@
       numToKeep: 32
     node: rhel
     concurrent: true
+    properties:
+      - gitlab_variables
     parameters:
       - ruby
       - database
