@@ -584,8 +584,6 @@
            nature: shell
            shell : |
                 $(which py.test) -v --junit-xml=test_existance-results.xml upgrade_tests/test_existance_relations/
-        - inject:
-           properties-file: properties.txt
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
               predefined-parameters: |
