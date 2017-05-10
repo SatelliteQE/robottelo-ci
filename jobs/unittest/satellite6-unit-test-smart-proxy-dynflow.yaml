@@ -5,8 +5,6 @@
     logrotate:
       daysToKeep: -1
       numToKeep: 16
-    parameters:
-      - merge_request
     scm:
       - smart_proxy_dynflow_gitlab
     axes:
