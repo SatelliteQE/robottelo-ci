@@ -28,4 +28,5 @@
               nature: shell
               command:
                 !include-raw:
+                    - 'pip-install-pycurl.sh'
                     - 'satellite6-upgrade-cleanup.sh'
