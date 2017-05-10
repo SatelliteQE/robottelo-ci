@@ -2,7 +2,7 @@
     name: satellite6-automation-coverage
     publishers:
       - cobertura:
-          report-file: "coverage.xml"
+          report-file: "coverage/coverage.xml"
           targets:
               - files:
                   healthy: 10
