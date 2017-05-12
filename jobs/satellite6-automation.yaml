@@ -595,7 +595,7 @@
            python-version: System-CPython-2.7
            clear: true
            nature: shell
-           command : |
+           command :
                 !include-raw:
                     - 'pip-install-pycurl.sh'
                     - 'satellite6-upgrade-source.sh'
