@@ -549,14 +549,13 @@
             command:
                 !include-raw:
                     - 'pip-install-pycurl.sh'
+                    - 'satellite6-upgrade-source.sh'
                     - 'satellite6-upgrade-trigger.sh'
-        - inject:
-            properties-file: properties.txt
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
     publishers:
         - archive:
-            artifacts: '*.tar.xz'
+            artifacts: '*.tar.xz,preupgrade,postupgrade'
         - email-ext:
             recipients: ${{QE_EMAIL_LIST}}
             success: true
@@ -587,13 +586,22 @@
                 - origin/master
             skip-tag: true
     builders:
+        - copyartifact:
+            project: 'upgrade-to-{satellite_version}-{os}'
+            filter: 'preupgrade,postupgrade'
+            which-build: last-successful
         - shining-panda:
            build-environment: virtualenv
            python-version: System-CPython-2.7
            clear: true
            nature: shell
-           shell : |
-                $(which py.test) -v --junit-xml=test_existance-results.xml upgrade_tests/test_existance_relations/
+           command : |
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-upgrade-source.sh'
+                    - 'satellite6-upgrade-existence.sh'
+        - inject:
+            properties-file: properties.txt
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
               predefined-parameters: |
