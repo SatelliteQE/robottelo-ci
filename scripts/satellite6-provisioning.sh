@@ -17,6 +17,7 @@ fi
 export EXTERNAL_AUTH
 export HOTFIX
 export IDM_REALM
+export IMAGE
 
 # The target_image in provisioning_environment.conf should be "qe-sat6y-rhel7-base".
 export TARGET_IMAGE
