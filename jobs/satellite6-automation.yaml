@@ -591,11 +591,11 @@
             filter: 'preupgrade,postupgrade'
             which-build: last-successful
         - shining-panda:
-           build-environment: virtualenv
-           python-version: System-CPython-2.7
-           clear: true
-           nature: shell
-           command :
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
                 !include-raw:
                     - 'pip-install-pycurl.sh'
                     - 'satellite6-upgrade-source.sh'
