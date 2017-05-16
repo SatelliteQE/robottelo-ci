@@ -33,7 +33,6 @@ source config/sat6_upgrade.conf
 source config/sat6_repos_urls.conf
 source config/subscription_config.conf
 source config/fake_manifest.conf
-export SERVER_HOSTNAME="${{RHEV_SAT_HOST}}"
 
 # Fetching correct BASE_URL and CAPSULE_URL
 export BASE_URL="${{SATELLITE6_REPO}}"
