@@ -55,12 +55,12 @@ if [ "${ENDPOINT}" != "rhai" ]; then
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
-        tests/foreman/{api,cli,ui,longrun,sys}
+        tests/foreman/{api,cli,ui,longrun,sys,installer}
 
     # Run sequential tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
-        tests/foreman/{api,cli,ui,longrun,sys}
+        tests/foreman/{api,cli,ui,longrun,sys,installer}
     set -e
 else
     make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=${ROBOTTELO_WORKERS}
