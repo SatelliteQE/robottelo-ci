@@ -621,6 +621,8 @@
                 BUILD_LABEL=${{BUILD_LABEL}}
                 DISCOVERY_ISO=${{DISCOVERY_ISO}}
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+    publishers:
+        - satellite6-automation-publishers
 
 - job-template:
     disabled: false
