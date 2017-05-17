@@ -1,5 +1,5 @@
 stage "Push to Openshift"
-node('rhel') {
+node('sat6-rhel7') {
             
     git url: "https://${env.GIT_HOSTNAME}/satellite6/mission-control.git"
 
