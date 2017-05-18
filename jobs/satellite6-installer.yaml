@@ -118,9 +118,10 @@
                 Do not specify these installer options related to (Interface, Gateway, DNS, DHCP, TFTP, PUPPET)
                 here, these are already handled.
         - string:
-            name: OS_UPGRADE_REPO
+            name: OS_UPGRADE_REPOS
             description: |
-                Upgrade OS using this repo URL, typically RHEL candidate repo.
+                Upgrade OS using this repo URL(s), typically RHEL candidate repo.
+                This can be space-separated list of repos' URLs to specify multiple repos.
         - bool:
             name: PUPPET4
             default: false
