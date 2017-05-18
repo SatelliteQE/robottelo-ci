@@ -39,9 +39,10 @@
                 however, in case of CUSTOM hotfix should be in the form of hotfix_rhel6.sh hotfix_rhel7.sh scripts.
                 These files should be placed in the above mentioned format only, at http://sat6-rhel6/pub/hotfix/ path.
         - string:
-            name: OS_UPGRADE_REPO
+            name: OS_UPGRADE_REPOS
             description: |
-                Upgrade OS using this repo URL, typically RHEL candidate repo.
+                Upgrade OS using this repo URL(s), typically RHEL candidate repo.
+                This can be space-separated list of repos' URLs to specify multiple repos.
         - bool:
             name: PUPPET4
             default: false
