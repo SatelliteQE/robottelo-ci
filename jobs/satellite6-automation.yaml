@@ -659,7 +659,7 @@
            nature: shell
            command:
                !include-raw-escape:
-                   - 'satellite6-upgrade-source.sh'
+                   - 'satellite6-upgrade-tier-source.sh'
                    - 'satellite6-automation.sh'
                    - 'satellite6-foreman-debug.sh'
         - trigger-builds:
@@ -705,7 +705,7 @@
            nature: shell
            command:
                !include-raw-escape:
-                   - 'satellite6-upgrade-source.sh'
+                   - 'satellite6-upgrade-tier-source.sh'
                    - 'satellite6-automation.sh'
                    - 'satellite6-foreman-debug.sh'
     publishers:
