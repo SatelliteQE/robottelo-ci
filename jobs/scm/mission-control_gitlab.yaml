@@ -1,0 +1,11 @@
+- scm:
+    name: mission-control_gitlab
+    scm:
+      - git:
+          wipe-workspace: true
+          skip-tag: true
+          branches:
+            - ${gitlabTargetBranch}
+          remotes:
+            - origin:
+                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/mission-control.git'
