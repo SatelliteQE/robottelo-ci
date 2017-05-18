@@ -11,7 +11,7 @@
                 - '6.3'
                 - '6.2'
                 - '6.1'
-                - 'nightly'
+                - 'downstream-nightly'
         - choice:
             name: DISTRO
             choices:
@@ -20,12 +20,14 @@
         - choice:
             name: ENDPOINT
             choices:
+                - 'base'
                 - 'tier1'
                 - 'tier2'
                 - 'tier3'
                 - 'tier4'
                 - 'rhai'
                 - 'destructive'
+                - 'coverage'
         - choice:
             name: ACTION
             choices:
