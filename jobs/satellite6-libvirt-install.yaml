@@ -11,10 +11,8 @@
             choices:
                 - 'basil'
                 - 'paprika'
-                - 'rosemary'
             description: |
-                Though all the 3 are valid choices, the recommended one to choose is paprika for the below Server ID's, basil is used for
-                robottelo-automation and rosemary is planned for Sat6 HA.
+                The recommended one to choose is paprika for the below Server ID's, basil is used for robottelo-automation.
         - choice:
             name: SERVER_ID
             choices:
