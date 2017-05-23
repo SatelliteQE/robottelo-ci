@@ -17,6 +17,6 @@ function code_coverage () {
     scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:/etc/coverage/coverage.${ENDPOINT}.tar" .
 }
 
-if [[ "${SATELLITE_DISTRIBUTION}" != *"UPSTREAM"* ]]; then
+if [[ "${SATELLITE_DISTRIBUTION}" != *"UPSTREAM"* ]] && [[ "${DISTRO}" != "rhel6" ]]; then
     code_coverage
 fi

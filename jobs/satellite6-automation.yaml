@@ -372,9 +372,14 @@
             mask-password-params: true
     builders:
         - satellite6-automation-builders
-        - trigger-builds:
-            - project: 'report-consolidated-coverage-{satellite_version}-{os}'
-              current-parameters: true
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (rhel7)
+            label: ${{ENV,var="DISTRO"}}
+            steps:
+                - trigger-builds:
+                    - project: 'report-consolidated-coverage-{satellite_version}-{os}'
+                      current-parameters: true
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers

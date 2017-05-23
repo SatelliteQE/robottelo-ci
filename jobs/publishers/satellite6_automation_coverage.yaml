@@ -1,14 +1,20 @@
 - publisher:
     name: satellite6-automation-coverage
     publishers:
-      - cobertura:
-          report-file: "{file_path}"
-          targets:
-              - files:
-                  healthy: 10
-                  unhealthy: 20
-                  failing: 30
-              - method:
-                  healthy: 50
-                  unhealthy: 40
-                  failing: 30
+        - conditional-publisher:
+            - condition-kind: regexp
+              condition-expression: (rhel7)
+              condition-searchtext: ${{ENV,var="DISTRO"}}
+              on-evaluation-failure: dont-run
+              action:
+                  - cobertura:
+                      report-file: "{file_path}"
+                      targets:
+                          - files:
+                              healthy: 10
+                              unhealthy: 20
+                              failing: 30
+                          - method:
+                              healthy: 50
+                              unhealthy: 40
+                              failing: 30
