@@ -1,6 +1,6 @@
 - job:
     disabled: false
-    name: sat6-release-qa
+    name: sat-62-release-qa
     project-type: workflow
     parameters:
       - string:
@@ -9,4 +9,7 @@
       - string:
           name: previousSnapVersion
           description: "Previous snap release version"
-    dsl: !include-raw: workflows/releaseQAWorkflow.groovy
+    dsl: 
+      !include-raw: 
+        - workflows/6.2/releaseQAWorkflow.groovy 
+        - workflows/releaseQAFunctions.groovy
