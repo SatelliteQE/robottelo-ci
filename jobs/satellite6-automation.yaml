@@ -558,6 +558,17 @@
                     - 'satellite6-upgrade-trigger.sh'
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+              predefined-parameters: |
+                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                TOOLS_REPO=${{TOOLS_REPO}}
+                CAPSULE_REPO=${{CAPSULE_REPO}}
+                SUBNET=${{SUBNET}}
+                NETMASK=${{NETMASK}}
+                GATEWAY=${{GATEWAY}}
+                BRIDGE=${{BRIDGE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+                DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
     publishers:
         - archive:
             artifacts: '*.tar.xz,preupgrade,postupgrade'
@@ -615,17 +626,7 @@
             properties-file: properties.txt
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
-              predefined-parameters: |
-                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
-                TOOLS_REPO=${{TOOLS_REPO}}
-                CAPSULE_REPO=${{CAPSULE_REPO}}
-                SUBNET=${{SUBNET}}
-                NETMASK=${{NETMASK}}
-                GATEWAY=${{GATEWAY}}
-                BRIDGE=${{BRIDGE}}
-                BUILD_LABEL=${{BUILD_LABEL}}
-                DISCOVERY_ISO=${{DISCOVERY_ISO}}
-                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+              current-parameters: true
     publishers:
         - satellite6-automation-publishers
 
