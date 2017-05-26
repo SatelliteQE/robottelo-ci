@@ -556,6 +556,8 @@
                     - 'pip-install-pycurl.sh'
                     - 'satellite6-upgrade-source.sh'
                     - 'satellite6-upgrade-trigger.sh'
+        - inject:
+            properties-file: properties.txt
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
               predefined-parameters: |
@@ -620,10 +622,7 @@
             command:
                 !include-raw:
                     - 'pip-install-pycurl.sh'
-                    - 'satellite6-upgrade-source.sh'
                     - 'satellite6-upgrade-existence.sh'
-        - inject:
-            properties-file: properties.txt
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
               current-parameters: true
