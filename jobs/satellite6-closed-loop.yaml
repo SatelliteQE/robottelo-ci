@@ -1,7 +1,8 @@
 - job:
     disabled: false
     name: satellite6-closed-loop
-    concurrent: false 
+    node: sat6-rhel6
+    concurrent: false
     description: |
         <p>Job that runs closed loop process</p>
     scm:
