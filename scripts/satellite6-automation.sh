@@ -8,6 +8,11 @@ sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottel
 sed -i "s/# bz_password=.*/bz_password=${BUGZILLA_PASSWORD}/" robottelo.properties
 sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
 
+# AWS Access Keys Configuration
+
+sed -i "s/# access_key=.*/access_key=${AWS_ACCESSKEY_ID}/" robottelo.properties
+sed -i "s/# secret_key=.*/secret_key=${AWS_ACCESSKEY_SECRET}/" robottelo.properties
+
 # Robottelo Capsule Configuration
 
 sed -i "s/^# \[capsule\].*/[capsule]/" robottelo.properties
