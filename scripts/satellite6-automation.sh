@@ -11,7 +11,7 @@ sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
 # AWS Access Keys Configuration
 
 sed -i "s/# access_key=.*/access_key=${AWS_ACCESSKEY_ID}/" robottelo.properties
-sed -i "s/# secret_key=.*/secret_key=${AWS_ACCESSKEY_SECRET}/" robottelo.properties
+sed -i "s|# secret_key=.*|secret_key=${AWS_ACCESSKEY_SECRET}|" robottelo.properties
 
 # Robottelo Capsule Configuration
 
