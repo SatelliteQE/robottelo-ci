@@ -8,8 +8,11 @@
             name: SATELLITE_DISTRIBUTION
             description: 'Make sure to select the right Satellite Distribution you want to install, otherwise the job can fail.'
         - string:
-            name: TOOLS_REPO
-            description: 'The URL to the latest Satellite Custom tools repo'
+            name: RHEL6_TOOLS_REPO
+            description: 'The URL to the latest Satellite Tools RHEL6 repo'
+        - string:
+            name: RHEL7_TOOLS_REPO
+            description: 'The URL to the latest Satellite Tools RHEL7 repo'
         - string:
             name: CAPSULE_REPO
             description: 'The URL to the latest Satellite Capsule repo'
