@@ -30,7 +30,12 @@
                 Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
                 Leaving this blank picks the latest CAPSULE repo. Override if required.
         - string:
-            name: TOOLS_URL
+            name: RHEL6_TOOLS_URL
+            description: Required when Satellite distribution is INTERNAL and we require latest SatTools Client packages. |
+                Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
+                Leaving this blank picks the latest SATTOOLS repo. Override if required.
+        - string:
+            name: RHEL7_TOOLS_URL
             description: Required when Satellite distribution is INTERNAL and we require latest SatTools Client packages. |
                 Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
                 Leaving this blank picks the latest SATTOOLS repo. Override if required.
@@ -77,7 +82,8 @@
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
                 SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
-                TOOLS_REPO=${{TOOLS_REPO}}
+                TOOLS_URL[6]=${{TOOLS_URL[6]}}
+                TOOLS_URL[7]=${{TOOLS_URL[7]}}
                 CAPSULE_REPO=${{CAPSULE_REPO}}
                 SUBNET=${{SUBNET}}
                 NETMASK=${{NETMASK}}
@@ -783,10 +789,10 @@
             source config/sat6_repos_urls.conf
             echo "RHEL6_SATELLITE_URL=${{RHEL6_SATELLITE_URL:-${{SATELLITE6_RHEL6}}}}" >> properties.txt
             echo "RHEL6_CAPSULE_URL=${{RHEL6_CAPSULE_URL:-${{CAPSULE_RHEL6}}}}" >> properties.txt
-            echo "RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL:-${{TOOLS_RHEL6}}}}" >> properties.txt
+            echo "TOOLS_URL[6]=${{RHEL6_TOOLS_URL:-${{TOOLS_REPO[6]}}}}" >> properties.txt
             echo "RHEL7_SATELLITE_URL=${{RHEL7_SATELLITE_URL:-${{SATELLITE6_RHEL7}}}}" >> properties.txt
             echo "RHEL7_CAPSULE_URL=${{RHEL7_CAPSULE_URL:-${{CAPSULE_RHEL7}}}}" >> properties.txt
-            echo "RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL:-${{TOOLS_RHEL7}}}}" >> properties.txt
+            echo "TOOLS_URL[7]=${{RHEL7_TOOLS_URL:-${{TOOLS_REPO[7]}}}}" >> properties.txt
         - inject:
             properties-file: properties.txt
         - trigger-builds:
@@ -794,7 +800,8 @@
               predefined-parameters: |
                 BASE_URL=${{RHEL6_SATELLITE_URL}}
                 CAPSULE_URL=${{RHEL6_CAPSULE_URL}}
-                TOOLS_URL=${{RHEL6_TOOLS_URL}}
+                TOOLS_URL[6]=${{TOOLS_URL[6]}}
+                TOOLS_URL[7]=${{TOOLS_URL[7]}}
                 SELINUX_MODE=${{SELINUX_MODE}}
                 SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
@@ -808,7 +815,8 @@
               predefined-parameters: |
                 BASE_URL=${{RHEL7_SATELLITE_URL}}
                 CAPSULE_URL=${{RHEL7_CAPSULE_URL}}
-                TOOLS_URL=${{RHEL7_TOOLS_URL}}
+                TOOLS_URL[6]=${{TOOLS_URL[6]}}
+                TOOLS_URL[7]=${{TOOLS_URL[7]}}
                 SELINUX_MODE=${{SELINUX_MODE}}
                 SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
@@ -907,8 +915,8 @@
         - shell: |
             source ${CONFIG_FILES}
             source config/sat6_repos_urls.conf
-            echo "RHEL6_TOOLS_URL=${RHEL6_TOOLS_URL:-${TOOLS_RHEL6}}" >> properties.txt
-            echo "RHEL7_TOOLS_URL=${RHEL7_TOOLS_URL:-${TOOLS_RHEL7}}" >> properties.txt
+            echo "TOOLS_URL[6]=${RHEL6_TOOLS_URL:-${TOOLS_REPO[6]}}" >> properties.txt
+            echo "TOOLS_URL[7]=${RHEL7_TOOLS_URL:-${TOOLS_REPO[7]}}" >> properties.txt
             echo "BUILD_LABEL=Upstream Nightly-$(date +%Y-%m-%d)" >> properties.txt
         - inject:
             properties-file: properties.txt
@@ -919,4 +927,5 @@
                 BUILD_LABEL=${BUILD_LABEL}
                 ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
                 SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}
-                TOOLS_URL=${RHEL7_TOOLS_URL}
+                TOOLS_URL[6]=${TOOLS_URL[6]}
+                TOOLS_URL[7]=${TOOLS_URL[7]}
