@@ -457,6 +457,12 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=coverage
                 DISTRO={os}
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
     builders:
         - shell: rm -f coverage.*.tar
         - copyartifact:
@@ -490,9 +496,11 @@
             nature: shell
             command:
                 !include-raw-escape:
+                    - 'pip-install-pycurl.sh'
                     - 'satellite6-automation-source.sh'
                     - 'satellite6-automation-instances.sh'
                     - 'satellite6-consolidated-coverage-report.sh'
+                    - 'satellite6-configure-sonarqube.sh'
                     - 'satellite6-graceful-shutdown.sh'
     publishers:
         - satellite6-automation-coverage:
