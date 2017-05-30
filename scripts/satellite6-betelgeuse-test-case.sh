@@ -2,6 +2,7 @@
 pip install betelgeuse
 
 betelgeuse test-case \
-    --path tests/foreman \
-    --automation-script-format "https://github.com/SatelliteQE/robottelo/blob/master/{path}#L{line_number}" \
+    --path "${BETELGEUSE_TC_PATH}" \
+    --automation-script-format "https://github.com/SatelliteQE/${BETELGEUSE_AUTOMATION_PROJECT}/blob/master/{path}#L{line_number}" \
     "${POLARION_PROJECT}"
+

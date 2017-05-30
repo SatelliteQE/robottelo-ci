@@ -828,6 +828,8 @@
         - trigger-builds:
             - project: polarion-test-case
         - trigger-builds:
+            - project: polarion-upgrade-test-case
+        - trigger-builds:
             - project: upgrade-to-{satellite_version}-rhel6
               predefined-parameters: |
                 BUILD_LABEL=${{BUILD_LABEL}}
