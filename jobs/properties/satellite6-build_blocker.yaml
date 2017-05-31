@@ -9,3 +9,5 @@
             - "automation-{satellite_version}-tier3-{os}"
             - "automation-{satellite_version}-tier4-{os}"
             - "automation-{satellite_version}-rhai-{os}"
+            - "automation-{satellite_version}-destructive-{os}"
+            - "report-consolidated-coverage-{satellite_version}-{os}"
