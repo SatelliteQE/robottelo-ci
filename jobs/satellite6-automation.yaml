@@ -509,12 +509,14 @@
             recipients: ${{QE_EMAIL_LIST}}
             success: true
             failure: false
-            subject: 'Satellite {satellite_version} Consolidated Coverage Report for {os}'
+            subject: 'Satellite {satellite_version} Consolidated Coverage Report and SonarQube Analysis Report for {os}'
             body: |
                 The build ${{BUILD_URL}} has been completed.
 
                 Please refer the attachment for the consolidated coverage report from,
                 tier1, tier2, tier3, tier4, rhai and destructive jobs.
+
+                The SonarQube Analysis link, ${{SONAR_SERVER_URL}}/dashboard/index/Satellite{satellite_version}_pulp_python_full_analysis
             attachments: coverage/coverage_report.txt
 
 
