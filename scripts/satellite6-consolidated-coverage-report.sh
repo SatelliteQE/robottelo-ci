@@ -1,6 +1,6 @@
 pip install coverage
 
-mkdir -p ${PWD}/coverage ; cd ${PWD}/coverage/
+mkdir -p ${PWD}/coverage ; pushd ${PWD}/coverage/
 for i in tier1 tier2 tier3 tier4 rhai destructive; do
     tar -xvf ../coverage.$i.tar
 done
@@ -37,3 +37,4 @@ ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cd /etc/coverage/ ; c
 
 scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:/etc/coverage/coverage_report.txt" .
 scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:/etc/coverage/coverage.xml" .
+popd
