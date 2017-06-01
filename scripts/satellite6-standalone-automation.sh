@@ -1,11 +1,13 @@
 set -o nounset
 
+source ${CONFIG_FILES}
+source config/sat6_repos_urls.conf
+
 pip install -U -r requirements.txt docker-py pytest-xdist
 
 if [ -n "${ROBOTTELO_PROPERTIES:-}" ]; then
     echo "${ROBOTTELO_PROPERTIES}" > ./robottelo.properties
 else
-    source ${CONFIG_FILES}
     cp config/robottelo.properties ./robottelo.properties
 
     sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
@@ -16,6 +18,9 @@ else
 
     sed -i "s/# bz_password=.*/bz_password=${BUGZILLA_PASSWORD}/" robottelo.properties
     sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
+
+    sed -i "s|sattools_repo.*|sattools_repo=rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
+    sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
 pytest() {
