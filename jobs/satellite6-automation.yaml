@@ -638,6 +638,7 @@
             command:
                 !include-raw:
                     - 'pip-install-pycurl.sh'
+                    - 'satellite6-upgrade-source.sh'
                     - 'satellite6-upgrade-existence.sh'
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
