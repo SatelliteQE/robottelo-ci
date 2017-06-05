@@ -308,7 +308,7 @@ satellite compute-resource create --name "${COMPUTE_RESOURCE_NAME_LIBVIRT}" --pr
 satellite compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --uuid "${RHEV_DATACENTER_UUID}"
 
 # Create OpenStack CR
-satellite compute-resource create --name openstack_provider --provider Openstack --url "${OS_URL}" --location-ids ${LOC} --organization-ids ${ORG} --user "${OS_USERNAME}" --password "${OS_PASSWORD}"
+satellite compute-resource create --name openstack_provider --provider Openstack --url "${OS_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --user "${OS_USERNAME}" --password "${OS_PASSWORD}"
 
 # Associations
 
