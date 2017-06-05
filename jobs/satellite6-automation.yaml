@@ -806,21 +806,26 @@
             echo "RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL:-${{TOOLS_RHEL7}}}}" >> properties.txt
         - inject:
             properties-file: properties.txt
-        - trigger-builds:
-            - project: provisioning-{satellite_version}-rhel6
-              predefined-parameters: |
-                BASE_URL=${{RHEL6_SATELLITE_URL}}
-                CAPSULE_URL=${{RHEL6_CAPSULE_URL}}
-                RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL}}
-                RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL}}
-                SELINUX_MODE=${{SELINUX_MODE}}
-                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
-                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
-                PROXY_MODE=${{PROXY_MODE}}
-                BUILD_LABEL=${{BUILD_LABEL}}
-                EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
-                IDM_REALM=${{IDM_REALM}}
-                IMAGE=${{RHEL6_IMAGE}}
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[12])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: provisioning-{satellite_version}-rhel6
+                      predefined-parameters: |
+                        BASE_URL=${{RHEL6_SATELLITE_URL}}
+                        CAPSULE_URL=${{RHEL6_CAPSULE_URL}}
+                        RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL}}
+                        RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL}}
+                        SELINUX_MODE=${{SELINUX_MODE}}
+                        SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                        ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                        PROXY_MODE=${{PROXY_MODE}}
+                        BUILD_LABEL=${{BUILD_LABEL}}
+                        EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
+                        IDM_REALM=${{IDM_REALM}}
+                        IMAGE=${{RHEL6_IMAGE}}
         - trigger-builds:
             - project: provisioning-{satellite_version}-rhel7
               predefined-parameters: |
@@ -868,6 +873,13 @@
     os:
         - 'rhel6'
         - 'rhel7'
+    exclude:
+        - satellite_version: '6.3'
+          os: 'rhel6'
+        - satellite_version: 'upstream-nightly'
+          os: 'rhel6'
+        - satellite_version: 'downstream-nightly'
+          os: 'rhel6'
     jobs:
         - 'provisioning-{satellite_version}-{os}'
         - 'automation-{satellite_version}-tier1-{os}'
