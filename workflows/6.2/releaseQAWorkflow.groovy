@@ -105,28 +105,28 @@ node('rhel') {
     compareContentViews {
       organization = 'Sat6-CI'
       content_view = 'Satellite 6.2 RHEL7'
-      from_lifecycle_environment = 'Test'
+      from_lifecycle_environment = 'Library'
       to_lifecycle_environment = 'QA'
     }
 
     promoteContentView {
       organization = 'Sat6-CI'
       content_view = 'Satellite 6.2 RHEL7'
-      from_lifecycle_environment = 'Test'
+      from_lifecycle_environment = 'Library'
       to_lifecycle_environment = 'QA'
     }
 
     compareContentViews {
       organization = 'Sat6-CI'
       content_view = 'Satellite 6.2 RHEL6'
-      from_lifecycle_environment = 'Test'
+      from_lifecycle_environment = 'Library'
       to_lifecycle_environment = 'QA'
     }
 
     promoteContentView {
       organization = 'Sat6-CI'
       content_view = 'Satellite 6.2 RHEL6'
-      from_lifecycle_environment = 'Test'
+      from_lifecycle_environment = 'Library'
       to_lifecycle_environment = 'QA'
     }
 
@@ -138,28 +138,28 @@ node('rhel') {
     compareContentViews {
       organization = 'Sat6-CI'
       content_view = 'Capsule 6.2 RHEL7'
-      from_lifecycle_environment = 'Test'
+      from_lifecycle_environment = 'Library'
       to_lifecycle_environment = 'QA'
     }
 
     promoteContentView {
       organization = 'Sat6-CI'
       content_view = 'Capsule 6.2 RHEL7'
-      from_lifecycle_environment = 'Test'
+      from_lifecycle_environment = 'Library'
       to_lifecycle_environment = 'QA'
     }
 
     compareContentViews {
       organization = 'Sat6-CI'
       content_view = 'Capsule 6.2 RHEL6'
-      from_lifecycle_environment = 'Test'
+      from_lifecycle_environment = 'Library'
       to_lifecycle_environment = 'QA'
     }
 
     promoteContentView {
       organization = 'Sat6-CI'
       content_view = 'Capsule 6.2 RHEL6'
-      from_lifecycle_environment = 'Test'
+      from_lifecycle_environment = 'Library'
       to_lifecycle_environment = 'QA'
     }
 
