@@ -1,0 +1,4 @@
+- builder:
+    name: clone_gitlab_pulp
+    builders:
+      - shell: !include-raw: scripts/clone_pulp.sh

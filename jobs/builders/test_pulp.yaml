@@ -1,0 +1,4 @@
+- builder:
+    name: test_pulp
+    builders:
+      - shell: !include-raw: scripts/test_pulp.sh
