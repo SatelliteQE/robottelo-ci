@@ -36,7 +36,7 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         INSTANCE_NAME="${SAT_INSTANCE_FQDN}"
     fi
     # Clone the 'satellite-clone' w/ tag 1.0.1 that includes the ansible playbook to install sat server along with customer DB.
-    git clone -b 1.1.0 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
+    git clone -b 1.1.1 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
     pushd satellite-clone
     # Copy the satellite-clone-vars.sample.yml to satellite-clone-vars.yml
     cp -a satellite-clone-vars.sample.yml satellite-clone-vars.yml
@@ -69,7 +69,7 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     # Set the flag true in case of migrating the rhel6 satellite server to rhel7 machine
     if [ ${RHEL_MIGRATION} = "true" ]; then
         sed -i -e "s/^#rhel_migration.*/rhel_migration: "${RHEL_MIGRATION}"/" satellite-clone-vars.yml
-        ssh -o "StrictHostKeyChecking no" root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.dump' "${DB_URL}""
+        ssh -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.dump' "${DB_URL}""
         sed -i -e "s/^rhelversion.*/rhelversion: 7/" satellite-clone-vars.yml
     fi
     # Configuration updates in tasks file wrt vars file
@@ -80,9 +80,9 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     # Download the Customer DB data Backup files
     echo "Downloading Customer Data DB's from Server, This may take while depending on the network ....."
     if [ "${CUSTOMERDB_NAME}" = 'Walmart' ]; then
-        ssh -o "StrictHostKeyChecking no" root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q /var/tmp/backup --include customer-databases/walmart/sat62_apr11_working_from_beav/ -nH --cut-dirs=3 -r --no-parent --reject="index.html*" --continue "${DB_URL}"" 
+        ssh -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q /var/tmp/backup --include customer-databases/walmart/sat62_apr11_working_from_beav/ -nH --cut-dirs=3 -r --no-parent --reject="index.html*" --continue "${DB_URL}"" 
     else
-        ssh -o "StrictHostKeyChecking no" root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar.gz' "${DB_URL}"" 
+        ssh -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar.gz' "${DB_URL}"" 
     fi
     # Run Ansible command to install satellite with cust DB
     export ANSIBLE_HOST_KEY_CHECKING=False
