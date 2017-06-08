@@ -1,0 +1,12 @@
+- job:
+    disabled: false
+    name: 'sat-release-foreman-bootdisk'
+    project-type: workflow
+    parameters:
+      - release_branch
+    dsl:
+      !include-raw:
+          - ./repos/foreman_bootdisk_repo.groovy
+          - ./source_types/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/runPlaybook.groovy

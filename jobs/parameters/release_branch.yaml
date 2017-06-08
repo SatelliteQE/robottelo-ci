@@ -1,0 +1,6 @@
+- parameter:
+    name: release_branch
+    parameters:
+      - string:
+          name: releaseBranch
+          description: "The branch to release a new version of"

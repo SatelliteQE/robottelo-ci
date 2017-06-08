@@ -1,0 +1,12 @@
+- job:
+    disabled: false
+    name: 'sat-release-hammer-cli-foreman-docker'
+    project-type: workflow
+    parameters:
+      - release_branch
+    dsl:
+      !include-raw:
+          - ./repos/hammer_cli_foreman_docker_repo.groovy
+          - ./source_types/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/runPlaybook.groovy

@@ -1,0 +1,13 @@
+- job:
+    disabled: false
+    name: 'sat-release-foreman-selinux'
+    project-type: workflow
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - ./repos/foreman_selinux_repo.groovy
+          - ./source_types/sourceTypeRake.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/runPlaybook.groovy

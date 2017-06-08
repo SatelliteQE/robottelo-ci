@@ -1,0 +1,13 @@
+- job:
+    disabled: false
+    name: 'sat-release-smart-proxy-remote-execution-ssh'
+    project-type: workflow
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - ./repos/smart_proxy_remote_execution_ssh_repo.groovy
+          - ./source_types/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/runPlaybook.groovy

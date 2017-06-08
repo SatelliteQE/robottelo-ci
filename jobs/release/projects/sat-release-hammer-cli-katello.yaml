@@ -1,0 +1,13 @@
+- job:
+    disabled: false
+    name: 'sat-release-hammer-cli-katello'
+    project-type: workflow
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - ./repos/hammer_cli_katello_repo.groovy
+          - ./source_types/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/runPlaybook.groovy
