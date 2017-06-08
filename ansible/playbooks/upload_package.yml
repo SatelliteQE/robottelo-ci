@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  tasks:
+    - name: "Upload file"
+      katello_upload:
+        username: "{{ username }}"
+        password: "{{ password }}"
+        server_url: "{{ server }}"
+        file: "{{ file }}"
+        repository: "{{ repo }}"
+        product: "{{ product }}"
+        organization: "{{ organization }}"

@@ -1,0 +1,13 @@
+- job:
+    disabled: false
+    name: 'sat-release-foreman-remote-execution'
+    project-type: workflow
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - ./repos/foreman_remote_execution_repo.groovy
+          - ./source_types/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/runPlaybook.groovy

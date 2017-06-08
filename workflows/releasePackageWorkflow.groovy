@@ -1,16 +1,28 @@
 import groovy.json.JsonSlurper
 
+def branch_map = [
+    'SATELLITE-6.2.0': [
+        'repo': 'Satellite 6.2 Source Files',
+        'version': '6.2.0'
+    ],
+    'SATELLITE-6.3.0': [
+        'repo': 'Satellite 6.3 Source Files',
+        'version': '6.3.0'
+    ]
+]
+def release_branch = env.releaseBranch
+def version_map = branch_map[release_branch]
+
 node('rhel') {
 
-    stage("Identify Bugs") {
+    stage("Setup Environment") {
 
         def repoName = gitRepository.split('/')[1]
-        def releaseTag = ''
 
         dir(repoName) {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
-                git url: "https://${env.USERNAME}:${env.PASSWORD}@${env.GIT_HOSTNAME}/${gitRepository}.git", branch: releaseBranch
+                git url: "https://${env.USERNAME}:${env.PASSWORD}@${env.GIT_HOSTNAME}/${gitRepository}.git", branch: release_branch
 
             }
         }
@@ -19,6 +31,23 @@ node('rhel') {
             git url: "https://${env.GIT_HOSTNAME}/satellite6/tool_belt.git", branch: 'master'
             sh 'bundle install'
         }
+
+        git url: 'https://github.com/SatelliteQE/robottelo-ci', branch: 'master'
+
+        dir('ansible') {
+            dir('sat-infra') {
+                git url: "https://${env.GIT_HOSTNAME}/satellite6/sat-infra.git"
+            }
+
+            dir('satellite-build') {
+                git url: "https://${env.GIT_HOSTNAME}/satellite6/satellite-build.git"
+            }
+        }
+    }
+
+    stage("Identify Bugs") {
+
+        def releaseTag = ''
 
         dir(repoName) {
             sh "../tool_belt/tools.rb release find-bz-ids --output-file bz_ids.json"
@@ -43,7 +72,7 @@ node('rhel') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    sh "../tool_belt/tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids} --flags ../tool_belt/configs/search_flags/6.2.z.yaml"
+                    sh "../tool_belt/tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
 
                 }
             }
@@ -83,7 +112,7 @@ node('rhel') {
                 archive "version.json"
                 releaseTag = readFile 'version.json'
 
-                sh "git push origin ${releaseBranch}"
+                sh "git push origin ${release_branch}"
                 sh "git push origin ${releaseTag}"
             }
 
@@ -93,17 +122,28 @@ node('rhel') {
 
     stage("Build Source") {
 
+        def artifact = ''
+        def artifact_path = ''
+
         dir(repoName) {
-
-            def artifact = ''
-
             sh "../tool_belt/tools.rb release build-source --type ${sourceType} --output-file artifact"
             artifact = readFile 'artifact'
 
-            sh "scp ${artifact} jenkins@${env.SOURCE_FILE_HOST}:/var/www/html/pub/sources/6.2"
-            sh "rm artifact"
-
+            artifact = readFile('artifact').replace('"', '')
+            artifact_path = sh(returnStdout: true, script: 'pwd').trim()
+            artifact_path = artifact_path + '/' + artifact
         }
+        runPlaybook {
+            playbook = 'playbooks/upload_package.yml'
+            extraVars = [
+                'file': artifact_path,
+                'repo': version_map['repo'],
+                'product': 'Source Files',
+                'organization': 'Sat6-CI'
+            ]
+        }
+
+        sh "rm ${artifact_path}"
     }
 
 }

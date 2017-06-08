@@ -1,0 +1,13 @@
+- job:
+    disabled: false
+    name: 'sat-release-katello-installer'
+    project-type: workflow
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - ./repos/katello_installer_repo.groovy
+          - ./source_types/sourceTypeRake.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/runPlaybook.groovy
