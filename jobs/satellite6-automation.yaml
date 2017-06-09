@@ -845,16 +845,21 @@
             - project: polarion-test-case
         - trigger-builds:
             - project: polarion-upgrade-test-case
-        - trigger-builds:
-            - project: upgrade-to-{satellite_version}-rhel6
-              predefined-parameters: |
-                BUILD_LABEL=${{BUILD_LABEL}}
-                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
-        - trigger-builds:
-            - project: upgrade-to-{satellite_version}-rhel7
-              predefined-parameters: |
-                BUILD_LABEL=${{BUILD_LABEL}}
-                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[23])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: upgrade-to-{satellite_version}-rhel6
+                      predefined-parameters: |
+                        BUILD_LABEL=${{BUILD_LABEL}}
+                        ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                - trigger-builds:
+                    - project: upgrade-to-{satellite_version}-rhel7
+                      predefined-parameters: |
+                        BUILD_LABEL=${{BUILD_LABEL}}
+                        ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
 
 #==============================================================================
 # Project
@@ -891,6 +896,23 @@
         - 'polarion-test-run-{satellite_version}-{os}'
         - 'report-automation-results-{satellite_version}-{os}'
         - 'report-consolidated-coverage-{satellite_version}-{os}'
+
+
+# Let's have a separate project for Upgrade Jobs.
+- project:
+    name: satellite6-upgrade
+    scm-branch: origin/master
+    satellite_version:
+        - '6.2':
+            scm-branch: origin/6.2.z
+        - '6.3'
+    os:
+        - 'rhel6'
+        - 'rhel7'
+    exclude:
+        - satellite_version: '6.3'
+          os: 'rhel6'
+    jobs:
         - 'upgrade-to-{satellite_version}-{os}'
         - 'automation-upgraded-{satellite_version}-existence-tests-{os}'
         - 'automation-upgraded-{satellite_version}-tier1-{os}'
