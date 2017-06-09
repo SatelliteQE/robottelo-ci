@@ -847,7 +847,7 @@
             - project: polarion-upgrade-test-case
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[23])
+            regex: (6\.2)
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -855,6 +855,11 @@
                       predefined-parameters: |
                         BUILD_LABEL=${{BUILD_LABEL}}
                         ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[23])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
                 - trigger-builds:
                     - project: upgrade-to-{satellite_version}-rhel7
                       predefined-parameters: |
