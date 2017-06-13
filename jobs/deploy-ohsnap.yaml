@@ -1,8 +1,8 @@
 - job:
     disabled: false
-    name: deploy-mission-control
+    name: deploy-ohsnap
     project-type: workflow
     auth-token: ""
     dsl:
       !include-raw:
-          - workflows/deployMissionControl.groovy
+          - workflows/deployOhsnap.groovy
