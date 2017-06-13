@@ -56,9 +56,9 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
 fi
 
 if [[ "${SATELLITE_VERSION}" != "6.1" ]]; then
-    TEST_TYPE="api,cli,ui,longrun,sys,installer"
+    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
 else
-    TEST_TYPE="api,cli,ui,longrun"
+    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun})"
 fi
 
 if [ "${ENDPOINT}" != "rhai" ]; then
@@ -66,12 +66,12 @@ if [ "${ENDPOINT}" != "rhai" ]; then
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
-        tests/foreman/{"${TEST_TYPE}"}
+        ${TEST_TYPE}
 
     # Run sequential tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
-        tests/foreman/{"${TEST_TYPE}"}
+        ${TEST_TYPE}
     set -e
 else
     make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=${ROBOTTELO_WORKERS}
