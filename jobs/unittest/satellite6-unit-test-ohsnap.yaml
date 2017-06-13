@@ -1,5 +1,5 @@
 - job:
-    name: satellite6-unit-test-mission-control
+    name: satellite6-unit-test-ohsnap
     node: rhel
     project-type: matrix
     logrotate:
@@ -10,7 +10,7 @@
     parameters:
       - merge_request
     scm:
-      - mission-control_gitlab
+      - ohsnap_gitlab
     axes:
       - axis:
           type: user-defined
@@ -27,7 +27,7 @@
       - gitlab_build_on_change
     builders:
       - merge_request
-      - test_mission-control
+      - test_ohsnap
     publishers:
       - gemset_cleanup
       - cobertura:

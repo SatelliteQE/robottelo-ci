@@ -1,4 +1,0 @@
-- builder:
-    name: test_mission-control
-    builders:
-        - shell: !include-raw: scripts/test_mission-control.sh

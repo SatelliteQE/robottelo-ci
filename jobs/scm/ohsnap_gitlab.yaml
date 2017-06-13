@@ -1,5 +1,5 @@
 - scm:
-    name: mission-control_gitlab
+    name: ohsnap_gitlab
     scm:
       - git:
           wipe-workspace: true
@@ -8,4 +8,4 @@
             - ${gitlabTargetBranch}
           remotes:
             - origin:
-                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/mission-control.git'
+                url: 'https://$GIT_HOSTNAME/$GIT_ORGANIZATION/ohsnap.git'
