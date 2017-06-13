@@ -69,19 +69,19 @@
         - copyartifact:
             project: automation-{satellite_version}-tier1-{os}
             filter: '*-results.xml'
-            which-build: last-completed
+            which-build: upstream-build
         - copyartifact:
             project: automation-{satellite_version}-tier2-{os}
             filter: '*-results.xml'
-            which-build: last-completed
+            which-build: upstream-build
         - copyartifact:
             project: automation-{satellite_version}-tier3-{os}
             filter: '*-results.xml'
-            which-build: last-completed
+            which-build: upstream-build
         - copyartifact:
             project: automation-{satellite_version}-tier4-{os}
             filter: '*-results.xml'
-            which-build: last-completed
+            which-build: upstream-build
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse
