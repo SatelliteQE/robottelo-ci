@@ -270,9 +270,14 @@
             mask-password-params: true
     builders:
         - satellite6-automation-builders
-        - trigger-builds:
-            - project: 'automation-{satellite_version}-destructive-{os}'
-              current-parameters: true
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[23])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'automation-{satellite_version}-destructive-{os}'
+                      current-parameters: true
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-archiver
@@ -379,9 +384,14 @@
     builders:
         - satellite6-automation-builders
         - conditional-step:
-            condition-kind: regex-match
-            regex: (rhel7)
-            label: ${{ENV,var="DISTRO"}}
+            condition-kind: and
+            condition-operands:
+                - condition-kind: regex-match
+                  regex: (rhel7)
+                  label: ${{ENV,var="DISTRO"}}
+                - condition-kind: regex-match
+                  regex: (6\.[23])
+                  label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
                     - project: 'report-consolidated-coverage-{satellite_version}-{os}'
