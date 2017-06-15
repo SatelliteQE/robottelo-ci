@@ -586,6 +586,7 @@
             properties-file: properties.txt
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+              current-parameters: true
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
                 TOOLS_REPO=${{TOOLS_REPO}}
