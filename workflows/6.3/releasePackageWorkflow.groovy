@@ -1,14 +1,14 @@
 import groovy.json.JsonSlurper
 
 node('rhel') {
-    stage "Identify Bugs"
+    stage("Identify Bugs") {
 
         def repoName = gitRepository.split('/')[1]
         def releaseTag = ''
 
         dir(repoName) {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
-            
+
                 git url: "https://${env.USERNAME}:${env.PASSWORD}@${env.GIT_HOSTNAME}/${gitRepository}.git", branch: releaseBranch
 
             }
@@ -23,10 +23,11 @@ node('rhel') {
             sh "../tool_belt/tools.rb release find-bz-ids --output-file bz_ids.json"
             archive 'bz_ids.json'
         }
+    }
 
 
-    stage "Move Bugs to Modified"
-    
+    stage("Move Bugs to Modified") {
+
         dir(repoName) {
             def ids = []
             def bzs = readFile 'bz_ids.json'
@@ -38,16 +39,17 @@ node('rhel') {
 
             if (ids.size() > 0) {
                 ids = ids.join(' --bug ')
-  
+
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
-    
+
                     sh "../tool_belt/tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids}"
-  
+
                 }
             }
         }
+    }
 
-    stage "Set External Tracker for Commit"
+    stage("Set External Tracker for Commit") {
 
         dir(repoName) {
             def commits = readFile 'bz_ids.json'
@@ -59,16 +61,17 @@ node('rhel') {
                 def id = commit['id'].toString()
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
-    
+
                     sh "../tool_belt/tools.rb bugzilla set-gitlab-tracker --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --external-tracker \"${hash}\" --bug ${id}"
-  
+
                 }
             }
         }
+    }
 
 
-    stage "Bump Version"
-            
+    stage("Bump Version") {
+
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
             dir(repoName) {
@@ -84,13 +87,14 @@ node('rhel') {
             }
 
         }
+    }
 
 
-    stage "Build Source"
+    stage("Build Source") {
 
         dir(repoName) {
 
-            def artifact = ''            
+            def artifact = ''
 
             sh "../tool_belt/tools.rb release build-source --type ${sourceType} --output-file artifact"
             artifact = readFile 'artifact'
@@ -109,5 +113,6 @@ node('rhel') {
                 sh "${cmd.join(' ')}"
             }
         }
+    }
 
 }
