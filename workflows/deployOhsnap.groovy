@@ -1,6 +1,6 @@
 node('sat6-rhel7') {
 
-    stage "Push to Openshift" {
+    stage("Push to Openshift") {
 
         git url: "https://${env.GIT_HOSTNAME}/satellite6/ohsnap.git"
 

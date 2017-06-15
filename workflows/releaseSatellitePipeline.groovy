@@ -1,6 +1,6 @@
 node('sat6-rhel7') {
 
-    stage "Setup Workspace" {
+    stage("Setup Workspace") {
 
         git url: 'https://github.com/SatelliteQE/robottelo-ci'
 
@@ -16,7 +16,7 @@ node('sat6-rhel7') {
 
     }
 
-    stage "Generate Composes" {
+    stage("Generate Composes") {
 
         def git_hostname = env.GIT_HOSTNAME
 
@@ -38,7 +38,7 @@ node('sat6-rhel7') {
 
     }
 
-    stage "Test Installation" {
+    stage("Test Installation") {
 
         runOnLibvirtHost "cd sat-deploy && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
         runOnLibvirtHost "cd sat-deploy/forklift && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
@@ -65,7 +65,7 @@ node('sat6-rhel7') {
     }
 
 
-    stage "Sync Repositories" {
+    stage("Sync Repositories") {
 
         runPlaybookInParallel {
             name = "sync"
@@ -76,7 +76,7 @@ node('sat6-rhel7') {
 
     }
 
-    stage "Publish Content Views" {
+    stage("Publish Content Views") {
 
         runPlaybookInParallel {
             name = "publish"
