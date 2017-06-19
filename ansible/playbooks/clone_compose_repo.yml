@@ -1,0 +1,10 @@
+---
+- hosts: compose
+  become: true
+  become_user: jenkins
+  tasks:
+    - name: 'Clone compose repository'
+      git:
+        repo: "{{ compose_git_repo }}"
+        dest: "/home/jenkins/compose_repo"
+        update: yes

@@ -1,0 +1,36 @@
+---
+- hosts: compose
+  become: true
+  become_user: jenkins
+  vars:
+    compose_conf_dir: "/home/jenkins/compose_repo"
+    compose_output_dir: "/home/jenkins/composes"
+  tasks:
+    - debug:
+        msg: "Generating compose for RHEL{{ rhel_version }}"
+
+    - name: 'Find compose symlink'
+      command: "readlink -f {{ compose_output_dir }}/latest-{{ compose_label }}-RHEL-{{ rhel_version }}/"
+      register: compose_link
+
+    - name: 'Remove old compose'
+      file:
+        state: absent
+        path: "{{ compose_link.stdout }}"
+
+    - name: 'Generate compose'
+      command: "pungi-koji --no-label --config={{ compose_conf_dir }}/pungi/satellite-6/{{ compose_version }}/{{ compose_name }}-candidate.conf --target-dir={{ compose_output_dir }} --skip-phase=createiso --skip-phase=liveimages"
+
+    - name: 'Find repos to cleanup'
+      find:
+        file_type: directory
+        patterns: "repo-*"
+        paths: "."
+      register: repos
+
+    - name: 'Cleanup repos'
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ repos.files }}"
+
