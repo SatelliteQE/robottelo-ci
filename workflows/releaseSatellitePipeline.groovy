@@ -2,17 +2,7 @@ node('sat6-rhel7') {
 
     stage("Setup Workspace") {
 
-        git url: 'https://github.com/SatelliteQE/robottelo-ci'
-
-        dir('ansible') {
-            dir('sat-infra') {
-                git url: "https://${env.GIT_HOSTNAME}/satellite6/sat-infra.git"
-            }
-
-            dir('satellite-build') {
-                git url: "https://${env.GIT_HOSTNAME}/satellite6/satellite-build.git"
-            }
-        }
+        setupAnsibleEnvironment()
 
     }
 
