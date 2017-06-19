@@ -32,17 +32,7 @@ node('rhel') {
             sh 'bundle install'
         }
 
-        git url: 'https://github.com/SatelliteQE/robottelo-ci', branch: 'master'
-
-        dir('ansible') {
-            dir('sat-infra') {
-                git url: "https://${env.GIT_HOSTNAME}/satellite6/sat-infra.git"
-            }
-
-            dir('satellite-build') {
-                git url: "https://${env.GIT_HOSTNAME}/satellite6/satellite-build.git"
-            }
-        }
+        setupAnsibleEnvironment()
     }
 
     stage("Identify Bugs") {

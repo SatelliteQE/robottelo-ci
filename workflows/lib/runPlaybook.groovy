@@ -1,3 +1,19 @@
+def setupAnsibleEnvironment {
+
+    git url: 'https://github.com/SatelliteQE/robottelo-ci', branch: 'master'
+
+    dir('ansible') {
+        dir('sat-infra') {
+            git url: "https://${env.GIT_HOSTNAME}/satellite6/sat-infra.git"
+        }
+
+        dir('foreman-ansible-modules') {
+            git url: "https://github.com/theforeman/foreman-ansible-modules.git"
+        }
+    }
+
+}
+
 def runPlaybookInParallel(body) {
 
     def config = [:]
