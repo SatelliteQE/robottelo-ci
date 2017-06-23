@@ -9,7 +9,7 @@
       - string:
           name: previousSnapVersion
           description: "Previous snap release version"
-    dsl: 
-      !include-raw: 
-        - workflows/6.2/releaseQAWorkflow.groovy 
-        - workflows/releaseQAFunctions.groovy
+    dsl:
+      !include-raw:
+        - workflows/6.2/releaseQAWorkflow.groovy
+        - workflows/lib/releaseQAFunctions.groovy

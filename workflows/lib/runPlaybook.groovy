@@ -1,6 +1,16 @@
-def setupAnsibleEnvironment {
+def setupAnsibleEnvironment(body) {
 
-    git url: 'https://github.com/SatelliteQE/robottelo-ci', branch: 'master'
+    def config = [:]
+    body = body ?: [:]
+
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
+
+    def robottelo_remote = config.robottelo_remote ?: 'SatelliteQE'
+    def robottelo_branch = config.robottelo_branch ?: 'master'
+
+    git url: "https://github.com/${robottelo_remote}/robottelo-ci", branch: robottelo_branch
 
     dir('ansible') {
         dir('sat-infra') {
@@ -23,6 +33,7 @@ def runPlaybookInParallel(body) {
 
     def branches = [:]
     def name = config.name ?: "split"
+    def extra_vars = config.extraVars ?: [:]
 
     for (int i = 0; i < config.items.size(); i++) {
         def index = i // fresh variable per iteration; i will be mutated
@@ -30,7 +41,7 @@ def runPlaybookInParallel(body) {
 
             runPlaybook {
                 playbook = config.playbook
-                extraVars = [(config.item_name): config.items.get(index)]
+                extraVars = extra_vars + [(config.item_name): config.items.get(index)]
             }
 
         }

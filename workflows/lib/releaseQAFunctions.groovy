@@ -8,7 +8,7 @@ def promoteContentView(body) {
     body()
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
-        
+
         def cmd = [
           "/bin/bash --login -c",
           "'rvm system && ",
@@ -48,7 +48,7 @@ def findContentView(body) {
     body()
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
-        
+
         def cmd = [
           "/bin/bash --login -c",
           "'rvm system && ",
@@ -60,7 +60,7 @@ def findContentView(body) {
         ]
 
         sh "${cmd.join(' ')} > versions.json"
-        
+
         def versions = readFile "versions.json"
         versions = new JsonSlurper().parseText(versions)
 
@@ -96,7 +96,6 @@ def computePackageDifference(body) {
             "--output ${archive_file}'"
         ]
 
-
         sh "${cmd.join(' ')}"
         archive archive_file
 
@@ -127,7 +126,7 @@ def createLifecycleEnvironment(body) {
         ]
 
         sh "${cmd.join(' ')}"
-    }       
+    }
 }
 
 def compareContentViews(body) {
@@ -148,11 +147,11 @@ def compareContentViews(body) {
       content_view = config.content_view
       lifecycle_environment = config.to_lifecycle_environment
     }
- 
+
     echo versionInTest.toString()
     echo versionInQA.toString()
-   
-    if (versionInTest != versionInQA && versionInTest != null && versionInQA != null) {
+
+    if (versionInTest != versionInQA && versionInTest != null) {
 
         computePackageDifference {
           organization = config.organization
