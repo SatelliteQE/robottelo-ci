@@ -1,0 +1,21 @@
+- wrapper:
+    name: satellite6-sauce-ondemand-wrappers
+    wrappers:
+        - raw:
+            xml: |
+                <hudson.plugins.sauce__ondemand.SauceOnDemandBuildWrapper>
+                  <useGeneratedTunnelIdentifier>true</useGeneratedTunnelIdentifier>
+                  <nativeAppPackage></nativeAppPackage>
+                  <useChromeForAndroid>false</useChromeForAndroid>
+                  <sauceConnectPath></sauceConnectPath>
+                  <enableSauceConnect>true</enableSauceConnect>
+                  <seleniumHost></seleniumHost>
+                  <seleniumPort></seleniumPort>
+                  <webDriverBrowsers/>
+                  <appiumBrowsers/>
+                  <useLatestVersion>false</useLatestVersion>
+                  <launchSauceConnectOnSlave>true</launchSauceConnectOnSlave>
+                  <verboseLogging>false</verboseLogging>
+                  <condition class="org.jenkins_ci.plugins.run_condition.core.AlwaysRun"/>
+                  <credentialId>e20b4b28-acfd-44e2-811d-5c43902593a7</credentialId>
+                </hudson.plugins.sauce__ondemand.SauceOnDemandBuildWrapper>
