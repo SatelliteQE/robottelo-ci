@@ -48,3 +48,19 @@
             default: false
             description: |
                 Install Satellite with Puppet v4 (for Satellite 6.3+ only).
+        - bool:
+            name: SAUCE_PLATFORM
+            choices:
+                - 'no_sauce'
+                - 'macOS 10.12'
+                - 'Windows 10'
+            description: |
+                'Specify the Sauce Platform to run against, along with Sauce Browser.'
+        - bool:
+            name: SAUCE_BROWSER
+            choices:
+                - 'firefox'
+                - 'chrome'
+                - 'edge'
+                - 'internet explorer'
+            description: 'Specify the Sauce Browser to use along with Sauce Platform.'

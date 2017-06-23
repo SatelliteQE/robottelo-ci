@@ -93,6 +93,8 @@
                 DISCOVERY_ISO=${{DISCOVERY_ISO}}
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
                 IMAGE=${{IMAGE}}
+                SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-archiver
@@ -127,6 +129,7 @@
         - inject-passwords:
             global: true
             mask-password-params: true
+        - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
         - trigger-builds:
@@ -184,6 +187,7 @@
         - inject-passwords:
             global: true
             mask-password-params: true
+        - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
         - trigger-builds:
@@ -226,6 +230,7 @@
         - inject-passwords:
             global: true
             mask-password-params: true
+        - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
         - trigger-builds:
@@ -268,6 +273,7 @@
         - inject-passwords:
             global: true
             mask-password-params: true
+        - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
         - conditional-step:
@@ -326,6 +332,7 @@
         - inject-passwords:
             global: true
             mask-password-params: true
+        - satellite6-sauce-ondemand-wrappers
     builders:
         - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
         - inject:
@@ -381,6 +388,7 @@
         - inject-passwords:
             global: true
             mask-password-params: true
+        - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
         - conditional-step:
@@ -684,6 +692,7 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier1
                 OS={os}
+        - satellite6-sauce-ondemand-wrappers
     builders:
         - shining-panda:
            build-environment: virtualenv
@@ -730,6 +739,7 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier2
                 OS={os}
+        - satellite6-sauce-ondemand-wrappers
     builders:
         - shining-panda:
            build-environment: virtualenv
@@ -837,6 +847,8 @@
                         EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
                         IDM_REALM=${{IDM_REALM}}
                         IMAGE=${{RHEL6_IMAGE}}
+                        SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                        SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
         - trigger-builds:
             - project: provisioning-{satellite_version}-rhel7
               predefined-parameters: |
@@ -852,6 +864,8 @@
                 EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
                 IDM_REALM=${{IDM_REALM}}
                 IMAGE=${{RHEL7_IMAGE}}
+                SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
         - trigger-builds:
             - project: polarion-test-case
         - trigger-builds:

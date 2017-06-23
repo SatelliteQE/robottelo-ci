@@ -5,6 +5,25 @@ cp config/robottelo.properties ./robottelo.properties
 sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
 sed -i "s|# screenshots_path=.*|screenshots_path=$(pwd)/screenshots|" robottelo.properties
 sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottelo.properties
+
+# Sauce Labs Configuration
+
+if [[ "${SAUCE_PLATFORM}" != "no_sauce" ]]; then
+    echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"
+    sed -i "s/^browser.*/browser=saucelabs/" robottelo.properties
+    sed -i "s/^# saucelabs_user=.*/saucelabs_user=${SAUCELABS_USER}/" robottelo.properties
+    sed -i "s/^# saucelabs_key=.*/saucelabs_key=${SAUCELABS_KEY}/" robottelo.properties
+    sed -i "s/^# webdriver=.*/webdriver=${SAUCE_BROWSER}/" robottelo.properties
+    if [[ "${SAUCE_BROWSER}" == "firefox" ]]; then
+        BROWSER_VERSION=45.0
+    elif [[ "${SAUCE_BROWSER}" == "edge" ]]; then
+        BROWSER_VERSION=14.14393
+    fi
+    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},seleniumVersion=2.48.0,build=${BUILD_NAME},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER}/" robottelo.properties
+fi
+
+# Bugzilla Login Details
+
 sed -i "s/# bz_password=.*/bz_password=${BUGZILLA_PASSWORD}/" robottelo.properties
 sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
 
