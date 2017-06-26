@@ -4,5 +4,5 @@
     dsl:
       !include-raw:
         - workflows/nightly/releasePipelineAttributes.groovy
-        - workflows/releaseSatellitePipeline.groovy
+        - workflows/nightly/releaseSatellitePipeline.groovy
         - workflows/lib/runPlaybook.groovy
