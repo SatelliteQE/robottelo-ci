@@ -8,7 +8,7 @@
       - gitlab_variables
     parameters:
       - ruby:
-        version: '2.2'
+          version: '2.2'
       - database
       - merge_request
     scm:

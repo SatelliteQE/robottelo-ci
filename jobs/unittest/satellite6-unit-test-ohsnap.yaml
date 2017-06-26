@@ -9,7 +9,7 @@
     parameters:
       - merge_request
       - ruby:
-        version: 2.3
+          version: '2.3'
     scm:
       - ohsnap_gitlab
     triggers:
