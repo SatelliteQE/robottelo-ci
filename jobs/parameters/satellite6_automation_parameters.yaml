@@ -40,7 +40,7 @@
         - string:
             name: ROBOTTELO_WORKERS
             description: 'The number of testcase threads to run automation.'
-        - bool:
+        - choice:
             name: SAUCE_PLATFORM
             choices:
                 - 'no_sauce'
@@ -48,7 +48,7 @@
                 - 'Windows 10'
             description: |
                 'Specify the Sauce Platform to run against, along with Sauce Browser.'
-        - bool:
+        - choice:
             name: SAUCE_BROWSER
             choices:
                 - 'firefox'

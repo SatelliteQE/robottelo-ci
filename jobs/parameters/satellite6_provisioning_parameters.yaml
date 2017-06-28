@@ -28,7 +28,7 @@
             description: |
                 Points to RHSM stage for stage installation test. Used only
                 in CDN provisioning.
-        - bool:
+        - choice:
             name: HOTFIX
             choices:
                 - 'NO_HOTFIX'
@@ -48,7 +48,7 @@
             default: false
             description: |
                 Install Satellite with Puppet v4 (for Satellite 6.3+ only).
-        - bool:
+        - choice:
             name: SAUCE_PLATFORM
             choices:
                 - 'no_sauce'
@@ -56,7 +56,7 @@
                 - 'Windows 10'
             description: |
                 'Specify the Sauce Platform to run against, along with Sauce Browser.'
-        - bool:
+        - choice:
             name: SAUCE_BROWSER
             choices:
                 - 'firefox'
