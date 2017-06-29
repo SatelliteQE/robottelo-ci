@@ -11,15 +11,15 @@ def branch_map = [
     ]
 ]
 def release_branch = env.releaseBranch
+def repo_name = gitRepository.split('/')[1]
 def version_map = branch_map[release_branch]
 
 node('rhel') {
 
     stage("Setup Environment") {
 
-        def repoName = gitRepository.split('/')[1]
 
-        dir(repoName) {
+        dir(repo_name) {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
                 git url: "https://${env.USERNAME}:${env.PASSWORD}@${env.GIT_HOSTNAME}/${gitRepository}.git", branch: release_branch
@@ -32,14 +32,14 @@ node('rhel') {
             sh 'bundle install'
         }
 
-        setupAnsibleEnvironment()
+        setupAnsibleEnvironment({})
     }
 
     stage("Identify Bugs") {
 
         def releaseTag = ''
 
-        dir(repoName) {
+        dir(repo_name) {
             sh "../tool_belt/tools.rb release find-bz-ids --output-file bz_ids.json"
             archive 'bz_ids.json'
         }
@@ -48,7 +48,7 @@ node('rhel') {
 
     stage("Move Bugs to Modified") {
 
-        dir(repoName) {
+        dir(repo_name) {
             def ids = []
             def bzs = readFile 'bz_ids.json'
             bzs = new JsonSlurper().parseText(bzs)
@@ -71,7 +71,7 @@ node('rhel') {
 
     stage("Set External Tracker for Commit") {
 
-        dir(repoName) {
+        dir(repo_name) {
             def commits = readFile 'bz_ids.json'
             commits = new JsonSlurper().parseText(commits)
 
@@ -94,7 +94,7 @@ node('rhel') {
 
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
-            dir(repoName) {
+            dir(repo_name) {
                 sh "git config user.email 'sat6-jenkins@redhat.com'"
                 sh "git config user.name 'Jenkins'"
 
@@ -115,7 +115,7 @@ node('rhel') {
         def artifact = ''
         def artifact_path = ''
 
-        dir(repoName) {
+        dir(repo_name) {
             sh "../tool_belt/tools.rb release build-source --type ${sourceType} --output-file artifact"
             artifact = readFile 'artifact'
 
