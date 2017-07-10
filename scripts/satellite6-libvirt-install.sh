@@ -22,7 +22,7 @@ function remove_instance () {
     export TARGET_IMAGE
     export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
     set +e
-    fab -H "root@$1" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
+    fab -D -H "root@$1" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
     set -e
 }
 
@@ -41,7 +41,7 @@ elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL AK' ]; then
     export DISTRIBUTION="satellite6-activationkey"
 fi
 
-fab -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
+fab -D -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
 
 echo
 echo "========================================"

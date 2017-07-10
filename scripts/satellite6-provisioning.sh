@@ -24,8 +24,8 @@ export TARGET_IMAGE
 # set SERVER_HOSTNAME for the snapshot based pipelines by removing "-base" suffix if there is one
 export SERVER_HOSTNAME="${TARGET_IMAGE%%-base}.${VM_DOMAIN}"
 set +e
-fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
-for endpoint in tier1 tier2 tier3 tier4 rhai destructive coverage; do fab -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE%%-base}-$endpoint,delete_image=true"; done
+fab -D -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
+for endpoint in tier1 tier2 tier3 tier4 rhai destructive coverage; do fab -D -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE%%-base}-$endpoint,delete_image=true"; done
 set -e
 
 # Assign DISTRIBUTION to trigger things appropriately from automation-tools.
@@ -69,7 +69,7 @@ echo "DISCOVERY_ISO=${DISCOVERY_ISO}" >> build_env.properties
 # Run installation after writing the build_env.properties to make sure the
 # values are available for the post build actions, specially the foreman-debug
 # capturing.
-fab -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
+fab -D -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
 
 echo
 echo "========================================"
