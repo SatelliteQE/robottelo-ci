@@ -43,9 +43,9 @@
         - choice:
             name: SAUCE_PLATFORM
             choices:
-                - 'no_sauce'
                 - 'macOS 10.12'
                 - 'Windows 10'
+                - 'no_saucelabs'
             description: |
                 'Specify the Sauce Platform to run against, along with Sauce Browser.'
         - choice:
