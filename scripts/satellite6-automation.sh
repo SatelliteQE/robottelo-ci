@@ -8,7 +8,7 @@ sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottel
 
 # Sauce Labs Configuration
 
-if [[ "${SAUCE_PLATFORM}" != "no_sauce" ]]; then
+if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"
     sed -i "s/^browser.*/browser=saucelabs/" robottelo.properties
     sed -i "s/^# saucelabs_user=.*/saucelabs_user=${SAUCELABS_USER}/" robottelo.properties
