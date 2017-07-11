@@ -1,0 +1,10 @@
+- job:
+    disabled: false
+    name: dogfood-cleanup
+    project-type: workflow
+    auth-token: ""
+    triggers:
+      - timed: "@midnight"
+    dsl:
+      !include-raw:
+          - workflows/dogfoodCleanup.groovy
