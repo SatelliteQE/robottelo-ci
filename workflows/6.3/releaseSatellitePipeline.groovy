@@ -2,7 +2,7 @@ node('sat6-rhel7') {
 
     stage("Setup Workspace") {
 
-        setupAnsibleEnvironment()
+        setupAnsibleEnvironment {}
 
     }
 
