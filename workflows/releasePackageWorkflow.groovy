@@ -32,7 +32,7 @@ node('rhel') {
             sh 'bundle install'
         }
 
-        setupAnsibleEnvironment({})
+        setupAnsibleEnvironment {}
     }
 
     stage("Identify Bugs") {
