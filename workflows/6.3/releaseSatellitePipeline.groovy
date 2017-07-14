@@ -95,6 +95,50 @@ node('sat6-rhel7') {
     }
 }
 
+node('rhel') {
+    stage("Compare Packages") {
+
+        // Remove old package report
+        sh 'rm -f package_report.yaml'
+
+        compareContentViews {
+          organization = 'Sat6-CI'
+          content_view = 'Satellite 6.3 RHEL7'
+          from_lifecycle_environment = 'Library'
+          to_lifecycle_environment = 'QA'
+        }
+
+        compareContentViews {
+          organization = 'Sat6-CI'
+          content_view = 'Capsule 6.3 RHEL7'
+          from_lifecycle_environment = 'Library'
+          to_lifecycle_environment = 'QA'
+        }
+
+        compareContentViews {
+          organization = 'Sat6-CI'
+          content_view = 'Tools 6.3 RHEL7'
+          from_lifecycle_environment = 'Library'
+          to_lifecycle_environment = 'QA'
+        }
+
+        compareContentViews {
+          organization = 'Sat6-CI'
+          content_view = 'Tools 6.3 RHEL6'
+          from_lifecycle_environment = 'Library'
+          to_lifecycle_environment = 'QA'
+        }
+
+        compareContentViews {
+          organization = 'Sat6-CI'
+          content_view = 'Tools 6.3 RHEL5'
+          from_lifecycle_environment = 'Library'
+          to_lifecycle_environment = 'QA'
+        }
+
+    }
+}
+
 def runOnLibvirtHost(action) {
     sh "ssh jenkins@${env.LIBVIRT_HOST} \"${action}\""
 }
