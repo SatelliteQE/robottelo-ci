@@ -26,7 +26,7 @@ node('sat6-rhel7') {
                 'compose_git_repo': compose_git_repo,
                 'compose_version': 'satellite-6.3',
                 'compose_label': 'Satellite-6.3',
-                'compose_name': 'satellite-6.3-rhel-7'
+                'compose_name': 'satellite-6.3'
             ]
         }
 
@@ -39,7 +39,7 @@ node('sat6-rhel7') {
                 'compose_git_repo': compose_git_repo,
                 'compose_version': 'satellite-6.3',
                 'compose_label': 'SatTools-6.3',
-                'compose_name': 'satellite-tools-6.3-rhel-7'
+                'compose_name': 'satellite-tools-6.3'
             ]
         }
 
