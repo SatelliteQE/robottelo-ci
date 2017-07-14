@@ -95,6 +95,8 @@ node('sat6-rhel7') {
     }
 }
 
+import groovy.json.JsonSlurper
+
 node('rhel') {
     stage("Compare Packages") {
 
