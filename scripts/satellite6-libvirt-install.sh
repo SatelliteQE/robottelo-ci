@@ -14,6 +14,12 @@ if [ "${STAGE_TEST}" = 'true' ]; then
     source config/stage_environment.conf
 fi
 
+# If no SERVER_ID is selected from the Job and is 'no_server_id'.
+# As BRIDGE value is picked up from provision_libvirt_install.conf file.
+if [[ -z "${BRIDGE}" ]]; then
+    exit 1
+fi
+
 export EXTERNAL_AUTH
 export IDM_REALM
 

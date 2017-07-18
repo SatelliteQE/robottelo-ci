@@ -9,13 +9,14 @@
         - choice:
             name: PROVISIONING_ID
             choices:
-                - 'basil'
                 - 'paprika'
+                - 'basil'
             description: |
                 The recommended one to choose is paprika for the below Server ID's, basil is used for robottelo-automation.
         - choice:
             name: SERVER_ID
             choices:
+                - 'no_server_id'
                 - 'testing-rhel7'
                 - 'testing-rhel6'
                 - 'sat-feature-rhel7'
