@@ -35,15 +35,15 @@ sed -i "s|# secret_key=.*|secret_key=${AWS_ACCESSKEY_SECRET}|" robottelo.propert
 # Robottelo Capsule Configuration
 
 sed -i "s/^# \[capsule\].*/[capsule]/" robottelo.properties
-sed -i "s/^# instance_name.*/instance_name=${SERVER_HOSTNAME%%.*}-capsule/" robottelo.properties
-sed -i "s/^# domain.*/domain=${DDNS_DOMAIN}/" robottelo.properties
-sed -i "s/^# hash.*/hash=${CAPSULE_DDNS_HASH}/" robottelo.properties
-sed -i "s|^# ddns_package_url.*|ddns_package_url=${DDNS_PACKAGE_URL}|" robottelo.properties
+sed -i "s/^# instance_name=.*/instance_name=${SERVER_HOSTNAME%%.*}-capsule/" robottelo.properties
+sed -i "s/^# domain=.*/domain=${DDNS_DOMAIN}/" robottelo.properties
+sed -i "s/^# hash=.*/hash=${CAPSULE_DDNS_HASH}/" robottelo.properties
+sed -i "s|^# ddns_package_url=.*|ddns_package_url=${DDNS_PACKAGE_URL}|" robottelo.properties
 
 if [ -n "${IMAGE}" ]; then
     sed -i "s/^# \[distro\].*/[distro]/" robottelo.properties
-    sed -i "s/^# image_el6.*/image_el6=${IMAGE}/" robottelo.properties
-    sed -i "s/^# image_el7.*/image_el7=${IMAGE}/" robottelo.properties
+    sed -i "s/^# image_el6=.*/image_el6=${IMAGE}/" robottelo.properties
+    sed -i "s/^# image_el7=.*/image_el7=${IMAGE}/" robottelo.properties
 fi
 
 # Robottelo logging configuration
@@ -52,15 +52,15 @@ sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 # upstream = 1 for Distributions: UPSTREAM (default in robottelo.properties)
 # upstream = 0 for Distributions: DOWNSTREAM, CDN, BETA, ISO
 if [[ "${SATELLITE_VERSION}" != *"upstream-nightly"* ]]; then
-   sed -i "s/^upstream.*/upstream=false/" robottelo.properties
+   sed -i "s/^upstream=.*/upstream=false/" robottelo.properties
    sed -i "s/^# \[vlan_networking\].*/[vlan_networking]/" robottelo.properties
-   sed -i "s/^# subnet.*/subnet=${SUBNET}/" robottelo.properties
-   sed -i "s/^# netmask.*/netmask=${NETMASK}/" robottelo.properties
-   sed -i "s/^# gateway.*/gateway=${GATEWAY}/" robottelo.properties
-   sed -i "s/^# bridge.*/bridge=${BRIDGE}/" robottelo.properties
+   sed -i "s/^# subnet=.*/subnet=${SUBNET}/" robottelo.properties
+   sed -i "s/^# netmask=.*/netmask=${NETMASK}/" robottelo.properties
+   sed -i "s/^# gateway=.*/gateway=${GATEWAY}/" robottelo.properties
+   sed -i "s/^# bridge=.*/bridge=${BRIDGE}/" robottelo.properties
    # To set the discovery ISO name in properties file
    sed -i "s/^# \[discovery\].*/[discovery]/" robottelo.properties
-   sed -i "s/^# discovery_iso.*/discovery_iso=${DISCOVERY_ISO}/" robottelo.properties
+   sed -i "s/^# discovery_iso=.*/discovery_iso=${DISCOVERY_ISO}/" robottelo.properties
 fi
 
 # cdn = 1 for Distributions: GA (default in robottelo.properties)
@@ -70,8 +70,8 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     # The below cdn flag is required by automation to flip between RH & custom syncs.
     sed -i "s/cdn.*/cdn=false/" robottelo.properties
     # Usage of '|' is intentional as TOOLS_REPO can bring in http url which has '/'
-    sed -i "s|sattools_repo.*|sattools_repo=rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}|" robottelo.properties
-    sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
+    sed -i "s|sattools_repo=.*|sattools_repo=rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}|" robottelo.properties
+    sed -i "s|capsule_repo=.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
 if [[ "${SATELLITE_VERSION}" != "6.1" ]]; then
