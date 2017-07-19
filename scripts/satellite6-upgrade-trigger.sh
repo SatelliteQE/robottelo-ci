@@ -16,7 +16,9 @@ export CAPSULE_URL="${{CAPSULE_REPO}}"
 
 # Write a properties file to allow passing variables to T1 tests job.
 echo "SERVER_HOSTNAME=${{RHEV_SAT_HOST}}" > properties.txt
-echo "TOOLS_REPO=${{TOOLS_REPO}}" >> properties.txt
+echo "RHEL6_TOOLS_REPO=${{TOOLS_RHEL6}}" >> properties.txt
+echo "RHEL7_TOOLS_REPO=${{TOOLS_RHEL7}}" >> properties.txt
+echo "CAPSULE_REPO=${{CAPSULE_REPO}}" >> properties.txt
 echo "SUBNET=${{SUBNET}}" >> properties.txt
 echo "NETMASK=${{NETMASK}}" >> properties.txt
 echo "GATEWAY=${{GATEWAY}}" >> properties.txt

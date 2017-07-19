@@ -126,9 +126,7 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier1
                 DISTRO={os}
-        - inject-passwords:
-            global: true
-            mask-password-params: true
+        - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
@@ -184,9 +182,7 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier2
                 DISTRO={os}
-        - inject-passwords:
-            global: true
-            mask-password-params: true
+        - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
@@ -227,9 +223,7 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier3
                 DISTRO={os}
-        - inject-passwords:
-            global: true
-            mask-password-params: true
+        - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
@@ -270,9 +264,7 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=rhai
                 DISTRO={os}
-        - inject-passwords:
-            global: true
-            mask-password-params: true
+        - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
@@ -329,9 +321,7 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier4
                 DISTRO={os}
-        - inject-passwords:
-            global: true
-            mask-password-params: true
+        - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
         - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
@@ -385,9 +375,7 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=destructive
                 DISTRO={os}
-        - inject-passwords:
-            global: true
-            mask-password-params: true
+        - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
@@ -597,7 +585,8 @@
               current-parameters: true
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
-                TOOLS_REPO=${{TOOLS_REPO}}
+                RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
                 CAPSULE_REPO=${{CAPSULE_REPO}}
                 SUBNET=${{SUBNET}}
                 NETMASK=${{NETMASK}}
@@ -692,6 +681,7 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier1
                 OS={os}
+        - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
         - shining-panda:
@@ -739,6 +729,7 @@
                 SATELLITE_VERSION={satellite_version}
                 ENDPOINT=tier2
                 OS={os}
+        - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
         - shining-panda:
