@@ -17,7 +17,7 @@
                 - '6.1'
                 - '6.0'
                 - 'downstream-nightly'
-                - 'nightly'
+                - 'upstream-nightly'
             description: Select the Satellite version in order to correctly populate Tools and Capsule URLs.
         - string:
             name: SERVER_HOSTNAME
