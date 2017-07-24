@@ -23,6 +23,22 @@ else
     sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
+# Sauce Labs Configuration
+
+if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
+    echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"
+    sed -i "s/^browser=.*/browser=saucelabs/" robottelo.properties
+    sed -i "s/^# saucelabs_user=.*/saucelabs_user=${SAUCELABS_USER}/" robottelo.properties
+    sed -i "s/^# saucelabs_key=.*/saucelabs_key=${SAUCELABS_KEY}/" robottelo.properties
+    sed -i "s/^# webdriver=.*/webdriver=${SAUCE_BROWSER}/" robottelo.properties
+    if [[ "${SAUCE_BROWSER}" == "firefox" ]]; then
+        BROWSER_VERSION=45.0
+    elif [[ "${SAUCE_BROWSER}" == "edge" ]]; then
+        BROWSER_VERSION=14.14393
+    fi
+    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},idleTimeout=1000,seleniumVersion=2.48.0,build=${SATELLITE_VERSION}-$(date +%Y-%m-%d-%S),screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER}/" robottelo.properties
+fi
+
 pytest() {
     $(which py.test) -v --junit-xml=foreman-results.xml -m "${PYTEST_MARKS}" "$@"
 }

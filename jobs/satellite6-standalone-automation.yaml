@@ -85,6 +85,19 @@
                 <p><strong>If this parameter is not blank then SERVER_HOSTNAME,
                 SSH_USER, FOREMAN_ADMIN_USER and FOREMAN_ADMIN_PASSWORD
                 will be ignored</strong></p>
+        - choice:
+            name: SAUCE_PLATFORM
+            choices:
+                 - 'no_saucelabs'
+                 - 'macOS 10.12'
+                 - 'Windows 10'
+        - choice:
+            name: SAUCE_BROWSER
+            choices:
+                 - 'firefox'
+                 - 'chrome'
+                 - 'edge'
+                 - 'internet explorer'
     scm:
         - git:
             url: ${ROBOTTELO_REPO}
@@ -96,6 +109,7 @@
         - inject-passwords:
             global: true
             mask-password-params: true
+        - satellite6-sauce-ondemand-wrappers
     builders:
         - shining-panda:
             build-environment: virtualenv
