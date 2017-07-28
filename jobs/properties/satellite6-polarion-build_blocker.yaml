@@ -4,3 +4,4 @@
       - build-blocker:
           blocking-jobs:
             - "polarion-test-run-{satellite_version}-{os}"
+          queue-scanning: 'ALL'

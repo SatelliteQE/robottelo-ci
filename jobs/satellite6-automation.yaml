@@ -2,6 +2,7 @@
 # Job Templates
 #==============================================================================
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'provisioning-{satellite_version}-{os}'
     properties:
@@ -100,6 +101,7 @@
         - satellite6-automation-archiver
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'automation-{satellite_version}-tier1-{os}'
     node: sat6-{os}
@@ -156,6 +158,7 @@
             file_path: "coverage.xml"
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'automation-{satellite_version}-tier2-{os}'
     node: sat6-{os}
@@ -197,6 +200,7 @@
             file_path: "coverage.xml"
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'automation-{satellite_version}-tier3-{os}'
     node: sat6-{os}
@@ -238,6 +242,7 @@
             file_path: "coverage.xml"
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'automation-{satellite_version}-rhai-{os}'
     node: sat6-{os}
@@ -295,6 +300,7 @@
             success: true
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'automation-{satellite_version}-tier4-{os}'
     node: sat6-{os}
@@ -349,6 +355,7 @@
             file_path: "coverage.xml"
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'automation-{satellite_version}-destructive-{os}'
     node: sat6-{os}
@@ -400,6 +407,7 @@
             file_path: "coverage.xml"
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'report-automation-results-{satellite_version}-{os}'
     node: sat6-{os}
@@ -452,6 +460,7 @@
 
 
 - job-template:
+    block-downstream: true
     name: 'report-consolidated-coverage-{satellite_version}-{os}'
     node: sat6-{os}
     parameters:
@@ -527,6 +536,7 @@
 
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'upgrade-to-{satellite_version}-{os}'
     concurrent: true
@@ -608,6 +618,7 @@
             attachments: full_upgrade, Log_Analyzer_Logs.tar.xz
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
     node: sat6-{os}
@@ -655,6 +666,7 @@
         - satellite6-automation-publishers
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'automation-upgraded-{satellite_version}-tier1-{os}'
     node: sat6-{os}
@@ -703,6 +715,7 @@
         - satellite6-automation-archiver
 
 - job-template:
+    block-downstream: true
     disabled: false
     name: 'automation-upgraded-{satellite_version}-tier2-{os}'
     node: sat6-{os}
