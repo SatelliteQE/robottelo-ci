@@ -4,7 +4,7 @@
         - raw:
             xml: |
                 <com.redhat.jenkins.plugins.ci.CIMessageSubscriberBuilder>
-                  <providerName>default</providerName>
+                  <providerName>CI Subscribe</providerName>
                   <selector>{selector}</selector>
                   <variable>TESTCASE_IMPORT_RESULTS</variable>
                   <timeout>180</timeout>
