@@ -32,15 +32,27 @@ fi
 
 # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
 fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
+set +e
+# Run pre-upgarde scenarios tests
+if [ "${RUN_SCENARIO_TESTS}" == 'true' ]; then
+    $(which py.test) -v -s -m pre_upgrade --junit-xml=test_scenarios-pre-results.xml upgrade_tests/test_scenarios/
+fi
+set -e
 
 # Run upgrade for CDN/Downstream
 fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
 
-
+set +e
 # Run existance tests
 if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
     $(which py.test) -v --junit-xml=test_existance-results.xml upgrade_tests/test_existance_relations/
 fi
+
+# Run post-upgarde scenarios tests
+if [ "${RUN_SCENARIO_TESTS}" == 'true' ]; then
+    $(which py.test) -v -s -m post_upgrade --junit-xml=test_scenarios-post-results.xml upgrade_tests/test_scenarios/
+fi
+set -e
 
 # Post Upgrade archive logs from log analyzer tool
 if [ -d upgrade-diff-logs ]; then
