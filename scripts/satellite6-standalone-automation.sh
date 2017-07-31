@@ -49,7 +49,7 @@ if [ -n "${PYTEST_OPTIONS:-}" ]; then
 fi
 
 case "${TEST_TYPE}" in
-    api|cli|ui|rhai|tier1|tier2|tier3 )
+    api|cli|ui|rhai|tier1|tier2|tier3|sys )
         make "test-foreman-${TEST_TYPE}" PYTEST_XDIST_NUMPROCESSES="${ROBOTTELO_WORKERS}"
         ;;
     endtoend-api|endtoend-cli|endtoend-ui )

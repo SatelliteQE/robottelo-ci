@@ -40,6 +40,7 @@
                 - 'cli'
                 - 'ui'
                 - 'rhai'
+                - 'sys'
                 - 'endtoend-api'
                 - 'endtoend-cli'
                 - 'endtoend-ui'
