@@ -1,6 +1,10 @@
 # Install the latest version of betelgeuse.
 pip install betelgeuse
 
+betelgeuse requirement \
+    "${BETELGEUSE_TC_PATH}" \
+    "${POLARION_PROJECT}"
+
 betelgeuse xml-test-case \
     --response-property "${BETELGEUSE_RESPONSE_PROPERTY}" \
     --automation-script-format "https://github.com/SatelliteQE/${BETELGEUSE_AUTOMATION_PROJECT}/blob/master/{path}#L{line_number}" \
