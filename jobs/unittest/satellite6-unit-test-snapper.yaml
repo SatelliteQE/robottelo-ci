@@ -1,0 +1,22 @@
+
+- job:
+    name: satellite6-unit-test-snapper
+    node: rhel
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    properties:
+      - gitlab_variables
+    parameters:
+      - merge_request
+      - ruby:
+          version: '2.3'
+    scm:
+      - snapper_gitlab
+    triggers:
+      - gitlab_build_on_change
+    builders:
+      - merge_request
+      - test_snapper
+    publishers:
+      - gemset_cleanup
