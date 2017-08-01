@@ -1,0 +1,4 @@
+- builder:
+    name: test_snapper
+    builders:
+        - shell: !include-raw: scripts/test_snapper.sh
