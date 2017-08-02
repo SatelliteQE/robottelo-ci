@@ -80,16 +80,18 @@ else
     TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun})"
 fi
 
-if [ "${ENDPOINT}" != "rhai" ]; then
+if [ "${ENDPOINT}" == "destructive" ]; then
+    make test-foreman-sys
+elif [ "${ENDPOINT}" != "rhai" ]; then
     set +e
-    # Run parallel tests
-    $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
-        -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
-        ${TEST_TYPE}
-
     # Run sequential tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
+        ${TEST_TYPE}
+
+    # Run parallel tests
+    $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
+        -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
         ${TEST_TYPE}
     set -e
 else
