@@ -66,6 +66,16 @@
             description: |
                 Run a task to re-partition disk to increase the size of /root
                 to handle synchronization of larger repositories
+        - string:
+            name: AUTO_TOOLS_REPO
+            default: https://github.com/SatelliteQE/automation-tools.git
+            description: |
+                You can override this to your automation-tools repo, if needed.
+        - string:
+            name: AUTO_TOOLS_BRANCH
+            default: master
+            description: |
+                You can override this to any branch.
         - bool:
             name: SETUP_FAKE_MANIFEST_CERTIFICATE
             default: false
@@ -130,9 +140,9 @@
         - satellite6-authentication-parameters
     scm:
         - git:
-            url: https://github.com/SatelliteQE/automation-tools.git
+            url: ${AUTO_TOOLS_REPO}
             branches:
-                - origin/master
+                - origin/${AUTO_TOOLS_BRANCH}
             skip-tag: true
     wrappers:
         - build-name:
