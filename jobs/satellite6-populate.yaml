@@ -50,7 +50,7 @@
             description: "By default, Minimal Install is selected and it only syncs content of RHEL6-x86_64 and RHEL7-x86_64."
         - string:
             name: SUBNET_RANGE
-            description: "The Subnet range for the sat6 to provide a DHCP IP to the hosts."
+            description: "The subnet Network to provide IP's from to the hosts. Example: 192.168.100.0 or 10.x.x.0"
         - string:
             name: SUBNET_MASK
             description: "The Subnet mask for the Subnet Range defined. Example: 255.255.255.0"
