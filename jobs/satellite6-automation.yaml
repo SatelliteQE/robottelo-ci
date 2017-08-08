@@ -95,6 +95,106 @@
                 IMAGE=${{IMAGE}}
                 SAUCE_BROWSER=${{SAUCE_BROWSER}}
                 SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+        - trigger-builds:
+            - project: 'automation-{satellite_version}-tier2-{os}'
+              predefined-parameters: |
+                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                CAPSULE_REPO=${{CAPSULE_REPO}}
+                SUBNET=${{SUBNET}}
+                NETMASK=${{NETMASK}}
+                GATEWAY=${{GATEWAY}}
+                BRIDGE=${{BRIDGE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+                DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                IMAGE=${{IMAGE}}
+                SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+        - trigger-builds:
+            - project: 'automation-{satellite_version}-tier3-{os}'
+              predefined-parameters: |
+                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                CAPSULE_REPO=${{CAPSULE_REPO}}
+                SUBNET=${{SUBNET}}
+                NETMASK=${{NETMASK}}
+                GATEWAY=${{GATEWAY}}
+                BRIDGE=${{BRIDGE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+                DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                IMAGE=${{IMAGE}}
+                SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+        - trigger-builds:
+            - project: 'automation-{satellite_version}-tier4-{os}'
+              predefined-parameters: |
+                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                CAPSULE_REPO=${{CAPSULE_REPO}}
+                SUBNET=${{SUBNET}}
+                NETMASK=${{NETMASK}}
+                GATEWAY=${{GATEWAY}}
+                BRIDGE=${{BRIDGE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+                DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                IMAGE=${{IMAGE}}
+                SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[123])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'automation-{satellite_version}-rhai-{os}'
+                      predefined-parameters: |
+                        SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                        SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                        RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                        RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                        CAPSULE_REPO=${{CAPSULE_REPO}}
+                        SUBNET=${{SUBNET}}
+                        NETMASK=${{NETMASK}}
+                        GATEWAY=${{GATEWAY}}
+                        BRIDGE=${{BRIDGE}}
+                        BUILD_LABEL=${{BUILD_LABEL}}
+                        DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                        ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                        IMAGE=${{IMAGE}}
+                        SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                        SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[23])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'automation-{satellite_version}-destructive-{os}'
+                      predefined-parameters: |
+                        SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                        SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                        RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                        RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                        CAPSULE_REPO=${{CAPSULE_REPO}}
+                        SUBNET=${{SUBNET}}
+                        NETMASK=${{NETMASK}}
+                        GATEWAY=${{GATEWAY}}
+                        BRIDGE=${{BRIDGE}}
+                        BUILD_LABEL=${{BUILD_LABEL}}
+                        DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                        ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                        IMAGE=${{IMAGE}}
+                        SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                        SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-archiver
@@ -130,9 +230,6 @@
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
-        - trigger-builds:
-          - project: 'automation-{satellite_version}-tier2-{os}'
-            current-parameters: true
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[123])
@@ -186,9 +283,6 @@
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
-        - trigger-builds:
-            - project: 'automation-{satellite_version}-tier3-{os}'
-              current-parameters: true
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -227,9 +321,6 @@
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
-        - trigger-builds:
-            - project: 'automation-{satellite_version}-tier4-{os}'
-              current-parameters: true
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -268,14 +359,6 @@
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[23])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: 'automation-{satellite_version}-destructive-{os}'
-                      current-parameters: true
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-archiver
@@ -328,14 +411,6 @@
         - inject:
             properties-file: build_env.txt
         - satellite6-automation-builders
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[123])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: 'automation-{satellite_version}-rhai-{os}'
-                      current-parameters: true
         - trigger-builds:
             - project: 'polarion-test-run-{satellite_version}-{os}'
               predefined-parameters: |
@@ -582,7 +657,34 @@
             properties-file: properties.txt
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
-              current-parameters: true
+              predefined-parameters: |
+                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                CAPSULE_REPO=${{CAPSULE_REPO}}
+                SUBNET=${{SUBNET}}
+                NETMASK=${{NETMASK}}
+                GATEWAY=${{GATEWAY}}
+                BRIDGE=${{BRIDGE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+                DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+        - trigger-builds:
+            - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
+              predefined-parameters: |
+                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                CAPSULE_REPO=${{CAPSULE_REPO}}
+                SUBNET=${{SUBNET}}
+                NETMASK=${{NETMASK}}
+                GATEWAY=${{GATEWAY}}
+                BRIDGE=${{BRIDGE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+                DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+        - trigger-builds:
+            - project: 'automation-upgraded-{satellite_version}-tier2-{os}'
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
                 RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
@@ -648,9 +750,6 @@
                     - 'pip-install-pycurl.sh'
                     - 'satellite6-upgrade-source.sh'
                     - 'satellite6-upgrade-existence.sh'
-        - trigger-builds:
-            - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
-              current-parameters: true
     publishers:
         - satellite6-automation-publishers
 
@@ -694,9 +793,6 @@
                    - 'satellite6-upgrade-tier-source.sh'
                    - 'satellite6-automation.sh'
                    - 'satellite6-foreman-debug.sh'
-        - trigger-builds:
-            - project: 'automation-upgraded-{satellite_version}-tier2-{os}'
-              current-parameters: true
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
