@@ -1,0 +1,21 @@
+- job:
+    name: sat6-satellite-packaging-scratch-build
+    project-type: workflow
+    properties:
+      - gitlab_variables
+    logrotate:
+      daysToKeep: 45
+      numToKeep: -1
+    parameters:
+      - string:
+          name: project
+          description: 'Name of the project to build from satellite-packaging.'
+      - merge_request
+    triggers:
+      - gitlab_build_on_change
+    dsl:
+      !include-raw:
+        - workflows/satellite-packaging/scratchBuildSatellitePackaging.groovy
+        - workflows/satellite-packaging/buildSatellitePackaging.groovy
+        - workflows/lib/runPlaybook.groovy
+        - workflows/lib/kerberos.groovy
