@@ -368,6 +368,7 @@ else
 fi
 
 # Provision a host with Libvirt Provider.
-satellite host create --name='rhel-7-libvirt' --root-pass='changeme' --organization-id="${ORG}" --location-id="${LOC}" --hostgroup="RHEL 7 Server 64-bit HG" --compute-resource="$COMPUTE_RESOURCE_NAME_LIBVIRT" --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
+# Better create hosts from UI, as it has too many parameters to be passed and things appear to keep changing.
+#satellite host create --name='rhel-7-libvirt' --root-pass='changeme' --organization-id="${ORG}" --location-id="${LOC}" --hostgroup="RHEL 7 Server 64-bit HG" --compute-resource="$COMPUTE_RESOURCE_NAME_LIBVIRT" --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
 
-satellite host create --name='rhel-6-libvirt' --root-pass='changeme' --organization-id="${ORG}" --location-id="${LOC}" --hostgroup="RHEL 6 Server 64-bit HG" --compute-resource="$COMPUTE_RESOURCE_NAME_LIBVIRT" --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
+#satellite host create --name='rhel-6-libvirt' --root-pass='changeme' --organization-id="${ORG}" --location-id="${LOC}" --hostgroup="RHEL 6 Server 64-bit HG" --compute-resource="$COMPUTE_RESOURCE_NAME_LIBVIRT" --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
