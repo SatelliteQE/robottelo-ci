@@ -78,6 +78,8 @@
         - inject:
             properties-file: build_env.properties
         - trigger-builds:
+            - project: 'satellite6-manifest-downloader'
+        - trigger-builds:
             - project: 'automation-{satellite_version}-tier1-{os}'
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
@@ -131,8 +133,10 @@
     builders:
         - satellite6-automation-builders
         - trigger-builds:
-          - project: 'automation-{satellite_version}-tier2-{os}'
-            current-parameters: true
+            - project: 'satellite6-manifest-downloader'
+        - trigger-builds:
+            - project: 'automation-{satellite_version}-tier2-{os}'
+              current-parameters: true
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[123])
@@ -187,6 +191,8 @@
     builders:
         - satellite6-automation-builders
         - trigger-builds:
+            - project: 'satellite6-manifest-downloader'
+        - trigger-builds:
             - project: 'automation-{satellite_version}-tier3-{os}'
               current-parameters: true
     publishers:
@@ -228,6 +234,8 @@
     builders:
         - satellite6-automation-builders
         - trigger-builds:
+            - project: 'satellite6-manifest-downloader'
+        - trigger-builds:
             - project: 'automation-{satellite_version}-tier4-{os}'
               current-parameters: true
     publishers:
@@ -268,6 +276,8 @@
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
+        - trigger-builds:
+            - project: 'satellite6-manifest-downloader'
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[23])
@@ -328,6 +338,8 @@
         - inject:
             properties-file: build_env.txt
         - satellite6-automation-builders
+        - trigger-builds:
+            - project: 'satellite6-manifest-downloader'
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[123])
@@ -649,6 +661,8 @@
                     - 'satellite6-upgrade-source.sh'
                     - 'satellite6-upgrade-existence.sh'
         - trigger-builds:
+            - project: 'satellite6-manifest-downloader'
+        - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
               current-parameters: true
     publishers:
@@ -694,6 +708,8 @@
                    - 'satellite6-upgrade-tier-source.sh'
                    - 'satellite6-automation.sh'
                    - 'satellite6-foreman-debug.sh'
+        - trigger-builds:
+            - project: 'satellite6-manifest-downloader'
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-tier2-{os}'
               current-parameters: true
