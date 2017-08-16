@@ -28,3 +28,5 @@
       - test_smart_proxy_remote_execution_ssh
     publishers:
       - gemset_cleanup
+    notifications:
+      - snapper_notifications

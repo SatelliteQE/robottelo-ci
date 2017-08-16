@@ -29,3 +29,5 @@
       - test_hammer_cli_katello
     publishers:
       - gemset_cleanup
+    notifications:
+      - snapper_notifications

@@ -1,0 +1,9 @@
+- notification:
+    name: snapper_notifications
+    notifications:
+      - http:
+          url: ${SNAPPER_URL}
+          format: json
+          event: finalized
+          timeout: 40000
+          log: 0

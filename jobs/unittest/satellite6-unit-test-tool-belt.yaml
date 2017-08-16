@@ -17,3 +17,5 @@
       - test_tool_belt
     publishers:
       - gemset_cleanup
+    notifications:
+      - snapper_notifications

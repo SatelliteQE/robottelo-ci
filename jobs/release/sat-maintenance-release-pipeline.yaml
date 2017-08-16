@@ -5,3 +5,5 @@
       !include-raw:
         - workflows/maintenance/releasePipeline.groovy
         - workflows/lib/runPlaybook.groovy
+    notifications:
+      - snapper_notifications

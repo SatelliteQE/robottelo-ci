@@ -13,3 +13,5 @@
       !include-raw:
         - workflows/6.2/releaseQAWorkflow.groovy
         - workflows/lib/releaseQAFunctions.groovy
+    notifications:
+      - snapper_notifications

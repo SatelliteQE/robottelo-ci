@@ -35,3 +35,5 @@
       - test_puppet_plugins
     publishers:
       - gemset_cleanup
+    notifications:
+      - snapper_notifications

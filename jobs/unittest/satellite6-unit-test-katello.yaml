@@ -25,3 +25,5 @@
       - gemset_cleanup
       - junit:
           results: 'foreman/jenkins/reports/unit/*.xml'
+    notifications:
+      - snapper_notifications
