@@ -20,3 +20,5 @@
       - test_snapper
     publishers:
       - gemset_cleanup
+    notifications:
+      - snapper_notifications

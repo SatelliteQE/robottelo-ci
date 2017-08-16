@@ -36,3 +36,5 @@
       - gemset_cleanup
       - junit:
           results: 'jenkins/reports/unit/*.xml'
+    notifications:
+      - snapper_notifications

@@ -11,3 +11,5 @@
           - ./source_types/sourceTypeRake.groovy
           - workflows/releasePackageWorkflow.groovy
           - workflows/lib/runPlaybook.groovy
+    notifications:
+      - snapper_notifications

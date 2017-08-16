@@ -30,3 +30,5 @@
       - test_smart_proxy_plugins
     publishers:
       - gemset_cleanup
+    notifications:
+      - snapper_notifications

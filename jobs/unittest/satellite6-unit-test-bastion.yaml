@@ -24,3 +24,5 @@
                 healthy: 0
                 unhealthy: 20
                 failing: 30
+    notifications:
+      - snapper_notifications
