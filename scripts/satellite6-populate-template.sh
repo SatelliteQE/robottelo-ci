@@ -175,8 +175,12 @@ fi
 
 # Synchronize all repositories except for Puppet repositories which don't have URLs
 for repo in $(satellite --csv repository list --organization-id="${ORG}" --per-page=1000 | grep -vi 'puppet' | cut -d ',' -f 1 | grep -vi '^ID'); do
-    satellite repository synchronize --id "${repo}" --organization-id="${ORG}"
+    satellite repository synchronize --id "${repo}" --organization-id="${ORG}" --async
 done
+
+# Check the async tasks for completion.
+for id in `satellite --csv task list | grep -i synchronize | awk -F "," '{print $1}'`; do satellite task progress --id $id; done
+
 
 # Create Repos and Sync Repositories.
 # Create both Tools for RHEL6 and RHEL7 and Capsule for RHEL6 and RHEL7
@@ -184,8 +188,10 @@ done
 if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
     create-repo "${RHEL6_TOOLS_PRD}" "${RHEL6_TOOLS_REPO}" "${RHEL6_TOOLS_URL}"
     create-repo "${RHEL7_TOOLS_PRD}" "${RHEL7_TOOLS_REPO}" "${RHEL7_TOOLS_URL}"
-    create-repo "${SAT6C6_PRODUCT}" "${CAPSULE6_REPO}" "${CAPSULE6_URL}"
     create-repo "${SAT6C7_PRODUCT}" "${CAPSULE7_REPO}" "${CAPSULE7_URL}"
+    if [ "${SAT_VERSION}" != "6.3" ]; then
+        create-repo "${SAT6C6_PRODUCT}" "${CAPSULE6_REPO}" "${CAPSULE6_URL}"
+    fi
 fi
 
 #Create content views
