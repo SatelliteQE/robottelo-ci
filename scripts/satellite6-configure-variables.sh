@@ -56,4 +56,10 @@ sed -i "s|SAT_VERSION=.*|SAT_VERSION=\"${SATELLITE_VERSION}\"|" satellite6-popul
 sed -i "s|MINIMAL_INSTALL=.*|MINIMAL_INSTALL=\"${MINIMAL_INSTALL}\"|" satellite6-populate.sh
 
 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no satellite6-populate.sh root@"${SERVER_HOSTNAME}":/root/
+
+# This will only populate the template with all values and transfer the template to the mentioned SERVER_HOSTNAME.
+# Required when we need to further customize things on the fly.
+if [[ "${ONLY_POPULATE_TEMPLATE}" = 'true' ]]; then
+    exit 1
+fi
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" /root/satellite6-populate.sh

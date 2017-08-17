@@ -10,12 +10,6 @@
         ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
         </pre>
     node: sat6-rhel7
-    scm:
-        - git:
-            url: https://github.com/SatelliteQE/robottelo-ci.git
-            branches:
-                - origin/master
-            skip-tag: true
     parameters:
         - string:
             name: SERVER_HOSTNAME
@@ -44,10 +38,6 @@
                 - 'GA'
             description: |
                 Depending upon INTERNAL and GA, either DOGFOOD or CDN content is synced.
-        - bool:
-            name: MINIMAL_INSTALL
-            default: true
-            description: "By default, Minimal Install is selected and it only syncs content of RHEL6-x86_64 and RHEL7-x86_64."
         - string:
             name: SUBNET_RANGE
             description: "The subnet Network to provide IP's from to the hosts. Example: 192.168.100.0 or 10.x.x.0"
@@ -61,6 +51,28 @@
             name: DEFAULT_COMPUTE_RESOURCES
             default: true
             description: "Default is true, If unchecked we need to provide the below Libvirt, RHEV and OpenStack Information."
+        - string:
+            name: CI_REPO
+            default: https://github.com/SatelliteQE/robottelo-ci.git
+            description: "You can override this to your automation-tools repo, if needed."
+        - string:
+            name: CI_BRANCH
+            default: master
+            description: "You can override this to any branch."
+        - bool:
+            name: MINIMAL_INSTALL
+            default: true
+            description: |
+                By default, Minimal Install is selected and it only syncs content of RHEL6-Server-x86_64 and RHEL7-Server-x86_64.
+                Currently no other repo is configured to sync apart from the above mentioned in satellite6-populate-template.sh.
+                One can add support to enable and sync repos like, RHEL5, X86, workstation and so on when MINIMAL_INSTALL is false
+                under satellite6-populate-template.sh script.
+        - bool:
+            name: ONLY_POPULATE_TEMPLATE
+            default: false
+            description: |
+                If set to true, will just populate the template file and copy to the Satellite6 Server for further manipulation.
+                One can find the populated template script at /root/satellite6-populate.sh
         - string:
             name: LIBVIRT_HOSTNAME
             description: "The Libvirt Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
@@ -85,6 +97,12 @@
         - string:
             name: OS_PASSWORD
             description: "The OpenStack Platform Password to add the Compute Resource."
+    scm:
+        - git:
+            url: ${CI_REPO}
+            branches:
+                - origin/${CI_BRANCH}
+            skip-tag: true
     wrappers:
         - default-wrappers
         - config-file-provider:
