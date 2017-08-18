@@ -4,6 +4,6 @@
       - http:
           url: ${SNAPPER_URL}
           format: json
-          event: finalized
+          event: completed
           timeout: 40000
           log: 0
