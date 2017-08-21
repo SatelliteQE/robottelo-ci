@@ -14,8 +14,6 @@
       - merge_request
     scm:
       - foreman_gitlab
-    wrappers:
-      - default_xvfb
     triggers:
       - gitlab_build_on_change
     builders:
