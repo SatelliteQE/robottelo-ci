@@ -17,7 +17,7 @@
                 Please note, this is not LDAP Authentication.
         - bool:
             name: IDM_REALM
-            default: false
+            default: true
             description: |
                 Enrolls sat6 to IDM and configures Sat6 for REALM Integration.
                 Requires the same Sat6 and IDM Server domain, to work out of the box.
