@@ -1,3 +1,4 @@
+pip install ${CI_SIDEKICK_URL}
 pip install -r requirements.txt
 
 export PYTHONHTTPSVERIFY=0
