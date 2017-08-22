@@ -4,7 +4,7 @@ node('sat6-rhel7') {
 
         git url: "https://github.com/RedHatSatellite/katello-cvmanager"
 
-        sh "bundle install"
+        sh "bundle install --without=development"
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
           timeout(time: 1, unit: 'HOURS') {
             sh "bundle exec ruby ./cvmanager clean --uri ${env.SATELLITE_SERVER} --user ${USERNAME} --pass ${PASSWORD} --organization-id=3 --no-verify-ssl --sequential 100"

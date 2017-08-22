@@ -5,7 +5,7 @@ node('rhel') {
 
     stage("Setup ToolBelt") {
         git url: "https://${env.GIT_HOSTNAME}/Satellite6/tool_belt.git", branch: 'master'
-        sh 'bundle install'
+        sh 'bundle install --without=development'
         sh "./tools.rb setup-environment --bugzilla --gitlab-username jenkins --version ${version}"
     }
 
