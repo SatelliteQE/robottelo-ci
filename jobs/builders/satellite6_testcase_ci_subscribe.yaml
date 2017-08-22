@@ -4,7 +4,12 @@
         - raw:
             xml: |
                 <com.redhat.jenkins.plugins.ci.CIMessageSubscriberBuilder>
-                  <providerName>CI Subscribe</providerName>
+                  <providerName>Red Hat UMB</providerName>
+                  <overrides>
+                   <topic>
+                     Consumer.rh-jenkins-ci-plugin.3b39eb07-9b1a-4664-a4d2-07e6ac86b390.VirtualTopic.qe.ci.>
+                   </topic>
+                  </overrides>
                   <selector>{selector}</selector>
                   <variable>TESTCASE_IMPORT_RESULTS</variable>
                   <timeout>180</timeout>
