@@ -16,7 +16,7 @@ node('rhel') {
 
         dir('tool_belt') {
             git url: "https://${env.GIT_HOSTNAME}/satellite6/tool_belt.git", branch: 'master'
-            sh 'bundle install'
+            sh 'bundle install --without=development'
         }
 
         dir(repoName) {
