@@ -16,7 +16,7 @@ def version_map = branch_map[release_branch]
 
 node('rhel') {
 
-    stage("Setup Environment") {
+    snapperStage("Setup Environment") {
 
 
         dir(repo_name) {
@@ -35,7 +35,7 @@ node('rhel') {
         setupAnsibleEnvironment {}
     }
 
-    stage("Identify Bugs") {
+    snapperStage("Identify Bugs") {
 
         def releaseTag = ''
 
@@ -46,7 +46,7 @@ node('rhel') {
     }
 
 
-    stage("Move Bugs to Modified") {
+    snapperStage("Move Bugs to Modified") {
 
         dir(repo_name) {
             def ids = []
@@ -69,7 +69,7 @@ node('rhel') {
         }
     }
 
-    stage("Set External Tracker for Commit") {
+    snapperStage("Set External Tracker for Commit") {
 
         dir(repo_name) {
             def commits = readFile 'bz_ids.json'
@@ -90,7 +90,7 @@ node('rhel') {
 
     }
 
-    stage("Bump Version") {
+    snapperStage("Bump Version") {
 
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
@@ -110,7 +110,7 @@ node('rhel') {
     }
 
 
-    stage("Build Source") {
+    snapperStage("Build Source") {
 
         def artifact = ''
         def artifact_path = ''

@@ -6,5 +6,6 @@
         - workflows/nightly/releasePipelineAttributes.groovy
         - workflows/nightly/releaseSatellitePipeline.groovy
         - workflows/lib/runPlaybook.groovy
-    notifications:
-      - snapper_notifications
+        - workflows/lib/sendPostRequest.groovy
+        - workflows/lib/messageSnapper.groovy
+        
