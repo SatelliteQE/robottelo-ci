@@ -102,7 +102,7 @@ node('rhel') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
                 def cmd = [
-                    "hammer --username ${env.USERNAME} --password ${env.PASSWORD} --server ${env.SATELLITE_SERVER}",
+                    "hammer --username '${env.USERNAME}' --password '${env.PASSWORD}' --server ${env.SATELLITE_SERVER}",
                     "repository upload-content",
                     "--path ${artifact}",
                     "--name 'Satellite 6.3 Source Files'",
