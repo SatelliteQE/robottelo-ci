@@ -1,12 +1,14 @@
+import groovy.json.JsonSlurper
+
 node('sat6-rhel7') {
 
-    stage("Setup Workspace") {
+    snapperStage("Setup Workspace") {
 
         setupAnsibleEnvironment {}
 
     }
 
-    stage("Generate Composes") {
+    snapperStage("Generate Composes") {
 
         def compose_git_repo = env.COMPOSE_GIT_REPOSITORY ?: ''
 
@@ -42,10 +44,9 @@ node('sat6-rhel7') {
                 'compose_name': 'satellite-tools-6.3'
             ]
         }
-
     }
 
-    stage("Test Installation") {
+    snapperStage("Test Installation") {
 
         runOnLibvirtHost "cd sat-deploy && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
         runOnLibvirtHost "cd sat-deploy/forklift && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
@@ -72,7 +73,7 @@ node('sat6-rhel7') {
     }
 
 
-    stage("Sync Repositories") {
+    snapperStage("Sync Repositories") {
 
         runPlaybookInParallel {
             name = "sync"
@@ -80,10 +81,9 @@ node('sat6-rhel7') {
             item_name = 'product'
             playbook = 'playbooks/sync_repositories.yml'
         }
-
     }
 
-    stage("Publish Content Views") {
+    snapperStage("Publish Content Views") {
 
         runPlaybookInParallel {
             name = "publish"
@@ -91,16 +91,14 @@ node('sat6-rhel7') {
             item_name = 'content_view'
             playbook = 'playbooks/publish_content_views.yml'
         }
-
     }
 }
 
-import groovy.json.JsonSlurper
-
 node('rhel') {
-    stage("Compare Packages") {
 
-        // Remove old package report
+    snapperStage("Compare Packages") {
+
+      // Remove old package report
         sh 'rm -f package_report.yaml'
 
         compareContentViews {
@@ -137,7 +135,6 @@ node('rhel') {
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
-
     }
 }
 

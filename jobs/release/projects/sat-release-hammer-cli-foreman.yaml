@@ -11,5 +11,6 @@
           - ./source_types/sourceTypeGem.groovy
           - workflows/releasePackageWorkflow.groovy
           - workflows/lib/runPlaybook.groovy
-    notifications:
-      - snapper_notifications
+          - workflows/lib/sendPostRequest.groovy
+          - workflows/lib/messageSnapper.groovy
+          

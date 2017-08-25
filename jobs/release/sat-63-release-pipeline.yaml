@@ -9,5 +9,6 @@
         - workflows/6.3/releaseSatellitePipeline.groovy
         - workflows/lib/runPlaybook.groovy
         - workflows/lib/releaseQAFunctions.groovy
-    notifications:
-      - snapper_notifications
+        - workflows/lib/sendPostRequest.groovy
+        - workflows/lib/messageSnapper.groovy
+        

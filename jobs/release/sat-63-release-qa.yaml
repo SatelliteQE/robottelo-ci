@@ -13,5 +13,5 @@
       !include-raw:
         - workflows/6.3/releaseQAWorkflow.groovy
         - workflows/lib/releaseQAFunctions.groovy
-    notifications:
-      - snapper_notifications
+        - workflows/lib/sendPostRequest.groovy
+        - workflows/lib/messageSnapper.groovy
