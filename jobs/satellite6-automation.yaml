@@ -340,6 +340,10 @@
         - satellite6-automation-builders
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
+        - trigger-builds:
+            - project: 'report-automation-results-{satellite_version}-{os}'
+              predefined-parameters: |
+                  BUILD_LABEL=${{BUILD_LABEL}}
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[123])
@@ -415,16 +419,22 @@
     disabled: false
     name: 'report-automation-results-{satellite_version}-{os}'
     node: sat6-{os}
-    triggers:
-        - reverse:
-            jobs: 'automation-{satellite_version}-tier4-{os}'
-            result: unstable
+    parameters:
+      - string:
+          name: BUILD_LABEL
+          description: |
+              'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+              Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+              Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
     scm:
         - git:
             url: https://github.com/SatelliteQE/robottelo-ci.git
             branches:
                 - origin/master
             skip-tag: true
+    wrappers:
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
     builders:
         - shell: rm -f *.xml
         - copyartifact:
