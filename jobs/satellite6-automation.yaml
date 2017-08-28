@@ -693,7 +693,7 @@
         - inject:
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
-                ENDPOINT=tier1
+                ENDPOINT=tier1,tier2,tier3
                 OS={os}
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
@@ -706,7 +706,6 @@
            command:
                !include-raw-escape:
                    - 'satellite6-upgrade-tier-source.sh'
-                   - 'satellite6-automation.sh'
                    - 'satellite6-foreman-debug.sh'
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
@@ -743,7 +742,7 @@
         - inject:
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
-                ENDPOINT=tier2
+                ENDPOINT=end-to-end
                 OS={os}
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
@@ -756,7 +755,6 @@
            command:
                !include-raw-escape:
                    - 'satellite6-upgrade-tier-source.sh'
-                   - 'satellite6-automation.sh'
                    - 'satellite6-foreman-debug.sh'
     publishers:
         - satellite6-automation-mails
