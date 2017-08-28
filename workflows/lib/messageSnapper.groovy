@@ -4,19 +4,18 @@ def sendSnapperMessage(stage_name) {
         "name": env.JOB_NAME,
         "build": [
                   "full_url": env.BUILD_URL,
-                  "status": currentBuild.status,
-                  "phase": (currentBuild.status == 'FAILURE') ? "COMPLETED" : stage_name,
+                  "status": currentBuild.result,
+                  "phase": (currentBuild.result == 'FAILURE') ? "COMPLETED" : stage_name,
         ]
     ]
 
     def api_url = new URL(env.SNAPPER_URL)
+    def json_body = JsonOutput.toJson(body)
 
     post {
         url = api_url
         json = json_body
     }
-
-    error('Build failed, messaging Snapper')
 }
 
 def snapperStage(name, body) {
@@ -32,7 +31,7 @@ def snapperStage(name, body) {
 
     catch(any) {
         currentBuild.result = 'FAILURE'
-        error()
+        error('Build failed, messaging Snapper')
     }
 
     finally {
