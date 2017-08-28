@@ -137,7 +137,28 @@
             default: false
             description: |
                 Install Satellite with Puppet v4 (for Satellite 6.3+ only).
-        - satellite6-authentication-parameters
+        - choice:
+            name: EXTERNAL_AUTH
+            choices:
+                - 'NO_AUTH'
+                - 'IDM'
+                - 'AD'
+            description: |
+                Enrolls Sat6 to IDM or AD and configures External Authentication using IDM or AD as the Auth source.
+                Requires the same Sat6 and IDM or AD Server domain, to work out of the box.
+                The Sat6 Server's first nameserver should be pointing to the IDM Server.
+                One can use test-external-auth VM to test this feature quickly for IDM EXTERNAL_AUTH
+                One can use the Windows AD VM itself to test this feature quickly for AD EXTERNAL_AUTH
+                This will be useful for testing Kerberos/SSO, 2FA, e.t.c features with IDM or AD.
+                Please note, this is not LDAP Authentication.
+        - bool:
+            name: IDM_REALM
+            default: false
+            description: |
+                Enrolls sat6 to IDM and configures Sat6 for REALM Integration.
+                Requires the same Sat6 and IDM Server domain, to work out of the box.
+                The Sat6 Server's first nameserver should be pointing to the IDM Server.
+                This is also called, External Authentication for Provisioned Hosts.
     scm:
         - git:
             url: ${AUTO_TOOLS_REPO}
