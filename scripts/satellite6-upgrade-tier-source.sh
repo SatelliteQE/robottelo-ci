@@ -101,7 +101,7 @@ if [ "${ENDPOINT}" != "end-to-end" ]; then
 elif [ "${ENDPOINT}" == "end-to-end" ]; then
     set +e
     # Run end-to-end , also known as smoke tests
-    $(which py.test) -v --junit-xml="smoke-tests-results.xml" /tests/foreman/endtoend
+    $(which py.test) -v --junit-xml="smoke-tests-results.xml" tests/foreman/endtoend
     set -e
 
 else
