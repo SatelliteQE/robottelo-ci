@@ -20,7 +20,7 @@ def sendSnapperMessage(stage_name) {
 
 def snapperStage(name, body) {
     def config = [:]
-    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.resolveStrategy = Closure.OWNER_FIRST
     body.delegate = config
 
     try {
