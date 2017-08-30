@@ -991,6 +991,9 @@
         - string:
             name: SATELLITE_DISTRIBUTION
             default: 'UPSTREAM'
+        - string:
+            name: IDM_REALM
+            default: false
     wrappers:
         - config-file-provider:
             files:
@@ -1021,3 +1024,4 @@
                 SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}
                 RHEL6_TOOLS_URL=${RHEL6_TOOLS_URL}
                 RHEL7_TOOLS_URL=${RHEL7_TOOLS_URL}
+                IDM_REALM=${IDM_REALM}
