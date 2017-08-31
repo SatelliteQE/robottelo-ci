@@ -67,6 +67,10 @@ def runPlaybook(body) {
                 username: env.USERNAME,
                 password: env.PASSWORD
             ]
+            def inventory = config.inventory ?: 'sat-infra/inventory'
+            def tags = config.tags ?: null
+            def limit = config.limit ?: null
+            def ansibledir = config.ansibledir ?: 'ansible'
 
             if (config.extraVars) {
                 extraVars = defaultVars + config.extraVars
@@ -74,11 +78,13 @@ def runPlaybook(body) {
                 extraVars = defaultVars
             }
 
-            dir('ansible') {
+            dir(ansibledir) {
                 ansiblePlaybook(
                     playbook: config.playbook,
-                    inventory: 'sat-infra/inventory',
+                    inventory: inventory,
                     colorized: true,
+                    limit: limit,
+                    tags: tags,
                     extraVars: extraVars
                 )
             }
