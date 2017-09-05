@@ -4,12 +4,12 @@ node('sat6-rhel7') {
     stage("Fetch git") {
         deleteDir()
 
-        git url: "https://$GIT_HOSTNAME/$GIT_ORGANIZATION/satellite-packaging.git", branch: targetBranch
+        git url: "https://$GIT_HOSTNAME/$GIT_ORGANIZATION/satellite-packaging.git", branch: gitlabTargetBranch
 
-        if (sourceRepoName) {
-            sh "git remote add pr https://$GIT_HOSTNAME/${sourceRepoName}.git"
+        if (env.gitlabSourceRepoName) {
+            sh "git remote add pr https://$GIT_HOSTNAME/${env.gitlabSourceRepoName}.git"
             sh "git fetch pr"
-            sh "git merge pr/${sourceBranch}"
+            sh "git merge pr/${env.gitlabSourceBranch}"
         }
     }
 
@@ -17,7 +17,7 @@ node('sat6-rhel7') {
         if (project) {
             packages_to_build = project
         } else {
-            changed_packages = sh(returnStdout: true, script: "git diff ..origin/${targetBranch} --name-only packages/ | cut -d'/' -f2 |sort -u").trim()
+            changed_packages = sh(returnStdout: true, script: "git diff ..origin/${env.gitlabTargetBranch} --name-only packages/ | cut -d'/' -f2 |sort -u").trim()
             packages_to_build = changed_packages.split().join(':')
         }
         if (!packages_to_build) {

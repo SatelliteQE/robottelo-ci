@@ -1,8 +1,6 @@
 - job:
     name: sat6-satellite-packaging-scratch-build
     project-type: workflow
-    properties:
-      - gitlab_variables
     logrotate:
       daysToKeep: 45
       numToKeep: -1
@@ -15,6 +13,7 @@
       - gitlab_build_on_change
     dsl:
       !include-raw:
+        - workflows/lib/gitlabEnv.groovy
         - workflows/satellite-packaging/scratchBuildSatellitePackaging.groovy
         - workflows/satellite-packaging/buildSatellitePackaging.groovy
         - workflows/lib/runPlaybook.groovy
