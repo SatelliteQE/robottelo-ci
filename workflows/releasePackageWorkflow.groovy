@@ -39,8 +39,8 @@ node('rhel') {
 
         def releaseTag = ''
 
-        dir(repo_name) {
-            sh "../tool_belt/tools.rb release find-bz-ids --output-file bz_ids.json"
+        dir('tool_belt') {
+            sh "bundle exec ./tools.rb release find-bz-ids --dir ../${repo_name} --output-file bz_ids.json"
             archive 'bz_ids.json'
         }
     }
@@ -62,7 +62,9 @@ node('rhel') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    sh "../tool_belt/tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
+                    dir('../tool_belt') {
+                        sh "bundle exec ./tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
+                    }
 
                 }
             }
@@ -82,7 +84,9 @@ node('rhel') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    sh "../tool_belt/tools.rb bugzilla set-gitlab-tracker --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --external-tracker \"${hash}\" --bug ${id} --version ${version_map['version']}"
+                    dir('../tool_belt') {
+                        sh "bundle exec ./tools.rb bugzilla set-gitlab-tracker --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --external-tracker \"${hash}\" --bug ${id} --version ${version_map['version']}"
+                    }
 
                 }
             }
@@ -95,12 +99,16 @@ node('rhel') {
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
             dir(repo_name) {
+                def releaseTag = ''
+
                 sh "git config user.email 'sat6-jenkins@redhat.com'"
                 sh "git config user.name 'Jenkins'"
 
-                sh "../tool_belt/tools.rb release bump-version --output-file version.json"
-                archive "version.json"
-                releaseTag = readFile 'version.json'
+                dir('../tool_belt') {
+                    sh "bundle exec ./tools.rb release bump-version --dir ../${repo_name} --output-file version.json"
+                    archive "version.json"
+                    releaseTag = readFile 'version.json'
+                }
 
                 sh "git push origin ${release_branch}"
                 sh "git push origin ${releaseTag}"
@@ -115,14 +123,17 @@ node('rhel') {
         def artifact = ''
         def artifact_path = ''
 
-        dir(repo_name) {
-            sh "../tool_belt/tools.rb release build-source --type ${sourceType} --output-file artifact"
-            artifact = readFile 'artifact'
+        dir('tool_belt') {
+            sh "bundle exec ./tools.rb release build-source --dir ../${repo_name} --type ${sourceType} --output-file artifact"
 
             artifact = readFile('artifact').replace('"', '')
+        }
+
+        dir(repo_name) {
             artifact_path = sh(returnStdout: true, script: 'pwd').trim()
             artifact_path = artifact_path + '/' + artifact
         }
+
         runPlaybook {
             playbook = 'playbooks/upload_package.yml'
             extraVars = [
@@ -133,7 +144,9 @@ node('rhel') {
             ]
         }
 
-        sh "rm ${artifact_path}"
+        dir('tool_belt') {
+            sh "rm ${artifact_path}"
+        }
     }
 
 }
