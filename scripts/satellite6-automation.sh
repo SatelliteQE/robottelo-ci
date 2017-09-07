@@ -16,7 +16,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     sed -i "s/^# webdriver=.*/webdriver=${SAUCE_BROWSER}/" robottelo.properties
     if [[ "${SAUCE_BROWSER}" == "firefox" ]]; then
         # Temporary change to test Selenium and Firefox changes.
-        if [[ "${SATELLITE_VERSION}" != "6.3" ]]; then
+        if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
             BROWSER_VERSION=45.0
         else
             BROWSER_VERSION=47.0
@@ -25,7 +25,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
         BROWSER_VERSION=14.14393
     fi
     # Temporary change to test Selenium and Firefox changes.
-    if [[ "${SATELLITE_VERSION}" != "6.3" ]]; then
+    if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         SELENIUM_VERSION=2.48.0
     else
         SELENIUM_VERSION=2.53.1
