@@ -20,6 +20,8 @@ node('rhel') {
 
         deleteDir()
 
+        setupAnsibleEnvironment {}
+
         dir(repo_name) {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
@@ -32,8 +34,6 @@ node('rhel') {
             git url: "https://${env.GIT_HOSTNAME}/satellite6/tool_belt.git", branch: 'master'
             sh 'bundle install --without=development'
         }
-
-        setupAnsibleEnvironment {}
     }
 
     snapperStage("Identify Bugs") {
@@ -49,7 +49,7 @@ node('rhel') {
 
     snapperStage("Move Bugs to Modified") {
 
-        dir('../tool_belt') {
+        dir('tool_belt') {
             def ids = []
             def bzs = readFile 'bz_ids.json'
             bzs = new JsonSlurper().parseText(bzs)
@@ -73,7 +73,7 @@ node('rhel') {
 
     snapperStage("Set External Tracker for Commit") {
 
-        dir('../tool_belt') {
+        dir('tool_belt') {
             def commits = readFile 'bz_ids.json'
             commits = new JsonSlurper().parseText(commits)
 
