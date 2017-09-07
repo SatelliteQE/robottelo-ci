@@ -18,6 +18,7 @@ node('rhel') {
 
     snapperStage("Setup Environment") {
 
+        deleteDir()
 
         dir(repo_name) {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
@@ -48,7 +49,7 @@ node('rhel') {
 
     snapperStage("Move Bugs to Modified") {
 
-        dir(repo_name) {
+        dir('../tool_belt') {
             def ids = []
             def bzs = readFile 'bz_ids.json'
             bzs = new JsonSlurper().parseText(bzs)
@@ -62,18 +63,17 @@ node('rhel') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    dir('../tool_belt') {
-                        sh "bundle exec ./tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
-                    }
+                    sh "bundle exec ./tools.rb bugzilla move-to-modified --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
 
                 }
+
             }
         }
     }
 
     snapperStage("Set External Tracker for Commit") {
 
-        dir(repo_name) {
+        dir('../tool_belt') {
             def commits = readFile 'bz_ids.json'
             commits = new JsonSlurper().parseText(commits)
 
@@ -84,9 +84,7 @@ node('rhel') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    dir('../tool_belt') {
                         sh "bundle exec ./tools.rb bugzilla set-gitlab-tracker --username ${env.BZ_USERNAME} --password ${env.BZ_PASSWORD} --external-tracker \"${hash}\" --bug ${id} --version ${version_map['version']}"
-                    }
 
                 }
             }
