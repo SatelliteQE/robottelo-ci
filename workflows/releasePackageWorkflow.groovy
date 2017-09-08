@@ -135,7 +135,7 @@ node('rhel') {
         runPlaybook {
             playbook = 'playbooks/upload_package.yml'
             extraVars = [
-                'file': artifact_path,
+                'artifact': artifact_path,
                 'repo': version_map['repo'],
                 'product': 'Source Files',
                 'organization': 'Sat6-CI'
