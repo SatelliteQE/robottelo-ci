@@ -12,3 +12,4 @@
           add-ci-message: true
           allow-all-branches: true
           accept-merge-request-on-success: false
+          note-regex: "[test]"
