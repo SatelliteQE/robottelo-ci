@@ -3,11 +3,13 @@ import groovy.json.JsonSlurper
 def branch_map = [
     'SATELLITE-6.2.0': [
         'repo': 'Satellite 6.2 Source Files',
-        'version': '6.2.0'
+        'version': '6.2.0',
+        'foreman_branch': '1.11-stable'
     ],
     'SATELLITE-6.3.0': [
         'repo': 'Satellite 6.3 Source Files',
-        'version': '6.3.0'
+        'version': '6.3.0',
+        'foreman_branch': '1.15-stable'
     ]
 ]
 def release_branch = env.releaseBranch
@@ -118,8 +120,30 @@ node('rhel') {
 
     snapperStage("Build Source") {
 
-        dir('tool_belt') {
-            sh "bundle exec ./tools.rb release build-source --dir ../${repo_name} --type ${sourceType} --output-file artifact"
+        if (repo_name == 'katello-installer') {
+            dir(repo_name) {
+                try {
+
+                    withRVM(['gem install bundler'])
+                    withRVM(['bundle install'])
+                    withRVM(["FOREMAN_BRANCH=${version_map['foreman_branch']} rake pkg:generate_source"])
+
+                    sh 'ls pkg/*.tar.gz > ../tool_belt/artifact'
+
+                } finally {
+
+                    cleanup_rvm()
+
+                }
+            }
+        } else {
+
+            dir('tool_belt') {
+
+                sh "bundle exec ./tools.rb release build-source --dir ../${repo_name} --type ${sourceType} --output-file artifact"
+
+            }
+
         }
 
     }
@@ -130,7 +154,7 @@ node('rhel') {
         def artifact_path = ''
 
         dir('tool_belt') {
-            artifact = readFile('artifact').replace('"', '')
+            artifact = readFile('artifact').replace('"', '').trim()
         }
 
         dir(repo_name) {
