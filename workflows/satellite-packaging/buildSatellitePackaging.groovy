@@ -3,6 +3,7 @@ def packages_to_build = null
 node('sat6-rhel7') {
     stage("Fetch git") {
         deleteDir()
+        updateGitlabCommitStatus state: 'pending'
         gitlab_clone_and_merge("satellite-packaging")
     }
 
@@ -15,6 +16,7 @@ node('sat6-rhel7') {
         }
         if (!packages_to_build) {
             currentBuild.result = 'NOT_BUILT'
+            updateGitlabCommitStatus state: 'canceled'
             error('No packages to build.')
         }
         update_build_description_from_packages(packages_to_build)
@@ -25,12 +27,14 @@ node('sat6-rhel7') {
 
             kerberos_setup()
 
-            runPlaybook {
-                ansibledir = '.'
-                inventory = 'package_manifest.yaml'
-                playbook = packaging_playbook
-                limit = packages_to_build
-                tags = 'wait,download'
+            gitlabCommitStatus {
+                runPlaybook {
+                    ansibledir = '.'
+                    inventory = 'package_manifest.yaml'
+                    playbook = packaging_playbook
+                    limit = packages_to_build
+                    tags = 'wait,download'
+                }
             }
 
         } finally {
