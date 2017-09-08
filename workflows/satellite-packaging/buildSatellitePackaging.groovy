@@ -3,14 +3,7 @@ def packages_to_build = null
 node('sat6-rhel7') {
     stage("Fetch git") {
         deleteDir()
-
-        git url: "https://$GIT_HOSTNAME/$GIT_ORGANIZATION/satellite-packaging.git", branch: gitlabTargetBranch
-
-        if (env.gitlabSourceRepoName) {
-            sh "git remote add pr https://$GIT_HOSTNAME/${env.gitlabSourceRepoName}.git"
-            sh "git fetch pr"
-            sh "git merge pr/${env.gitlabSourceBranch}"
-        }
+        gitlab_clone_and_merge("satellite-packaging")
     }
 
     stage("Find packages to build") {

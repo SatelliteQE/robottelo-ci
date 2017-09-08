@@ -18,3 +18,4 @@
         - workflows/satellite-packaging/buildSatellitePackaging.groovy
         - workflows/lib/runPlaybook.groovy
         - workflows/lib/kerberos.groovy
+        - workflows/lib/gitlab.groovy
