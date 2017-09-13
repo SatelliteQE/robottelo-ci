@@ -1,0 +1,8 @@
+- job:
+    name: gitlab-clean
+    project-type: workflow
+    triggers:
+      - timed: "@midnight"
+    dsl:
+      !include-raw:
+          - workflows/gitlabClean.groovy
