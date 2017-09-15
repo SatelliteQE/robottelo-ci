@@ -33,6 +33,7 @@
       - merge_request
       - test_proxy
     publishers:
+      - gitlab-notifier
       - gemset_cleanup
       - junit:
           results: 'jenkins/reports/unit/*.xml'

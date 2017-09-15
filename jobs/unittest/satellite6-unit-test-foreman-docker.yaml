@@ -24,6 +24,7 @@
       - merge_request
       - test_plugin
     publishers:
+      - gitlab-notifier
       - gemset_cleanup
       - junit:
           results: 'foreman/jenkins/reports/unit/*.xml'

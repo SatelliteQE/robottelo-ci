@@ -28,6 +28,7 @@
       - merge_request
       - test_hammer_cli_katello
     publishers:
+      - gitlab-notifier
       - gemset_cleanup
     notifications:
       - snapper_notifications

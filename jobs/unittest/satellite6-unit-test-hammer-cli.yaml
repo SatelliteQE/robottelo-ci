@@ -28,6 +28,7 @@
       - merge_request
       - test_hammer_cli
     publishers:
+      - gitlab-notifier
       - gemset_cleanup
       - junit:
           results: 'test/reports/*.xml'

@@ -22,6 +22,7 @@
       - shell: !include-raw scripts/add_bastion_gitlab.sh
       - test_katello
     publishers:
+      - gitlab-notifier
       - gemset_cleanup
       - junit:
           results: 'foreman/jenkins/reports/unit/*.xml'

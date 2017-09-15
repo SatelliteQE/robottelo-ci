@@ -20,6 +20,7 @@
       - merge_request
       - test_develop
     publishers:
+      - gitlab-notifier
       - gemset_cleanup
       - junit:
           results: 'jenkins/reports/unit/*.xml'

@@ -28,6 +28,7 @@
       - merge_request
       - test_repo
     publishers:
+      - gitlab-notifier
       - gemset_cleanup
       - junit:
           results: 'test/reports/*.xml'

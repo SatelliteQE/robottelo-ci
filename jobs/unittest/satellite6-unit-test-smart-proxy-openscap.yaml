@@ -29,6 +29,7 @@
       - merge_request
       - test_smart_proxy_plugins
     publishers:
+      - gitlab-notifier
       - gemset_cleanup
     notifications:
       - snapper_notifications
