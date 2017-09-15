@@ -11,3 +11,5 @@
     properties:
         - build-discarder:
             num-to-keep: 32
+        - gitlab:
+            connection: gitlab-conn
