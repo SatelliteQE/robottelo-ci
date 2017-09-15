@@ -3,7 +3,6 @@ def packages_to_build = null
 node('sat6-rhel7') {
     stage("Fetch git") {
         deleteDir()
-        updateGitlabCommitStatus state: 'pending'
         gitlab_clone_and_merge("satellite-packaging")
     }
 
