@@ -6,3 +6,5 @@
                   if (!binding.variables.containsKey('gitlabSourceBranch')) {
                       return ["gitlabSourceBranch": "$sourceBranch", "gitlabTargetBranch": "$targetBranch", "gitlabSourceRepoName": "$sourceRepoName"]
                   }
+        - gitlab:
+            connection: gitlab-conn
