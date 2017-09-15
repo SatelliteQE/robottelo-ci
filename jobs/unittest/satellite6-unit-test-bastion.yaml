@@ -17,6 +17,7 @@
       - merge_request
       - test_bastion_javascript
     publishers:
+      - gitlab-notifier
       - cobertura:
           report-file: 'plugin/coverage/**/cobertura-coverage.xml'
           targets:

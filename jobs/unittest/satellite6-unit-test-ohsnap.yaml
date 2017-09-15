@@ -18,6 +18,7 @@
       - merge_request
       - test_ohsnap
     publishers:
+      - gitlab-notifier
       - gemset_cleanup
       - cobertura:
           report-file: 'coverage/coverage.xml'

@@ -16,6 +16,7 @@
       - merge_request
       - test_tool_belt
     publishers:
+      - gitlab-notifier
       - gemset_cleanup
     notifications:
       - snapper_notifications
