@@ -5,7 +5,7 @@ if [ -n "${gitlabSourceBranch}" ]; then
     pushd plugin
   fi
 
-  git remote add pr https://$GIT_HOSTNAME/${gitlabSourceRepoName}.git
+  git remote add pr https://$GIT_HOSTNAME/${gitlabSourceNamespace:-}/${gitlabSourceRepoName}.git
   git fetch pr
   git merge pr/${gitlabSourceBranch}
 
