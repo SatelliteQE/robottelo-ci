@@ -1,0 +1,35 @@
+- job:
+    name: 'satellite6-perf-setup'
+    description: |
+        Setup two instances for Performance Soak Tests, one for Satellite6 and another for Capsule.
+    node: pman07
+    parameters:
+        - choice:
+            name: DISTRO
+            choices:
+                - 'rhel7'
+                - 'rhel6'
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="DISTRO"}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-perf-provisioning.sh'
