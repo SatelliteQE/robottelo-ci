@@ -16,15 +16,20 @@ def post(body) {
     connection.setDoOutput(true)
     connection.setDoInput(true)
 
-    OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())
-    writer.write(config.json)
-    writer.flush()
-    writer.close()
-
     try {
+        OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream())
+        writer.write(config.json)
+        writer.flush()
+        writer.close()
         connection.connect()
         response = new JsonSlurper().parse(new InputStreamReader(connection.getInputStream(),"UTF-8"))
-    } finally {
+    }
+
+    catch(Exception e) {
+      println e.getMessage()
+    }
+
+    finally {
         connection.disconnect()
     }
 }
