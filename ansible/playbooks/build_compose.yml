@@ -19,7 +19,7 @@
         path: "{{ compose_link.stdout }}"
 
     - name: 'Generate compose'
-      command: "pungi-koji --test --config={{ compose_conf_dir }}/pungi/satellite-6/{{ compose_version }}/{{ compose_name }}-rhel-{{ rhel_version }}-candidate.conf --target-dir={{ compose_output_dir }} --skip-phase=createiso --skip-phase=liveimages --skip-phase=test"
+      command: "pungi-koji --test --config={{ compose_conf_dir }}/pungi/satellite-6/{{ compose_version }}/{{ compose_name }}-rhel-{{ rhel_version }}-candidate.conf --target-dir={{ compose_output_dir }} --skip-phase=createiso --skip-phase=live_images --skip-phase=test"
 
     - name: 'Find repos to cleanup'
       find:
