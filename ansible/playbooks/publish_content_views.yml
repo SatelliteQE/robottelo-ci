@@ -10,3 +10,4 @@
         server_url: "{{ server }}"
         content_view: "{{ content_view }}"
         organization: "{{ organization }}"
+        verify_ssl: False
