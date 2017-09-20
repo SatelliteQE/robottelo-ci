@@ -37,7 +37,7 @@ node('sat6-rhel7') {
                 'compose_git_repo': compose_git_repo,
                 'compose_version': 'sat-maintenance-6',
                 'compose_label': 'SatMaintenance-6',
-                'compose_name': 'satellite-maintenance-6-rhel-7'
+                'compose_name': 'satellite-maintenance-6'
             ]
         }
 
