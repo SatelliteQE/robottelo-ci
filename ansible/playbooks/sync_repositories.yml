@@ -10,3 +10,4 @@
         server_url: "{{ server }}"
         product: "{{ product }}"
         organization: "{{ organization }}"
+        verify_ssl: False
