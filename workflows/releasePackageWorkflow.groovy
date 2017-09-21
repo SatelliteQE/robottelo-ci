@@ -118,12 +118,18 @@ node('rhel') {
 
     snapperStage("Build Source") {
 
+        dir('tool_belt') {
+            sh "bundle exec ./tools.rb release build-source --dir ../${repo_name} --type ${sourceType} --output-file artifact"
+        }
+
+    }
+
+    snapperStage("Upload Source") {
+
         def artifact = ''
         def artifact_path = ''
 
         dir('tool_belt') {
-            sh "bundle exec ./tools.rb release build-source --dir ../${repo_name} --type ${sourceType} --output-file artifact"
-
             artifact = readFile('artifact').replace('"', '')
         }
 
