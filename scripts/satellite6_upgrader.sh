@@ -33,13 +33,24 @@ fi
 # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
 fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
 
+# Run pre-upgrade scripts to replicate custom scenarios
+if [ -n "${CUSTOM_SCRIPT_URL}" ]; then
+    echo "Running Pre-Upgrade Custom script"
+    wget "${CUSTOM_SCRIPT_URL}"
+    export custom_file="${CUSTOM_SCRIPT_URL##+(*/)}"
+    chmod 755 ${custom_file}
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" ${custom_file}
+fi
+
 # Run upgrade for CDN/Downstream
 fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
 
 
 # Run existance tests
 if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
+    set +e
     $(which py.test) -v --junit-xml=test_existance-results.xml upgrade_tests/test_existance_relations/
+    set -e
 fi
 
 # Post Upgrade archive logs from log analyzer tool
