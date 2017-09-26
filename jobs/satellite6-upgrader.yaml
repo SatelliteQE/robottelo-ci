@@ -88,6 +88,10 @@
             name: CLIENT7_HOSTS
             description: |
                 <p>User defined client hostnames on RHEL7 to upgrade, separated by comma(,).</p>
+        - string:
+            name: CUSTOM_SCRIPT_URL
+            description: |
+                <p>Custom script hosted on HTTP that would be run on satellite before satellite upgrade.</p>
     scm:
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
