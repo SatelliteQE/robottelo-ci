@@ -67,7 +67,6 @@ fi
 # Required when we need to further customize things on the fly.
 if [[ "${ONLY_POPULATE_TEMPLATE}" = 'true' ]]; then
     sed -i "s|ONLY_POPULATE_TEMPLATE=.*|ONLY_POPULATE_TEMPLATE=\"${ONLY_POPULATE_TEMPLATE}\"|" satellite6-populate.sh
-    exit 1
+else
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" /root/satellite6-populate.sh
 fi
-
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" /root/satellite6-populate.sh

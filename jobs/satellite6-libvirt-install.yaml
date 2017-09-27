@@ -6,6 +6,14 @@
         recently procured. This would help fully automate sat6 installation to do Libvirt, RHEVM and Openstack CR Testing.
     node: sat6-rhel7
     parameters:
+        - bool:
+            name: RERUN
+            default: false
+            description: |
+                This is a dummy re-run, any changes done to the parameters would have no effect.
+                Check this if the script transferred to sat6 failed for some reason and you want
+                to RERUN it, after a fix or skip of the command in the script.
+                Would skip already run hammer commands and would proceed to the next TODO command.
         - choice:
             name: PROVISIONING_ID
             choices:
