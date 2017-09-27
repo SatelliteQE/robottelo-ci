@@ -66,6 +66,13 @@
                 - 'authenticated'
                 - 'non-authenticated'
                 - 'no-proxy'
+        - string:
+            name: ADMIN_PASSWORD
+            default: changeme
+            description: "Specify the admin password if changed from the default set."
+        - string:
+            name: MANIFEST_LOCATION_URL
+            description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
         - choice:
             name: DOWNLOAD_POLICY
             choices:
