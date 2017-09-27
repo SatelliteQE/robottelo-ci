@@ -13,13 +13,25 @@
     parameters:
         - string:
             name: SERVER_HOSTNAME
-            description: "FQDN for your server where you want to populate Satellite 6 content."
+            description: "This is Mandatory, FQDN for your server where you want to populate Satellite 6 content."
+        - bool:
+            name: RERUN
+            default: false
+            description: |
+                This is a dummy re-run, any changes done to the parameters would have no effect.
+                Check this if the script transferred to sat6 failed for some reason and you want
+                to RERUN it, after a fix or skip of the command in the script.
+                Would skip already run hammer commands and would proceed to the next TODO command.
+        - string:
+            name: ADMIN_PASSWORD
+            default: changeme
+            description: "Specify the admin password if changed from the default set."
         - choice:
             name: SATELLITE_VERSION
             choices:
                 - '6.3'
                 - '6.2'
-            description: "Currently this job populates completely for 6.2 and 6.3 only. As a lot of hammer-cli options differ for 6.1"
+            description: "Currently this job populates completely for 6.2 and 6.3 only. As a lot of hammer-cli options differ for 6.1."
         - choice:
             name: DOWNLOAD_POLICY
             choices:
@@ -39,14 +51,23 @@
             description: |
                 Depending upon INTERNAL and GA, either DOGFOOD or CDN content is synced.
         - string:
+            name: MANIFEST_LOCATION_URL
+            description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
+        - string:
             name: SUBNET_RANGE
-            description: "The subnet Network to provide IP's from to the hosts. Example: 192.168.100.0 or 10.x.x.0"
+            description: |
+                 This is Mandatory. If you have used Satellite6-Installer earlier and used it's default values set this to 192.168.100.0.
+                 The subnet Network to provide IP's from to the hosts. Example - 192.168.100.0 or 10.x.x.0
         - string:
             name: SUBNET_MASK
-            description: "The Subnet mask for the Subnet Range defined. Example: 255.255.255.0"
+            description: |
+                This is Mandatory. If you have used Satellite6-Installer earlier and used it's default values set this to 255.255.255.0
+                The Subnet mask for the Subnet Range defined. Example - 255.255.255.0
         - string:
             name: SUBNET_GATEWAY
-            description: "The Subnet gateway for the Subnet Range defined. Example: 192.168.100.1 for NAT Based and x.x.x.254 for Bridge Based networks."
+            description: |
+                This is Mandatory. If you have used Satellite6-Installer earlier and used it's default values set this to 192.168.100.1
+                Subnet gateway for the Subnet Range defined. Example - 192.168.100.1 for NAT Based and x.x.x.254 for Bridge Based networks.
         - bool:
             name: DEFAULT_COMPUTE_RESOURCES
             default: true
@@ -75,28 +96,28 @@
                 One can find the populated template script at /root/satellite6-populate.sh
         - string:
             name: LIBVIRT_HOSTNAME
-            description: "The Libvirt Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The Libvirt Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
         - string:
             name: RHEV_HOSTNAME
-            description: "The RHEV Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The RHEV Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
         - string:
             name: RHEV_USER
-            description: "The RHEV User login to add the Compute Resource. Note: Provide User in the format user@internal."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The RHEV User login to add the Compute Resource. Note: Provide User in the format user@internal."
         - string:
             name: RHEV_PASSWD
-            description: "The RHEV Password to add the Compute Resource."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The RHEV Password to add the Compute Resource."
         - string:
             name: RHEV_DATACENTER_UUID
-            description: "The RHEV UUID to load the Datacenter and quota for the Compute Resource."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The RHEV UUID to load the Datacenter and quota for the Compute Resource."
         - string:
             name: OSP_HOSTNAME
-            description: "The Openstack Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The Openstack Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
         - string:
             name: OS_USERNAME
-            description: "The OpenStack Platform User login to add the Compute Resource."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The OpenStack Platform User login to add the Compute Resource."
         - string:
             name: OS_PASSWORD
-            description: "The OpenStack Platform Password to add the Compute Resource."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The OpenStack Platform Password to add the Compute Resource."
     scm:
         - git:
             url: ${CI_REPO}

@@ -4,8 +4,12 @@ echo "Populating template to configure Satellite6 "
 echo "============================================="
 echo
 
+
 # Populates the HTTP Server information.
-sed -i "s|HTTP_SERVER_HOSTNAME=.*|HTTP_SERVER_HOSTNAME=\"${HTTP_SERVER_HOSTNAME}\"|" satellite6-populate.sh
+sed -i "s|ADMIN_PASSWORD=.*|ADMIN_PASSWORD=\"${ADMIN_PASSWORD}\"|" satellite6-populate.sh
+
+# Populates the HTTP Server information.
+sed -i "s|MANIFEST_LOCATION_URL=.*|MANIFEST_LOCATION_URL=\"${MANIFEST_LOCATION_URL}\"|" satellite6-populate.sh
 
 # Populates the DOWNLOAD_POLICY setting.
 sed -i "s|DOWNLOAD_POLICY=.*|DOWNLOAD_POLICY=\"${DOWNLOAD_POLICY}\"|" satellite6-populate.sh
@@ -55,11 +59,15 @@ sed -i "s|SAT_VERSION=.*|SAT_VERSION=\"${SATELLITE_VERSION}\"|" satellite6-popul
 # This shall be called as minimal install and by default it would sync only these content.
 sed -i "s|MINIMAL_INSTALL=.*|MINIMAL_INSTALL=\"${MINIMAL_INSTALL}\"|" satellite6-populate.sh
 
-scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no satellite6-populate.sh root@"${SERVER_HOSTNAME}":/root/
+if [[ "${RERUN}" != 'true' ]]; then
+    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no satellite6-populate.sh root@"${SERVER_HOSTNAME}":/root/
+fi
 
 # This will only populate the template with all values and transfer the template to the mentioned SERVER_HOSTNAME.
 # Required when we need to further customize things on the fly.
 if [[ "${ONLY_POPULATE_TEMPLATE}" = 'true' ]]; then
+    sed -i "s|ONLY_POPULATE_TEMPLATE=.*|ONLY_POPULATE_TEMPLATE=\"${ONLY_POPULATE_TEMPLATE}\"|" satellite6-populate.sh
     exit 1
 fi
+
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" /root/satellite6-populate.sh
