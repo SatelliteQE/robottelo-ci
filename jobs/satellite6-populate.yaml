@@ -18,9 +18,9 @@
             name: RERUN
             default: false
             description: |
-                This is a dummy re-run, any changes done to the parameters would have no effect.
+                This is a dummy re-run, any changes done to the parameters during the re-run would have no effect.
                 Check this if the script transferred to sat6 failed for some reason and you want
-                to RERUN it, after a fix or skip of the command in the script.
+                to RERUN it, after fixing or skiping of the command in the script.
                 Would skip already run hammer commands and would proceed to the next TODO command.
         - string:
             name: ADMIN_PASSWORD
@@ -96,28 +96,28 @@
                 One can find the populated template script at /root/satellite6-populate.sh
         - string:
             name: LIBVIRT_HOSTNAME
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The Libvirt Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The Libvirt Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
         - string:
             name: RHEV_HOSTNAME
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The RHEV Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
         - string:
             name: RHEV_USER
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The RHEV User login to add the Compute Resource. Note: Provide User in the format user@internal."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV User login to add the Compute Resource. Note: Provide User in the format user@internal."
         - string:
             name: RHEV_PASSWD
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The RHEV Password to add the Compute Resource."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV Password to add the Compute Resource."
         - string:
             name: RHEV_DATACENTER_UUID
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The RHEV UUID to load the Datacenter and quota for the Compute Resource."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV UUID to load the Datacenter and quota for the Compute Resource."
         - string:
             name: OSP_HOSTNAME
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The Openstack Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The Openstack Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
         - string:
             name: OS_USERNAME
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The OpenStack Platform User login to add the Compute Resource."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The OpenStack Platform User login to add the Compute Resource."
         - string:
             name: OS_PASSWORD
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is true. The OpenStack Platform Password to add the Compute Resource."
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The OpenStack Platform Password to add the Compute Resource."
     scm:
         - git:
             url: ${CI_REPO}
