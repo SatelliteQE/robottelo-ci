@@ -33,14 +33,22 @@ fi
 # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
 fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
 
+# Get the Satellite hostname which will be used by job
+if [ -z "${SATELLITE_HOSTNAME}" ]; then
+    export SAT_HOST="${RHEV_SAT_HOST}"
+fi
+
 # Run pre-upgrade scripts to replicate custom scenarios
 if [ -n "${CUSTOM_SCRIPT_URL}" ]; then
     echo "Running Pre-Upgrade Custom script"
     wget "${CUSTOM_SCRIPT_URL}"
     custom_file="${CUSTOM_SCRIPT_URL}"
+    shopt -s extglob;
     export custom_file=${custom_file##+(*/)}
     chmod 755 ${custom_file}
-    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" ${custom_file}
+    scp ${custom_file} root@"${SAT_HOST}":.
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SAT_HOST}" chmod 755 /root/${custom_file}
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SAT_HOST}" ${custom_file}
 fi
 
 # Run upgrade for CDN/Downstream
