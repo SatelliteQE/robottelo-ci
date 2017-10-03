@@ -55,18 +55,21 @@
             description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
         - string:
             name: SUBNET_RANGE
+            default: 192.168.100.0
             description: |
-                 This is Mandatory. If you have used Satellite6-Installer earlier and used it's default values set this to 192.168.100.0.
+                 If you have used Satellite6-Installer earlier, the default value would suffice, else override.
                  The subnet Network to provide IP's from to the hosts. Example - 192.168.100.0 or 10.x.x.0
         - string:
             name: SUBNET_MASK
+            default: 255.255.255.0
             description: |
-                This is Mandatory. If you have used Satellite6-Installer earlier and used it's default values set this to 255.255.255.0
+                If you have used Satellite6-Installer earlier, the default value would suffice, else override.
                 The Subnet mask for the Subnet Range defined. Example - 255.255.255.0
         - string:
             name: SUBNET_GATEWAY
+            default: 192.168.100.1
             description: |
-                This is Mandatory. If you have used Satellite6-Installer earlier and used it's default values set this to 192.168.100.1
+                If you have used Satellite6-Installer earlier, the default value would suffice, else override.
                 Subnet gateway for the Subnet Range defined. Example - 192.168.100.1 for NAT Based and x.x.x.254 for Bridge Based networks.
         - bool:
             name: DEFAULT_COMPUTE_RESOURCES
