@@ -8,4 +8,10 @@ git clone https://$GIT_HOSTNAME/$GIT_ORGANIZATION/foreman.git
 pushd foreman
 git fetch origin
 git checkout origin/${gitlabTargetBranch}
+
+# Change the gem source if it's for Sat-6.3.0
+if [ ${targetBranch} == 'SATELLITE-6.3.0' ]; then
+  sed -i 's/https:\/\/rubygems.org/$GEMSNAP_URL/g' Gemfile
+fi
+
 popd foreman
