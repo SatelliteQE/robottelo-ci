@@ -49,6 +49,8 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/lidl"
     elif [ "${CUSTOMERDB_NAME}" = 'ExpressScripts' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/express-scripts/6.2-NOV-28-2016"
+    elif [ "${CUSTOMERDB_NAME}" = 'Verizon' ]; then
+        DB_URL="http://"${cust_db_server}"/customer-databases/Verizon/OCT-2-2017-62"
     elif [ "${CUSTOMERDB_NAME}" = 'Walmart' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/walmart/sat62_apr11_working_from_beav/"
     elif [ "${CUSTOMERDB_NAME}" = 'Sat62RHEL6Migrate' ]; then
@@ -69,7 +71,7 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     # Set the flag true in case of migrating the rhel6 satellite server to rhel7 machine
     if [ ${RHEL_MIGRATION} = "true" ]; then
         sed -i -e "s/^#rhel_migration.*/rhel_migration: "${RHEL_MIGRATION}"/" satellite-clone-vars.yml
-        ssh -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.dump' "${DB_URL}""
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.dump' "${DB_URL}""
         sed -i -e "s/^rhelversion.*/rhelversion: 7/" satellite-clone-vars.yml
     fi
     # Configuration updates in tasks file wrt vars file
@@ -80,9 +82,11 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     # Download the Customer DB data Backup files
     echo "Downloading Customer Data DB's from Server, This may take while depending on the network ....."
     if [ "${CUSTOMERDB_NAME}" = 'Walmart' ]; then
-        ssh -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q /var/tmp/backup --include customer-databases/walmart/sat62_apr11_working_from_beav/ -nH --cut-dirs=3 -r --no-parent --reject="index.html*" --continue "${DB_URL}"" 
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q /var/tmp/backup --include customer-databases/walmart/sat62_apr11_working_from_beav/ -nH --cut-dirs=3 -r --no-parent --reject="index.html*" --continue "${DB_URL}"" 
+    elif [ "${CUSTOMERDB_NAME}" = 'Verizon' ]; then
+        ssh -o UserKnownHostsFile -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q /var/tmp/backup --include customer-databases/Verizon/OCT-2-2017-62/ -nH --cut-dirs=3 -r --no-parent --reject=index.html* --continue "${DB_URL}""
     else
-        ssh -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar.gz' "${DB_URL}"" 
+        ssh -o UserKnownHostsFile -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar.gz' "${DB_URL}"" 
     fi
     # Run Ansible command to install satellite with cust DB
     export ANSIBLE_HOST_KEY_CHECKING=False
