@@ -52,7 +52,7 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     elif [ "${CUSTOMERDB_NAME}" = 'Verizon' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/Verizon/OCT-2-2017-62"
     elif [ "${CUSTOMERDB_NAME}" = 'Walmart' ]; then
-        DB_URL="http://"${cust_db_server}"/customer-databases/walmart/sat62_apr11_working_from_beav/"
+        DB_URL="http://"${cust_db_server}"/customer-databases/walmart/sat-clone-backups/rhel7-62-walmart-with-pulp"
     elif [ "${CUSTOMERDB_NAME}" = 'Sat62RHEL6Migrate' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/qe-rhel6-db/sat62-rhel6-db"
     fi
@@ -81,13 +81,7 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     sed -i -e '/subscribe machine.*/a\ \ command: subscription-manager subscribe --pool={{ rhn_pool }}' roles/satellite-clone/tasks/main.yml
     # Download the Customer DB data Backup files
     echo "Downloading Customer Data DB's from Server, This may take while depending on the network ....."
-    if [ "${CUSTOMERDB_NAME}" = 'Walmart' ]; then
-        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q /var/tmp/backup --include customer-databases/walmart/sat62_apr11_working_from_beav/ -nH --cut-dirs=3 -r --no-parent --reject="index.html*" --continue "${DB_URL}"" 
-    elif [ "${CUSTOMERDB_NAME}" = 'Verizon' ]; then
-        ssh -o UserKnownHostsFile -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q /var/tmp/backup --include customer-databases/Verizon/OCT-2-2017-62/ -nH --cut-dirs=3 -r --no-parent --reject=index.html* --continue "${DB_URL}""
-    else
-        ssh -o UserKnownHostsFile -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar.gz' "${DB_URL}"" 
-    fi
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar*' "${DB_URL}"" 
     # Run Ansible command to install satellite with cust DB
     export ANSIBLE_HOST_KEY_CHECKING=False
     ansible all -i inventory -m ping -u root
