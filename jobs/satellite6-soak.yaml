@@ -1,0 +1,376 @@
+#=========================================================================================
+# Job Templates
+#=========================================================================================
+- job-template:
+    name: 'provision-soak-satellite-{satellite_version}-{os}'
+    description: |
+        Setup two RHEL7 instances for Satellite6 and Capsule Soak Testing.
+        Would only provision two RHEL7 instances with two nic and 200 GB storage.
+    node: pman07
+    parameters:
+        - choice:
+            name: SATELLITE_RAM
+            choices:
+                - '16'
+                - '24'
+        - choice:
+            name: CAPSULE_RAM
+            choices:
+                - '16'
+                - '14'
+        - string:
+            name: DOCKER_HOST_COUNT
+            default: '10'
+            description: |
+                Specify the Docker Host Count to populate.
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                - 'INTERNAL_REPOFILE'
+                - 'GA'
+        - string:
+            name: MANIFEST_LOCATION_URL
+            description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
+        - string:
+            name: BUILD_LABEL
+            description: |
+                Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.
+        - string:
+            name: AUTO_TOOLS_REPO
+            default: https://github.com/SatelliteQE/automation-tools.git
+            description: |
+                You can override this to your automation-tools repo, if needed.
+        - string:
+            name: AUTO_TOOLS_BRANCH
+            default: master
+            description: |
+                You can override this to any branch.
+    scm:
+        - git:
+            url: ${{AUTO_TOOLS_REPO}}
+            branches:
+                - origin/${{AUTO_TOOLS_BRANCH}}
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                DISTRO={os}
+                SATELLITE_VERSION={satellite_version}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape:
+                    - 'pip-install-pycurl.sh'
+                    - 'soak-provision-setup.sh'
+        - inject:
+            properties-file: build_env.properties
+        - trigger-builds:
+            - project: 'install-soak-satellite-{satellite_version}-{os}'
+              predefined-parameters: |
+                BUILD_LABEL=${{BUILD_LABEL}}
+                DOCKER_HOST_COUNT=${{DOCKER_HOST_COUNT}}
+                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                SATELLITE_SERVER_HOSTNAME=${{SATELLITE_SERVER_HOSTNAME}}
+                CAPSULE_SERVER_HOSTNAME=${{CAPSULE_SERVER_HOSTNAME}}
+                MANIFEST_LOCATION_URL=${{MANIFEST_LOCATION_URL}}
+    publishers:
+        - satellite6-automation-mails
+
+- job-template:
+    name: 'install-soak-satellite-{satellite_version}-{os}'
+    description: |
+        Configures Satellite6 for Soak Testing using the sat-perf ansible playbooks.
+    node: pman07
+    parameters:
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                - 'INTERNAL_REPOFILE'
+                - 'GA'
+        - string:
+            name: MANIFEST_LOCATION_URL
+            description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
+        - string:
+            name: BUILD_LABEL
+            description: |
+                Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.
+        - string:
+            name: SATELLITE_SERVER_HOSTNAME
+            description: The Satellite6 Server Hostname to be configured.
+        - string:
+            name: CAPSULE_SERVER_HOSTNAME
+            description: The Capsule Server Hostname to be configured.
+        - string:
+            name: SAT_PERF_REPO
+            default: https://github.com/redhat-performance/satellite-performance.git
+            description: |
+                You can override this to your sat-perf repo, if needed.
+        - string:
+            name: SAT_PERF_BRANCH
+            default: master
+            description: |
+                You can override this to any branch of your sat-perf repo.
+    scm:
+        - git:
+            url: ${{SAT_PERF_REPO}}
+            branches:
+                - origin/${{SAT_PERF_BRANCH}}
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                DISTRO={os}
+                SATELLITE_VERSION={satellite_version}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape:
+                    - 'soak-install-setup.sh'
+                    - 'soak-install-sat6.sh'
+        - trigger-builds:
+            - project: 'install-soak-capsule-{satellite_version}-{os}'
+              current-parameters: true
+    publishers:
+        - satellite6-automation-mails
+
+- job-template:
+    name: 'install-soak-capsule-{satellite_version}-{os}'
+    description: |
+        Configures Capsule for Soak Testing using the sat-perf ansible playbooks.
+    node: pman07
+    parameters:
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                - 'INTERNAL_REPOFILE'
+                - 'GA'
+        - string:
+            name: MANIFEST_LOCATION_URL
+            description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
+        - string:
+            name: BUILD_LABEL
+            description: |
+                Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.
+        - string:
+            name: SATELLITE_SERVER_HOSTNAME
+            description: The Satellite6 Server Hostname to be configured.
+        - string:
+            name: CAPSULE_SERVER_HOSTNAME
+            description: The Capsule Server Hostname to be configured.
+        - string:
+            name: SAT_PERF_REPO
+            default: https://github.com/redhat-performance/satellite-performance.git
+            description: |
+                You can override this to your sat-perf repo, if needed.
+        - string:
+            name: SAT_PERF_BRANCH
+            default: master
+            description: |
+                You can override this to any branch of your sat-perf repo.
+    scm:
+        - git:
+            url: ${{SAT_PERF_REPO}}
+            branches:
+                - origin/${{SAT_PERF_BRANCH}}
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                DISTRO={os}
+                SATELLITE_VERSION={satellite_version}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape:
+                    - 'soak-install-setup.sh'
+                    - 'soak-install-capsule.sh'
+        - trigger-builds:
+            - project: 'configure-soak-docker-hosts-{satellite_version}-{os}'
+              current-parameters: true
+    publishers:
+        - satellite6-automation-mails
+
+
+- job-template:
+    name: 'configure-soak-docker-hosts-{satellite_version}-{os}'
+    description: |
+        Configures docker hosts using the sat-perf ansible playbook.
+    node: pman07
+    parameters:
+        - string:
+            name: MANIFEST_LOCATION_URL
+            description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
+        - string:
+            name: BUILD_LABEL
+            description: |
+                Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.
+        - string:
+            name: DOCKER_HOST_COUNT
+            default: '10'
+            description: |
+                Specify the Docker Host Count to populate.
+        - string:
+            name: SATELLITE_SERVER_HOSTNAME
+            description: The Satellite6 Server Hostname to be configured.
+        - string:
+            name: CAPSULE_SERVER_HOSTNAME
+            description: The Capsule Server Hostname to be configured.
+        - string:
+            name: SAT_PERF_REPO
+            default: https://github.com/redhat-performance/satellite-performance.git
+            description: |
+                You can override this to your sat-perf repo, if needed.
+        - string:
+            name: SAT_PERF_BRANCH
+            default: master
+            description: |
+                You can override this to any branch of your sat-perf repo.
+    scm:
+        - git:
+            url: ${{SAT_PERF_REPO}}
+            branches:
+                - origin/${{SAT_PERF_BRANCH}}
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                DISTRO={os}
+                SATELLITE_VERSION={satellite_version}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape:
+                    - 'soak-install-setup.sh'
+                    - 'soak-configure-docker-hosts.sh'
+        - trigger-builds:
+            - project: 'configure-soak-collectd-sat-cap-{satellite_version}-{os}'
+              current-parameters: true
+    publishers:
+        - satellite6-automation-mails
+
+- job-template:
+    name: 'configure-soak-collectd-sat-cap-{satellite_version}-{os}'
+    description: |
+        Configures collectd on Satellite6 and Capsule using the sat-mon ansible playbooks.
+    node: pman07
+    parameters:
+        - string:
+            name: BUILD_LABEL
+            description: |
+                Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.
+        - string:
+            name: SATELLITE_SERVER_HOSTNAME
+            description: The Satellite6 Server Hostname to be configured.
+        - string:
+            name: CAPSULE_SERVER_HOSTNAME
+            description: The Capsule Server Hostname to be configured.
+        - string:
+            name: SAT_MON_REPO
+            default: https://github.com/redhat-performance/satellite-monitoring.git
+            description: |
+                You can override this to your sat-mon repo, if needed.
+        - string:
+            name: SAT_MON_BRANCH
+            default: master
+            description: |
+                You can override this to any branch of your sat-mon repo.
+    scm:
+        - git:
+            url: ${{SAT_MON_REPO}}
+            branches:
+                - origin/${{SAT_MON_BRANCH}}
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                DISTRO={os}
+                SATELLITE_VERSION={satellite_version}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape:
+                    - 'soak-configure-sat-cap-collectd.sh'
+    publishers:
+        - satellite6-automation-mails
+
+#========================================================================================
+# Project
+#========================================================================================
+- project:
+    name: satellite6-soak
+    satellite_version:
+        - '6.2'
+        - '6.3'
+    os:
+        - 'rhel7'
+    jobs:
+        - 'provision-soak-satellite-{satellite_version}-{os}'
+        - 'install-soak-satellite-{satellite_version}-{os}'
+        - 'install-soak-capsule-{satellite_version}-{os}'
+        - 'configure-soak-collectd-sat-cap-{satellite_version}-{os}'
+        - 'configure-soak-docker-hosts-{satellite_version}-{os}'
