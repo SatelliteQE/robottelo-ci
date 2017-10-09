@@ -1,5 +1,5 @@
 - job:
-    name: sat6-satellite-packaging-scratch-build
+    name: sat-63-satellite-packaging-scratch-build
     project-type: workflow
     logrotate:
       daysToKeep: 45

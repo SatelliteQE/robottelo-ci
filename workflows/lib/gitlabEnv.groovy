@@ -4,3 +4,6 @@ if (!env.getProperty('gitlabTargetBranch') && env.getProperty('targetBranch')) {
     env.setProperty('gitlabSourceNamespace', '')
     env.setProperty('gitlabTargetBranch', env.getProperty('targetBranch'))
 }
+if (!env.getProperty('gitlabTargetBranch') && env.getProperty('releaseBranch')) {
+    env.setProperty('gitlabTargetBranch', env.getProperty('releaseBranch'))
+}
