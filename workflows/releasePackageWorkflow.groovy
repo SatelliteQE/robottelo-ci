@@ -120,7 +120,7 @@ node('rhel') {
 
     snapperStage("Build Source") {
 
-        if (repo_name == 'katello-installer') {
+        if (repo_name in ['katello-installer', 'foreman-installer']) {
             dir(repo_name) {
                 try {
 
@@ -128,7 +128,7 @@ node('rhel') {
                     withRVM(['bundle install'])
                     withRVM(["FOREMAN_BRANCH=${version_map['foreman_branch']} rake pkg:generate_source"])
 
-                    sh 'ls pkg/*.tar.gz > ../tool_belt/artifact'
+                    sh 'ls pkg/*.tar.* > ../tool_belt/artifact'
 
                 } finally {
 

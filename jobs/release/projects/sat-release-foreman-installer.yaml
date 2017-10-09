@@ -13,4 +13,4 @@
           - workflows/lib/runPlaybook.groovy
           - workflows/lib/sendPostRequest.groovy
           - workflows/lib/messageSnapper.groovy
-          
+          - workflows/lib/rvm.groovy
