@@ -1,0 +1,19 @@
+- job:
+    name: sat-63-satellite-packaging-release-build
+    project-type: workflow
+    logrotate:
+      daysToKeep: 45
+      numToKeep: -1
+    parameters:
+      - string:
+          name: project
+          description: 'Name of the project to build from satellite-packaging.'
+      - release_branch
+    dsl:
+      !include-raw:
+        - workflows/lib/gitlabEnv.groovy
+        - workflows/satellite-packaging/releaseBuildSatellitePackaging.groovy
+        - workflows/satellite-packaging/buildSatellitePackaging.groovy
+        - workflows/lib/runPlaybook.groovy
+        - workflows/lib/kerberos.groovy
+        - workflows/lib/gitlab.groovy
