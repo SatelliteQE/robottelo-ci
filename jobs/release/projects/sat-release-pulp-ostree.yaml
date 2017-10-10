@@ -1,0 +1,14 @@
+- job:
+    disabled: false
+    name: 'sat-release-pulp-ostree'
+    project-type: workflow
+    parameters:
+      - release_branch
+    dsl:
+      !include-raw:
+          - ./repos/pulp_ostree_repo.groovy
+          - ./source_types/sourceTypeTar.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/runPlaybook.groovy
+          - workflows/lib/sendPostRequest.groovy
+          - workflows/lib/messageSnapper.groovy
