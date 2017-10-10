@@ -4,4 +4,5 @@
         - junit:
             results: '*-results.xml'
             claim-build: true
+            allow-empty-results: true
         - claim-build
