@@ -11,9 +11,11 @@ node('rhel') {
 
         try {
 
-            withRVM(["gem install bundler"])
-            withRVM(["bundle install"])
-            withRVM(["FOREMAN_BRANCH=1.15-stable bundle exec rake"])
+            gitlabCommitStatus {
+                withRVM(["gem install bundler"])
+                withRVM(["bundle install"])
+                withRVM(["FOREMAN_BRANCH=1.15-stable bundle exec rake"])
+            }
 
         } finally {
 
