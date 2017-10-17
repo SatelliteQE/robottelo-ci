@@ -1,0 +1,19 @@
+- job:
+    name: 'sat6-unit-test-puppet-certs'
+    project-type: workflow
+    logrotate:
+      daysToKeep: 21
+      numToKeep: -1
+    parameters:
+      - merge_request
+    triggers:
+      - gitlab_build_on_change
+    dsl:
+      !include-raw:
+        - ./repos/puppet_certs.groovy
+        - workflows/lib/gitlabEnv.groovy
+        - workflows/test/puppet.groovy
+        - workflows/lib/sendPostRequest.groovy
+        - workflows/lib/messageSnapper.groovy
+        - workflows/lib/rvm.groovy
+        - workflows/lib/gitlab.groovy

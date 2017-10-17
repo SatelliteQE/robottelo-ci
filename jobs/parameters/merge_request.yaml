@@ -3,13 +3,13 @@
     parameters:
       - string:
           name: sourceRepoName
-          default: 
+          default:
           description: 'Source repository name (e.g. ehelms/foreman)'
       - string:
           name: sourceBranch
-          default: 
+          default:
           description: 'Source repository branch where the change exists (e.g. my-bug-branch)'
       - string:
           name: targetBranch
-          default: 
+          default:
           description: 'Branch on the target repository that the merge request is going into (e.g. master)'
