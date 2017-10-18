@@ -1,0 +1,8 @@
+- job:
+    disabled: false
+    name: deploy-gemsnap
+    project-type: workflow
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - workflows/deployGemsnap.groovy
