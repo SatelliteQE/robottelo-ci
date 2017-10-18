@@ -13,6 +13,7 @@ node('rhel') {
         }
 
         def name = "puppet-${combo['puppet_version']}_ruby-${combo['ruby_version']}"
+        updateGitlabCommitStatus name: name, state: 'pending'
 
         tests[name] = {
             node('rhel') {
@@ -23,9 +24,11 @@ node('rhel') {
                         deleteDir()
                         gitlab_clone_and_merge(puppet_repo)
 
-                        withRVM(["gem install bundler"], combo['ruby_version'], name)
-                        withRVM(["PUPPET_VERSION=${combo['puppet_version']} bundle install --without system_tests development"], combo['ruby_version'], name)
-                        withRVM(["ONLY_OS=redhat-6-x86_64,redhat-7-x86_64 bundle exec rake"], combo['ruby_version'], name)
+                        gitlabCommitStatus(name) {
+                            withRVM(["gem install bundler"], combo['ruby_version'], name)
+                            withRVM(["PUPPET_VERSION=${combo['puppet_version']} bundle install --without system_tests development"], combo['ruby_version'], name)
+                            withRVM(["ONLY_OS=redhat-6-x86_64,redhat-7-x86_64 bundle exec rake"], combo['ruby_version'], name)
+                        }
                     }
 
                 } finally {
@@ -39,7 +42,9 @@ node('rhel') {
 
     snapperStage('Run Tests') {
 
-        parallel tests
+        gitlabCommitStatus() {
+            parallel tests
+        }
 
     }
 
