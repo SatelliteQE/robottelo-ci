@@ -1,0 +1,24 @@
+- job:
+    name: 'sat6-unit-test-satellite-clone'
+    node: rhsm-qe-2
+    logrotate:
+      daysToKeep: 21
+      numToKeep: -1
+    properties:
+      - github:
+          url: https://github.com/RedHatSatellite/satellite-clone
+    scm:
+      - satellite_clone_github
+    parameters:
+      - string:
+          name: pr_number
+          description: sat-clone pull request number
+    triggers:
+      - github-pull-request:
+          cron: '* * * * *'
+          build-desc-template: "satellite-clone PR tests"
+          trigger-phrase: 'yee-haw'
+          only-trigger-phrase: true
+          permit-all: true
+    builders:
+      - shell: !include-raw: satellite-clone-test.sh

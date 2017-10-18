@@ -1,0 +1,11 @@
+- scm:
+    name: satellite_clone_github
+    scm:
+      - git:
+          wipe-workspace: true
+          branches:
+            - ${sha1}
+          remotes:
+            - origin:
+                url: 'https://github.com/RedHatSatellite/satellite-clone.git'
+                refspec: +refs/pull/*:refs/remotes/origin/pr/*
