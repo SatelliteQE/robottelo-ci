@@ -1,6 +1,6 @@
 - job:
     name: satellite6-unit-test-hammer-cli
-    node: rhel
+    node: rvm
     project-type: matrix
     logrotate:
       daysToKeep: -1
@@ -21,7 +21,7 @@
           type: slave
           name: nodes
           values:
-            - rhel
+            - rvm
     triggers:
       - gitlab_build_on_change
     builders:

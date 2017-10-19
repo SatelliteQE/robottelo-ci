@@ -1,4 +1,4 @@
-node('rhel') {
+node('rvm') {
 
     def tests = [:]
     def puppet_ruby = [

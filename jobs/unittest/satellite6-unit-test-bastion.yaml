@@ -4,7 +4,7 @@
       daysToKeep: -1
       numToKeep: 32
     concurrent: true
-    node: rhel
+    node: rvm
     properties:
       - gitlab_variables
     parameters:

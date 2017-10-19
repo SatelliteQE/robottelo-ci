@@ -1,6 +1,6 @@
 - job:
     name: satellite6-unit-test-tool-belt
-    node: rhel
+    node: rvm
     logrotate:
       daysToKeep: -1
       numToKeep: 32
