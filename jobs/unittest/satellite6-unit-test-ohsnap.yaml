@@ -1,6 +1,6 @@
 - job:
     name: satellite6-unit-test-ohsnap
-    node: rhel
+    node: rvm
     logrotate:
       daysToKeep: -1
       numToKeep: 32

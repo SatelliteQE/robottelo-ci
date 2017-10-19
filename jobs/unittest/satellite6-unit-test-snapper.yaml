@@ -1,7 +1,7 @@
 
 - job:
     name: satellite6-unit-test-snapper
-    node: rhel
+    node: rvm
     logrotate:
       daysToKeep: -1
       numToKeep: 32

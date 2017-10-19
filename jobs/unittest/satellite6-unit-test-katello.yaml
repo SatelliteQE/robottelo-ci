@@ -3,7 +3,7 @@
     logrotate:
       daysToKeep: -1
       numToKeep: 32
-    node: rhel
+    node: rvm
     properties:
       - gitlab_variables
     parameters:

@@ -16,7 +16,7 @@ def release_branch = env.releaseBranch
 def repo_name = gitRepository.split('/')[1]
 def version_map = branch_map[release_branch]
 
-node('rhel') {
+node('rvm') {
 
     snapperStage("Setup Environment") {
 

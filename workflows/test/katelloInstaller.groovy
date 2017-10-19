@@ -1,4 +1,4 @@
-node('rhel') {
+node('rvm') {
 
     snapperStage("Setup Environment") {
 
