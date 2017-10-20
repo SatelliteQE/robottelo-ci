@@ -1,0 +1,22 @@
+- job:
+    name: satellite6-unit-test-fog
+    node: rvm
+    logrotate:
+      daysToKeep: -1
+      numToKeep: 32
+    properties:
+      - gitlab_variables
+    parameters:
+      - merge_request
+    scm:
+      - fog_gitlab
+    triggers:
+      - gitlab_build_on_change
+    builders:
+      - merge_request
+      - test_fog
+    publishers:
+      - gitlab-notifier
+      - gemset_cleanup
+    notifications:
+      - snapper_notifications
