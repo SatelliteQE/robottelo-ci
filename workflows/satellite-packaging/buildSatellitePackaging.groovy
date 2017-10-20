@@ -3,7 +3,7 @@ def packages_to_build = null
 node('sat6-rhel7') {
     stage("Fetch git") {
         deleteDir()
-        gitlab_clone_and_merge("satellite-packaging")
+        gitlab_clone_and_merge("satellite-packaging", build_type)
     }
 
     stage("Find packages to build") {
@@ -33,7 +33,7 @@ node('sat6-rhel7') {
 
             kerberos_setup()
 
-            gitlabCommitStatus {
+            gitlabCommitStatus(build_type) {
                 runPlaybook {
                     ansibledir = '.'
                     inventory = 'package_manifest.yaml'
