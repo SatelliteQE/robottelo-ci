@@ -1,4 +1,5 @@
 def packages_to_build = null
+def build_status = 'failed'
 
 node('sat6-rhel7') {
     stage("Fetch git") {
@@ -43,11 +44,17 @@ node('sat6-rhel7') {
                 }
             }
 
+            build_status = 'succeeded'
+
         } finally {
 
             kerberos_cleanup()
 
             update_build_description_from_packages(packages_to_build)
+
+            if (build_type == 'release') {
+                brew_status_comment(build_status)
+            }
 
             archive "kojilogs/**"
 
@@ -57,11 +64,28 @@ node('sat6-rhel7') {
     }
 }
 
+def get_koji_tasks() {
+    def tasks = []
+    if(fileExists('kojilogs')) {
+        tasks = sh(returnStdout: true, script: "ls kojilogs -1 |grep -o '[0-9]*\$'").trim().split()
+    }
+    return tasks
+}
+
+def brew_status_comment(build_status) {
+    tasks = sh(returnStdout: true, script: "ls kojilogs -1 |grep -o '[0-9]*\$'").trim().split()
+    comment = "build status: ${build_status}\n\nbrew:"
+    for (String task: tasks) {
+        comment += "\n * https://brewweb.engineering.redhat.com/brew/taskinfo?taskID=${task}"
+    }
+    addGitLabMRComment comment: comment
+}
+
 def update_build_description_from_packages(packages_to_build) {
     build_description = "${packages_to_build}"
     if(fileExists('kojilogs')) {
         build_description += ":"
-        tasks = sh(returnStdout: true, script: "ls kojilogs -1 |grep -o '[0-9]*\$'").trim().split()
+        tasks = get_koji_tasks()
         for (String task: tasks) {
             build_description += " brew#<a href='https://brewweb.engineering.redhat.com/brew/taskinfo?taskID=${task}'>${task}</a>"
         }
