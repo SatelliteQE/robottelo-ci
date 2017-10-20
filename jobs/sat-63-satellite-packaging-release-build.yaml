@@ -9,6 +9,8 @@
           name: project
           description: 'Name of the project to build from satellite-packaging.'
       - release_branch
+    triggers:
+      - gitlab_build_on_merge
     dsl:
       !include-raw:
         - workflows/lib/gitlabEnv.groovy
