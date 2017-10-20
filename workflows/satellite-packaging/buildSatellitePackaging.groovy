@@ -10,14 +10,14 @@ node('sat6-rhel7') {
     stage("Find packages to build") {
         if (project) {
             packages_to_build = project
-        } else if (env.releaseBranch) {
+        } else if (build_type == 'release') {
             merge_info = sh(returnStdout: true, script: "git rev-list --parents -n 1  origin/${env.releaseBranch}").split()
             // check if we got two parents, otherwise it's not a merge
             if (merge_info.length == 3) {
                 changed_packages = sh(returnStdout: true, script: "git diff ${merge_info[1]}...${merge_info[2]} --name-only 'packages/*.spec' | cut -d'/' -f2 |sort -u").trim()
                 packages_to_build = changed_packages.split().join(':')
             }
-        } else if (env.gitlabTargetBranch) {
+        } else if (build_type == 'scratch') {
             changed_packages = sh(returnStdout: true, script: "git diff ..origin/${env.gitlabTargetBranch} --name-only 'packages/*.spec' | cut -d'/' -f2 |sort -u").trim()
             packages_to_build = changed_packages.split().join(':')
         }
