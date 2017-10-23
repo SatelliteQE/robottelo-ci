@@ -14,4 +14,4 @@ if [ ${gitlabTargetBranch} == 'SATELLITE-6.3.0' ]; then
   sed -i "s/https:\/\/rubygems.org/${GEMSNAP_URL}/g" Gemfile
 fi
 
-popd foreman
+popd
