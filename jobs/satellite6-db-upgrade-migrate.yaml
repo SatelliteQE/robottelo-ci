@@ -51,6 +51,12 @@
                 <p>Select if you would like to perfrom Cutomer DB upgrade or migration with pulp data</p>
                 <p>Make sure the selected DB should have the pulp data before selecting this check</p>
         - bool:
+            name: RESTORECON
+            default: false
+            description: 
+                <p>Select if you would like to run restorecon to restore the selinux contexts across filesystem</p>
+                <p>This is required for specific customer DB - wmart</p>
+        - bool:
             name: RHEL_MIGRATION
             default: false
             description: |
