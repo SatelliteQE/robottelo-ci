@@ -12,13 +12,17 @@ def gitlab_clone_and_merge(repo_name, pipeline_name='jenkins') {
                 userRemoteConfigs: [[name: 'origin', url: "https://$GIT_HOSTNAME/$GIT_ORGANIZATION/${repo_name}.git"], [name: 'pr', url: "https://$GIT_HOSTNAME/${env.gitlabSourceNamespace}/${env.gitlabSourceRepoName}.git"]]
               ]
         } else {
-            git url: "https://$GIT_HOSTNAME/$GIT_ORGANIZATION/${repo_name}.git", branch: "${env.gitlabTargetBranch}"
+            gitlab_clone(repo_name)
         }
     } catch (e) {
         updateGitlabCommitStatus state: 'failed', name: pipeline_name
         currentBuild.result = "FAILED"
         throw e
     }
+}
+
+def gitlab_clone(repo_name) {
+    git url: "https://$GIT_HOSTNAME/$GIT_ORGANIZATION/${repo_name}.git", branch: "${env.gitlabTargetBranch}"
 }
 
 def find_merge_commit(commit, branch) {
