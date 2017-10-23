@@ -7,7 +7,10 @@ node('rvm') {
         [puppet_version: '4.10.7', ruby_version: '2.1.9', satellite_versions: ['6.3.0']]
     ]
 
-    for (combo in puppet_ruby) {
+    for (int i = 0; i < puppet_ruby.size(); i++) {
+        int index = i;
+        def combo = puppet_ruby[index];
+
         if (!combo['satellite_versions'].contains(gitlabTargetBranch.minus('SATELLITE-'))) {
             continue
         }
