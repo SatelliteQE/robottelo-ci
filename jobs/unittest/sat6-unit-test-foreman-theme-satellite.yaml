@@ -1,5 +1,5 @@
 - job:
-    name: 'sat6-unit-test-foreman'
+    name: 'sat6-unit-test-foreman-theme-satellite'
     project-type: workflow
     logrotate:
       daysToKeep: 21
@@ -11,7 +11,7 @@
     dsl:
       !include-raw:
         - workflows/lib/gitlabEnv.groovy
-        - workflows/test/foreman.groovy
+        - workflows/test/foreman-theme-satellite.groovy
         - workflows/test/foreman-lib.groovy
         - workflows/lib/sendPostRequest.groovy
         - workflows/lib/messageSnapper.groovy
