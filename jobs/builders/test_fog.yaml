@@ -1,0 +1,4 @@
+- builder:
+    name: test_fog
+    builders:
+        - shell: !include-raw: scripts/test_fog.sh
