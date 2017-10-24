@@ -1,0 +1,18 @@
+- job:
+    name: 'sat6-unit-test-foreman'
+    project-type: workflow
+    logrotate:
+      daysToKeep: 21
+      numToKeep: -1
+    parameters:
+      - merge_request
+    triggers:
+      - gitlab_build_on_change
+    dsl:
+      !include-raw:
+        - workflows/lib/gitlabEnv.groovy
+        - workflows/test/foreman.groovy
+        - workflows/lib/sendPostRequest.groovy
+        - workflows/lib/messageSnapper.groovy
+        - workflows/lib/rvm.groovy
+        - workflows/lib/gitlab.groovy
