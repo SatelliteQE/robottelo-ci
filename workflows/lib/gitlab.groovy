@@ -1,7 +1,11 @@
 def gitlab_clone_and_merge(repo_name, pipeline_name='jenkins') {
+    def merge = true
+    if (pipeline_name == 'release') {
+        merge = false;
+    }
     try {
         updateGitlabCommitStatus state: 'running', name: pipeline_name
-        if (env.gitlabSourceRepoName) {
+        if (merge && env.gitlabSourceRepoName) {
             checkout changelog: true, poll: true, scm: [
                 $class: 'GitSCM',
                 branches: [[name: "pr/${env.gitlabSourceBranch}"]],
