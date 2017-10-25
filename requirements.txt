@@ -1,2 +1,2 @@
-git+https://github.com/openstack-infra/jenkins-job-builder.git#egg=jenkins-job-builder
+git+https://github.com/evgeni/jenkins-job-builder.git@gitlab-trigger-merge#egg=jenkins-job-builder
 requests

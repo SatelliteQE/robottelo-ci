@@ -1,0 +1,15 @@
+- trigger:
+    name: gitlab_build_on_merge
+    triggers:
+      - gitlab:
+          trigger-push: false
+          trigger-merge-request: false
+          trigger-accepted-merge-request: true
+          trigger-open-merge-request-push: never
+          ci-skip: false
+          set-build-description: true
+          add-note-merge-request: false
+          add-vote-merge-request: false
+          allow-all-branches: true
+          accept-merge-request-on-success: false
+          trigger-note: false
