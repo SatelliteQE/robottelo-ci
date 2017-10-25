@@ -70,6 +70,11 @@
             default: false
             description: |
                  <p>Run tests to verify if the entities and their associations exists post upgrade.</p>
+        - bool:
+            name: RUN_SCENARIO_TESTS
+            default: false
+            description: |
+                 <p>Run tests to verify certain upgarde specific scenarios.</p>
         - string:
             name: SATELLITE_HOSTNAME
             description: |
