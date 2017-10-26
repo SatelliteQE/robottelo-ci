@@ -23,3 +23,9 @@ def gitlab_clone_and_merge(repo_name, pipeline_name='jenkins') {
         throw e
     }
 }
+
+def find_merge_commit(commit, branch) {
+    // this beauty is taken verbatim from https://stackoverflow.com/a/30998048
+    merge_commit = sh(returnStdout: true, script: "(git rev-list ${commit}..${branch} --ancestry-path | cat -n; git rev-list ${commit}..${branch} --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2").trim()
+    return merge_commit
+}
