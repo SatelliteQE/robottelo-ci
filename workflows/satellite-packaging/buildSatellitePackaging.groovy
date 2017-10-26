@@ -2,12 +2,12 @@ def packages_to_build = null
 def build_status = 'failed'
 
 node('sat6-rhel7') {
-    stage("Fetch git") {
+    snapperStage("Fetch git") {
         deleteDir()
         gitlab_clone_and_merge("satellite-packaging", build_type)
     }
 
-    stage("Find packages to build") {
+    snapperStage("Find packages to build") {
         if (project) {
             packages_to_build = project
         } else if (build_type == 'release') {
@@ -30,7 +30,7 @@ node('sat6-rhel7') {
         update_build_description_from_packages(packages_to_build)
     }
 
-    stage("Build packages") {
+    snapperStage("Build packages") {
         try {
 
             kerberos_setup()
