@@ -74,7 +74,7 @@ def get_koji_tasks() {
 }
 
 def brew_status_comment(build_status) {
-    tasks = sh(returnStdout: true, script: "ls kojilogs -1 |grep -o '[0-9]*\$'").trim().split()
+    tasks = get_koji_tasks()
     comment = "build status: ${build_status}\n\nbrew:"
     for (String task: tasks) {
         comment += "\n * https://brewweb.engineering.redhat.com/brew/taskinfo?taskID=${task}"
