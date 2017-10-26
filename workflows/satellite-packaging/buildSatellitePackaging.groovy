@@ -11,7 +11,7 @@ node('sat6-rhel7') {
         if (project) {
             packages_to_build = project
         } else if (build_type == 'release') {
-            merge_commit = sh(returnStdout: true, script: "git rev-list ${env.gitlabMergeRequestLastCommit}..origin/${env.gitlabTargetBranch} --first-parent --merges |tail -1").trim()
+            merge_commit = find_merge_commit("${env.gitlabMergeRequestLastCommit}", "origin/${env.gitlabTargetBranch}")
             merge_info = sh(returnStdout: true, script: "git rev-list --parents -n 1 ${merge_commit}").split()
             // check if we got two parents, otherwise it's not a merge
             if (merge_info.length == 3) {
