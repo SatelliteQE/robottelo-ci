@@ -5,6 +5,7 @@ def sendSnapperMessage(stage_name) {
         "build": [
                   "full_url": env.BUILD_URL,
                   "status": currentBuild.result,
+                  "description": currentBuild.description,
                   "phase": (currentBuild.result == 'FAILURE') ? "COMPLETED" : stage_name,
         ]
     ]
