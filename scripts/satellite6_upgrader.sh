@@ -48,7 +48,7 @@ if [ -n "${CUSTOM_SCRIPT_URL}" ]; then
     chmod 755 ${custom_file}
     scp ${custom_file} root@"${SAT_HOST}":.
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SAT_HOST}" chmod 755 /root/${custom_file}
-    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SAT_HOST}" ${custom_file}
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SAT_HOST}" /root/${custom_file}
 fi
 
 # Run upgrade for CDN/Downstream
