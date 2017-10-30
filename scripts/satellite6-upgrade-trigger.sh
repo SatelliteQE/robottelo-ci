@@ -13,6 +13,9 @@ source config/fake_manifest.conf
 # Fetching correct BASE_URL and CAPSULE_URL
 export BASE_URL="${{SATELLITE6_REPO}}"
 export CAPSULE_URL="${{CAPSULE_REPO}}"
+export TOOLS_URL_RHEL6="${{TOOLS_RHEL6}}"
+export TOOLS_URL_RHEL7="${{TOOLS_RHEL7}}"
+
 
 # Write a properties file to allow passing variables to T1 tests job.
 echo "SERVER_HOSTNAME=${{RHEV_SAT_HOST}}" > properties.txt
