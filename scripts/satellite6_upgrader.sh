@@ -54,6 +54,11 @@ fi
 # Run upgrade for CDN/Downstream
 fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
 
+# Export BZ credentials to skip the tests with BZ
+# This will be used robozilla's pytest_skip_if_bug_open decorator
+export BUGZILLA_ENVIRON_USER_NAME="${BUGZILLA_USER}"
+export BUGZILLA_ENVIRON_USER_PASSWORD_NAME="${BUGZILLA_PASSWORD}"
+export BUGZILLA_ENVIRON_SAT_VERSION="${TO_VERSION}"
 
 # Run existance tests
 if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
