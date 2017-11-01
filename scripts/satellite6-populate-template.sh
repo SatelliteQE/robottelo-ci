@@ -335,7 +335,11 @@ satellite_runner subnet create --name "${SUBNET_NAME}" --network "${SUBNET_RANGE
 satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_LIBVIRT}" --provider Libvirt --url "${LIBVIRT_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --set-console-password false
 
 # Create Ovirt CR
-satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --uuid "${RHEV_DATACENTER_UUID}"
+if [ "${SAT_VERSION}" != "6.3" ]; then
+    satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${RHEV_DATACENTER_UUID}"
+else
+    satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --uuid "${RHEV_DATACENTER_UUID}"
+fi
 
 # Create OpenStack CR
 # Disabled this temporarily till we investigate the change in login details.
