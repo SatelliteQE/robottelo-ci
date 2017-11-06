@@ -42,6 +42,7 @@ def setup_foreman() {
 
         sh 'npm install npm@\\<"5.0.0"'
         sh './node_modules/.bin/npm install --no-optional --global-style true'
+        sh 'npm install phantomjs'
         sh './node_modules/webpack/bin/webpack.js --bail --config config/webpack.config.js'
 
         // Create DB first in development as migrate behaviour can change
