@@ -6,6 +6,6 @@ fi
 # Disable error checking, for more information check the related issue
 # http://projects.theforeman.org/issues/13442
 set +e
-ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" foreman-debug -m 0 -q -d "~/foreman-debug"
+ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" foreman-debug -s 0 -q -d "~/foreman-debug"
 set -e
 scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:~/foreman-debug.tar.xz" .
