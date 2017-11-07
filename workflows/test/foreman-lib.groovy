@@ -62,6 +62,10 @@ def setup_plugin(plugin_name) {
         sh "find Gemfile bundler.d -type f -exec sed \"/gem ['\\\"]${plugin_name}['\\\"]/d\" {} \\;"
         // Now let's introduce the plugin
         sh "echo \"gem '${plugin_name}', :path => '\$(pwd)/../plugin'\" >> bundler.d/Gemfile.local.rb"
+        // Plugin specifics..
+        if(fileExists("../plugin/gemfile.d/${plugin_name}.rb")) {
+            sh "cat ../plugin/gemfile.d/${plugin_name}.rb >> bundler.d/Gemfile.local.rb"
+        }
 
         withRVM(['bundle update'], 2.2)
 
