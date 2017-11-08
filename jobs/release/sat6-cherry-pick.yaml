@@ -5,3 +5,4 @@
     dsl:
       !include-raw:
         - workflows/identifyCherryPicksWorkflow.groovy
+        - workflows/lib/toolbelt.groovy

@@ -4,8 +4,7 @@ def milestone = '6.2.12'
 node('rhel') {
 
     stage("Setup ToolBelt") {
-        git url: "https://${env.GIT_HOSTNAME}/Satellite6/tool_belt.git", branch: 'master'
-        sh 'bundle install --without=development'
+        setup_toolbelt()
         sh "bundle exec ruby ./tools.rb setup-environment --bugzilla --gitlab-username jenkins --version ${version}"
     }
 

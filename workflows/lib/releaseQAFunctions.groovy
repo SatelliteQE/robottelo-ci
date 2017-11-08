@@ -81,7 +81,7 @@ def computePackageDifference(body) {
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'SATELLITE_PASSWORD', usernameVariable: 'SATELLITE_USERNAME']]) {
 
-        git url: "https://${env.GIT_HOSTNAME}/satellite6/tool_belt.git", branch: 'master'
+        setup_toolbelt()
         def archive_file = 'package_report.yaml'
 
         def cmd = [
