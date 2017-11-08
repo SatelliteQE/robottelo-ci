@@ -1,0 +1,25 @@
+- job:
+    name: sat-63-satellite-packaging-update
+    project-type: workflow
+    logrotate:
+      daysToKeep: 45
+      numToKeep: -1
+    parameters:
+      - string:
+          name: project
+          description: 'Name of the project to update from satellite-packaging.'
+      - string:
+          name: version
+          description: 'Version of the project to update to.'
+      - merge_request
+    dsl:
+      !include-raw:
+        - workflows/lib/gitlabEnv.groovy
+        - workflows/satellite-packaging/updateSatellitePackaging.groovy
+        - workflows/lib/toolbelt.groovy
+        - workflows/lib/runPlaybook.groovy
+        - workflows/lib/kerberos.groovy
+        - workflows/lib/gitlab.groovy
+        - workflows/lib/messageSnapper.groovy
+        - workflows/lib/sendPostRequest.groovy
+
