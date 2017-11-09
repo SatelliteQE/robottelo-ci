@@ -33,8 +33,7 @@ node('rvm') {
         }
 
         dir('tool_belt') {
-            git url: "https://${env.GIT_HOSTNAME}/satellite6/tool_belt.git", branch: 'master'
-            sh 'bundle install --without=development'
+            setup_toolbelt()
         }
     }
 
