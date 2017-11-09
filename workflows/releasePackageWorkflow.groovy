@@ -15,6 +15,7 @@ def branch_map = [
 def release_branch = env.releaseBranch
 def repo_name = gitRepository.split('/')[1]
 def version_map = branch_map[release_branch]
+def releaseTag = ''
 
 node('rvm') {
 
@@ -177,4 +178,11 @@ node('rvm') {
         }
     }
 
+    snapperStage("Trigger packaging update") {
+        build job: 'sat-63-satellite-packaging-update', parameters: [
+          [$class: 'StringParameterValue', name: 'project', value: repo_name],
+          [$class: 'StringParameterValue', name: 'version', value: releaseTag],
+          [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch],
+        ]
+    }
 }
