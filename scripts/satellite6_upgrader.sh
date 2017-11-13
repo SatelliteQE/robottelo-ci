@@ -63,7 +63,11 @@ export BUGZILLA_ENVIRON_SAT_VERSION="${TO_VERSION}"
 # Run existance tests
 if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
     set +e
-    $(which py.test) -v --junit-xml=test_existance-results.xml upgrade_tests/test_existance_relations/
+    export ENDPOINT='cli'
+    $(which py.test) -v --continue-on-collection-errors --junit-xml=test_existance_cli-results.xml upgrade_tests/test_existance_relations/cli/
+
+    export ENDPOINT='api'
+    $(which py.test) -v --continue-on-collection-errors --junit-xml=test_existance_api-results.xml upgrade_tests/test_existance_relations/api/
     set -e
 fi
 
