@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  tasks:
+    - name: "Promote a content view version"
+      katello_content_view_version_promote:
+        username: "{{ username }}"
+        password: "{{ password }}"
+        server_url: "{{ server_url }}"
+        name: "{{ content_view_name }}"
+        organization: "{{ organization }}"
+        to_environment: "{{ to_lifecycle_environment }}"
+        from_environment: "{{ from_lifecycle_environment }}"
+        force: true
