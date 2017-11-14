@@ -23,7 +23,9 @@ node('sat6-rhel7') {
 
         try {
 
-            withRVM(['bundle exec rake jenkins:unit jenkins:integration TESTOPTS="-v"'], 2.2)
+            gitlabCommitStatus {
+                withRVM(['bundle exec rake jenkins:unit jenkins:integration TESTOPTS="-v"'], 2.2)
+            }
 
         } finally {
 

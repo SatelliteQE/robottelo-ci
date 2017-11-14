@@ -43,9 +43,11 @@ node('sat6-rhel7') {
         dir('foreman') {
             try {
 
-                withRVM(['bundle exec rake test:foreman_theme_satellite'], 2.2)
-                withRVM(['bundle exec rake db:drop db:create db:migrate'], 2.2)
-                withRVM(['bundle exec rake db:seed'], 2.2)
+                gitlabCommitStatus {
+                    withRVM(['bundle exec rake test:foreman_theme_satellite'], 2.2)
+                    withRVM(['bundle exec rake db:drop db:create db:migrate'], 2.2)
+                    withRVM(['bundle exec rake db:seed'], 2.2)
+                }
 
             } finally {
 

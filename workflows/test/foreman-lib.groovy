@@ -1,4 +1,3 @@
-
 def configure_foreman_environment() {
     try {
         sh "cp config/settings.yaml.example config/settings.yaml"
@@ -28,6 +27,7 @@ EOT
         """
     } catch(all) {
 
+        updateGitlabCommitStatus state: 'failed'
         cleanup()
         throw(all)
 
@@ -50,6 +50,7 @@ def setup_foreman() {
 
     } catch (all) {
 
+        updateGitlabCommitStatus state: 'failed'
         cleanup()
         throw(all)
 
@@ -73,6 +74,7 @@ def setup_plugin(plugin_name) {
 
     } catch (all) {
 
+        updateGitlabCommitStatus state: 'failed'
         cleanup()
         throw(all)
 
