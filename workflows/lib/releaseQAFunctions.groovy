@@ -9,35 +9,19 @@ def promoteContentView(body) {
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
-        def cmd = [
-          "/bin/bash --login -c",
-          "'rvm system && ",
-          "hammer --username \"${env.USERNAME}\" --password \"${env.PASSWORD}\" --server ${env.SATELLITE_SERVER}",
-          "content-view version promote",
-          "--organization \"${config.organization}\"",
-          "--content-view \"${config.content_view}\"",
-          "--to-lifecycle-environment \"${config.to_lifecycle_environment}\"",
-          "--from-lifecycle-environment ${config.from_lifecycle_environment}",
-          "--force'"
-        ]
-
-        def versionInToEnv = findContentView {
-          organization = config.organization
-          content_view = config.content_view
-          lifecycle_environment = config.to_lifecycle_environment
-        }
-
-        def versionInFromEnv = findContentView {
-          organization = config.organization
-          content_view = config.content_view
-          lifecycle_environment = config.from_lifecycle_environment
-        }
-
-        if (versionInToEnv != versionInFromEnv) {
-            sh "${cmd.join(' ')}"
+        runPlaybook {
+          playbook = 'playbooks/promote_content_view.yml'
+          extraVars = [
+              'username': env.USERNAME
+              'password': env.PASSWORD
+              'server_url': env.SATELLITE_SEVER
+              'name': config.content_view
+              'organization': config.organization
+              'to_environment': config.to_lifecycle_environment
+              'from_environment': config.from_lifecycle_environment
+          ]
         }
     }
-
 }
 
 def findContentView(body) {
