@@ -12,6 +12,7 @@
       !include-raw:
         - ./repos/puppet_pulp.groovy
         - workflows/lib/gitlabEnv.groovy
+        - workflows/test/puppet-matrix.groovy
         - workflows/test/puppet.groovy
         - workflows/lib/sendPostRequest.groovy
         - workflows/lib/messageSnapper.groovy
