@@ -1,5 +1,5 @@
 - job:
-    name: 'sat6-unit-test-puppet-foreman'
+    name: 'sat6-unit-test-smart-proxy'
     project-type: workflow
     logrotate:
       daysToKeep: 21
@@ -10,10 +10,9 @@
       - gitlab_build_on_change
     dsl:
       !include-raw:
-        - ./repos/puppet_foreman.groovy
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/puppet-matrix.groovy
-        - workflows/test/puppet.groovy
+        - workflows/test/smart-proxy.groovy
         - workflows/lib/sendPostRequest.groovy
         - workflows/lib/messageSnapper.groovy
         - workflows/lib/rvm.groovy
