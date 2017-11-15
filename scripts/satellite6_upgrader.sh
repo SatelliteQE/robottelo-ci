@@ -29,9 +29,15 @@ if [ "${DISTRIBUTION}" = 'DOWNSTREAM' ]; then
     export TOOLS_URL_RHEL7="${TOOLS_RHEL7}"
 fi
 
-
 # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
 fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
+
+# Creates the pre-upgrade data-store required for existence tests
+if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
+    echo "Setting up pre-upgrade data-store for existence tests"
+    fab -u root set_datastore:"preupgrade","cli"
+    fab -u root set_datastore:"preupgrade","api"
+fi
 
 # Get the Satellite hostname which will be used by job
 if [ -z "${SATELLITE_HOSTNAME}" ]; then
@@ -53,6 +59,13 @@ fi
 
 # Run upgrade for CDN/Downstream
 fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
+
+# Creates the post-upgrade data-store required for existence tests
+if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
+    echo "Setting up post-upgrade data-store for existence tests"
+    fab -u root set_datastore:"postupgrade","cli"
+    fab -u root set_datastore:"postupgrade","api"
+fi
 
 # Export BZ credentials to skip the tests with BZ
 # This will be used robozilla's pytest_skip_if_bug_open decorator

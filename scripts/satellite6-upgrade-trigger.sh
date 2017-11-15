@@ -34,5 +34,15 @@ pip install -r requirements.txt
 # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
 fab -u root setup_products_for_upgrade:'longrun',"{os}"
 
+# Creates the pre-upgrade data-store required for existence tests
+echo "Setting up pre-upgrade data-store for existence tests"
+fab -u root set_datastore:"preupgrade","cli"
+fab -u root set_datastore:"preupgrade","api"
+
 # Longrun to run upgrade on Satellite, capsule and clients
 fab -u root product_upgrade:'longrun'
+
+# Creates the post-upgrade data-store required for existence tests
+echo "Setting up post-upgrade data-store for existence tests"
+fab -u root set_datastore:"postupgrade","cli"
+fab -u root set_datastore:"postupgrade","api"
