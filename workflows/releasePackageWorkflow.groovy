@@ -64,7 +64,7 @@ node('rvm') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    sh "bundle exec ./tools.rb bugzilla move-to-modified --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
+                    sh "bundle exec ./tools.rb bugzilla set-cherry-picked --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
 
                 }
 
