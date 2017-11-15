@@ -12,13 +12,13 @@ def promoteContentView(body) {
         runPlaybook {
           playbook = 'playbooks/promote_content_view.yml'
           extraVars = [
-              'username': env.USERNAME
-              'password': env.PASSWORD
-              'server_url': env.SATELLITE_SEVER
-              'name': config.content_view
-              'organization': config.organization
-              'to_environment': config.to_lifecycle_environment
-              'from_environment': config.from_lifecycle_environment
+              'username': env.USERNAME,
+              'password': env.PASSWORD,
+              'server_url': env.SATELLITE_SEVER,
+              'name': config.content_view,
+              'organization': config.organization,
+              'to_environment': config.to_lifecycle_environment,
+              'from_environment': config.from_lifecycle_environment,
           ]
         }
     }
