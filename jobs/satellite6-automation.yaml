@@ -587,6 +587,11 @@
             files:
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
                   variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=setup
+                OS={os}
         - build-name:
             name: '#${{BUILD_NUMBER}} Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
     builders:
@@ -603,7 +608,7 @@
         - inject:
             properties-file: properties.txt
         - trigger-builds:
-            - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+            - project: 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
               current-parameters: true
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
@@ -619,7 +624,130 @@
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
     publishers:
         - archive:
-            artifacts: '*.tar.xz,preupgrade_*,postupgrade_*'
+            artifacts: 'product_setup'
+
+
+- job-template:
+    disabled: false
+    name: 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
+    concurrent: true
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    node: sat6-{os}
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=pre-upgrade
+                OS={os}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} preupgrade-scenarios-Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
+    builders:
+        - copyartifact:
+            project: 'upgrade-to-{satellite_version}-{os}'
+            filter: 'product_setup'
+            which-build: last-successful
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-upgrade-source.sh'
+                    - 'satellite6-upgrade-run-scenarios.sh'
+        - trigger-builds:
+            - project: 'upgrade-phase-{satellite_version}-{os}'
+              current-parameters: true
+    publishers:
+        - satellite6-automation-publishers
+        - archive:
+            artifacts: 'preupgrade_*,scenario_entities,product_setup'
+
+
+- job-template:
+    disabled: false
+    name: 'upgrade-phase-{satellite_version}-{os}'
+    concurrent: true
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    node: sat6-{os}
+    parameters:
+        - string:
+            name: BUILD_LABEL
+            description: |
+                Specify the build label of the Satellite. Example Sat6.3.0-1.0
+                Which is Sat6.y.z-SNAP.COMPOSE
+        - string:
+            name: ROBOTTELO_WORKERS
+            default: '8'
+            description: |
+                Number of workers to use while running robottelo tier1 test suite
+                after the upgrade.
+        - bool:
+            name: ZSTREAM_UPGRADE
+            default: false
+            description: |
+                This option is helpful in manually triggering this job for zStream upgrade.
+                e.g 6.2.7 to 6.2.8
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=upgrade
+                OS={os}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
+    builders:
+        - copyartifact:
+            project: 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
+            filter: 'preupgrade_*,scenario_entities,product_setup'
+            which-build: last-successful
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-upgrade-source.sh'
+                    - 'satellite6-upgrade-trigger.sh'
+        - inject:
+            properties-file: properties.txt
+        - trigger-builds:
+            - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+              current-parameters: true
+    publishers:
+        - archive:
+            artifacts: '*.tar.xz,postupgrade_*,preupgrade_*,scenario_entities,product_setup'
         - email-ext:
             recipients: ${{QE_EMAIL_LIST}}
             success: true
@@ -658,7 +786,7 @@
     builders:
         - copyartifact:
             project: 'upgrade-to-{satellite_version}-{os}'
-            filter: 'preupgrade_*,postupgrade_*'
+            filter: 'postupgrade_*,preupgrade_*,scenario_entities,product_setup'
             which-build: last-successful
         - shining-panda:
             build-environment: virtualenv
@@ -671,12 +799,65 @@
                     - 'satellite6-upgrade-source.sh'
                     - 'satellite6-upgrade-existence.sh'
         - trigger-builds:
+            - project: 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
+              current-parameters: true
+    publishers:
+        - satellite6-automation-publishers
+        - archive:
+            artifacts: 'postupgrade_*,preupgrade_*,scenario_entities,product_setup'
+
+- job-template:
+    disabled: false
+    name: 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
+    concurrent: true
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    node: sat6-{os}
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=post-upgrade
+                OS={os}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
+    builders:
+        - copyartifact:
+            project: 'upgrade-to-{satellite_version}-{os}'
+            filter: 'product_setup,scenario_entities'
+            which-build: last-successful
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-upgrade-source.sh'
+                    - 'satellite6-upgrade-run-scenarios.sh'
+        - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
               current-parameters: true
     publishers:
         - satellite6-automation-publishers
+        - archive:
+            artifacts: 'scenario_entities,product_setup'
 
 - job-template:
     disabled: false
@@ -959,7 +1140,10 @@
           os: 'rhel6'
     jobs:
         - 'upgrade-to-{satellite_version}-{os}'
+        - 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
+        - 'upgrade-phase-{satellite_version}-{os}'
         - 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+        - 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
         - 'automation-upgraded-{satellite_version}-tier1-{os}'
         - 'automation-upgraded-{satellite_version}-tier2-{os}'
 

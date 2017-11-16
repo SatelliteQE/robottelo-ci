@@ -9,6 +9,7 @@ source config/sat6_upgrade.conf
 source config/sat6_repos_urls.conf
 source config/subscription_config.conf
 source config/fake_manifest.conf
+source config/installation_environment.conf
 
 # Fetching correct BASE_URL and CAPSULE_URL
 export BASE_URL="${{SATELLITE6_REPO}}"
@@ -30,19 +31,16 @@ echo "DISCOVERY_ISO=${{DISCOVERY_ISO}}" >> properties.txt
 
 # Setting Prerequisites
 pip install -r requirements.txt
+if [ ${{ENDPOINT}} == 'setup' ]; then
+    # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
+    fab -u root setup_products_for_upgrade:'longrun',"{os}"
 
-# Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
-fab -u root setup_products_for_upgrade:'longrun',"{os}"
+elif [ ${{ENDPOINT}} == 'upgrade' ]; then
+    # Longrun to run upgrade on Satellite, capsule and clients
+    fab -u root product_upgrade:'longrun'
 
-# Creates the pre-upgrade data-store required for existence tests
-echo "Setting up pre-upgrade data-store for existence tests"
-fab -u root set_datastore:"preupgrade","cli"
-fab -u root set_datastore:"preupgrade","api"
-
-# Longrun to run upgrade on Satellite, capsule and clients
-fab -u root product_upgrade:'longrun'
-
-# Creates the post-upgrade data-store required for existence tests
-echo "Setting up post-upgrade data-store for existence tests"
-fab -u root set_datastore:"postupgrade","cli"
-fab -u root set_datastore:"postupgrade","api"
+    # Creates the post-upgrade data-store required for existence tests
+    echo "Setting up post-upgrade data-store for existence tests"
+    fab -u root set_datastore:"postupgrade","cli"
+    fab -u root set_datastore:"postupgrade","api"
+fi
