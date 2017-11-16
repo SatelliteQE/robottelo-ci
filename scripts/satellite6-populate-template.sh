@@ -335,7 +335,7 @@ satellite_runner subnet create --name "${SUBNET_NAME}" --network "${SUBNET_RANGE
 satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_LIBVIRT}" --provider Libvirt --url "${LIBVIRT_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --set-console-password false
 
 # Create Ovirt CR
-if [ "${SAT_VERSION}" != "6.3" ]; then
+if [ "${SAT_VERSION}" = "6.3" ]; then
     satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${RHEV_DATACENTER_UUID}"
 else
     satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --uuid "${RHEV_DATACENTER_UUID}"
@@ -357,7 +357,7 @@ satellite_runner organization add-smart-proxy --id="${ORG}" --smart-proxy-id="${
 echo Adding Default Organization to Default Location
 satellite_runner location add-organization --id="${LOC}" --organization='Default Organization'
 
-echo Assign Default ORganization and Default Location to Production Puppet Environment.
+echo Assign Default Organization and Default Location to Production Puppet Environment.
 satellite_runner environment update --organization-ids "${ORG}" --location-ids "${LOC}" --id 1
 
 # Import puppet-classes from default capsule  to environment.
@@ -402,6 +402,26 @@ else
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-7'
 fi
 
+if [ "${SAT_VERSION}" = "6.3" ]; then
+    RHEL7_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel7 default content"' | cut -d ',' -f1 | grep -vi 'id')
+    RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel6 default content"' | cut -d ',' -f1 | grep -vi 'id')
+
+    RHEL7_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "$(RHEL7_SCAP_CONTENT_ID)" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1')
+    RHEL6_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "$(RHEL6_SCAP_CONTENT_ID)" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1')
+
+    satellite_runner policy create --name='RHEL 7 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL7_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL7_SCAP_CONTENT_PROFILE_ID}"
+    satellite_runner policy create --name='RHEL 6 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL6_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL6_SCAP_CONTENT_PROFILE_ID}"
+
+    satellite_runner host-collection create --name="RHEL 7 Host collection" --organization-ids "${ORG}"
+    echo "RHEL 7 Host collection created"
+    satellite_runner host-collection create --name="RHEL 6 Host collection" --organization-ids "${ORG}"
+    echo "RHEL 6 Host collection created"
+else
+    satellite_runner host-collection create --name="RHEL 7 Host collection" --organization-id "${ORG}"
+    echo "RHEL 7 Host collection created"
+    satellite_runner host-collection create --name="RHEL 6 Host collection" --organization-id "${ORG}"
+    echo "RHEL 6 Host collection created"
+fi
 # Provision a host with Libvirt Provider.
 # Better create hosts from UI, as it has too many parameters to be passed and things appear to keep changing.
 #satellite_runner host create --name='rhel-7-libvirt' --root-pass='changeme' --organization-id="${ORG}" --location-id="${LOC}" --hostgroup="RHEL 7 Server 64-bit HG" --compute-resource="$COMPUTE_RESOURCE_NAME_LIBVIRT" --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
