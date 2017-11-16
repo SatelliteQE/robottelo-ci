@@ -11,3 +11,4 @@
         to_environment: "{{ to_lifecycle_environment }}"
         from_environment: "{{ from_lifecycle_environment }}"
         force: true
+        verify_ssl: False
