@@ -619,7 +619,7 @@
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
     publishers:
         - archive:
-            artifacts: '*.tar.xz,preupgrade,postupgrade'
+            artifacts: '*.tar.xz,preupgrade_*,postupgrade_*'
         - email-ext:
             recipients: ${{QE_EMAIL_LIST}}
             success: true
@@ -658,7 +658,7 @@
     builders:
         - copyartifact:
             project: 'upgrade-to-{satellite_version}-{os}'
-            filter: 'preupgrade,postupgrade'
+            filter: 'preupgrade_*,postupgrade_*'
             which-build: last-successful
         - shining-panda:
             build-environment: virtualenv
