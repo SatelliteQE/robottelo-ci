@@ -5,7 +5,7 @@
       katello_content_view_version_promote:
         username: "{{ username }}"
         password: "{{ password }}"
-        server_url: "{{ server_url }}"
+        server_url: "{{ server }}"
         name: "{{ content_view_name }}"
         organization: "{{ organization }}"
         to_environment: "{{ to_lifecycle_environment }}"

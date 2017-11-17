@@ -10,10 +10,10 @@ def promoteContentView(body) {
     runPlaybook {
       playbook = 'playbooks/promote_content_view.yml'
       extraVars = [
-          'name': config.content_view,
+          'content_view_name': config.content_view,
           'organization': config.organization,
-          'to_environment': config.to_lifecycle_environment,
-          'from_environment': config.from_lifecycle_environment,
+          'to_lifecycle_environment': config.to_lifecycle_environment,
+          'from_lifecycle_environment': config.from_lifecycle_environment,
       ]
     }
 }

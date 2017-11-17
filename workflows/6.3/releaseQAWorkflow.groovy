@@ -4,6 +4,12 @@ import groovy.json.JsonSlurper
 
 
 node('rhel') {
+    snapperStage("Setup Workspace") {
+
+        setupAnsibleEnvironment {}
+
+    }
+
     snapperStage("Create Archive Environment") {
 
         // Remove old package report
