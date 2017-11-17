@@ -59,24 +59,27 @@ def computePackageDifference(body) {
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'SATELLITE_PASSWORD', usernameVariable: 'SATELLITE_USERNAME']]) {
 
-        setup_toolbelt()
-        def archive_file = 'package_report.yaml'
+        dir('tool_belt') {
 
-        def cmd = [
-            "bundle exec",
-            "./tools.rb release compare-content-view",
-            "--server '${env.SATELLITE_SERVER}'",
-            "--username '${env.SATELLITE_USERNAME}' --password '${env.SATELLITE_PASSWORD}'",
-            "--organization '${config.organization}'",
-            "--content-view '${config.content_view}'",
-            "--from-environment '${config.from_environment}'",
-            "--to-environment '${config.to_environment}'",
-            "--output '${archive_file}'"
-        ]
+            setup_toolbelt()
+            def archive_file = 'package_report.yaml'
 
-        sh "${cmd.join(' ')}"
-        archive archive_file
+            def cmd = [
+                "bundle exec",
+                "./tools.rb release compare-content-view",
+                "--server '${env.SATELLITE_SERVER}'",
+                "--username '${env.SATELLITE_USERNAME}' --password '${env.SATELLITE_PASSWORD}'",
+                "--organization '${config.organization}'",
+                "--content-view '${config.content_view}'",
+                "--from-environment '${config.from_environment}'",
+                "--to-environment '${config.to_environment}'",
+                "--output '${archive_file}'"
+            ]
 
+            sh "${cmd.join(' ')}"
+            archive archive_file
+
+        }
     }
 
 }

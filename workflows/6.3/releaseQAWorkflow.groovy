@@ -6,6 +6,7 @@ import groovy.json.JsonSlurper
 node('rhel') {
     snapperStage("Setup Workspace") {
 
+        deleteDir()
         setupAnsibleEnvironment {}
 
     }
