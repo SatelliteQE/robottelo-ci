@@ -69,15 +69,15 @@ def computePackageDifference(body) {
         def archive_file = 'package_report.yaml'
 
         def cmd = [
-            "/bin/bash --login -c",
-            "'./tools.rb release compare-content-view",
-            "--server \"${env.SATELLITE_SERVER}\"",
-            "--username \"${env.SATELLITE_USERNAME}\" --password \"${env.SATELLITE_PASSWORD}\"",
-            "--organization \"${config.organization}\"",
-            "--content-view \"${config.content_view}\"",
-            "--from-environment \"${config.from_environment}\"",
-            "--to-environment \"${config.to_environment}\"",
-            "--output ${archive_file}'"
+            "bundle exec",
+            "./tools.rb release compare-content-view",
+            "--server '${env.SATELLITE_SERVER}'",
+            "--username '${env.SATELLITE_USERNAME}' --password '${env.SATELLITE_PASSWORD}'",
+            "--organization '${config.organization}'",
+            "--content-view '${config.content_view}'",
+            "--from-environment '${config.from_environment}'",
+            "--to-environment '${config.to_environment}'",
+            "--output '${archive_file}'"
         ]
 
         sh "${cmd.join(' ')}"
