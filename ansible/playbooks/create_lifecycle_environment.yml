@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  tasks:
+  - name: "Add a lifecycle environment"
+    katello_lifecycle_environment:
+      username: "{{ username }}"
+      password: "{{ password }}"
+      server_url: "{{ server }}"
+      verify_ssl: False
+      name: "{{ lifecycle_environment_name }}"
+      organization: "{{ organization }}"
+      prior: "{{ prior }}"
+      state: 'present'

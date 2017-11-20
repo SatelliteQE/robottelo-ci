@@ -91,22 +91,13 @@ def createLifecycleEnvironment(body) {
     body.delegate = config
     body()
 
-    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
-
-        def cmd = [
-            "/bin/bash --login -c",
-            "'rvm system && ",
-            "hammer --output json",
-            "--username \"${env.USERNAME}\"",
-            "--password \"${env.PASSWORD}\"",
-            "--server ${env.SATELLITE_SERVER}",
-            "lifecycle-environment create",
-            "--organization \"${config.organization}\"",
-            "--name \"${config.name}\"",
-            "--prior \"${config.prior}\"'"
-        ]
-
-        sh "${cmd.join(' ')}"
+    runPlaybook {
+      playbook = 'playbooks/create_lifecycle_environment.yml'
+      extraVars = [
+          'lifecycle_environment_name': config.name,
+          'organization': config.organization,
+          'prior': config.prior,
+      ]
     }
 }
 
