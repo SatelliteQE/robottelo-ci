@@ -12,6 +12,7 @@ fi
 export SATELLITE_VERSION="${TO_VERSION}"
 source config/sat6_repos_urls.conf
 source config/subscription_config.conf
+source config/installation_environment.conf
 
 # Set Capsule URL as per OS
 if [ "${OS}" = 'rhel7' ]; then
