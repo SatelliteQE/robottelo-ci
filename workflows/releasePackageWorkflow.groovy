@@ -40,8 +40,6 @@ node('rvm') {
 
     snapperStage("Identify Bugs") {
 
-        def releaseTag = ''
-
         dir('tool_belt') {
             sh "bundle exec ./tools.rb release find-bz-ids --dir ../${repo_name} --output-file bz_ids.json"
             archive 'bz_ids.json'
@@ -99,7 +97,6 @@ node('rvm') {
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
             dir(repo_name) {
-                def releaseTag = ''
 
                 sh "git config user.email 'sat6-jenkins@redhat.com'"
                 sh "git config user.name 'Jenkins'"
@@ -178,10 +175,12 @@ node('rvm') {
     }
 
     snapperStage("Trigger packaging update") {
-        build job: 'sat-63-satellite-packaging-update', parameters: [
-          [$class: 'StringParameterValue', name: 'project', value: repo_name],
-          [$class: 'StringParameterValue', name: 'version', value: releaseTag],
-          [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch],
-        ]
+        if (release_branch == 'SATELLITE-6.3.0') {
+          build job: 'sat-63-satellite-packaging-update', parameters: [
+            [$class: 'StringParameterValue', name: 'project', value: repo_name],
+            [$class: 'StringParameterValue', name: 'version', value: releaseTag],
+            [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch],
+          ]
+        }
     }
 }
