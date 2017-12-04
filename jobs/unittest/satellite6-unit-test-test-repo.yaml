@@ -32,5 +32,3 @@
       - gemset_cleanup
       - junit:
           results: 'test/reports/*.xml'
-    notifications:
-      - snapper_notifications
