@@ -146,4 +146,11 @@
                     - 'scripts/satellite6-configure.sh'
                     - 'scripts/satellite6-configure-variables.sh'
     publishers:
-        - satellite6-automation-mails
+        - email-ext:
+            recipients: $BUILD_USER_EMAIL
+            success: true
+            failure: true
+            subject: 'Your Satellite6-populate JOB finished'
+            body: |
+
+                Build URL: $BUILD_URL
