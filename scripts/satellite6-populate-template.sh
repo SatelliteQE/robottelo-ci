@@ -268,7 +268,7 @@ satellite_runner  activation-key update --name "ak-capsule-${RHELOS}" --auto-att
 
 # Add both RHEL6 and RHEL7 Activation keys.
 # RHEL 7 activation key
-RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Premium (8 sockets) (Unlimited guests)" |  awk -F "," '{print $1}' | grep -vi id)
+RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
 TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
 satellite_runner  activation-key add-subscription --name='ak-rhel-7' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
 
@@ -406,22 +406,18 @@ if [ "${SAT_VERSION}" = "6.3" ]; then
     RHEL7_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel7 default content"' | cut -d ',' -f1 | grep -vi 'id')
     RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel6 default content"' | cut -d ',' -f1 | grep -vi 'id')
 
-    RHEL7_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "$(RHEL7_SCAP_CONTENT_ID)" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1')
-    RHEL6_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "$(RHEL6_SCAP_CONTENT_ID)" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1')
+    RHEL7_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL7_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1')
+    RHEL6_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL6_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1')
 
     satellite_runner policy create --name='RHEL 7 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL7_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL7_SCAP_CONTENT_PROFILE_ID}"
     satellite_runner policy create --name='RHEL 6 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL6_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL6_SCAP_CONTENT_PROFILE_ID}"
-
-    satellite_runner host-collection create --name="RHEL 7 Host collection" --organization-ids "${ORG}"
-    echo "RHEL 7 Host collection created"
-    satellite_runner host-collection create --name="RHEL 6 Host collection" --organization-ids "${ORG}"
-    echo "RHEL 6 Host collection created"
-else
-    satellite_runner host-collection create --name="RHEL 7 Host collection" --organization-id "${ORG}"
-    echo "RHEL 7 Host collection created"
-    satellite_runner host-collection create --name="RHEL 6 Host collection" --organization-id "${ORG}"
-    echo "RHEL 6 Host collection created"
 fi
+
+satellite_runner host-collection create --name="RHEL 7 Host collection" --organization-id "${ORG}"
+echo "RHEL 7 Host collection created"
+satellite_runner host-collection create --name="RHEL 6 Host collection" --organization-id "${ORG}"
+echo "RHEL 6 Host collection created"
+
 # Provision a host with Libvirt Provider.
 # Better create hosts from UI, as it has too many parameters to be passed and things appear to keep changing.
 #satellite_runner host create --name='rhel-7-libvirt' --root-pass='changeme' --organization-id="${ORG}" --location-id="${LOC}" --hostgroup="RHEL 7 Server 64-bit HG" --compute-resource="$COMPUTE_RESOURCE_NAME_LIBVIRT" --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
