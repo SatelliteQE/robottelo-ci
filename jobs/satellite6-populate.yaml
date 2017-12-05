@@ -145,5 +145,3 @@
                 !include-raw:
                     - 'scripts/satellite6-configure.sh'
                     - 'scripts/satellite6-configure-variables.sh'
-    publishers:
-        - satellite6-automation-mails
