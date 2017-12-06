@@ -1,0 +1,17 @@
+- job:
+    disabled: false
+    name: 'sat-release-runcible'
+    project-type: workflow
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - ./repos/runcible_repo.groovy
+          - ./source_types/sourceTypeRake.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/toolbelt.groovy
+          - workflows/lib/runPlaybook.groovy
+          - workflows/lib/sendPostRequest.groovy
+          - workflows/lib/messageSnapper.groovy
+          - workflows/lib/rvm.groovy

@@ -9,8 +9,8 @@ def gemset(name) {
     base_name
 }
 
-def cleanup_rvm(name = '') {
-    withRVM(["rvm gemset delete ${gemset(name)} --force"])
+def cleanup_rvm(name = '', ruby = '2.0') {
+    withRVM(["rvm gemset delete ${gemset(name)} --force"], ruby)
 }
 
 def withRVM(commands, ruby = '2.0', name = '') {
