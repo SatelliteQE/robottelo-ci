@@ -8,7 +8,7 @@
     dsl:
       !include-raw:
           - ./repos/runcible_repo.groovy
-          - ./source_types/sourceTypeRake.groovy
+          - ./source_types/sourceTypeGem.groovy
           - workflows/releasePackageWorkflow.groovy
           - workflows/lib/toolbelt.groovy
           - workflows/lib/runPlaybook.groovy
