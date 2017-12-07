@@ -56,7 +56,7 @@ node ('sat6-rhel7') {
                 limit = package_name
                 extraVars = [
                     'downstream_version': version,
-                    'downstream_changelog': changelog
+                    'downstream_changelog': changelog.replaceAll("'","\\\\\'").replaceAll('"','\\\\\"')
                 ]
             }
         }
