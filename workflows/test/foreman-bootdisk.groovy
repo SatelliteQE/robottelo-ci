@@ -1,21 +1,40 @@
+def plugin_name = 'foreman_bootdisk'
+
 node('sat6-rhel7') {
 
     snapperStage('Setup Git Repos') {
 
         deleteDir()
-        gitlab_clone_and_merge('foreman')
+        dir('foreman') {
+            gitlab_clone('foreman')
+        }
+        dir('plugin') {
+            gitlab_clone_and_merge(plugin_name)
+        }
 
     }
 
     snapperStage('Configure Environment') {
 
-        configure_foreman_environment()
+        dir('foreman') {
+            configure_foreman_environment()
+        }
 
     }
 
     snapperStage('Configure Database') {
 
-        setup_foreman()
+        dir('foreman') {
+            setup_foreman()
+        }
+
+    }
+
+    snapperStage('Setup plugin') {
+
+        dir('foreman') {
+            setup_plugin(plugin_name)
+        }
 
     }
 
@@ -37,6 +56,7 @@ node('sat6-rhel7') {
                 cleanup()
 
             }
+        }
     }
 
 }
