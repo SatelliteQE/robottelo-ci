@@ -3,8 +3,14 @@
 import groovy.json.JsonSlurper
 
 
-stage("Promote Satellite Maintenance to QA") {
-    node('rhel') {
+node('rhel') {
+    snapperStage("Setup Workspace") {
+
+        deleteDir()
+        setupAnsibleEnvironment {}
+    }
+
+    snapperStage("Promote Satellite Maintenance to QA") {
 
         compareContentViews {
           organization = 'Sat6-CI'
