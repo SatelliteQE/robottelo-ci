@@ -1,9 +1,10 @@
+git clone https://github.com/SatelliteQE/robottelo-ci
 
 # Transfer the script to populate the HostGroup and  Activation keys.
-scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no soak-docker-client-setup.sh root@"${SATELLITE_SERVER_HOSTNAME}":/root/
+scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no robottelo-ci/scripts/soak-docker-client-setup.sh root@"${SATELLITE_SERVER_HOSTNAME}":/root/
 
 # Run the script to populate the HostGroup and  Activation keys.
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_SERVER_HOSTNAME}" /root/soak-docker-client-setup.sh
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_SERVER_HOSTNAME}" "chmod 777 /root/soak-docker-client-setup.sh ; /root/soak-docker-client-setup.sh"
 
 # Setup the docker host, for things like networking/docker0
 # Ensure the 10gnic being passed is a physical interface and not a Bridge.
@@ -22,7 +23,7 @@ fi
 sed -i 's/bootstrap_additional_args: "--force"/bootstrap_additional_args: "--force --skip foreman"/' playbooks/satellite/roles/client-scripts/files/clients.yaml.j2
 
 # Update the tags
-sed -i 's/tags: "untagged,REGTIMEOUTTWEAK,REG,DOWNGRADE,REM"/tags: "untagged,REGTIMEOUTTWEAK,REG,REM,KAT,PUP"/' playbooks/tests/registrations.yaml
+sed -i 's/tags: "untagged,REGTIMEOUTTWEAK,REG,DOWNGRADE,REM"/tags: "untagged,REG,REM,KAT,PUP"/' playbooks/tests/registrations.yaml
 
 # Would register the containers depending upon the COUNT to sat6 via the bootstrap.py script.
 ansible-playbook --forks 100 -i conf/hosts.ini playbooks/tests/registrations.yaml -e "size=${DOCKER_HOST_COUNT} resting=0"
