@@ -7,6 +7,7 @@ wget -O conf/satperf.local.yaml ${SAT6_VARS_FILE}
 wget -O conf/manifest.zip ${MANIFEST_LOCATION_URL}
 wget -O conf/sat6.repo ${SAT6_REPO_FILE}
 wget -O conf/capsule.repo ${CAPSULE_REPO_FILE}
+rm -f conf/id_rsa_soak
 wget -O conf/id_rsa_soak ${SSH_PRIVATE_KEY}
 wget -O conf/id_rsa_soak.pub ${SSH_PUBLIC_KEY}
 
