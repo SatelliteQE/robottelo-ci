@@ -53,8 +53,8 @@ def compareContentViews(body) {
                 "bundle exec",
                 "./tools.rb release compare-content-view",
                 "--content-view '${config.content_view}'",
-                "--from-environment '${config.from_environment}'",
-                "--to-environment '${config.to_environment}'",
+                "--from-environment '${config.from_lifecycle_environment}'",
+                "--to-environment '${config.to_lifecycle_environment}'",
                 "--output '${archive_file}'"
             ]
 
