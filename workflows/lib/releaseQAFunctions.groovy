@@ -42,24 +42,21 @@ def compareContentViews(body) {
     body.delegate = config
     body()
 
-    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'SATELLITE_PASSWORD', usernameVariable: 'SATELLITE_USERNAME']]) {
+    dir('tool_belt') {
 
-        dir('tool_belt') {
+        setup_toolbelt()
+        def archive_file = 'package_report.yaml'
 
-            setup_toolbelt()
-            def archive_file = 'package_report.yaml'
+        def cmd = [
+            "bundle exec",
+            "./tools.rb release compare-content-view",
+            "--content-view '${config.content_view}'",
+            "--from-environment '${config.from_lifecycle_environment}'",
+            "--to-environment '${config.to_lifecycle_environment}'",
+            "--output '${archive_file}'"
+        ]
 
-            def cmd = [
-                "bundle exec",
-                "./tools.rb release compare-content-view",
-                "--content-view '${config.content_view}'",
-                "--from-environment '${config.from_environment}'",
-                "--to-environment '${config.to_environment}'",
-                "--output '${archive_file}'"
-            ]
-
-            sh "${cmd.join(' ')}"
-            archive archive_file
-        }
+        sh "${cmd.join(' ')}"
+        archive archive_file
     }
 }
