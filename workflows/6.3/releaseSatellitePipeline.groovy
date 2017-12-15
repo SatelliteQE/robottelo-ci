@@ -4,6 +4,7 @@ node('sat6-rhel7') {
 
     snapperStage("Setup Workspace") {
 
+        deleteDir()
         setupAnsibleEnvironment {}
 
     }
