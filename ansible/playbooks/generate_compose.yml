@@ -2,9 +2,23 @@
 - hosts: compose
   become: true
   become_user: jenkins
+  vars:
+    compose_output_dir: "/home/jenkins/composes"
   tasks:
     - debug:
         msg: "Generating for RHEL{{ rhel_version }}"
+
+    - name: 'Find compose symlink'
+      stat:
+        path: "{{ compose_output_dir }}/latest-Satellite-6.2-RHEL-{{ rhel_version }}"
+      register: compose_link
+      ignore_errors: yes
+
+    - name: 'Remove old compose'
+      file:
+        state: absent
+        path: "{{ compose_link.lnk_source }}"
+      ignore_errors: yes
 
     - name: "Generate compose"
       shell: 'sh generate-compose rhel{{ rhel_version }} /home/jenkins'
