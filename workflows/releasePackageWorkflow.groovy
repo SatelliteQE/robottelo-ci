@@ -174,6 +174,31 @@ node('rvm') {
         }
     }
 
+    snapperStage("Mark BZs as needs_rpm") {
+
+        dir('tool_belt') {
+            def ids = []
+            def bzs = readFile 'bz_ids.json'
+            bzs = new JsonSlurper().parseText(bzs)
+
+            for (bz in bzs) {
+                ids << bz['id']
+            }
+
+            if (ids.size() > 0) {
+                ids = ids.join(' --bug ')
+
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+
+                    sh "bundle exec ./tools.rb bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state needs_rpm --bug ${ids} --version ${version_map['version']}"
+
+                }
+
+            }
+        }
+
+    }
+
     snapperStage("Trigger packaging update") {
         if (release_branch == 'SATELLITE-6.3.0') {
           build job: 'sat-63-satellite-packaging-update', parameters: [

@@ -54,6 +54,7 @@ node('sat6-rhel7') {
             update_build_description_from_packages(packages_to_build)
 
             if (build_type == 'release') {
+                mark_bugs_built(packages_to_build)
                 brew_status_comment(build_status)
             }
 
@@ -62,6 +63,32 @@ node('sat6-rhel7') {
             deleteDir()
 
         }
+    }
+}
+
+def mark_bugs_built(packages_to_build) {
+    dir('tool_belt') {
+        setup_toolbelt()
+    }
+
+    for (String package_name: packages_to_build.split(':')) {
+        rpm = sh(returnStdout: true, script: "rpmspec -q --srpm --queryformat=%{NVR} packages/${package_name}/*.spec").trim()
+        ids = sh(returnStdout: true, script: "rpmspec -q --srpm --queryformat=%{CHANGELOGTEXT} packages/${package_name}/*.spec |grep '^- BZ' | sed -E 's/^- BZ[ #]+?([0-9]+).*/\\1/'").trim().split("\n")
+
+        dir('tool_belt') {
+            if (ids.size() > 0) {
+                ids = ids.join(' --bug ')
+
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+                    sh "bundle exec ./tools.rb bugzilla set-fixed-in --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --rpm ${rpm} --bug ${ids} --version ${version_map['version']}"
+                    sh "bundle exec ./tools.rb bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state rpm_built --bug ${ids} --version ${version_map['version']}"
+                }
+            }
+        }
+    }
+
+    dir('tool_belt') {
+        deleteDir()
     }
 }
 
