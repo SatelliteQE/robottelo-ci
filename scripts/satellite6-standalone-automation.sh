@@ -32,9 +32,15 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     sed -i "s/^# saucelabs_key=.*/saucelabs_key=${SAUCELABS_KEY}/" robottelo.properties
     sed -i "s/^# webdriver=.*/webdriver=${SAUCE_BROWSER}/" robottelo.properties
     if [[ "${SAUCE_BROWSER}" == "firefox" ]]; then
-        BROWSER_VERSION=45.0
+        if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
+            BROWSER_VERSION=45.0
+        else
+            BROWSER_VERSION=47.0
+        fi
     elif [[ "${SAUCE_BROWSER}" == "edge" ]]; then
         BROWSER_VERSION=14.14393
+    elif [[ "${SAUCE_BROWSER}" == "chrome" ]]; then
+        BROWSER_VERSION=63.0
     fi
     sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},idleTimeout=1000,seleniumVersion=2.48.0,build=${SATELLITE_VERSION}-$(date +%Y-%m-%d-%S),screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER}/" robottelo.properties
 fi
