@@ -97,10 +97,15 @@ node('sat6-rhel7') {
 
 node('rhel') {
 
-    snapperStage("Compare Packages") {
+    snapperStage("Setup Packaging Workspace") {
 
-      // Remove old package report
-        sh 'rm -f package_report.yaml'
+        deleteDir()
+        dir('tool_belt') {
+            setup_toolbelt()
+        }
+    }
+
+    snapperStage("Compare Packages") {
 
         compareContentViews {
           organization = 'Sat6-CI'
@@ -140,9 +145,6 @@ node('rhel') {
 
     snapperStage("Move to ON_DEV") {
         dir('tool_belt') {
-
-            setup_toolbelt()
-
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
                 sh "bundle exec ./tools.rb bugzilla move-to-on-dev --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --version ${satellite_version} --packages package_report.yaml"
