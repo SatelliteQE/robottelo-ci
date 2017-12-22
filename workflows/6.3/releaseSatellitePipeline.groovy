@@ -145,7 +145,7 @@ node('rhel') {
 
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                sh "bundle exec ./tools.rb bugzilla move-to-on-dev --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --version ${version_map['version']} --packages ../package_report.yaml"
+                sh "bundle exec ./tools.rb bugzilla move-to-on-dev --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --version ${satellite_version} --packages package_report.yaml"
 
             }
         }
