@@ -1,5 +1,6 @@
 def packages_to_build = null
 def build_status = 'failed'
+def satellite_version = env.gitlabTargetBranch.minus('SATELLITE-')
 
 node('sat6-rhel7') {
     snapperStage("Fetch git") {
@@ -80,8 +81,8 @@ def mark_bugs_built(packages_to_build) {
                 ids = ids.join(' --bug ')
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
-                    sh "bundle exec ./tools.rb bugzilla set-fixed-in --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --rpm ${rpm} --bug ${ids} --version ${version_map['version']}"
-                    sh "bundle exec ./tools.rb bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state rpm_built --bug ${ids} --version ${version_map['version']}"
+                    sh "bundle exec ./tools.rb bugzilla set-fixed-in --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --rpm ${rpm} --bug ${ids} --version ${satellite_version}"
+                    sh "bundle exec ./tools.rb bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state rpm_built --bug ${ids} --version ${satellite_version}"
                 }
             }
         }
