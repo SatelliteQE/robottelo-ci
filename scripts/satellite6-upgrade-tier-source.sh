@@ -29,6 +29,8 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
         fi
     elif [[ "${SAUCE_BROWSER}" == "edge" ]]; then
         BROWSER_VERSION=14.14393
+    elif [[ "${SAUCE_BROWSER}" == "chrome" ]]; then
+        BROWSER_VERSION=63.0
     fi
     # Temporary change to test Selenium and Firefox changes.
     if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
