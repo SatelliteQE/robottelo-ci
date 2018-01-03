@@ -21,6 +21,6 @@
       ignore_errors: yes
 
     - name: "Generate compose"
-      shell: 'sh generate-compose rhel{{ rhel_version }} /home/jenkins'
+      shell: "pungi-koji --no-label --config=rhel{{ rhel_version }}.conf --target-dir={{ compose_output_dir }} --skip-phase=test"
       args:
         chdir: "/home/jenkins/satellite-packaging/compose"
