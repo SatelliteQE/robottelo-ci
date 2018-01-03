@@ -55,7 +55,7 @@ node('sat6-rhel7') {
             update_build_description_from_packages(packages_to_build)
 
             if (build_type == 'release') {
-                mark_bugs_built(packages_to_build)
+                mark_bugs_built(packages_to_build, satellite_version)
                 brew_status_comment(build_status)
             }
 
@@ -67,7 +67,7 @@ node('sat6-rhel7') {
     }
 }
 
-def mark_bugs_built(packages_to_build) {
+def mark_bugs_built(packages_to_build, satellite_version) {
     def packages = packages_to_build.split(':')
 
     dir('tool_belt') {
