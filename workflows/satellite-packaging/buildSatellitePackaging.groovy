@@ -76,7 +76,7 @@ def mark_bugs_built(packages_to_build, satellite_version) {
 
     for (int i = 0; i < packages.size(); i++) {
         package_name = packages[i]
-        rpm = sh(returnStdout: true, script: "rpmspec -q --srpm --queryformat=%{NVR} packages/${package_name}/*.spec").trim()
+        rpm = sh(returnStdout: true, script: "rpmspec -q --srpm --undefine=dist --queryformat=%{NVR} packages/${package_name}/*.spec").trim()
         ids = sh(returnStdout: true, script: "rpmspec -q --srpm --queryformat=%{CHANGELOGTEXT} packages/${package_name}/*.spec |grep '^- BZ' | sed -E 's/^- BZ[ #]+?([0-9]+).*/\\1/'").trim().split("\n")
 
         dir('tool_belt') {
