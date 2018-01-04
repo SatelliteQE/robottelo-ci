@@ -69,6 +69,7 @@ node('sat6-rhel7') {
 
 def mark_bugs_built(packages_to_build, satellite_version) {
     def packages = packages_to_build.split(':')
+    def comment = get_brew_comment()
 
     dir('tool_belt') {
         setup_toolbelt()
@@ -86,6 +87,7 @@ def mark_bugs_built(packages_to_build, satellite_version) {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
                     sh "bundle exec ./tools.rb bugzilla set-fixed-in --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --rpm ${rpm} --bug ${ids} --version ${satellite_version}"
                     sh "bundle exec ./tools.rb bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state rpm_built --bug ${ids} --version ${satellite_version}"
+                    sh "bundle exec ./tools.rb bugzilla add-comment --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${satellite_version} --comment '${comment}'"
                 }
             }
         }
@@ -94,6 +96,15 @@ def mark_bugs_built(packages_to_build, satellite_version) {
     dir('tool_belt') {
         deleteDir()
     }
+}
+
+def get_brew_comment() {
+    def tasks = get_koji_tasks()
+    def comment = "build status: ${build_status}\n\nbrew:"
+    for (String task: tasks) {
+        comment += "\n * https://brewweb.engineering.redhat.com/brew/taskinfo?taskID=${task}"
+    }
+    return comment
 }
 
 def get_koji_tasks() {
@@ -105,11 +116,7 @@ def get_koji_tasks() {
 }
 
 def brew_status_comment(build_status) {
-    tasks = get_koji_tasks()
-    comment = "build status: ${build_status}\n\nbrew:"
-    for (String task: tasks) {
-        comment += "\n * https://brewweb.engineering.redhat.com/brew/taskinfo?taskID=${task}"
-    }
+    def comment = get_brew_comment()
     addGitLabMRComment comment: comment
 }
 
