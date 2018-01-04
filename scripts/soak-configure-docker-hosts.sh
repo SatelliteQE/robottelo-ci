@@ -6,6 +6,10 @@ scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no robottelo-ci/scr
 # Run the script to populate the HostGroup and  Activation keys.
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_SERVER_HOSTNAME}" "chmod 777 /root/soak-docker-client-setup.sh ; /root/soak-docker-client-setup.sh"
 
+# Download and place the patched bootstrap.py file for puppet4 support.
+# TODO, Remove this after the katello-client-bootstrap package has been added with support for puppet4.
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_SERVER_HOSTNAME}" "pushd /var/www/html/pub/ ; rm -f bootstrap.py ; wget -O bootstrap.py ${BOOTSTRAP_FILE} ; chown apache.apache bootstrap.py ; popd"
+
 # Changes for Satellite6.3
 #bootstrap_org_name: "Default Organization"
 if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
