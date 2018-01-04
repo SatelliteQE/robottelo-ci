@@ -1,0 +1,17 @@
+- job:
+    disabled: false
+    name: 'sat-release-foreman-virt-who-configure'
+    project-type: workflow
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - ./repos/foreman_virt_who_configure_repo.groovy
+          - ./source_types/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/toolbelt.groovy
+          - workflows/lib/runPlaybook.groovy
+          - workflows/lib/sendPostRequest.groovy
+          - workflows/lib/messageSnapper.groovy
+
