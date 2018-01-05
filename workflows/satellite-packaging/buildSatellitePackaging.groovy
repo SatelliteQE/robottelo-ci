@@ -55,7 +55,7 @@ node('sat6-rhel7') {
             update_build_description_from_packages(packages_to_build)
 
             if (build_type == 'release') {
-                mark_bugs_built(packages_to_build, satellite_version)
+                mark_bugs_built(build_status, packages_to_build, satellite_version)
                 brew_status_comment(build_status)
             }
 
@@ -67,9 +67,9 @@ node('sat6-rhel7') {
     }
 }
 
-def mark_bugs_built(packages_to_build, satellite_version) {
+def mark_bugs_built(build_status, packages_to_build, satellite_version) {
     def packages = packages_to_build.split(':')
-    def comment = get_brew_comment()
+    def comment = get_brew_comment(build_status)
 
     dir('tool_belt') {
         setup_toolbelt()
@@ -98,7 +98,7 @@ def mark_bugs_built(packages_to_build, satellite_version) {
     }
 }
 
-def get_brew_comment() {
+def get_brew_comment(build_status) {
     def tasks = get_koji_tasks()
     def comment = "build status: ${build_status}\n\nbrew:"
     for (String task: tasks) {
@@ -116,7 +116,7 @@ def get_koji_tasks() {
 }
 
 def brew_status_comment(build_status) {
-    def comment = get_brew_comment()
+    def comment = get_brew_comment(build_status)
     addGitLabMRComment comment: comment
 }
 
