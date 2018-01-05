@@ -1,0 +1,11 @@
+- job:
+    name: rhel-release-pipeline
+    project-type: workflow
+    triggers:
+      - timed: '0 22 * * 0'
+    dsl:
+      !include-raw:
+        - workflows/rhelPipeline.groovy
+        - workflows/lib/runPlaybook.groovy
+        - workflows/lib/sendPostRequest.groovy
+        - workflows/lib/messageSnapper.groovy
