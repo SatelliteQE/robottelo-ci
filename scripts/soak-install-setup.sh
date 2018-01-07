@@ -28,4 +28,4 @@ sed -i "s|capsule_install_source:.*|capsule_install_source: ${SATELLITE_DISTRIBU
 
 sed -i "s|satellite.example.com ip=172.17.53.1|${SATELLITE_SERVER_HOSTNAME} ip=${SATELLITE_IPADDR}|" conf/hosts.ini
 sed -i "s|capsule.example.com ip=172.17.51.1|${CAPSULE_SERVER_HOSTNAME} ip=${CAPSULE_IPADDR}|" conf/hosts.ini
-sed -i "s|docker.example.com ip=172.17.52.1|${DOCKER_SERVER_HOSTNAME} ip=${DOCKER_SERVER_IPADDR} docker_host_10gnic=ens1 containers=${DOCKER_HOST_COUNT} docker_host_cidr_range=22 tests_registration_target=${SATELLITE_SERVER_HOSTNAME}|" conf/hosts.ini
+sed -i "s|docker.example.com ip=172.17.52.1|${DOCKER_SERVER_HOSTNAME} ip=${DOCKER_SERVER_IPADDR} nic_private=ens1 containers=${DOCKER_HOST_COUNT} docker_host_cidr_range=22 tests_registration_target=${SATELLITE_SERVER_HOSTNAME}|" conf/hosts.ini
