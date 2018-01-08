@@ -34,11 +34,11 @@ EOT
     }
 }
 
-def setup_foreman() {
+def setup_foreman(ruby = '2.2') {
     try {
 
-        withRVM(['gem install bundler'], 2.2)
-        withRVM(['bundle install --without mysql:mysql2:development'], 2.2)
+        withRVM(['gem install bundler'], ruby)
+        withRVM(['bundle install --without mysql:mysql2:development'], ruby)
 
         if (fileExists('package.json')) {
             sh 'npm install npm@\\<"5.0.0"'
@@ -48,7 +48,7 @@ def setup_foreman() {
         }
 
         // Create DB first in development as migrate behaviour can change
-        withRVM(['bundle exec rake db:drop db:create db:migrate DISABLE_DATABASE_ENVIRONMENT_CHECK=true'], 2.2)
+        withRVM(['bundle exec rake db:drop db:create db:migrate DISABLE_DATABASE_ENVIRONMENT_CHECK=true'], ruby)
 
     } catch (all) {
 
@@ -59,7 +59,7 @@ def setup_foreman() {
     }
 }
 
-def setup_plugin(plugin_name) {
+def setup_plugin(plugin_name, ruby = '2.2') {
     try {
         // Ensure we don't mention the gem twice in the Gemfile in case it's already mentioned there
         sh "find Gemfile bundler.d -type f -exec sed \"/gem ['\\\"]${plugin_name}['\\\"]/d\" {} \\;"
@@ -70,9 +70,9 @@ def setup_plugin(plugin_name) {
             sh "cat ../plugin/gemfile.d/${plugin_name}.rb >> bundler.d/Gemfile.local.rb"
         }
 
-        withRVM(['bundle update'], 2.2)
+        withRVM(['bundle update'], ruby)
 
-        withRVM(['bundle exec rake db:migrate RAILS_ENV=development'], 2.2)
+        withRVM(['bundle exec rake db:migrate RAILS_ENV=development'], ruby)
 
     } catch (all) {
 
@@ -83,15 +83,15 @@ def setup_plugin(plugin_name) {
     }
 }
 
-def cleanup() {
+def cleanup(ruby = '2.2') {
     try {
 
         sh "rm -rf node_modules/"
-        withRVM(['bundle exec rake db:drop DISABLE_DATABASE_ENVIRONMENT_CHECK=true'], 2.2)
+        withRVM(['bundle exec rake db:drop DISABLE_DATABASE_ENVIRONMENT_CHECK=true'], ruby)
 
     } finally {
 
-        cleanup_rvm()
+        cleanup_rvm(ruby = '2.2')
 
     }
 }
