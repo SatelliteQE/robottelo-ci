@@ -40,10 +40,12 @@ def setup_foreman() {
         withRVM(['gem install bundler'], 2.2)
         withRVM(['bundle install --without mysql:mysql2:development'], 2.2)
 
-        sh 'npm install npm@\\<"5.0.0"'
-        sh './node_modules/.bin/npm install --no-optional --global-style true'
-        sh 'npm install phantomjs'
-        sh './node_modules/webpack/bin/webpack.js --bail --config config/webpack.config.js'
+        if (fileExists('package.json')) {
+            sh 'npm install npm@\\<"5.0.0"'
+            sh './node_modules/.bin/npm install --no-optional --global-style true'
+            sh 'npm install phantomjs'
+            sh './node_modules/webpack/bin/webpack.js --bail --config config/webpack.config.js'
+        }
 
         // Create DB first in development as migrate behaviour can change
         withRVM(['bundle exec rake db:drop db:create db:migrate DISABLE_DATABASE_ENVIRONMENT_CHECK=true'], 2.2)
