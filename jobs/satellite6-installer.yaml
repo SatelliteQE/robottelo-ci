@@ -107,15 +107,26 @@
         - string:
             name: GATEWAY
             description: |
-                Default value is '192.168.100.1', which is automatically set by installer.
+                Default value is '192.168.100.1', which is automatically set by installer job.
                 Used for, --foreman-proxy-dhcp-gateway and --foreman-proxy-dns-reverse installer options.
                 If using isolated vlans explicitly specify the gateway here, which would be in the format
                 'zz.xx.yy.254'. Mandatory if installing sat6 which has isolated VLANs, Otherwise this is Optional.
-
+        - string:
+            name: SUBNET
+            description: |
+                Default value is '192.168.100.0', which is automatically set by installer job.
+                Used to define subnet that is operated by Satellite's internal capsule.
+                Mandatory if installing sat6 which has isolated VLANs, Otherwise this is Optional.
+        - string:
+            name: NETMASK
+            description: |
+                Default value is '255.255.255.0', which is automatically set by installer job.
+                Used to define subnet that is operated by Satellite's internal capsule.
+                Mandatory if installing sat6 which has isolated VLANs, Otherwise this is Optional.
         - string:
             name: DHCP_RANGE
             description: |
-                This is required when we need to set a custom DHCP range.
+                This is required when we need to set a custom DHCP range operated by internal capsule.
                 Completely Optional but would be helpful to have.
         - string:
             name: INSTALLER_OPTIONS
