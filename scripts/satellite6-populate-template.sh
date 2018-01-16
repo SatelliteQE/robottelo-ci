@@ -74,6 +74,7 @@ if [[ -z "$SATELLITE_DISTRIBUTION" ]]; then
 fi
 
 ONLY_POPULATE_TEMPLATE=""
+POPULATE_CLIENTS_ARCH=""
 
 if [[ "$ONLY_POPULATE_TEMPLATE" = 'true' ]]; then
     if [[ -z "$STY" || -z "$TMUX" ]]; then
@@ -269,6 +270,9 @@ satellite_runner  activation-key update --name "ak-capsule-${RHELOS}" --auto-att
 # Add both RHEL6 and RHEL7 Activation keys.
 # RHEL 7 activation key
 RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
+if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
+    RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Standard (Physical or Virtual Nodes)" |  awk -F "," '{print $1}' | grep -vi id)
+fi
 TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
 satellite_runner  activation-key add-subscription --name='ak-rhel-7' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
 

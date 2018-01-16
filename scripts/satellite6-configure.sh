@@ -13,3 +13,9 @@ fi
 
 cp ${PWD}/scripts/satellite6-populate-template.sh satellite6-populate.sh
 chmod 755 satellite6-populate.sh
+
+if [[ -n "${POPULATE_CLIENTS_ARCH}" ]]; then
+    cp ${PWD}/scripts/satellite6-client-arch-template.sh satellite6-client-arch.sh
+    chmod 755 satellite6-client-arch.sh
+    cat satellite6-client-arch.sh >> satellite6-populate.sh
+fi
