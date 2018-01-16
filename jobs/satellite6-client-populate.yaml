@@ -1,0 +1,152 @@
+- job:
+    disabled: false
+    name: 'satellite6-client-populate'
+    concurrent: true
+    display-name: 'Satellite 6 Client automation'
+    description: |
+        <p>Job that just Populates an already installed <strong>Satellite 6</strong> on a machine. This job imports manifest, syncs RHEL content, creates CV, Publishes it, promotes it, Creates Ak, Creates Host-Groups and finally Creates Hosts on Libvirt.</p>
+        <p>Please make sure to add the following <strong>ssh key</strong> to your server so that this <strong>Jenkins</strong> job can access it.</p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+    node: sat6-rhel7
+    parameters:
+        - string:
+            name: SERVER_HOSTNAME
+            description: "This is Mandatory, FQDN for your server where you want to populate Satellite 6 content."
+        - bool:
+            name: RERUN
+            default: false
+            description: |
+                This is a dummy re-run, any changes done to the parameters during the re-run would have no effect.
+                Check this if the script transferred to sat6 failed for some reason and you want
+                to RERUN it, after fixing or skiping of the command in the script.
+                Would skip already run hammer commands and would proceed to the next TODO command.
+        - string:
+            name: ADMIN_PASSWORD
+            default: changeme
+            description: "Specify the admin password if changed from the default set."
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.3'
+                - '6.2'
+            description: "Currently this job populates completely for 6.2 and 6.3 only. As a lot of hammer-cli options differ for 6.1."
+        - choice:
+            name: DOWNLOAD_POLICY
+            choices:
+                - 'immediate'
+                - 'on_demand'
+                - 'background'
+            description: |
+                For satellite 6.2 - the default installation setup is immediate.
+                For satellite 6.3 - the default installation setup is on_demand
+                The chosen download policy will override the installation download policy on your satellite.
+                Immediate is the default choice for this job as this is more stable option.
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                - 'INTERNAL'
+                - 'GA'
+            description: |
+                Depending upon INTERNAL and GA, either DOGFOOD or CDN content is synced.
+        - string:
+            name: MANIFEST_LOCATION_URL
+            description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
+        - string:
+            name: SUBNET_RANGE
+            default: 192.168.100.0
+            description: |
+                 If you have used Satellite6-Installer earlier, the default value would suffice, else override.
+                 The subnet Network to provide IP's from to the hosts. Example - 192.168.100.0 or 10.x.x.0
+        - string:
+            name: SUBNET_MASK
+            default: 255.255.255.0
+            description: |
+                If you have used Satellite6-Installer earlier, the default value would suffice, else override.
+                The Subnet mask for the Subnet Range defined. Example - 255.255.255.0
+        - string:
+            name: SUBNET_GATEWAY
+            default: 192.168.100.1
+            description: |
+                If you have used Satellite6-Installer earlier, the default value would suffice, else override.
+                Subnet gateway for the Subnet Range defined. Example - 192.168.100.1 for NAT Based and x.x.x.254 for Bridge Based networks.
+        - bool:
+            name: DEFAULT_COMPUTE_RESOURCES
+            default: true
+            description: "Default is true, If unchecked we need to provide the below Libvirt, RHEV and OpenStack Information."
+        - string:
+            name: CI_REPO
+            default: https://github.com/SatelliteQE/robottelo-ci.git
+            description: "You can override this to your automation-tools repo, if needed."
+        - string:
+            name: CI_BRANCH
+            default: master
+            description: "You can override this to any branch."
+        - bool:
+            name: MINIMAL_INSTALL
+            default: true
+            description: |
+                By default, Minimal Install is selected and it only syncs content of RHEL6-Server-x86_64 and RHEL7-Server-x86_64.
+                Currently no other repo is configured to sync apart from the above mentioned in satellite6-populate-template.sh.
+                One can add support to enable and sync repos like, RHEL5, X86, workstation and so on when MINIMAL_INSTALL is false
+                under satellite6-populate-template.sh script.
+        - bool:
+            name: ONLY_POPULATE_TEMPLATE
+            default: false
+            description: |
+                If set to true, will just populate the template file and copy to the Satellite6 Server for further manipulation.
+                One can find the populated template script at /root/satellite6-populate.sh
+        - bool:
+            name: POPULATE_CLIENTS_ARCH
+            default: true
+            description: |
+                If set to true, will populate the different client architecture repos to the Satellite6 Server for further client testing.
+        - string:
+            name: LIBVIRT_HOSTNAME
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The Libvirt Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+        - string:
+            name: RHEV_HOSTNAME
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+        - string:
+            name: RHEV_USER
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV User login to add the Compute Resource. Note: Provide User in the format user@internal."
+        - string:
+            name: RHEV_PASSWD
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV Password to add the Compute Resource."
+        - string:
+            name: RHEV_DATACENTER_UUID
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV UUID to load the Datacenter and quota for the Compute Resource."
+        - string:
+            name: OSP_HOSTNAME
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The Openstack Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
+        - string:
+            name: OS_USERNAME
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The OpenStack Platform User login to add the Compute Resource."
+        - string:
+            name: OS_PASSWORD
+            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The OpenStack Platform Password to add the Compute Resource."
+    scm:
+        - git:
+            url: ${CI_REPO}
+            branches:
+                - origin/${CI_BRANCH}
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="SERVER_HOSTNAME"} ${ENV,var="SATELLITE_VERSION"}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'scripts/satellite6-configure.sh'
+                    - 'scripts/satellite6-configure-variables.sh'

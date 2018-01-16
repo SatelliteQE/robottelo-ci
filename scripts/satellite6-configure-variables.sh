@@ -70,3 +70,7 @@ if [[ "${ONLY_POPULATE_TEMPLATE}" = 'true' ]]; then
 else
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" /root/satellite6-populate.sh
 fi
+
+if [[ -n "${POPULATE_CLIENTS_ARCH}" ]]; then
+    sed -i "s|POPULATE_CLIENTS_ARCH=.*|POPULATE_CLIENTS_ARCH=\"${POPULATE_CLIENTS_ARCH}\"|" satellite6-populate.sh
+fi
