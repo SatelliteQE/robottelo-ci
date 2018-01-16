@@ -33,6 +33,13 @@ fi
 # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
 fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
 
+set +e
+# Run pre-upgarde scenarios tests
+if [ "${RUN_SCENARIO_TESTS}" == 'true' ]; then
+    $(which py.test) -v -s -m pre_upgrade --junit-xml=test_scenarios-pre-results.xml upgrade_tests/test_scenarios/
+fi
+set -e
+
 # Creates the pre-upgrade data-store required for existence tests
 if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
     echo "Setting up pre-upgrade data-store for existence tests"
@@ -67,6 +74,13 @@ if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
     fab -u root set_datastore:"postupgrade","cli"
     fab -u root set_datastore:"postupgrade","api"
 fi
+
+set +e
+# Run post-upgarde scenarios tests
+if [ "${RUN_SCENARIO_TESTS}" == 'true' ]; then
+    $(which py.test) -v -s -m post_upgrade --junit-xml=test_scenarios-post-results.xml upgrade_tests/test_scenarios/
+fi
+set -e
 
 # Export BZ credentials to skip the tests with BZ
 # This will be used robozilla's pytest_skip_if_bug_open decorator
