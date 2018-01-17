@@ -83,9 +83,9 @@ def mark_bugs_built(build_status, packages_to_build, satellite_version) {
                 ids = ids.split("\n").join(' --bug ')
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
-                    sh "bundle exec ./tools.rb bugzilla set-fixed-in --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --rpm ${rpm} --bug ${ids} --version ${satellite_version}"
-                    sh "bundle exec ./tools.rb bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state rpm_built --bug ${ids} --version ${satellite_version}"
-                    sh "bundle exec ./tools.rb bugzilla add-comment --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${satellite_version} --comment '${comment}'"
+                    sh "bundle exec ./bin/tool-belt bugzilla set-fixed-in --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --rpm ${rpm} --bug ${ids} --version ${satellite_version}"
+                    sh "bundle exec ./bin/tool-belt bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state rpm_built --bug ${ids} --version ${satellite_version}"
+                    sh "bundle exec ./bin/tool-belt bugzilla add-comment --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${satellite_version} --comment '${comment}'"
                 }
             }
         }

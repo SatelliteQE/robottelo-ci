@@ -49,7 +49,7 @@ def compareContentViews(body) {
 
         def cmd = [
             "bundle exec",
-            "./tools.rb release compare-content-view",
+            "./bin/tool-belt release compare-content-view",
             "--content-view '${config.content_view}'",
             "--from-environment '${config.from_lifecycle_environment}'",
             "--to-environment '${config.to_lifecycle_environment}'",

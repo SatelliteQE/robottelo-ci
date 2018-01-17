@@ -47,7 +47,7 @@ node('rvm') {
     stage("Identify Bugs") {
 
         dir('tool_belt') {
-            sh "bundle exec ./tools.rb release find-bz-ids --dir ../${repo_name} --output-file bz_ids.json"
+            sh "bundle exec ./bin/tool-belt release find-bz-ids --dir ../${repo_name} --output-file bz_ids.json"
             archive 'bz_ids.json'
         }
     }
@@ -68,7 +68,7 @@ node('rvm') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    sh "bundle exec ./tools.rb bugzilla set-cherry-picked --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
+                    sh "bundle exec ./bin/tool-belt bugzilla set-cherry-picked --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
 
                 }
 
@@ -88,7 +88,7 @@ node('rvm') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                        sh "bundle exec ./tools.rb bugzilla set-gitlab-tracker --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --external-tracker \"${hash}\" --bug ${id} --version ${version_map['version']}"
+                        sh "bundle exec ./bin/tool-belt bugzilla set-gitlab-tracker --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --external-tracker \"${hash}\" --bug ${id} --version ${version_map['version']}"
 
                 }
             }
@@ -106,7 +106,7 @@ node('rvm') {
                 sh "git config user.name 'Jenkins'"
 
                 dir('../tool_belt') {
-                    sh "bundle exec ./tools.rb release bump-version --dir ../${repo_name} --output-file version"
+                    sh "bundle exec ./bin/tool-belt release bump-version --dir ../${repo_name} --output-file version"
                     archive "version"
                     releaseTag = readFile 'version'
                 }
@@ -141,7 +141,7 @@ node('rvm') {
 
             dir('tool_belt') {
 
-                sh "bundle exec ./tools.rb release build-source --dir ../${repo_name} --type ${sourceType} --output-file artifact"
+                sh "bundle exec ./bin/tool-belt release build-source --dir ../${repo_name} --type ${sourceType} --output-file artifact"
 
             }
 
@@ -193,7 +193,7 @@ node('rvm') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    sh "bundle exec ./tools.rb bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state needs_rpm --bug ${ids} --version ${version_map['version']}"
+                    sh "bundle exec ./bin/tool-belt bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state needs_rpm --bug ${ids} --version ${version_map['version']}"
 
                 }
 
