@@ -785,7 +785,7 @@
                   variable: CONFIG_FILES
     builders:
         - copyartifact:
-            project: 'upgrade-to-{satellite_version}-{os}'
+            project: 'upgrade-phase-{satellite_version}-{os}'
             filter: 'postupgrade_*,preupgrade_*,scenario_entities,product_setup'
             which-build: last-successful
         - shining-panda:
@@ -836,7 +836,7 @@
             name: '#${{BUILD_NUMBER}} Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
     builders:
         - copyartifact:
-            project: 'upgrade-to-{satellite_version}-{os}'
+            project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
             filter: 'product_setup,scenario_entities'
             which-build: last-successful
         - shining-panda:
