@@ -117,12 +117,12 @@
             description: The Capsule Server Hostname to be configured.
         - string:
             name: SAT_PERF_REPO
-            default: https://github.com/redhat-performance/satellite-performance.git
+            default: https://github.com/redhat-performance/satperf.git
             description: |
                 You can override this to your sat-perf repo, if needed.
         - string:
             name: SAT_PERF_BRANCH
-            default: master
+            default: satellite-performance-2.0
             description: |
                 You can override this to any branch of your sat-perf repo.
     scm:
@@ -187,12 +187,12 @@
             description: The Capsule Server Hostname to be configured.
         - string:
             name: SAT_PERF_REPO
-            default: https://github.com/redhat-performance/satellite-performance.git
+            default: https://github.com/redhat-performance/satperf.git
             description: |
                 You can override this to your sat-perf repo, if needed.
         - string:
             name: SAT_PERF_BRANCH
-            default: master
+            default: satellite-performance-2.0
             description: |
                 You can override this to any branch of your sat-perf repo.
     scm:
@@ -258,12 +258,12 @@
             description: The Capsule Server Hostname to be configured.
         - string:
             name: SAT_PERF_REPO
-            default: https://github.com/redhat-performance/satellite-performance.git
+            default: https://github.com/redhat-performance/satperf.git
             description: |
                 You can override this to your sat-perf repo, if needed.
         - string:
             name: SAT_PERF_BRANCH
-            default: master
+            default: satellite-performance-2.0
             description: |
                 You can override this to any branch of your sat-perf repo.
     scm:
