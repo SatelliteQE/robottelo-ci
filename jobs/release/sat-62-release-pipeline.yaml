@@ -2,7 +2,7 @@
     name: sat-62-release-pipeline
     project-type: workflow
     triggers:
-      - timed: 'H 0 * * *'
+      - timed: 'H 2 * * *'
     dsl:
       !include-raw:
         - workflows/6.2/releasePipelineAttributes.groovy
