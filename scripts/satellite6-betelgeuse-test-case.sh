@@ -1,9 +1,10 @@
 # Install the latest version of betelgeuse.
 pip install betelgeuse
 
+for TC_PATH in "${BETELGEUSE_TC_PATH}" ; do \
 betelgeuse requirement \
-    "${BETELGEUSE_TC_PATH}" \
-    "${POLARION_PROJECT}"
+    "${TC_PATH}" \
+    "${POLARION_PROJECT}" ; done
 
 export PYTHONPATH="${PWD}"
 
