@@ -3,12 +3,11 @@
   vars:
     organization: Sat6-CI
   tasks:
-    - name: "Sync repositories"
+    - name: "Sync product repositories"
       katello_sync:
         username: "{{ username }}"
         password: "{{ password }}"
         server_url: "{{ server }}"
-        repository: "{{ repository }}"
         product: "{{ product }}"
         organization: "{{ organization }}"
         verify_ssl: False
