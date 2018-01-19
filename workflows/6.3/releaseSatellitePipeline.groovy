@@ -74,12 +74,35 @@ node('sat6-rhel7') {
     }
 
 
-    snapperStage("Sync Repositories") {
+    snapperStage("Sync Satellite Repositories") {
 
         runPlaybookInParallel {
             name = "sync"
-            items = products
-            item_name = 'product'
+            items = satellite_repositories
+            item_name = 'repository'
+            extra_vars = ['product': 'Satellite 6.3 Composes']
+            playbook = 'playbooks/sync_repositories.yml'
+        }
+    }
+
+    snapperStage("Sync Capsule Repositories") {
+
+        runPlaybookInParallel {
+            name = "sync"
+            items = capsule_repositories
+            item_name = 'repository'
+            extra_vars = ['product': 'Satellite Capsule 6.3 Composes']
+            playbook = 'playbooks/sync_repositories.yml'
+        }
+    }
+
+    snapperStage("Sync Tools Repositories") {
+
+        runPlaybookInParallel {
+            name = "sync"
+            items = tools_repositories
+            item_name = 'repository'
+            extra_vars = ['product': 'Satellite Tools 6.3 Composes']
             playbook = 'playbooks/sync_repositories.yml'
         }
     }
