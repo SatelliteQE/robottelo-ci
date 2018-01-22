@@ -623,6 +623,7 @@
                 DISCOVERY_ISO=${{DISCOVERY_ISO}}
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
     publishers:
+        - satellite6-automation-mails
         - archive:
             artifacts: 'product_setup'
 
@@ -674,6 +675,7 @@
             - project: 'upgrade-phase-{satellite_version}-{os}'
               current-parameters: true
     publishers:
+        - satellite6-automation-mails
         - satellite6-automation-publishers
         - archive:
             artifacts: 'preupgrade_*,scenario_entities,product_setup'
@@ -802,6 +804,7 @@
             - project: 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
               current-parameters: true
     publishers:
+        - satellite6-automation-mails
         - satellite6-automation-publishers
         - archive:
             artifacts: 'postupgrade_*,preupgrade_*,scenario_entities,product_setup'
@@ -855,6 +858,7 @@
             - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
               current-parameters: true
     publishers:
+        - satellite6-automation-mails
         - satellite6-automation-publishers
         - archive:
             artifacts: 'scenario_entities,product_setup'
