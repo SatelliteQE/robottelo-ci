@@ -1,14 +1,14 @@
 #!/usr/bin/groovy
 
 node('rhel') {
-    snapperStage("Setup Workspace") {
+    stage("Setup Workspace") {
 
         deleteDir()
         setupAnsibleEnvironment {}
 
     }
 
-    snapperStage("Create Archive Environment") {
+    stage("Create Archive Environment") {
 
         // Remove old package report
         sh 'rm -rf package_report.yaml'
@@ -24,7 +24,7 @@ node('rhel') {
         }
     }
 
-    snapperStage("Archive Satellite") {
+    stage("Archive Satellite") {
 
         def versionInArchive = null
 
@@ -40,7 +40,7 @@ node('rhel') {
         }
     }
 
-    snapperStage("Archive Capsule") {
+    stage("Archive Capsule") {
 
         // Work around for parameters not being accessible in functions
         writeFile file: 'previous_snap', text: previousSnapVersion
@@ -54,7 +54,7 @@ node('rhel') {
         }
     }
 
-    snapperStage("Archive Tools") {
+    stage("Archive Tools") {
 
         // Work around for parameters not being accessible in functions
         writeFile file: 'previous_snap', text: previousSnapVersion
@@ -83,7 +83,7 @@ node('rhel') {
 
     }
 
-    snapperStage("Promote Satellite to QA") {
+    stage("Promote Satellite to QA") {
 
       compareContentViews {
         organization = 'Sat6-CI'
@@ -100,7 +100,7 @@ node('rhel') {
       }
     }
 
-    snapperStage("Promote Capsule to QA") {
+    stage("Promote Capsule to QA") {
 
         compareContentViews {
           organization = 'Sat6-CI'
@@ -117,7 +117,7 @@ node('rhel') {
         }
     }
 
-    snapperStage("Promote Tools to QA") {
+    stage("Promote Tools to QA") {
 
         compareContentViews {
           organization = 'Sat6-CI'
@@ -165,7 +165,7 @@ node('rhel') {
 }
 
 node {
-    snapperStage("Run Automation") {
+    stage("Run Automation") {
         build job: 'trigger-satellite-6.3', parameters: [
           [$class: 'StringParameterValue', name: 'SATELLITE_DISTRIBUTION', value: 'INTERNAL'],
           [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${snapVersion}"],

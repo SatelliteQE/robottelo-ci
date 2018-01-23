@@ -5,5 +5,5 @@
     dsl:
       !include-raw:
         - workflows/testPipeline.groovy
-        - workflows/lib/messageSnapper.groovy
-        - workflows/lib/sendPostRequest.groovy
+    notifications:
+      - snapper_notifications

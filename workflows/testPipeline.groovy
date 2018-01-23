@@ -1,9 +1,9 @@
 node('sat6-rhel7') {
-  snapperStage('one') {
+  stage('one') {
     sh "echo Maybe?"
   }
 
-  snapperStage('two') {
+  stage('two') {
     sh 'exit 1'
   }
 }

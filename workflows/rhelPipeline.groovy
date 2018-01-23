@@ -1,13 +1,13 @@
 node('rhel') {
 
-    snapperStage("Setup Workspace") {
+    stage("Setup Workspace") {
 
         deleteDir()
         setupAnsibleEnvironment {}
 
     }
 
-    snapperStage("Sync Repositories") {
+    stage("Sync Repositories") {
         def products = [
             'Red Hat Enterprise Linux Server',
             'Red Hat Software Collections for RHEL Server'
@@ -21,7 +21,7 @@ node('rhel') {
         }
     }
 
-    snapperStage("Publish Content Views") {
+    stage("Publish Content Views") {
         def content_views = [
             'RHEL6',
             'RHEL7'

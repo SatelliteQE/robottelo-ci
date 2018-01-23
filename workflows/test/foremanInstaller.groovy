@@ -1,13 +1,13 @@
 node('rvm') {
 
-    snapperStage("Setup Environment") {
+    stage("Setup Environment") {
 
         deleteDir()
         gitlab_clone_and_merge('foreman-installer')
 
     }
 
-    snapperStage('Tests') {
+    stage('Tests') {
 
         try {
 

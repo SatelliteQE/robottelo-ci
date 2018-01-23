@@ -6,7 +6,7 @@ def satellite_version = env.gitlabTargetBranch.minus('SATELLITE-')
 
 node ('sat6-rhel7') {
 
-    snapperStage("Setup Environment") {
+    stage("Setup Environment") {
 
         deleteDir()
 
@@ -16,7 +16,7 @@ node ('sat6-rhel7') {
 
     }
 
-    snapperStage("Clone packaging git") {
+    stage("Clone packaging git") {
 
         dir("tool_belt") {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
@@ -26,7 +26,7 @@ node ('sat6-rhel7') {
 
     }
 
-    snapperStage("Get package name") {
+    stage("Get package name") {
 
         dir("tool_belt") {
             sh "bundle exec ./tools.rb release package-name --version ${satellite_version} --project ${project} --output-file package_name --no-update-repos"
@@ -35,7 +35,7 @@ node ('sat6-rhel7') {
 
     }
 
-    snapperStage("Generate changelog entry") {
+    stage("Generate changelog entry") {
 
         dir("tool_belt") {
             withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
@@ -46,7 +46,7 @@ node ('sat6-rhel7') {
 
     }
 
-    snapperStage("Prepare changes") {
+    stage("Prepare changes") {
 
         dir("tool_belt/repos/satellite_${satellite_version}/satellite-packaging") {
             runPlaybook {
@@ -63,7 +63,7 @@ node ('sat6-rhel7') {
 
     }
 
-    snapperStage ("Create MR") {
+    stage ("Create MR") {
         def branch = "jenkins/update-${project}-${version}"
         def commit_msg = "Update ${project} to ${version}"
 

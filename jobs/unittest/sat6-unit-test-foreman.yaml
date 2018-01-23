@@ -13,7 +13,7 @@
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/foreman.groovy
         - workflows/test/foreman-lib.groovy
-        - workflows/lib/sendPostRequest.groovy
-        - workflows/lib/messageSnapper.groovy
         - workflows/lib/rvm.groovy
         - workflows/lib/gitlab.groovy
+    notifications:
+      - snapper_notifications

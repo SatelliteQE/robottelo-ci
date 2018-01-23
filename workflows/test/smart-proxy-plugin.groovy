@@ -1,13 +1,13 @@
 node('sat6-rhel7') {
 
-    snapperStage('Setup Git Repos') {
+    stage('Setup Git Repos') {
 
         deleteDir()
         gitlab_clone_and_merge(plugin_name)
 
     }
 
-    snapperStage('Run Tests') {
+    stage('Run Tests') {
 
         try {
 

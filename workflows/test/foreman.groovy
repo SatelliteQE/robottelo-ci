@@ -1,25 +1,25 @@
 node('sat6-rhel7') {
 
-    snapperStage('Setup Git Repos') {
+    stage('Setup Git Repos') {
 
         deleteDir()
         gitlab_clone_and_merge('foreman')
 
     }
 
-    snapperStage('Configure Environment') {
+    stage('Configure Environment') {
 
         configure_foreman_environment()
 
     }
 
-    snapperStage('Configure Database') {
+    stage('Configure Database') {
 
         setup_foreman()
 
     }
 
-    snapperStage('Run Tests') {
+    stage('Run Tests') {
 
         try {
 
