@@ -1,5 +1,3 @@
-import groovy.json.JsonSlurper
-
 def branch_map = [
     'SATELLITE-6.2.0': [
         'repo': 'Satellite 6.2 Source Files',
@@ -51,8 +49,7 @@ node('rvm') {
 
         dir('tool_belt') {
             def ids = []
-            def bzs = readFile 'bz_ids.json'
-            bzs = new JsonSlurper().parseText(bzs)
+            def bzs = readJSON(file: 'bz_ids.json')
 
             for (bz in bzs) {
                 ids << bz['id']
@@ -74,8 +71,7 @@ node('rvm') {
     snapperStage("Set External Tracker for Commit") {
 
         dir('tool_belt') {
-            def commits = readFile 'bz_ids.json'
-            commits = new JsonSlurper().parseText(commits)
+            def commits = readJSON(file: 'bz_ids.json')
 
             for (i = 0; i < commits.size(); i += 1) {
                 def commit = commits[i]
@@ -178,8 +174,7 @@ node('rvm') {
 
         dir('tool_belt') {
             def ids = []
-            def bzs = readFile 'bz_ids.json'
-            bzs = new JsonSlurper().parseText(bzs)
+            def bzs = readJSON(file: 'bz_ids.json')
 
             for (bz in bzs) {
                 ids << bz['id']
