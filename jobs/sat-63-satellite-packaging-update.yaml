@@ -20,6 +20,5 @@
         - workflows/lib/runPlaybook.groovy
         - workflows/lib/kerberos.groovy
         - workflows/lib/gitlab.groovy
-        - workflows/lib/messageSnapper.groovy
-        - workflows/lib/sendPostRequest.groovy
-
+    notifications:
+      - snapper_notifications

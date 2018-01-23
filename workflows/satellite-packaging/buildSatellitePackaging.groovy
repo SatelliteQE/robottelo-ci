@@ -3,12 +3,12 @@ def build_status = 'failed'
 def satellite_version = env.gitlabTargetBranch.minus('SATELLITE-')
 
 node('sat6-rhel7') {
-    snapperStage("Fetch git") {
+    stage("Fetch git") {
         deleteDir()
         gitlab_clone_and_merge("satellite-packaging", build_type)
     }
 
-    snapperStage("Find packages to build") {
+    stage("Find packages to build") {
         if (project) {
             packages_to_build = project
         } else if (build_type == 'release') {
@@ -31,7 +31,7 @@ node('sat6-rhel7') {
         update_build_description_from_packages(packages_to_build)
     }
 
-    snapperStage("Build packages") {
+    stage("Build packages") {
         try {
 
             kerberos_setup()

@@ -43,7 +43,7 @@ node('rvm') {
         }
     }
 
-    snapperStage('Run Tests') {
+    stage('Run Tests') {
 
         gitlabCommitStatus() {
             parallel tests

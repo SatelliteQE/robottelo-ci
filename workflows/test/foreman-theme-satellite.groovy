@@ -8,7 +8,7 @@ if (env.gitlabTargetBranch == 'master' ) {
 
 node('sat6-rhel7') {
 
-    snapperStage('Setup Git Repos') {
+    stage('Setup Git Repos') {
 
         deleteDir()
 
@@ -26,7 +26,7 @@ node('sat6-rhel7') {
 
     }
 
-    snapperStage('Configure Environment') {
+    stage('Configure Environment') {
 
         dir('foreman') {
             configure_foreman_environment()
@@ -34,7 +34,7 @@ node('sat6-rhel7') {
 
     }
 
-    snapperStage('Configure Database') {
+    stage('Configure Database') {
 
         dir('foreman') {
             setup_foreman(ruby)
@@ -42,7 +42,7 @@ node('sat6-rhel7') {
 
     }
 
-    snapperStage('Setup plugin') {
+    stage('Setup plugin') {
 
         dir('foreman') {
             setup_plugin(plugin_name, ruby)
@@ -50,7 +50,7 @@ node('sat6-rhel7') {
 
     }
 
-    snapperStage('Run Tests') {
+    stage('Run Tests') {
 
         dir('foreman') {
             try {

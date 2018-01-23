@@ -12,6 +12,6 @@
           - workflows/releasePackageWorkflow.groovy
           - workflows/lib/toolbelt.groovy
           - workflows/lib/runPlaybook.groovy
-          - workflows/lib/sendPostRequest.groovy
-          - workflows/lib/messageSnapper.groovy
           - workflows/lib/rvm.groovy
+    notifications:
+      - snapper_notifications

@@ -1,11 +1,11 @@
 node('sat6-rhel7') {
 
-    snapperStage("Setup Workspace") {
+    stage("Setup Workspace") {
         deleteDir()
         setupAnsibleEnvironment {}
     }
 
-    snapperStage("Generate Composes") {
+    stage("Generate Composes") {
 
         def git_hostname = env.GIT_HOSTNAME
 
@@ -27,7 +27,7 @@ node('sat6-rhel7') {
 
     }
 
-    snapperStage("Test Installation") {
+    stage("Test Installation") {
 
         runOnLibvirtHost "cd sat-deploy && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
         runOnLibvirtHost "cd sat-deploy/forklift && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
@@ -52,7 +52,7 @@ node('sat6-rhel7') {
         parallel branches
     }
 
-    snapperStage("Sync Repositories") {
+    stage("Sync Repositories") {
 
         runPlaybookInParallel {
             name = "sync"
@@ -63,7 +63,7 @@ node('sat6-rhel7') {
 
     }
 
-    snapperStage("Publish Content Views") {
+    stage("Publish Content Views") {
 
         runPlaybookInParallel {
             name = "publish"

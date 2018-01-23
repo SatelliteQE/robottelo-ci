@@ -13,7 +13,7 @@
         - ./repos/smart_proxy_dhcp_remote_isc.groovy
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/smart-proxy-plugin.groovy
-        - workflows/lib/sendPostRequest.groovy
-        - workflows/lib/messageSnapper.groovy
         - workflows/lib/rvm.groovy
         - workflows/lib/gitlab.groovy
+    notifications:
+      - snapper_notifications

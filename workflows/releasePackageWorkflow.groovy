@@ -17,7 +17,7 @@ def releaseTag = ''
 
 node('rvm') {
 
-    snapperStage("Setup Environment") {
+    stage("Setup Environment") {
 
         deleteDir()
 
@@ -36,7 +36,7 @@ node('rvm') {
         }
     }
 
-    snapperStage("Identify Bugs") {
+    stage("Identify Bugs") {
 
         dir('tool_belt') {
             sh "bundle exec ./tools.rb release find-bz-ids --dir ../${repo_name} --output-file bz_ids.json"
@@ -45,7 +45,7 @@ node('rvm') {
     }
 
 
-    snapperStage("Move Bugs to Modified") {
+    stage("Move Bugs to Modified") {
 
         dir('tool_belt') {
             def ids = []
@@ -68,7 +68,7 @@ node('rvm') {
         }
     }
 
-    snapperStage("Set External Tracker for Commit") {
+    stage("Set External Tracker for Commit") {
 
         dir('tool_belt') {
             def commits = readJSON(file: 'bz_ids.json')
@@ -88,7 +88,7 @@ node('rvm') {
 
     }
 
-    snapperStage("Bump Version") {
+    stage("Bump Version") {
 
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
@@ -111,7 +111,7 @@ node('rvm') {
     }
 
 
-    snapperStage("Build Source") {
+    stage("Build Source") {
 
         if (repo_name in ['katello-installer', 'foreman-installer']) {
             dir(repo_name) {
@@ -141,7 +141,7 @@ node('rvm') {
 
     }
 
-    snapperStage("Upload Source") {
+    stage("Upload Source") {
 
         def artifact = ''
         def artifact_path = ''
@@ -170,7 +170,7 @@ node('rvm') {
         }
     }
 
-    snapperStage("Mark BZs as needs_rpm") {
+    stage("Mark BZs as needs_rpm") {
 
         dir('tool_belt') {
             def ids = []
@@ -194,7 +194,7 @@ node('rvm') {
 
     }
 
-    snapperStage("Trigger packaging update") {
+    stage("Trigger packaging update") {
         if (release_branch == 'SATELLITE-6.3.0') {
           build job: 'sat-63-satellite-packaging-update', parameters: [
             [$class: 'StringParameterValue', name: 'project', value: repo_name],

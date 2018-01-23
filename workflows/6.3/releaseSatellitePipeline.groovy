@@ -1,13 +1,13 @@
 node('sat6-rhel7') {
 
-    snapperStage("Setup Workspace") {
+    stage("Setup Workspace") {
 
         deleteDir()
         setupAnsibleEnvironment {}
 
     }
 
-    snapperStage("Generate Composes") {
+    stage("Generate Composes") {
 
         def compose_git_repo = env.COMPOSE_GIT_REPOSITORY ?: ''
 
@@ -45,7 +45,7 @@ node('sat6-rhel7') {
         }
     }
 
-    snapperStage("Test Installation") {
+    stage("Test Installation") {
 
         runOnLibvirtHost "cd sat-deploy && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
         runOnLibvirtHost "cd sat-deploy/forklift && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
@@ -72,7 +72,7 @@ node('sat6-rhel7') {
     }
 
 
-    snapperStage("Sync Satellite Repositories") {
+    stage("Sync Satellite Repositories") {
 
         runPlaybookInParallel {
             name = "sync"
@@ -83,7 +83,7 @@ node('sat6-rhel7') {
         }
     }
 
-    snapperStage("Sync Capsule Repositories") {
+    stage("Sync Capsule Repositories") {
 
         runPlaybookInParallel {
             name = "sync"
@@ -94,7 +94,7 @@ node('sat6-rhel7') {
         }
     }
 
-    snapperStage("Sync Tools Repositories") {
+    stage("Sync Tools Repositories") {
 
         runPlaybookInParallel {
             name = "sync"
@@ -105,7 +105,7 @@ node('sat6-rhel7') {
         }
     }
 
-    snapperStage("Publish Content Views") {
+    stage("Publish Content Views") {
 
         runPlaybookInParallel {
             name = "publish"
@@ -118,7 +118,7 @@ node('sat6-rhel7') {
 
 node('rhel') {
 
-    snapperStage("Setup Packaging Workspace") {
+    stage("Setup Packaging Workspace") {
 
         deleteDir()
         dir('tool_belt') {
@@ -126,7 +126,7 @@ node('rhel') {
         }
     }
 
-    snapperStage("Compare Packages") {
+    stage("Compare Packages") {
 
         compareContentViews {
           organization = 'Sat6-CI'
@@ -164,7 +164,7 @@ node('rhel') {
         }
     }
 
-    snapperStage("Move to ON_DEV") {
+    stage("Move to ON_DEV") {
         dir('tool_belt') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 

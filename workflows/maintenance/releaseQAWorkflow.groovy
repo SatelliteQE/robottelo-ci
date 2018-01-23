@@ -2,13 +2,13 @@
 
 
 node('rhel') {
-    snapperStage("Setup Workspace") {
+    stage("Setup Workspace") {
 
         deleteDir()
         setupAnsibleEnvironment {}
     }
 
-    snapperStage("Promote Satellite Maintenance to QA") {
+    stage("Promote Satellite Maintenance to QA") {
 
         compareContentViews {
           organization = 'Sat6-CI'
