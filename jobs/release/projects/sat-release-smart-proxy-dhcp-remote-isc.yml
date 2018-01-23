@@ -1,0 +1,17 @@
+- job:
+    disabled: false
+    name: 'sat-release-smart-proxy-dhcp-remote-isc'
+    project-type: workflow
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - ./repos/smart_proxy_dhcp_remote_isc_repo.groovy
+          - ./source_types/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/toolbelt.groovy
+          - workflows/lib/runPlaybook.groovy
+          - workflows/lib/sendPostRequest.groovy
+          - workflows/lib/messageSnapper.groovy
+
