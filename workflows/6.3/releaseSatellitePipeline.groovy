@@ -1,5 +1,3 @@
-import groovy.json.JsonSlurper
-
 node('sat6-rhel7') {
 
     snapperStage("Setup Workspace") {

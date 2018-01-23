@@ -1,3 +1,5 @@
+import groovy.json.JsonOutput
+
 def sendSnapperMessage(stage_name) {
 
     def body = [

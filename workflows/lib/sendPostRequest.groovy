@@ -1,6 +1,4 @@
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-
+@NonCPS
 def post(body) {
     // evaluate the body block, and collect configuration into the object
     def config = [:]
@@ -22,7 +20,8 @@ def post(body) {
         writer.flush()
         writer.close()
         connection.connect()
-        response = new JsonSlurper().parse(new InputStreamReader(connection.getInputStream(),"UTF-8"))
+        input = new InputStreamReader(connection.getInputStream(),"UTF-8")
+        response = readJSON(text: input.toString())
     }
 
     catch(Exception e) {
