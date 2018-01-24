@@ -78,7 +78,7 @@ node('sat6-rhel7') {
             name = "sync"
             items = satellite_repositories
             item_name = 'repository'
-            extra_vars = ['product': 'Satellite 6.3 Composes']
+            extraVars = ['product': 'Satellite 6.3 Composes']
             playbook = 'playbooks/sync_repositories.yml'
         }
     }
@@ -89,7 +89,7 @@ node('sat6-rhel7') {
             name = "sync"
             items = capsule_repositories
             item_name = 'repository'
-            extra_vars = ['product': 'Satellite Capsule 6.3 Composes']
+            extraVars = ['product': 'Satellite Capsule 6.3 Composes']
             playbook = 'playbooks/sync_repositories.yml'
         }
     }
@@ -100,7 +100,7 @@ node('sat6-rhel7') {
             name = "sync"
             items = tools_repositories
             item_name = 'repository'
-            extra_vars = ['product': 'Satellite Tools 6.3 Composes']
+            extraVars = ['product': 'Satellite Tools 6.3 Composes']
             playbook = 'playbooks/sync_repositories.yml'
         }
     }
