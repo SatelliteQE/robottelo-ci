@@ -17,7 +17,7 @@ node('rhel') {
             name = "sync"
             items = products
             item_name = 'product'
-            playbook = 'playbooks/sync_repositories.yml'
+            playbook = 'playbooks/sync_products.yml'
         }
     }
 
