@@ -19,8 +19,7 @@ node('sat6-rhel7') {
         } finally {
 
             archive "Gemfile.lock"
-
-            cleanup()
+            cleanup_rvm(ruby = '2.0')
 
         }
     }
