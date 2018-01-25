@@ -6,12 +6,14 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
         RHEL6_TOOLS_REPO_ppc64="Red Hat Satellite Tools ${SAT_VERSION} for RHEL 6 for IBM Power RPMs ppc64"
         RHEL7_TOOLS_PRD_ppc64="Red Hat Enterprise Linux for Power big endian"
         RHEL7_TOOLS_REPO_ppc64="Red Hat Satellite Tools ${SAT_VERSION} for RHEL 7 for IBM Power RPMs ppc64"
+    else
+        RHEL6_TOOLS_PPC64_PRD=Sat6Tools6ppc64
+        RHEL6_TOOLS_PPC64_REPO=sat6tool6ppc64
+        RHEL6_TOOLS_PPC64_URL="ppc64rhel6_tools_url"
+        RHEL7_TOOLS_PPC64_PRD=Sat6Tools7ppc64
+        RHEL7_TOOLS_PPC64_REPO=sat6tool7ppc4
+        RHEL7_TOOLS_PPC64_URL="ppc64rhel7_tools_url"
     fi
-    satellite_runner repository-set enable --name="Red Hat Enterprise Linux 7 for IBM Power (Kickstart)" --basearch="ppc64" --releasever="7.4" --product "Red Hat Enterprise Linux for Power big endian" --organization-id="${ORG}"
-    satellite_runner repository-set enable --name="Red Hat Enterprise Linux 6 for IBM Power (Kickstart)" --basearch="ppc64" --releasever="6.8" --product "Red Hat Enterprise Linux for Power big endian" --organization-id="${ORG}"
-
-    satellite_runner repository-set enable --name="Red Hat Enterprise Linux 7 for IBM Power (RPMs)" --basearch="ppc64" --releasever="7Server" --product "Red Hat Enterprise Linux for Power big endian" --organization-id="${ORG}"
-    satellite_runner repository-set enable --name="Red Hat Enterprise Linux 6 for IBM Power (RPMs)" --basearch="ppc64" --releasever="6Server" --product "Red Hat Enterprise Linux for Power big endian" --organization-id="${ORG}"
 
     if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
         # Satellite6 Tools RPMS
@@ -28,21 +30,22 @@ done
 # Check the async tasks for completion.
 for id in `satellite --csv task list | grep -i synchronize | awk -F "," '{print $1}'`; do satellite_runner task progress --id $id; done
 
+if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+    create-repo "${RHEL6_TOOLS_PPC64_PRD}" "${RHEL6_TOOLS_PPC64_REPO}" "${RHEL6_TOOLS_PPC64_URL}"
+    create-repo "${RHEL7_TOOLS_PPC64_PRD}" "${RHEL7_TOOLS_PPC64_REPO}" "${RHEL7_TOOLS_PPC64_URL}"
+fi
+
 if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     #Create content views
     satellite_runner content-view create --name 'RHEL 7 CV ppc64' --organization-id="${ORG}"
     satellite_runner content-view create --name 'RHEL 6 CV ppc64' --organization-id="${ORG}"
 
     # RHEL 7 ppc64
-    satellite_runner  content-view add-repository --name='RHEL 7 CV ppc64' --organization-id="${ORG}" --product='Red Hat Enterprise Linux for Power big endian' --repository='Red Hat Enterprise Linux 7 for IBM Power Kickstart ppc64 7.4'
-    satellite_runner  content-view add-repository --name='RHEL 7 CV ppc64' --organization-id="${ORG}" --product='Red Hat Enterprise Linux for Power big endian' --repository='Red Hat Enterprise Linux 7 for IBM Power RPMs ppc64 7Server'
     satellite_runner  content-view add-repository --name='RHEL 7 CV ppc64' --organization-id="${ORG}" --product="${RHEL7_TOOLS_PRD_ppc64}" --repository="${RHEL7_TOOLS_REPO_ppc64}"
     satellite_runner  content-view publish --name='RHEL 7 CV ppc64' --organization-id="${ORG}"
     satellite_runner  content-view version promote --content-view='RHEL 7 CV ppc64' --organization-id="${ORG}" --to-lifecycle-environment=DEV --from-lifecycle-environment="Library"
 
     # RHEL 6 ppc64
-    satellite_runner  content-view add-repository --name='RHEL 6 CV ppc64' --organization-id="${ORG}" --product='Red Hat Enterprise Linux for Power big endian' --repository='Red Hat Enterprise Linux 6 for IBM Power Kickstart ppc64 6.8'
-    satellite_runner  content-view add-repository --name='RHEL 6 CV ppc64' --organization-id="${ORG}" --product='Red Hat Enterprise Linux for Power big endian' --repository='Red Hat Enterprise Linux 6 for IBM Power RPMs ppc64 6Server'
     satellite_runner  content-view add-repository --name='RHEL 6 CV ppc64' --organization-id="${ORG}" --product="${RHEL6_TOOLS_PRD_ppc64}" --repository="${RHEL6_TOOLS_REPO_ppc64}"
     satellite_runner  content-view publish --name='RHEL 6 CV ppc64' --organization-id="${ORG}"
     satellite_runner  content-view version promote --content-view='RHEL 6 CV ppc64' --organization-id="${ORG}" --to-lifecycle-environment=DEV --from-lifecycle-environment="Library"
@@ -59,4 +62,18 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
 
     satellite_runner  activation-key add-subscription --name='ak-rhel-7-ppc64' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_ppc64}"
     satellite_runner  activation-key add-subscription --name='ak-rhel-6-ppc64' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
+
+    satellite_runner activation-key content-override --name 'ak-rhel-7' --content-label "rhel-7-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+    satellite_runner activation-key content-override --name 'ak-rhel-6' --content-label "rhel-6-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+
+    satellite_runner activation-key content-override --name 'ak-rhel-7-ppc64' --content-label "rhel-7-for-power-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+    satellite_runner activation-key content-override --name 'ak-rhel-6-ppc64' --content-label "rhel-6-for-power-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+
+    # As SATELLITE TOOLS REPO is already part of RHEL subscription.
+    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+        TOOLS6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL6_TOOLS_PPC64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+        TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_PPC64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+        satellite_runner  activation-key add-subscription --name='ak-rhel-6-ppc64' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID}"
+        satellite_runner  activation-key add-subscription --name='ak-rhel-7-ppc64' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID}"
+    fi
 fi

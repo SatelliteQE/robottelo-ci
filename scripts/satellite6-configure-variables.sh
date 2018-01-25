@@ -59,6 +59,12 @@ sed -i "s|SAT_VERSION=.*|SAT_VERSION=\"${SATELLITE_VERSION}\"|" satellite6-popul
 # This shall be called as minimal install and by default it would sync only these content.
 sed -i "s|MINIMAL_INSTALL=.*|MINIMAL_INSTALL=\"${MINIMAL_INSTALL}\"|" satellite6-populate.sh
 
+if [[ -n "${POPULATE_CLIENTS_ARCH}" ]]; then
+    sed -i "s|POPULATE_CLIENTS_ARCH=.*|POPULATE_CLIENTS_ARCH=\"${POPULATE_CLIENTS_ARCH}\"|" satellite6-populate.sh
+    sed -i "s|RHEL6_TOOLS_PPC64_URL=.*|RHEL6_TOOLS_PPC64_URL=\"${TOOLS_RHEL6_PPC64}\"|" satellite6-populate.sh
+    sed -i "s|RHEL7_TOOLS_PPC64_URL=.*|RHEL7_TOOLS_PPC64_URL=\"${TOOLS_RHEL7_PPC64}\"|" satellite6-populate.sh
+fi
+
 if [[ "${RERUN}" != 'true' ]]; then
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no satellite6-populate.sh root@"${SERVER_HOSTNAME}":/root/
 fi
@@ -71,6 +77,3 @@ else
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" /root/satellite6-populate.sh
 fi
 
-if [[ -n "${POPULATE_CLIENTS_ARCH}" ]]; then
-    sed -i "s|POPULATE_CLIENTS_ARCH=.*|POPULATE_CLIENTS_ARCH=\"${POPULATE_CLIENTS_ARCH}\"|" satellite6-populate.sh
-fi
