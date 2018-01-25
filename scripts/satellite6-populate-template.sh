@@ -292,13 +292,16 @@ fi
 
 # Add both RHEL6 and RHEL7 Capsule Activation keys.
 SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
+if [ "${POPULATE_CLIENTS_ARCH}" = "true" ]; then
+    SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Capsule Server" |  awk -F "," '{print $1}' | grep -vi id)
+fi
 if [ "${RHELOS}" = "7" ]; then
 
     # Capsule 7 activation key
     if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
         CAPSULE7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
     else
-	CAPSULE7_SUBS_ID="${SATELLITE_SUBS_ID}"
+        CAPSULE7_SUBS_ID="${SATELLITE_SUBS_ID}"
     fi
 
     satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
@@ -313,7 +316,7 @@ else
     if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
         CAPSULE6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C6_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
     else
-	CAPSULE6_SUBS_ID="${SATELLITE_SUBS_ID}"
+        CAPSULE6_SUBS_ID="${SATELLITE_SUBS_ID}"
     fi
 
     satellite_runner  activation-key add-subscription --name='ak-capsule-6' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
