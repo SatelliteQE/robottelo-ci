@@ -3,6 +3,7 @@
     scm:
       - git:
           wipe-workspace: true
+          timeout: 20
           skip-tag: true
           basedir: 'plugin'
           branches:
