@@ -32,3 +32,5 @@
       - gemset_cleanup
       - junit:
           results: 'test/reports/*.xml'
+      - archive:
+          artifacts: '**/Gemfile.lock'

@@ -25,5 +25,7 @@
                 healthy: 0
                 unhealthy: 20
                 failing: 30
+      - archive:
+          artifacts: '**/Gemfile.lock'
     notifications:
       - snapper_notifications
