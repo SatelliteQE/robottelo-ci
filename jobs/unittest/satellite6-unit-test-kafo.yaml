@@ -33,6 +33,8 @@
       - gemset_cleanup
       - junit:
           results: 'jenkins/reports/unit/*.xml'
+      - archive:
+          artifacts: '**/Gemfile.lock'
 
     notifications:
       - snapper_notifications

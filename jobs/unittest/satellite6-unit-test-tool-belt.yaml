@@ -18,5 +18,7 @@
     publishers:
       - gitlab-notifier
       - gemset_cleanup
+      - archive:
+          artifacts: '**/Gemfile.lock'
     notifications:
       - snapper_notifications

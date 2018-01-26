@@ -26,5 +26,7 @@
       - gemset_cleanup
       - junit:
           results: 'foreman/jenkins/reports/unit/*.xml'
+      - archive:
+          artifacts: '**/Gemfile.lock'
     notifications:
       - snapper_notifications
