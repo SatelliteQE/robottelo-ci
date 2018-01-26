@@ -17,11 +17,11 @@ node('sat6-rhel7') {
             // check if we got two parents, otherwise it's not a merge
             if (merge_info.length == 3) {
                 changed_packages = sh(returnStdout: true, script: "git diff ${merge_info[1]}...${merge_info[2]} --name-only 'packages/*.spec' | cut -d'/' -f2 |sort -u").trim()
-                packages_to_build = changed_packages.split().join(':')
+                packages_to_build = changed_packages.split().join(' ')
             }
         } else if (build_type == 'scratch') {
             changed_packages = sh(returnStdout: true, script: "git diff ..origin/${env.gitlabTargetBranch} --name-only 'packages/*.spec' | cut -d'/' -f2 |sort -u").trim()
-            packages_to_build = changed_packages.split().join(':')
+            packages_to_build = changed_packages.split().join(' ')
         }
         if (!packages_to_build) {
             currentBuild.result = 'NOT_BUILT'
@@ -37,12 +37,10 @@ node('sat6-rhel7') {
             kerberos_setup()
 
             gitlabCommitStatus(build_type) {
-                runPlaybook {
-                    ansibledir = '.'
-                    inventory = 'package_manifest.yaml'
-                    playbook = packaging_playbook
-                    limit = packages_to_build
-                    tags = 'wait,download'
+                obal {
+                    action = build_type
+                    tags = "wait,download"
+                    packages = packages_to_build
                 }
             }
 

@@ -16,7 +16,7 @@
         - workflows/lib/gitlabEnv.groovy
         - workflows/satellite-packaging/scratchBuildSatellitePackaging.groovy
         - workflows/satellite-packaging/buildSatellitePackaging.groovy
-        - workflows/lib/runPlaybook.groovy
+        - workflows/lib/obal.groovy
         - workflows/lib/toolbelt.groovy
         - workflows/lib/kerberos.groovy
         - workflows/lib/gitlab.groovy
