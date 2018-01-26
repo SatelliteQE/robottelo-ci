@@ -9,7 +9,7 @@ def obal(body) {
     def extra_vars = config.extraVars ?: [:]
     def extra_vars_args = []
     extra_vars.each { key, val ->
-       extra_vars_args += $/-e '${key}=${val}'/$
+       extra_vars_args += $/-e '${key}="${val}"'/$
     }
 
     dir('obal') {
