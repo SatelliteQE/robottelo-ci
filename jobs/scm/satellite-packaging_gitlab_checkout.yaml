@@ -8,3 +8,4 @@
             skip-tag: true
             wipe-workspace: true
             basedir: 'satellite-packaging'
+            timeout: 20

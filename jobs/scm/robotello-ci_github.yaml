@@ -8,3 +8,4 @@
             skip-tag: true
             wipe-workspace: true
             basedir: 'robotello-ci'
+            timeout: 20

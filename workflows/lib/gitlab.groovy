@@ -7,7 +7,10 @@ def gitlab_clone_and_merge(repo_name, pipeline_name='jenkins') {
                 $class: 'GitSCM',
                 branches: [[name: "pr/${env.gitlabSourceBranch}"]],
                 doGenerateSubmoduleConfigurations: false,
-                extensions: [[$class: 'PreBuildMerge', options: [fastForwardMode: 'FF', mergeRemote: 'origin', mergeStrategy: 'default', mergeTarget: "${env.gitlabTargetBranch}"]]],
+                extensions: [
+                    [$class: 'PreBuildMerge', options: [fastForwardMode: 'FF', mergeRemote: 'origin', mergeStrategy: 'default', mergeTarget: "${env.gitlabTargetBranch}"]],
+                    [$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: false, timeout: 20]
+                ],
                 submoduleCfg: [],
                 userRemoteConfigs: [[name: 'origin', url: "https://$GIT_HOSTNAME/$GIT_ORGANIZATION/${repo_name}.git"], [name: 'pr', url: "https://$GIT_HOSTNAME/${env.gitlabSourceNamespace}/${env.gitlabSourceRepoName}.git"]]
               ]
@@ -22,7 +25,12 @@ def gitlab_clone_and_merge(repo_name, pipeline_name='jenkins') {
 }
 
 def gitlab_clone(repo_name) {
-    git url: "https://$GIT_HOSTNAME/$GIT_ORGANIZATION/${repo_name}.git", branch: "${env.gitlabTargetBranch}"
+    checkout([
+        $class: 'GitSCM',
+        branches: [[name: "*/${env.gitlabTargetBranch}"]],
+        userRemoteConfigs: [[url: "https://$GIT_HOSTNAME/$GIT_ORGANIZATION/${repo_name}.git"]],
+        extensions: [[$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: false, timeout: 20]],
+    ])
 }
 
 def find_merge_commit(commit, branch) {
