@@ -98,9 +98,9 @@ node('rvm') {
                 sh "git config user.name 'Jenkins'"
 
                 dir('../tool_belt') {
-                    sh "bundle exec ./tools.rb release bump-version --dir ../${repo_name} --output-file version.json"
-                    archive "version.json"
-                    releaseTag = readFile 'version.json'
+                    sh "bundle exec ./tools.rb release bump-version --dir ../${repo_name} --output-file version"
+                    archive "version"
+                    releaseTag = readFile 'version'
                 }
 
                 sh "git push origin ${release_branch}"
