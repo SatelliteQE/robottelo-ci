@@ -1,7 +1,7 @@
 - job:
     disabled: false
     name: 'sat-release-smart-proxy-dhcp-remote-isc'
-    project-type: workflow
+    project-type: pipeline
     parameters:
       - release_branch
     auth-token: ""

@@ -1,7 +1,7 @@
 - job:
     disabled: false
     name: 'release-test-repo'
-    project-type: workflow
+    project-type: pipeline
     parameters:
       - release_branch
     auth-token: ""

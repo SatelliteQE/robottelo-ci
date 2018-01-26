@@ -1,6 +1,6 @@
 - job:
     name: gitlab-clean
-    project-type: workflow
+    project-type: pipeline
     triggers:
       - timed: "@midnight"
     dsl:

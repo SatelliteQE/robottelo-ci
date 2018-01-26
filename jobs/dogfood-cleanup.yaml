@@ -1,7 +1,7 @@
 - job:
     disabled: false
     name: dogfood-cleanup
-    project-type: workflow
+    project-type: pipeline
     auth-token: ""
     triggers:
       - timed: "@midnight"

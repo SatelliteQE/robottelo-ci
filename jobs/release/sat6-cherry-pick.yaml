@@ -1,7 +1,7 @@
 - job:
     disabled: false
     name: sat6-cherry-pick
-    project-type: workflow
+    project-type: pipeline
     dsl:
       !include-raw:
         - workflows/identifyCherryPicksWorkflow.groovy

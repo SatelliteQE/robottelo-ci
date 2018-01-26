@@ -1,6 +1,6 @@
 - job:
     name: sat-63-release-pipeline
-    project-type: workflow
+    project-type: pipeline
     triggers:
       - timed: 'H 10 * * *'
     dsl:

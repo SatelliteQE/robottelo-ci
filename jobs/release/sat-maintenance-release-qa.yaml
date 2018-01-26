@@ -1,7 +1,7 @@
 - job:
     disabled: false
     name: sat-maintenance-release-qa
-    project-type: workflow
+    project-type: pipeline
     parameters:
       - string:
           name: snapVersion
