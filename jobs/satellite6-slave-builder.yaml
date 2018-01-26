@@ -58,7 +58,7 @@
         - shell: |
             find "$WORKSPACE" -name '*.qcow2' -mtime +1 -delete
             find "$WORKSPACE" -name '*.qcow2.bz2' -delete
-        - shell: !include-raw-escape mk-slave-template.bash
+        - shell: !include-raw-escape: mk-slave-template.bash
     publishers:
         - postbuildscript:
             script-only-if-succeeded: True

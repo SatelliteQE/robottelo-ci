@@ -1,8 +1,8 @@
 - job:
     name: satellite6-unit-test-katello
-    logrotate:
-      daysToKeep: -1
-      numToKeep: 32
+    build-discarder:
+      days-to-keep: -1
+      num-to-keep: 32
     node: rvm
     properties:
       - gitlab_variables
@@ -18,8 +18,8 @@
     builders:
       - clone_gitlab_foreman
       - merge_request
-      - shell: !include-raw scripts/add_foreman_docker_gitlab.sh
-      - shell: !include-raw scripts/add_bastion_gitlab.sh
+      - shell: !include-raw: scripts/add_foreman_docker_gitlab.sh
+      - shell: !include-raw: scripts/add_bastion_gitlab.sh
       - test_katello
     publishers:
       - gitlab-notifier

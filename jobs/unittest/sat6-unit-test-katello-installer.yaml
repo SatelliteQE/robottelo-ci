@@ -1,9 +1,9 @@
 - job:
     name: 'sat6-unit-test-katello-installer'
     project-type: pipeline
-    logrotate:
-      daysToKeep: 21
-      numToKeep: -1
+    build-discarder:
+      days-to-keep: 21
+      num-to-keep: -1
     parameters:
       - merge_request
     triggers:

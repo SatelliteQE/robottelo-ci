@@ -105,8 +105,8 @@
     disabled: false
     name: 'automation-{satellite_version}-tier1-{os}'
     node: sat6-{os}
-    logrotate:
-        numToKeep: 16
+    build-discarder:
+        num-to-keep: 16
     properties:
         - satellite6-build_blocker:
             satellite_version: "{satellite_version}"
@@ -163,8 +163,8 @@
     disabled: false
     name: 'automation-{satellite_version}-tier2-{os}'
     node: sat6-{os}
-    logrotate:
-        numToKeep: 16
+    build-discarder:
+        num-to-keep: 16
     properties:
         - satellite6-build_blocker:
             satellite_version: "{satellite_version}"
@@ -206,8 +206,8 @@
     disabled: false
     name: 'automation-{satellite_version}-tier3-{os}'
     node: sat6-{os}
-    logrotate:
-        numToKeep: 16
+    build-discarder:
+        num-to-keep: 16
     properties:
         - satellite6-build_blocker:
             satellite_version: "{satellite_version}"
@@ -249,8 +249,8 @@
     disabled: false
     name: 'automation-{satellite_version}-rhai-{os}'
     node: sat6-{os}
-    logrotate:
-        numToKeep: 16
+    build-discarder:
+        num-to-keep: 16
     properties:
         - satellite6-build_blocker:
             satellite_version: "{satellite_version}"
@@ -308,8 +308,8 @@
     disabled: false
     name: 'automation-{satellite_version}-tier4-{os}'
     node: sat6-{os}
-    logrotate:
-        numToKeep: 16
+    build-discarder:
+        num-to-keep: 16
     properties:
         - satellite6-build_blocker:
             satellite_version: "{satellite_version}"
@@ -368,8 +368,8 @@
     disabled: false
     name: 'automation-{satellite_version}-destructive-{os}'
     node: sat6-{os}
-    logrotate:
-        numToKeep: 16
+    build-discarder:
+        num-to-keep: 16
     properties:
         - satellite6-build_blocker:
             satellite_version: "{satellite_version}"
@@ -763,8 +763,8 @@
     disabled: false
     name: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
     node: sat6-{os}
-    logrotate:
-        numToKeep: 16
+    build-discarder:
+        num-to-keep: 16
     properties:
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
@@ -867,8 +867,8 @@
     disabled: false
     name: 'automation-upgraded-{satellite_version}-tier1-{os}'
     node: sat6-{os}
-    logrotate:
-        numToKeep: 16
+    build-discarder:
+        num-to-keep: 16
     properties:
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
@@ -916,8 +916,8 @@
     disabled: false
     name: 'automation-upgraded-{satellite_version}-tier2-{os}'
     node: sat6-{os}
-    logrotate:
-        numToKeep: 16
+    build-discarder:
+        num-to-keep: 16
     properties:
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"

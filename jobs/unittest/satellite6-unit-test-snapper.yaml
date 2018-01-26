@@ -2,9 +2,9 @@
 - job:
     name: satellite6-unit-test-snapper
     node: rvm
-    logrotate:
-      daysToKeep: -1
-      numToKeep: 32
+    build-discarder:
+      days-to-keep: -1
+      num-to-keep: 32
     properties:
       - gitlab_variables
     parameters:

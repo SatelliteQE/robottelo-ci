@@ -1,9 +1,9 @@
 - job:
     name: satellite6-unit-test-kafo
     project-type: matrix
-    logrotate:
-      daysToKeep: -1
-      numToKeep: 32
+    build-discarder:
+      days-to-keep: -1
+      num-to-keep: 32
     concurrent: true
     properties:
       - gitlab_variables
