@@ -27,7 +27,7 @@
                 PROJECT_PATH={project}
                 TITO_RELEASE={tito-release}
         - shell:
-            !include-raw-escape satellite6-builder.sh
+            !include-raw-escape: satellite6-builder.sh
     publishers:
         - archive:
             artifacts: build_results/**/*
@@ -83,7 +83,7 @@
                 COLLECTION={collection}
                 PACKAGE={package}
         - shell:
-            !include-raw-escape satellite-packaging-builder.sh
+            !include-raw-escape: satellite-packaging-builder.sh
     publishers:
         - archive:
             artifacts: build_results/**/*
@@ -91,7 +91,7 @@
             script-only-if-succeeded: True
             builders:
                 - shell:
-                    !include-raw-escape upload-built-packages.sh
+                    !include-raw-escape: upload-built-packages.sh
 
 - project:
     name: 'foreman-packaging-builders'
