@@ -49,11 +49,9 @@ node ('sat6-rhel7') {
     stage("Prepare changes") {
 
         dir("tool_belt/repos/satellite_${satellite_version}/satellite-packaging") {
-            runPlaybook {
-                ansibledir = '.'
-                inventory = 'package_manifest.yaml'
-                playbook = 'update_package.yml'
-                limit = package_name
+            obal {
+                action = 'update'
+                packages = package_name
                 extraVars = [
                     'downstream_version': version,
                     'downstream_changelog': changelog.replaceAll("'","\\\\\'").replaceAll('"','\\\\\"')
