@@ -1,6 +1,6 @@
 - job:
     name: sat-63-satellite-packaging-update
-    project-type: workflow
+    project-type: pipeline
     logrotate:
       daysToKeep: 45
       numToKeep: -1

@@ -1,7 +1,7 @@
 - job:
     disabled: false
     name: 'sat-release-hammer-cli-foreman-bootdisk'
-    project-type: workflow
+    project-type: pipeline
     parameters:
       - release_branch
     dsl:

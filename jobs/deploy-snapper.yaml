@@ -1,7 +1,7 @@
 - job:
     disabled: false
     name: deploy-snapper
-    project-type: workflow
+    project-type: pipeline
     auth-token: ""
     dsl:
       !include-raw:

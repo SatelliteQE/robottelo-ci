@@ -1,6 +1,6 @@
 - job:
     name: 'sat6-unit-test-hammer-cli-foreman-tasks'
-    project-type: workflow
+    project-type: pipeline
     logrotate:
       daysToKeep: 21
       numToKeep: -1

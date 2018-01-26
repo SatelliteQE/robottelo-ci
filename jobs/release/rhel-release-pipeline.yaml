@@ -1,6 +1,6 @@
 - job:
     name: rhel-release-pipeline
-    project-type: workflow
+    project-type: pipeline
     triggers:
       - timed: '0 22 * * 0'
     dsl:
