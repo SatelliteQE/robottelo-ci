@@ -54,7 +54,7 @@ node ('sat6-rhel7') {
                 packages = package_name
                 extraVars = [
                     'downstream_version': version,
-                    'downstream_changelog': changelog.replaceAll("'","\\\\\'").replaceAll('"','\\\\\"')
+                    'downstream_changelog': changelog
                 ]
             }
         }
