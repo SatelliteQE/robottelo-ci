@@ -13,7 +13,7 @@ from betelgeuse import default_config
 DEFAULT_APPROVERS_VALUE = '${POLARION_USERNAME}:approved'
 DEFAULT_STATUS_VALUE = 'approved'
 DEFAULT_SUBTYPE2_VALUE = '-'
-TESTCASE_CUSTOM_FIELDS = default_config.TESTCASE_CUSTOM_FIELDS + ['customerscenario']
+TESTCASE_CUSTOM_FIELDS = default_config.TESTCASE_CUSTOM_FIELDS + ('customerscenario',)
 TRANSFORM_CUSTOMERSCENARIO_VALUE = default_config._transform_to_lower
 DEFAULT_CUSTOMERSCENARIO_VALUE = 'false'
 EOF
