@@ -26,7 +26,12 @@ node('rvm') {
         dir(repo_name) {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
-                git url: "https://${env.USERNAME}:${env.PASSWORD}@${env.GIT_HOSTNAME}/${gitRepository}.git", branch: release_branch
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: release_branch]],
+                    userRemoteConfigs: [[url: "https://${env.USERNAME}:${env.PASSWORD}@${env.GIT_HOSTNAME}/${gitRepository}.git"]],
+                    extensions: [[$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: false, timeout: 20]],
+                ])
 
             }
         }
