@@ -30,7 +30,10 @@ node('rvm') {
                     $class: 'GitSCM',
                     branches: [[name: release_branch]],
                     userRemoteConfigs: [[url: "https://${env.USERNAME}:${env.PASSWORD}@${env.GIT_HOSTNAME}/${gitRepository}.git"]],
-                    extensions: [[$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: false, timeout: 20]],
+                    extensions: [
+                        [$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: false, timeout: 20],
+                        [$class: 'LocalBranch']
+                    ],
                 ])
 
             }
