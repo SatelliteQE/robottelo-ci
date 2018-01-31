@@ -63,6 +63,9 @@ if [[ -n "${POPULATE_CLIENTS_ARCH}" ]]; then
     sed -i "s|POPULATE_CLIENTS_ARCH=.*|POPULATE_CLIENTS_ARCH=\"${POPULATE_CLIENTS_ARCH}\"|" satellite6-populate.sh
     sed -i "s|RHEL6_TOOLS_PPC64_URL=.*|RHEL6_TOOLS_PPC64_URL=\"${TOOLS_RHEL6_PPC64}\"|" satellite6-populate.sh
     sed -i "s|RHEL7_TOOLS_PPC64_URL=.*|RHEL7_TOOLS_PPC64_URL=\"${TOOLS_RHEL7_PPC64}\"|" satellite6-populate.sh
+    sed -i "s|RHEL6_TOOLS_S390X_URL=.*|RHEL6_TOOLS_S390X_URL=\"${TOOLS_RHEL6_S390X}\"|" satellite6-populate.sh
+    sed -i "s|RHEL7_TOOLS_S390X_URL=.*|RHEL7_TOOLS_S390X_URL=\"${TOOLS_RHEL7_S390X}\"|" satellite6-populate.sh
+    sed -i "s|RHEL6_TOOLS_I386_URL=.*|RHEL6_TOOLS_I386_URL=\"${TOOLS_RHEL6_I386}\"|" satellite6-populate.sh
 fi
 
 if [[ "${RERUN}" != 'true' ]]; then
