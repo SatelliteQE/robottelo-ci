@@ -25,7 +25,7 @@ node('sat6-rhel7') {
         }
         if (!packages_to_build) {
             currentBuild.result = 'NOT_BUILT'
-            updateGitlabCommitStatus state: 'canceled'
+            updateGitlabCommitStatus name: build_type, state: 'canceled'
             error('No packages to build.')
         }
         update_build_description_from_packages(packages_to_build)
