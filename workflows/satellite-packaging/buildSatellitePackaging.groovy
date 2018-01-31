@@ -66,7 +66,7 @@ node('sat6-rhel7') {
 }
 
 def mark_bugs_built(build_status, packages_to_build, satellite_version) {
-    def packages = packages_to_build.split(':')
+    def packages = packages_to_build.split(' ')
     def comment = get_brew_comment(build_status)
 
     dir('tool_belt') {
