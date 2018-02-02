@@ -13,7 +13,7 @@
     parameters:
         - string:
             name: SERVER_HOSTNAME
-            description: "This is Mandatory, FQDN for your server where you want to populate Satellite 6 content."
+            description: "If satellite server is provided, the provided host will be used, else automation will create a new satellite instance"
         - bool:
             name: RERUN
             default: false
@@ -33,6 +33,11 @@
                 - '6.2'
             description: "Currently this job populates completely for 6.2 and 6.3 only. As a lot of hammer-cli options differ for 6.1."
         - choice:
+            name: DISTRO
+            choices:
+                - 'rhel7'
+                - 'rhel6'
+        - choice:
             name: DOWNLOAD_POLICY
             choices:
                 - 'immediate'
@@ -46,10 +51,16 @@
         - choice:
             name: SATELLITE_DISTRIBUTION
             choices:
+                - 'INTERNAL AK'
                 - 'INTERNAL'
+                - 'INTERNAL REPOFILE'
                 - 'GA'
+                - 'BETA'
             description: |
                 Depending upon INTERNAL and GA, either DOGFOOD or CDN content is synced.
+        - string:
+            name: BASE_URL
+            description: Required when Satellite distribution is INTERNAL
         - string:
             name: MANIFEST_LOCATION_URL
             description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
@@ -102,30 +113,6 @@
             default: true
             description: |
                 If set to true, will populate the different client architecture repos to the Satellite6 Server for further client testing.
-        - string:
-            name: LIBVIRT_HOSTNAME
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The Libvirt Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
-        - string:
-            name: RHEV_HOSTNAME
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
-        - string:
-            name: RHEV_USER
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV User login to add the Compute Resource. Note: Provide User in the format user@internal."
-        - string:
-            name: RHEV_PASSWD
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV Password to add the Compute Resource."
-        - string:
-            name: RHEV_DATACENTER_UUID
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The RHEV UUID to load the Datacenter and quota for the Compute Resource."
-        - string:
-            name: OSP_HOSTNAME
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The Openstack Hostname to add as the Compute Resource. Note: Provide hostname only in localhost.localdomain format."
-        - string:
-            name: OS_USERNAME
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The OpenStack Platform User login to add the Compute Resource."
-        - string:
-            name: OS_PASSWORD
-            description: "This is Optional if DEFAULT_COMPUTE_RESOURCES is checked. The OpenStack Platform Password to add the Compute Resource."
     scm:
         - git:
             url: ${CI_REPO}
@@ -148,5 +135,6 @@
             nature: shell
             command:
                 !include-raw:
-                    - 'scripts/satellite6-configure.sh'
+                    - 'satellite6-client-automation.sh'
+                    - 'satellite6-configure.sh'
                     - 'scripts/satellite6-configure-variables.sh'
