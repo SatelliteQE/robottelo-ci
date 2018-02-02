@@ -23,6 +23,8 @@
                 - 'cap-feature-rhel7'
                 - 'sat-feature-rhel6'
                 - 'cap-feature-rhel6'
+                - 'sat61-rhel7'
+                - 'sat61-rhel6'
             description: |
                 All the Server ID's here except the capsules have a bare-metal box in it's VLAN. Those bare-metal boxes can
                 be accessed via the Management console to power ON and OFF. Look out for RDU Lab link for more details.
