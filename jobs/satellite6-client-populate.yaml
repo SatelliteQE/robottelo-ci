@@ -4,7 +4,7 @@
     concurrent: true
     display-name: 'Satellite 6 Client automation'
     description: |
-        <p>Job that just Populates an already installed <strong>Satellite 6</strong> on a machine. This job imports manifest, syncs RHEL content, creates CV, Publishes it, promotes it, Creates Ak, Creates Host-Groups and finally Creates Hosts on Libvirt.</p>
+        <p>Job that installs (if SERVER_HOSTNAME not provided) and populates or just populates an already installed <strong>Satellite 6</strong> on a machine. This job imports manifest, syncs RHEL content, creates CV, Publishes it, promotes it, Creates Ak for different architectures and finally triggers beaker job.</p>
         <p>Please make sure to add the following <strong>ssh key</strong> to your server so that this <strong>Jenkins</strong> job can access it.</p>
         <pre>
         ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
@@ -49,7 +49,7 @@
                 The chosen download policy will override the installation download policy on your satellite.
                 Immediate is the default choice for this job as this is more stable option.
         - choice:
-            name: SATELLITE_DISTRIBUTION
+            name: SATELLITE_INSTALL_DISTRIBUTION
             choices:
                 - 'INTERNAL AK'
                 - 'INTERNAL'
@@ -57,10 +57,17 @@
                 - 'GA'
                 - 'BETA'
             description: |
+                Required if SERVER_HOSTNAME is not provided. Depending upon choice, Satellite is installed.
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                - 'INTERNAL'
+                - 'GA'
+            description: |
                 Depending upon INTERNAL and GA, either DOGFOOD or CDN content is synced.
         - string:
             name: BASE_URL
-            description: Required when Satellite distribution is INTERNAL
+            description: Required when Satellite install distribution is INTERNAL
         - string:
             name: MANIFEST_LOCATION_URL
             description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
@@ -86,14 +93,6 @@
             name: DEFAULT_COMPUTE_RESOURCES
             default: true
             description: "Default is true, If unchecked we need to provide the below Libvirt, RHEV and OpenStack Information."
-        - string:
-            name: CI_REPO
-            default: https://github.com/SatelliteQE/robottelo-ci.git
-            description: "You can override this to your automation-tools repo, if needed."
-        - string:
-            name: CI_BRANCH
-            default: master
-            description: "You can override this to any branch."
         - bool:
             name: MINIMAL_INSTALL
             default: true
@@ -115,9 +114,9 @@
                 If set to true, will populate the different client architecture repos to the Satellite6 Server for further client testing.
     scm:
         - git:
-            url: ${CI_REPO}
+            url: https://github.com/SatelliteQE/automation-tools.git
             branches:
-                - origin/${CI_BRANCH}
+                - origin/master
             skip-tag: true
     wrappers:
         - default-wrappers
@@ -135,6 +134,6 @@
             nature: shell
             command:
                 !include-raw:
-                    - 'satellite6-client-automation.sh'
-                    - 'satellite6-configure.sh'
+                    - 'scripts/satellite6-client-automation.sh'
+                    - 'scripts/satellite6-configure.sh'
                     - 'scripts/satellite6-configure-variables.sh'

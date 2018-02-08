@@ -12,15 +12,15 @@ source config/compute_resources.conf
 
 
 # Assign DISTRIBUTION to trigger things appropriately from automation-tools.
-if [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL' ]; then
+if [ "${SATELLITE_INSTALL_DISTRIBUTION}" = 'INTERNAL' ]; then
     export DISTRIBUTION="satellite6-downstream"
-elif [ "${SATELLITE_DISTRIBUTION}" = 'GA' ]; then
+elif [ "${SATELLITE_INSTALL_DISTRIBUTION}" = 'GA' ]; then
     export DISTRIBUTION="satellite6-cdn"
-elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL REPOFILE' ]; then
+elif [ "${SATELLITE_INSTALL_DISTRIBUTION}" = 'INTERNAL REPOFILE' ]; then
     export DISTRIBUTION="satellite6-repofile"
-elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL AK' ]; then
+elif [ "${SATELLITE_INSTALL_DISTRIBUTION}" = 'INTERNAL AK' ]; then
     export DISTRIBUTION="satellite6-activationkey"
-elif [ "${SATELLITE_DISTRIBUTION}" = 'BETA' ]; then
+elif [ "${SATELLITE_INSTALL_DISTRIBUTION}" = 'BETA' ]; then
     export DISTRIBUTION="satellite6-beta"
 fi
 
