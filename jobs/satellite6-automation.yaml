@@ -1102,7 +1102,8 @@
             scm-branch: origin/6.1.z
         - '6.2':
             scm-branch: origin/6.2.z
-        - '6.3'
+        - '6.3':
+            scm-branch: origin/6.3.z
         - 'upstream-nightly'
         - 'downstream-nightly'
     os:
@@ -1135,7 +1136,8 @@
     satellite_version:
         - '6.2':
             scm-branch: origin/6.2.z
-        - '6.3'
+        - '6.3':
+            scm-branch: origin/6.3.z
     os:
         - 'rhel6'
         - 'rhel7'
