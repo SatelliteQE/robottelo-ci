@@ -108,6 +108,11 @@
                 If set to true, will just populate the template file and copy to the Satellite6 Server for further manipulation.
                 One can find the populated template script at /root/satellite6-populate.sh
         - bool:
+            name: POPULATE_RHEL5
+            default: true
+            description: |
+                If set to true, will populate the RHEL 5 different client architecture repos to the Satellite6 Server.
+        - bool:
             name: POPULATE_CLIENTS_ARCH
             default: true
             description: |
