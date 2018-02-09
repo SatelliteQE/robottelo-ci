@@ -43,3 +43,11 @@ def content_views = [
     'Tools 6.3 RHEL6',
     'Tools 6.3 RHEL5'
 ]
+
+def composite_content_views = [
+    'Satellite 6.3 with RHEL7 Server',
+    'Capsule 6.3 with RHEL7 Server',
+    'Tools 6.3 with RHEL7 Server',
+    'Tools 6.3 with RHEL6 Server',
+    'Tools 6.3 with RHEL5 Server'
+]

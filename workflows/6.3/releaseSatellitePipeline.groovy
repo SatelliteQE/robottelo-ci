@@ -114,6 +114,16 @@ node('sat6-rhel7') {
             playbook = 'playbooks/publish_content_views.yml'
         }
     }
+
+    stage("Publish Composite Content Views") {
+
+        runPlaybookInParallel {
+            name = "publish"
+            items = composite_content_views
+            item_name = 'content_view'
+            playbook = 'playbooks/publish_content_views.yml'
+        }
+    }
 }
 
 node('rhel') {
@@ -130,35 +140,35 @@ node('rhel') {
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Satellite 6.3 RHEL7'
+          content_view = 'Satellite 6.3 with RHEL7 Server'
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Capsule 6.3 RHEL7'
+          content_view = 'Capsule 6.3 with RHEL7 Server'
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL7'
+          content_view = 'Tools 6.3 with RHEL7 Server'
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL6'
+          content_view = 'Tools 6.3 with RHEL6 Server'
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL5'
+          content_view = 'Tools 6.3 with RHEL5 Server'
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
