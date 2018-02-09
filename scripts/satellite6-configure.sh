@@ -11,11 +11,12 @@ else
     OS_URL="http://${OSP_HOSTNAME}:5000/v2.0/tokens"
 fi
 
-cp ${PWD}/scripts/satellite6-populate-template.sh satellite6-populate.sh
-chmod 755 satellite6-populate.sh
-
 if [[ -n "${POPULATE_CLIENTS_ARCH}" ]]; then
-    cp ${PWD}/scripts/satellite6-client-arch-template.sh satellite6-client-arch.sh
-    chmod 755 satellite6-client-arch.sh
+    wget -O satellite6-populate.sh https://github.com/SatelliteQE/robottelo-ci/blob/master/scripts/satellite6-populate-template.sh
+    wget -O satellite6-client-arch.sh https://github.com/SatelliteQE/robottelo-ci/blob/master/scripts/satellite6-client-arch-template.sh
+    chmod 755 satellite6-populate.sh
     cat satellite6-client-arch.sh >> satellite6-populate.sh
+else
+    cp ${PWD}/scripts/satellite6-populate-template.sh satellite6-populate.sh
+    chmod 755 satellite6-populate.sh
 fi
