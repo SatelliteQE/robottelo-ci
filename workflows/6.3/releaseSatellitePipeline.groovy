@@ -117,8 +117,7 @@ node('sat6-rhel7') {
 
     stage("Publish Composite Content Views") {
 
-        runPlaybookInParallel {
-            name = "publish"
+        runPlaybookSequentially {
             items = composite_content_views
             item_name = 'content_view'
             playbook = 'playbooks/publish_content_views.yml'
