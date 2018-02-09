@@ -139,7 +139,7 @@
               current-parameters: true
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[123])
+            regex: (6\.[1234])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -280,7 +280,7 @@
             - project: 'satellite6-manifest-downloader'
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[23])
+            regex: (6\.[234])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -402,7 +402,7 @@
                   regex: (rhel7)
                   label: ${{ENV,var="DISTRO"}}
                 - condition-kind: regex-match
-                  regex: (6\.[23])
+                  regex: (6\.[234])
                   label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -1082,7 +1082,7 @@
                         ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[23])
+            regex: (6\.[234])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -1104,6 +1104,7 @@
             scm-branch: origin/6.2.z
         - '6.3':
             scm-branch: origin/6.3.z
+        - '6.4'
         - 'upstream-nightly'
         - 'downstream-nightly'
     os:
@@ -1111,6 +1112,8 @@
         - 'rhel7'
     exclude:
         - satellite_version: '6.3'
+          os: 'rhel6'
+        - satellite_version: '6.4'
           os: 'rhel6'
         - satellite_version: 'upstream-nightly'
           os: 'rhel6'
@@ -1138,11 +1141,14 @@
             scm-branch: origin/6.2.z
         - '6.3':
             scm-branch: origin/6.3.z
+        - '6.4'
     os:
         - 'rhel6'
         - 'rhel7'
     exclude:
         - satellite_version: '6.3'
+          os: 'rhel6'
+        - satellite_version: '6.4'
           os: 'rhel6'
     jobs:
         - 'upgrade-to-{satellite_version}-{os}'
@@ -1161,6 +1167,7 @@
         - '6.1'
         - '6.2'
         - '6.3'
+        - '6.4'
         - 'downstream-nightly'
     jobs:
         - 'trigger-satellite-{satellite_version}'
