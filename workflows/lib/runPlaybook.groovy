@@ -24,6 +24,26 @@ def setupAnsibleEnvironment(body) {
 
 }
 
+def runPlaybookSequentially(body) {
+
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
+
+    def extra_vars = config.extraVars ?: [:]
+
+    for (int i = 0; i < config.items.size(); i++) {
+
+        runPlaybook {
+            playbook = config.playbook
+            extraVars = extra_vars + [(config.item_name): config.items.get(i)]
+        }
+
+    }
+
+}
+
 def runPlaybookInParallel(body) {
 
     def config = [:]
