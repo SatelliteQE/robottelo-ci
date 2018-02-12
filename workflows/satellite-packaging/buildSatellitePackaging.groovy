@@ -31,6 +31,42 @@ node('sat6-rhel7') {
         update_build_description_from_packages(packages_to_build)
     }
 
+    stage("Verify version and release"){
+        if (build_type == 'scratch') {
+            def packages = packages_to_build.split(' ')
+
+            for (int i = 0; i < packages.size(); i++) {
+                package_name = packages[i]
+                version_status = 'failed'
+                release_status = 'failed'
+
+                new_version = query_rpmspec("packages/${package_name}/*.spec", '%{VERSION}')
+                new_release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}').toInteger()
+
+                sh "git checkout origin/${env.gitlabTargetBranch}"
+                old_version = query_rpmspec("packages/${package_name}/*.spec", '%{VERSION}')
+                old_release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}').toInteger()
+                sh "git checkout -"
+
+                if (new_version != old_version && new_release == 1) {
+                    // new version, release back to 1
+                    version_status = 'success'
+                    release_status = 'success'
+                } else if (new_version != old_version && new_release != 1) {
+                    // new version, but release was not reset
+                    version_status = 'success'
+                } else if (new_version == old_version && new_release > old_release) {
+                    // old version, release was bumped
+                    version_status = 'success'
+                    release_status = 'success'
+                }
+
+                updateGitlabCommitStatus name: "${package_name}_version", state: version_status
+                updateGitlabCommitStatus name: "${package_name}_release", state: release_status
+            }
+        }
+    }
+
     stage("Build packages") {
         try {
 
@@ -75,7 +111,7 @@ def mark_bugs_built(build_status, packages_to_build, satellite_version) {
 
     for (int i = 0; i < packages.size(); i++) {
         package_name = packages[i]
-        rpm = sh(returnStdout: true, script: "rpmspec -q --srpm --undefine=dist --queryformat=${package_name}-%{VERSION}-%{RELEASE} packages/${package_name}/*.spec").trim()
+        rpm = query_rpmspec("packages/${package_name}/*.spec", "${package_name}-%{VERSION}-%{RELEASE}")
         ids = sh(returnStdout: true, script: "rpmspec -q --srpm --queryformat=%{CHANGELOGTEXT} packages/${package_name}/*.spec |grep '^- BZ' | sed -E 's/^- BZ[ #]+?([0-9]+).*/\\1/'").trim()
 
         dir('tool_belt') {
@@ -128,4 +164,9 @@ def update_build_description_from_packages(packages_to_build) {
         }
     }
     currentBuild.description = build_description
+}
+
+def query_rpmspec(specfile, queryformat) {
+    result = sh(returnStdout: true, script: "rpmspec -q --srpm --undefine=dist --queryformat=${queryformat} ${specfile}").trim()
+    return result
 }
