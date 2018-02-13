@@ -1,11 +1,10 @@
 def packages_to_build = null
 def build_status = 'failed'
-def satellite_version = env.gitlabTargetBranch.minus('SATELLITE-')
 
 node('sat6-rhel7') {
     stage("Fetch git") {
         deleteDir()
-        gitlab_clone_and_merge("satellite-packaging", build_type)
+        gitlab_clone_and_merge(packaging_repo, build_type)
     }
 
     stage("Find packages to build") {
@@ -89,7 +88,7 @@ node('sat6-rhel7') {
             update_build_description_from_packages(packages_to_build)
 
             if (build_type == 'release') {
-                mark_bugs_built(build_status, packages_to_build, satellite_version)
+                mark_bugs_built(build_status, packages_to_build, package_version)
                 brew_status_comment(build_status)
             }
 
@@ -101,7 +100,7 @@ node('sat6-rhel7') {
     }
 }
 
-def mark_bugs_built(build_status, packages_to_build, satellite_version) {
+def mark_bugs_built(build_status, packages_to_build, package_version) {
     def packages = packages_to_build.split(' ')
     def comment = get_brew_comment(build_status)
 
@@ -119,9 +118,9 @@ def mark_bugs_built(build_status, packages_to_build, satellite_version) {
                 ids = ids.split("\n").join(' --bug ')
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
-                    sh "bundle exec ./bin/tool-belt bugzilla set-fixed-in --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --rpm ${rpm} --bug ${ids} --version ${satellite_version}"
-                    sh "bundle exec ./bin/tool-belt bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state rpm_built --bug ${ids} --version ${satellite_version}"
-                    sh "bundle exec ./bin/tool-belt bugzilla add-comment --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${satellite_version} --comment '${comment}'"
+                    sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt bugzilla set-fixed-in --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --rpm ${rpm} --bug ${ids} --version ${package_version}"
+                    sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state rpm_built --bug ${ids} --version ${package_version}"
+                    sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt bugzilla add-comment --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${package_version} --comment '${comment}'"
                 }
             }
         }

@@ -1,0 +1,15 @@
+- job:
+    disabled: false
+    name: 'rhui-release-pulp-rpm'
+    project-type: pipeline
+    parameters:
+      - release_branch
+    dsl:
+      !include-raw:
+          - ./repos/rhui_pulp_rpm_repo.groovy
+          - ./source_types/sourceTypeTar.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/toolbelt.groovy
+          - workflows/lib/runPlaybook.groovy
+    notifications:
+      - snapper_notifications

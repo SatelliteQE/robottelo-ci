@@ -1,5 +1,5 @@
 - job:
-    name: sat-63-satellite-packaging-scratch-build
+    name: rhui-3-rhui-packaging-update
     project-type: pipeline
     build-discarder:
       days-to-keep: 45
@@ -7,18 +7,18 @@
     parameters:
       - string:
           name: project
-          description: 'Name of the project to build from satellite-packaging.'
+          description: 'Name of the project to update from satellite-packaging.'
+      - string:
+          name: version
+          description: 'Version of the project to update to.'
       - merge_request
-    triggers:
-      - gitlab_build_on_change
     dsl:
       !include-raw:
         - workflows/lib/gitlabEnv.groovy
-        - workflows/packaging/satellitePackaging.groovy
-        - workflows/packaging/scratchBuildPackaging.groovy
-        - workflows/lib/packaging.groovy
-        - workflows/lib/obal.groovy
+        - workflows/packaging/rhuiPackaging.groovy
+        - workflows/lib/updatePackaging.groovy
         - workflows/lib/toolbelt.groovy
+        - workflows/lib/obal.groovy
         - workflows/lib/kerberos.groovy
         - workflows/lib/gitlab.groovy
     notifications:

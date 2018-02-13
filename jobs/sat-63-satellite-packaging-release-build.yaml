@@ -14,8 +14,9 @@
     dsl:
       !include-raw:
         - workflows/lib/gitlabEnv.groovy
-        - workflows/satellite-packaging/releaseBuildSatellitePackaging.groovy
-        - workflows/satellite-packaging/buildSatellitePackaging.groovy
+        - workflows/packaging/satellitePackaging.groovy
+        - workflows/packaging/releaseBuildPackaging.groovy
+        - workflows/lib/packaging.groovy
         - workflows/lib/obal.groovy
         - workflows/lib/toolbelt.groovy
         - workflows/lib/kerberos.groovy
