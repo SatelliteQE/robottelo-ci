@@ -2,17 +2,25 @@ def branch_map = [
     'SATELLITE-6.2.0': [
         'repo': 'Satellite 6.2 Source Files',
         'version': '6.2.0',
+        'tool_belt_config': './configs/satellite/'
         'foreman_branch': '1.11-stable'
     ],
     'SATELLITE-6.3.0': [
         'repo': 'Satellite 6.3 Source Files',
         'version': '6.3.0',
+        'tool_belt_config': './configs/satellite/'
         'foreman_branch': '1.15-stable'
+    ]
+    'RHUI-3.0.0': [
+        'repo': 'RHUI 3.0 Source Files',
+        'version': '3.0.0',
+        'tool_belt_config': './configs/rhui/'
     ]
 ]
 def release_branch = env.releaseBranch
 def repo_name = gitRepository.split('/')[1]
 def version_map = branch_map[release_branch]
+def tool_belt_config = version_map['tool_belt_config']
 def releaseTag = ''
 
 node('rvm') {
@@ -47,7 +55,7 @@ node('rvm') {
     stage("Identify Bugs") {
 
         dir('tool_belt') {
-            sh "bundle exec ./bin/tool-belt release find-bz-ids --dir ../${repo_name} --output-file bz_ids.json"
+            sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt release find-bz-ids --dir ../${repo_name} --output-file bz_ids.json"
             archive 'bz_ids.json'
         }
     }
@@ -68,7 +76,7 @@ node('rvm') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    sh "bundle exec ./bin/tool-belt bugzilla set-cherry-picked --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
+                    sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt bugzilla set-cherry-picked --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${version_map['version']}"
 
                 }
 
@@ -88,7 +96,7 @@ node('rvm') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                        sh "bundle exec ./bin/tool-belt bugzilla set-gitlab-tracker --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --external-tracker \"${hash}\" --bug ${id} --version ${version_map['version']}"
+                        sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt bugzilla set-gitlab-tracker --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --external-tracker \"${hash}\" --bug ${id} --version ${version_map['version']}"
 
                 }
             }
@@ -106,7 +114,7 @@ node('rvm') {
                 sh "git config user.name 'Jenkins'"
 
                 dir('../tool_belt') {
-                    sh "bundle exec ./bin/tool-belt release bump-version --dir ../${repo_name} --output-file version"
+                    sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt release bump-version --dir ../${repo_name} --output-file version"
                     archive "version"
                     releaseTag = readFile 'version'
                 }
@@ -141,7 +149,7 @@ node('rvm') {
 
             dir('tool_belt') {
 
-                sh "bundle exec ./bin/tool-belt release build-source --dir ../${repo_name} --type ${sourceType} --output-file artifact"
+                sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt release build-source --dir ../${repo_name} --type ${sourceType} --output-file artifact"
 
             }
 
@@ -193,7 +201,7 @@ node('rvm') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    sh "bundle exec ./bin/tool-belt bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state needs_rpm --bug ${ids} --version ${version_map['version']}"
+                    sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state needs_rpm --bug ${ids} --version ${version_map['version']}"
 
                 }
 
@@ -205,6 +213,13 @@ node('rvm') {
     stage("Trigger packaging update") {
         if (release_branch == 'SATELLITE-6.3.0') {
           build job: 'sat-63-satellite-packaging-update', parameters: [
+            [$class: 'StringParameterValue', name: 'project', value: repo_name],
+            [$class: 'StringParameterValue', name: 'version', value: releaseTag],
+            [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch],
+          ]
+        }
+        else if (release_branch == 'RHUI-3.0.0') {
+          build job: 'rhui-3-rhui-packaging-update', parameters: [
             [$class: 'StringParameterValue', name: 'project', value: repo_name],
             [$class: 'StringParameterValue', name: 'version', value: releaseTag],
             [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch],
