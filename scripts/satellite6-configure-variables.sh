@@ -66,6 +66,11 @@ if [[ -n "${POPULATE_CLIENTS_ARCH}" ]]; then
     sed -i "s|RHEL6_TOOLS_S390X_URL=.*|RHEL6_TOOLS_S390X_URL=\"${TOOLS_RHEL6_S390X}\"|" satellite6-populate.sh
     sed -i "s|RHEL7_TOOLS_S390X_URL=.*|RHEL7_TOOLS_S390X_URL=\"${TOOLS_RHEL7_S390X}\"|" satellite6-populate.sh
     sed -i "s|RHEL6_TOOLS_I386_URL=.*|RHEL6_TOOLS_I386_URL=\"${TOOLS_RHEL6_I386}\"|" satellite6-populate.sh
+    sed -i "s|RHEL5_TOOLS_URL=.*|RHEL5_TOOLS_URL=\"${TOOLS_RHEL5}\"|" satellite6-populate.sh
+    sed -i "s|RHEL5_TOOLS_PPC64_URL=.*|RHEL5_TOOLS_PPC64_URL=\"${TOOLS_RHEL5_PPC64}\"|" satellite6-populate.sh
+    sed -i "s|RHEL5_TOOLS_S390X_URL=.*|RHEL5_TOOLS_S390X_URL=\"${TOOLS_RHEL5_S390X}\"|" satellite6-populate.sh
+    sed -i "s|RHEL5_TOOLS_IA64_URL=.*|RHEL5_TOOLS_IA64_URL=\"${TOOLS_RHEL5_IA64}\"|" satellite6-populate.sh
+    sed -i "s|RHEL5_TOOLS_I386_URL=.*|RHEL5_TOOLS_I386_URL=\"${TOOLS_RHEL5_I386}\"|" satellite6-populate.sh
 fi
 
 if [[ "${RERUN}" != 'true' ]]; then

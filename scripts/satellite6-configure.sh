@@ -12,10 +12,11 @@ else
 fi
 
 if [[ -n "${POPULATE_CLIENTS_ARCH}" ]]; then
-    wget -O satellite6-populate.sh https://github.com/SatelliteQE/robottelo-ci/blob/master/scripts/satellite6-populate-template.sh
-    wget -O satellite6-client-arch.sh https://github.com/SatelliteQE/robottelo-ci/blob/master/scripts/satellite6-client-arch-template.sh
+    wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/scripts/satellite6-populate-template.sh
+    wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/scripts/satellite6-client-arch-template.sh
+    cp satellite6-populate-template.sh satellite6-populate.sh
     chmod 755 satellite6-populate.sh
-    cat satellite6-client-arch.sh >> satellite6-populate.sh
+    cat satellite6-client-arch-template.sh >> satellite6-populate.sh
 else
     cp ${PWD}/scripts/satellite6-populate-template.sh satellite6-populate.sh
     chmod 755 satellite6-populate.sh
