@@ -10,7 +10,7 @@ def branch_map = [
         'version': '6.3.0',
         'tool_belt_config': './configs/satellite/',
         'foreman_branch': '1.15-stable'
-    ]
+    ],
     'RHUI-3.0.0': [
         'repo': 'RHUI 3.0 Source Files',
         'version': '3.0.0',
