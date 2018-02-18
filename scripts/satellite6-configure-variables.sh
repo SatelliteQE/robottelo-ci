@@ -72,6 +72,12 @@ if [[ -n "${POPULATE_CLIENTS_ARCH}" ]]; then
     sed -i "s|RHEL5_TOOLS_IA64_URL=.*|RHEL5_TOOLS_IA64_URL=\"${TOOLS_RHEL5_IA64}\"|" satellite6-populate.sh
     sed -i "s|RHEL5_TOOLS_I386_URL=.*|RHEL5_TOOLS_I386_URL=\"${TOOLS_RHEL5_I386}\"|" satellite6-populate.sh
 fi
+if [[ -n "${POPULATE_RHEL5}" ]]; then
+    sed -i "s|POPULATE_RHEL5=.*|POPULATE_RHEL5=\"${POPULATE_RHEL5}\"|" satellite6-populate.sh
+fi
+if [[ -n "${POPULATE_RHEL6}" ]]; then
+    sed -i "s|POPULATE_RHEL6=.*|POPULATE_RHEL6=\"${POPULATE_RHEL6}\"|" satellite6-populate.sh
+fi
 
 if [[ "${RERUN}" != 'true' ]]; then
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no satellite6-populate.sh root@"${SERVER_HOSTNAME}":/root/
