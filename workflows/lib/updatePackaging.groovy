@@ -19,7 +19,7 @@ node ('sat6-rhel7') {
 
         dir("tool_belt") {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
-                sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt setup-environment --version ${package_version} --gitlab-username ${env.USERNAME} --gitlab-password ${env.PASSWORD} --gitlab-clone-method https --repos satellite-packaging"
+                sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt setup-environment --version ${package_version} --gitlab-username ${env.USERNAME} --gitlab-password ${env.PASSWORD} --gitlab-clone-method https --repos ${packaging_repo}"
             }
         }
 
@@ -47,7 +47,7 @@ node ('sat6-rhel7') {
 
     stage("Prepare changes") {
 
-        dir("tool_belt/repos/satellite_${package_version}/satellite-packaging") {
+        dir("tool_belt/repos/${tool_belt_repo_folder}/${packaging_repo}") {
             obal {
                 action = 'update'
                 packages = package_name
@@ -64,7 +64,7 @@ node ('sat6-rhel7') {
         def branch = "jenkins/update-${project}-${version}"
         def commit_msg = "Update ${project} to ${version}"
 
-        dir("tool_belt/repos/satellite_${package_version}/satellite-packaging") {
+        dir("tool_belt/repos/${tool_belt_repo_folder}/${packaging_repo}") {
             sh "git checkout -b ${branch}"
             sh "git commit -a -m '${commit_msg}'"
             sh "git push jenkins ${branch} -f"
@@ -72,7 +72,7 @@ node ('sat6-rhel7') {
 
         dir("tool_belt") {
             withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
-                sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt git merge-request --gitlab-username jenkins --gitlab-token ${env.GITLAB_TOKEN} --repo satellite-packaging --source-branch ${branch} --target-branch ${env.gitlabTargetBranch} --title '${commit_msg}'"
+                sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt git merge-request --gitlab-username jenkins --gitlab-token ${env.GITLAB_TOKEN} --repo '${packaging_repo_project}/${packaging_repo} --source-branch ${branch} --target-branch ${env.gitlabTargetBranch} --title '${commit_msg}'"
             }
         }
 
