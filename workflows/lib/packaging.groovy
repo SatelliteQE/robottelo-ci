@@ -4,7 +4,7 @@ def build_status = 'failed'
 node('sat6-rhel7') {
     stage("Fetch git") {
         deleteDir()
-        gitlab_clone_and_merge(packaging_repo, build_type)
+        gitlab_clone_and_merge("${packaging_repo_project}/${packaging_repo}", build_type)
     }
 
     stage("Find packages to build") {
