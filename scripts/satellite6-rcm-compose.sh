@@ -1,0 +1,39 @@
+pip install -r requirements.txt
+
+source ${CONFIG_FILES}
+if [ "${DEFAULT_SAT6_URLS}" = 'true' ]; then
+    source config/sat6_repos_urls.conf
+    for variable in 'SATELLITE6_REPO' 'TOOLS_RHEL7' 'TOOLS_RHEL7_PPC64' 'TOOLS_RHEL7_S390X' 'TOOLS_RHEL6' 'TOOLS_RHEL6_PPC64' 'TOOLS_RHEL6_S390X' 'TOOLS_RHEL6_I386' 'TOOLS_RHEL5' 'TOOLS_RHEL5_S390X' 'TOOLS_RHEL5_I386' 'CAPSULE_RHEL7=' 'CAPSULE_RHEL6'; do
+        export $variable="${!variable}Packages"
+    done
+else
+    SATELLITE6_REPO="${SATELLITE_URL}Packages/"
+    TOOLS_RHEL7="${SAT6TOOLS7_URL}Packages/"
+    TOOLS_RHEL7_PPC64="${SAT6TOOLS7_PPC64_URL}Packages/"
+    TOOLS_RHEL7_S390X="${SAT6TOOLS7_S390X_URL}/Packages/"
+    TOOLS_RHEL6="${SAT6TOOLS6_URL}Packages/"
+    TOOLS_RHEL6_PPC64="${SAT6TOOLS6_PPC64_URL}Packages/"
+    TOOLS_RHEL6_S390X="${SAT6TOOLS6_S390X_URL}Packages/"
+    TOOLS_RHEL6_I386="${SAT6TOOLS6_I386_URL}Packages/"
+    TOOLS_RHEL5="${SAT6TOOLS5_URL}Packages/"
+    TOOLS_RHEL5_S390X="${SAT6TOOLS5_S390X_URL}Packages/"
+    TOOLS_RHEL5_I386="${SAT6TOOLS5_I386_URL}Packages/"
+    CAPSULE_RHEL7="${CAPSULE7_URL}Packages/"
+    CAPSULE_RHEL6="${CAPSULE6_URL}Packages/"
+fi
+
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${SATELLITE6_REPO},${RCM_SATELLITE_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${TOOLS_RHEL7},${RCM_SAT6TOOLS7_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${TOOLS_RHEL7_PPC64},${RCM_SAT6TOOLS7_PPC64_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${TOOLS_RHEL7_S390X},${RCM_SAT6TOOLS7_S390X_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${TOOLS_RHEL6},${RCM_SAT6TOOLS6_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${TOOLS_RHEL6_PPC64},${RCM_SAT6TOOLS6_PPC64_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${TOOLS_RHEL6_S390X},${RCM_SAT6TOOLS6_S390X_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${TOOLS_RHEL6_I386},${RCM_SAT6TOOLS6_I386_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${TOOLS_RHEL5},${RCM_SAT6TOOLS5_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${TOOLS_RHEL5_S390X},${RCM_SAT6TOOLS5_S390X_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${TOOLS_RHEL5_I386},${RCM_SAT6TOOLS5_I386_URL}
+fab -D -H root@${SERVER_HOSTNAME} compare_builds:${CAPSULE_RHEL7},${RCM_CAPSULE7_URL}
+if [ ! -z "$RCM_CAPSULE6_URL" ]; then
+    fab -D -H root@${SERVER_HOSTNAME} compare_builds:${CAPSULE_RHEL6},${RCM_CAPSULE6_URL}
+fi

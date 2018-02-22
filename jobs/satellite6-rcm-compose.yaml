@@ -1,0 +1,139 @@
+- job:
+    disabled: false
+    name: 'satellite6-RCM-compose'
+    concurrent: true
+    display-name: 'Satellite 6 RCM Compose Testing'
+    description: |
+        <p>Job that assures all packages are signed, validates signature and also compare package versions between <strong>Satellite 6</strong> snap and <strong>RCM compose</strong>.</p>
+        <p>Please make sure to add the following <strong>ssh key</strong> to your system (where gpg keys are already imported) so that this <strong>Jenkins</strong> job can access it.</p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+    node: sat6-rhel7
+    parameters:
+        - string:
+            name: SERVER_HOSTNAME
+            description: "This is Mandatory, FQDN for your system where you want to perform signature check."
+        - string:
+            name: RCM_SATELLITE_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 packages."
+        - string:
+            name: RCM_SAT6TOOLS7_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools x86_64 for rhel 7 packages."
+        - string:
+            name: RCM_SAT6TOOLS7_PPC64_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools ppc64 for rhel 7 packages."
+        - string:
+            name: RCM_SAT6TOOLS7_S390X_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools s390x for rhel 7 packages."
+        - string:
+            name: RCM_SAT6TOOLS6_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools x86_64 for rhel 6 packages."
+        - string:
+            name: RCM_SAT6TOOLS6_PPC64_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools ppc64 for rhel 6 packages."
+        - string:
+            name: RCM_SAT6TOOLS6_S390X_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools s390x for rhel 6 packages."
+        - string:
+            name: RCM_SAT6TOOLS6_I386_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools i386 for rhel 6 packages."
+        - string:
+            name: RCM_SAT6TOOLS5_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools x86_64 for rhel 5 packages."
+        - string:
+            name: RCM_SAT6TOOLS5_S390X_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools s390x for rhel 5 packages."
+        - string:
+            name: RCM_SAT6TOOLS5_I386_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools i386 for rhel 5 packages."
+        - string:
+            name: RCM_CAPSULE7_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 capsule for rhel 7 packages."
+        - string:
+            name: RCM_CAPSULE6_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 capsule for rhel 6 packages."
+        - bool:
+            name: DEFAULT_SAT6_URLS
+            default: true
+            description: "Default is true, If unchecked we need to provide the below satellite 6 snap urls."
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.3'
+                - '6.2'
+                - '6.1'
+            description: "This is Mandatory, if DEFAULT_SAT6_URLS is checked."
+        - string:
+            name: SATELLITE_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS7_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS7_PPC64_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS7_S390X_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS6_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS6_PPC64_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS6_S390X_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS6_I386_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS5_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS5_S390X_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS5_I386_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: CAPSULE7_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: CAPSULE6_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: CI_REPO
+            default: https://github.com/SatelliteQE/automation-tools.git
+            description: "You can override this to your automation-tools repo, if needed."
+        - string:
+            name: CI_BRANCH
+            default: master
+            description: "You can override this to any branch."
+        - string:
+            name: SIGNATURE
+            description: "This is Mandatory, Signature to check against packages."
+    scm:
+        - git:
+            url: ${CI_REPO}
+            branches:
+                - origin/${CI_BRANCH}
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - build-name:
+            name: '#${BUILD_NUMBER}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'scripts/satellite6-rcm-compose.sh'
