@@ -19,7 +19,18 @@ node ('sat6-rhel7') {
 
         dir("tool_belt") {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
-                sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt setup-environment --version ${package_version} --gitlab-username ${env.USERNAME} --gitlab-password ${env.PASSWORD} --gitlab-clone-method https --repos ${packaging_repo}"
+
+                toolBelt {
+                    command = 'bugzilla setup-environment'
+                    config = tool_belt_config
+                    options = [
+                        "--version ${package_version}",
+                        "--gitlab-username ${env.USERNAME}",
+                        "--gitlab-password ${env.PASSWORD}",
+                        "--gitlab-clone-method https",
+                        "--repos ${packaging_repo}"
+                    ]
+                }
             }
         }
 
@@ -28,7 +39,16 @@ node ('sat6-rhel7') {
     stage("Get package name") {
 
         dir("tool_belt") {
-            sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt release package-name --version ${package_version} --project ${project} --output-file package_name --no-update-repos"
+            toolBelt {
+                command = 'release package-name'
+                config = tool_belt_config
+                options = [
+                    "--version ${package_version}",
+                    "--project ${project}",
+                    "--output-file package_name",
+                    "--no-update-repos"
+                ]
+            }
             package_name = readFile 'package_name'
         }
 
@@ -38,7 +58,20 @@ node ('sat6-rhel7') {
 
         dir("tool_belt") {
             withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
-                sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt release changelog --version ${package_version} --project ${project} --gitlab-username jenkins --gitlab-token ${env.GITLAB_TOKEN} --update-to ${version} --output-file changelog"
+
+                toolBelt {
+                    command = 'release changelog'
+                    config = tool_belt_config
+                    options = [
+                        "--version ${package_version}",
+                        "--project ${project}",
+                        "--gitlab-username jenkins",
+                        "--gitlab-token ${env.GITLAB_TOKEN}",
+                        "--update-to ${version}",
+                        "--output-file changelog"
+                    ]
+                }
+
             }
             changelog = readFile 'changelog'
         }
@@ -72,7 +105,22 @@ node ('sat6-rhel7') {
 
         dir("tool_belt") {
             withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
-                sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt git merge-request --gitlab-username jenkins --gitlab-token ${env.GITLAB_TOKEN} --repo '${packaging_repo_project}/${packaging_repo} --source-branch ${branch} --target-branch ${env.gitlabTargetBranch} --title '${commit_msg}'"
+
+                toolBelt {
+                    command = 'git merge-request'
+                    config = tool_belt_config
+                    options = [
+                        "--version ${package_version}",
+                        "--project ${project}",
+                        "--gitlab-username jenkins",
+                        "--gitlab-token ${env.GITLAB_TOKEN}",
+                        "--repo '${packaging_repo_project}/${packaging_repo}",
+                        "--source-branch ${branch}",
+                        "--target-branch ${env.gitlabTargetBranch}",
+                        "--title '${commit_msg}'"
+                    ]
+                }
+
             }
         }
 

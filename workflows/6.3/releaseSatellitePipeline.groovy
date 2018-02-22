@@ -177,7 +177,16 @@ node('rhel') {
         dir('tool_belt') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                sh "bundle exec ./bin/tool-belt bugzilla move-to-on-dev --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --version ${satellite_version} --packages package_report.yaml --commit"
+                toolBelt {
+                    command = 'bugzilla move-to-on-dev'
+                    options = [
+                        "--bz-username ${env.BZ_USERNAME}",
+                        "--bz-password ${env.BZ_PASSWORD}",
+                        "--version ${satellite_version}",
+                        "--packages package_report.yaml",
+                        " --commit"
+                    ]
+                }
 
             }
         }

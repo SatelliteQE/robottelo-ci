@@ -47,16 +47,17 @@ def compareContentViews(body) {
         setup_toolbelt()
         def archive_file = 'package_report.yaml'
 
-        def cmd = [
-            "bundle exec",
-            "./bin/tool-belt release compare-content-view",
-            "--content-view '${config.content_view}'",
-            "--from-environment '${config.from_lifecycle_environment}'",
-            "--to-environment '${config.to_lifecycle_environment}'",
-            "--output '${archive_file}'"
-        ]
+        toolBelt {
+            command = 'release compare-content-view'
+            config = tool_belt_config
+            options = [
+                "--content-view '${config.content_view}'",
+                "--from-environment '${config.from_lifecycle_environment}'",
+                "--to-environment '${config.to_lifecycle_environment}'",
+                "--output '${archive_file}'"
+            ]
+        }
 
-        sh "${cmd.join(' ')}"
         archive archive_file
     }
 }
