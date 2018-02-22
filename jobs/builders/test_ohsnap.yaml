@@ -1,4 +1,0 @@
-- builder:
-    name: test_ohsnap
-    builders:
-        - shell: !include-raw: scripts/test_ohsnap.sh
