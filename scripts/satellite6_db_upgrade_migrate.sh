@@ -45,8 +45,8 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     # Define  Backup directory for customer DB 
     BACKUP_DIR="\/var\/tmp\/backup"
     # Prepare Customer DB URL
-    if [ "${CUSTOMERDB_NAME}" = 'Lidl' ]; then
-        DB_URL="http://"${cust_db_server}"/customer-databases/lidl"
+    if [ "${CUSTOMERDB_NAME}" = 'CentralCI' ]; then
+        DB_URL="http://"${cust_db_server}"/customer-databases/Central-CI/6.2-OCT-13-2017/"
     elif [ "${CUSTOMERDB_NAME}" = 'ExpressScripts' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/express-scripts/6.2-OCT-14-2017"
     elif [ "${CUSTOMERDB_NAME}" = 'Verizon' ]; then
@@ -55,6 +55,8 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/walmart/6.2-OCT-2017"
     elif [ "${CUSTOMERDB_NAME}" = 'Sat62RHEL6Migrate' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/qe-rhel6-db/sat62-rhel6-db"
+    elif [ "${CUSTOMERDB_NAME}" = 'CustomDbURL' ]; then
+        DB_URL="${CUSTOM_DB_URL}"
     fi
     # Configuration updates in vars file
     sed -i -e "s/^satellite_version.*/satellite_version: "${FROM_VERSION}"/" satellite-clone-vars.yml
