@@ -32,18 +32,25 @@
             name: CUSTOMERDB_NAME
             choices:
                 - 'NoDB'
-                - 'Lidl'
+                - 'CentralCI'
                 - 'ExpressScripts'
                 - 'Verizon'
                 - 'Walmart'
                 - 'Sat62RHEL6Migrate'
+                - 'CustomDbURL'
+
             description: |
                 <p>Select the Customer DB for <b>Upgrade</b> OR <b>Migration</b></p>
-                <p>For Lidl, <b>From version</b> should be <b>6.1</b> and OS should be <b>RHEL7</b></p>
+                <p>For CentralCI, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For ExpressScript, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For Verizon, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For Walmart, <b> From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For Sat62RHEL6Migrate, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
+                <p>For CustomDbURL, You need to provide CUSTOM_DB_URL parameter, also specify From version and OS accordingly.</p>
+        - string:
+            name: CUSTOM_DB_URL
+            description: |
+                <p>This is required, if CustomDbURL is selected. This is the URL where customer DB is hosted.</p>
         - bool:
             name: INCLUDE_PULP_DATA
             default: false
