@@ -29,12 +29,16 @@ pipeline {
             parallel {
                 stage('unittests') {
                     steps {
-                        withRVM(['bundle exec rake'], ruby)
+                        gitlabCommitStatus(name: 'unittests') {
+                            withRVM(['bundle exec rake'], ruby)
+                        }
                     }
                 }
                 stage('webpack') {
                     steps {
-                        sh "./node_modules/webpack/bin/webpack.js --bail"
+                        gitlabCommitStatus(name: 'webpack') {
+                            sh "./node_modules/webpack/bin/webpack.js --bail"
+                        }
                     }
                 }
             }
@@ -42,6 +46,12 @@ pipeline {
     }
 
     post {
+        failure {
+            updateGitlabCommitStatus name: 'jenkins', state: 'failed'
+        }
+        success {
+            updateGitlabCommitStatus name: 'jenkins', state: 'success'
+        }
         always {
             archiveArtifacts artifacts: "Gemfile.lock, package-lock.json"
             step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage/coverage.xml'])
