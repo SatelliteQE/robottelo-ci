@@ -118,9 +118,42 @@ def mark_bugs_built(build_status, packages_to_build, package_version) {
                 ids = ids.split("\n").join(' --bug ')
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
-                    sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt bugzilla set-fixed-in --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --rpm ${rpm} --bug ${ids} --version ${package_version}"
-                    sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt bugzilla set-build-state --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --state rpm_built --bug ${ids} --version ${package_version}"
-                    sh "TOOL_BELT_CONFIGS=${tool_belt_config} bundle exec ./bin/tool-belt bugzilla add-comment --bz-username ${env.BZ_USERNAME} --bz-password ${env.BZ_PASSWORD} --bug ${ids} --version ${package_version} --comment '${comment}'"
+
+                    toolBelt {
+                        command = 'release set-fixed-in'
+                        config = tool_belt_config
+                        options = [
+                            "--bz-username ${env.BZ_USERNAME}",
+                            "--bz-password ${env.BZ_PASSWORD}",
+                            "--rpm ${rpm}",
+                            "--bug ${ids}",
+                            "--version ${package_version}"
+                        ]
+                    }
+
+                    toolBelt {
+                        command = 'release set-build-state'
+                        config = tool_belt_config
+                        options = [
+                            "--bz-username ${env.BZ_USERNAME}",
+                            "--bz-password ${env.BZ_PASSWORD}",
+                            "--state rpm_build",
+                            "--bug ${ids}",
+                            "--version ${package_version}"
+                        ]
+                    }
+
+                    toolBelt {
+                        command = 'bugzilla add-comment'
+                        config = tool_belt_config
+                        options = [
+                            "--bz-username ${env.BZ_USERNAME}",
+                            "--bz-password ${env.BZ_PASSWORD}",
+                            "--bug ${ids}",
+                            "--version ${package_version}",
+                            "--comment '${comment}'"
+                        ]
+                    }
                 }
             }
         }
