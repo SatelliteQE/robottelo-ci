@@ -3,16 +3,8 @@ def setup_toolbelt() {
     sh 'bundle install --without=development'
 }
 
-def toolBelt(body) {
+def toolBelt(args) {
+    tool_belt_config = args.config ? "TOOL_BELT_CONFIGS=${args.config}" : ""
 
-    def config = [:]
-    body = body ?: [:]
-
-    body.resolveStrategy = Closure.DELEGATE_FIRST
-    body.delegate = config
-    body()
-
-    tool_belt_config = config.config ? "TOOL_BELT_CONFIGS=${config.config}" : ""
-
-    sh "${tool_belt_config} bundle exec ruby ./bin/tool-belt ${config.command} ${config.options.join(' ')}"
+    sh "${tool_belt_config} bundle exec ruby ./bin/tool-belt ${args.command} ${args.options.join(' ')}"
 }

@@ -119,10 +119,10 @@ def mark_bugs_built(build_status, packages_to_build, package_version) {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    toolBelt {
-                        command = 'release set-fixed-in'
-                        config = tool_belt_config
-                        options = [
+                    toolBelt(
+                        command: 'release set-fixed-in',
+                        config: tool_belt_config,
+                        options: [
                             "--bz-username ${env.BZ_USERNAME}",
                             "--bz-password ${env.BZ_PASSWORD}",
                             "--rpm ${rpm}",
@@ -131,29 +131,29 @@ def mark_bugs_built(build_status, packages_to_build, package_version) {
                         ]
                     }
 
-                    toolBelt {
-                        command = 'release set-build-state'
-                        config = tool_belt_config
-                        options = [
+                    toolBelt(
+                        command: 'release set-build-state'
+                        config: tool_belt_config
+                        options: [
                             "--bz-username ${env.BZ_USERNAME}",
                             "--bz-password ${env.BZ_PASSWORD}",
                             "--state rpm_build",
                             "--bug ${ids}",
                             "--version ${package_version}"
                         ]
-                    }
+                    )
 
-                    toolBelt {
-                        command = 'bugzilla add-comment'
-                        config = tool_belt_config
-                        options = [
+                    toolBelt(
+                        command: 'bugzilla add-comment',
+                        config: tool_belt_config,
+                        options: [
                             "--bz-username ${env.BZ_USERNAME}",
                             "--bz-password ${env.BZ_PASSWORD}",
                             "--bug ${ids}",
                             "--version ${package_version}",
                             "--comment '${comment}'"
                         ]
-                    }
+                    )
                 }
             }
         }
