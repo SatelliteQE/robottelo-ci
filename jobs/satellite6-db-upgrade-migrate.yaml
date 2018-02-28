@@ -76,6 +76,11 @@
             description: |
                 <p>Un-Check if you do not want to perform upgrade post Satellite Clone or Migration</p>
         - bool:
+            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            default: false
+            description: |
+                <p>Check if you want to perform upgrade using Foreman-Maintain Tool. This needs PERFORM_UPGRADE parameter unchecked.</p>
+        - bool:
             name: RUN_EXISTENCE_TESTS
             default: false
             description: |
