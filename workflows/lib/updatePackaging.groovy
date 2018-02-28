@@ -20,17 +20,17 @@ node ('sat6-rhel7') {
         dir("tool_belt") {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
-                toolBelt {
-                    command = 'bugzilla setup-environment'
-                    config = tool_belt_config
-                    options = [
+                toolBelt(
+                    command: 'bugzilla setup-environment',
+                    config: tool_belt_config,
+                    options: [
                         "--version ${package_version}",
                         "--gitlab-username ${env.USERNAME}",
                         "--gitlab-password ${env.PASSWORD}",
                         "--gitlab-clone-method https",
                         "--repos ${packaging_repo}"
                     ]
-                }
+                )
             }
         }
 
@@ -39,10 +39,10 @@ node ('sat6-rhel7') {
     stage("Get package name") {
 
         dir("tool_belt") {
-            toolBelt {
-                command = 'release package-name'
-                config = tool_belt_config
-                options = [
+            toolBelt(
+                command: 'release package-name',
+                config: tool_belt_config,
+                options: [
                     "--version ${package_version}",
                     "--project ${project}",
                     "--output-file package_name",
@@ -59,10 +59,10 @@ node ('sat6-rhel7') {
         dir("tool_belt") {
             withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
 
-                toolBelt {
-                    command = 'release changelog'
-                    config = tool_belt_config
-                    options = [
+                toolBelt(
+                    command: 'release changelog',
+                    config: tool_belt_config,
+                    options: [
                         "--version ${package_version}",
                         "--project ${project}",
                         "--gitlab-username jenkins",
@@ -70,7 +70,7 @@ node ('sat6-rhel7') {
                         "--update-to ${version}",
                         "--output-file changelog"
                     ]
-                }
+                )
 
             }
             changelog = readFile 'changelog'
@@ -106,10 +106,10 @@ node ('sat6-rhel7') {
         dir("tool_belt") {
             withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
 
-                toolBelt {
-                    command = 'git merge-request'
-                    config = tool_belt_config
-                    options = [
+                toolBelt(
+                    command: 'git merge-request',
+                    config: tool_belt_config,
+                    options: [
                         "--version ${package_version}",
                         "--project ${project}",
                         "--gitlab-username jenkins",
@@ -119,7 +119,7 @@ node ('sat6-rhel7') {
                         "--target-branch ${env.gitlabTargetBranch}",
                         "--title '${commit_msg}'"
                     ]
-                }
+                )
 
             }
         }

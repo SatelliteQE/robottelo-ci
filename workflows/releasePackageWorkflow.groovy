@@ -181,15 +181,15 @@ node('rvm') {
         } else {
 
             dir('tool_belt') {
-                toolBelt {
-                    command = 'release build-source'
-                    config = tool_belt_config
-                    options = [
+                toolBelt(
+                    command: 'release build-source',
+                    config: tool_belt_config,
+                    options: [
                         "--dir ../${repo_name}",
                         "--type ${sourceType}",
                         "--output-file artifact"
                     ]
-                }
+                )
             }
 
         }
@@ -240,17 +240,17 @@ node('rvm') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    toolBelt {
-                        command = 'release set-build-state'
-                        config = tool_belt_config
-                        options = [
+                    toolBelt(
+                        command: 'release set-build-state',
+                        config: tool_belt_config,
+                        options: [
                             "--bz-username ${env.BZ_USERNAME}",
                             "--bz-password ${env.BZ_PASSWORD}",
                             "--state needs_rpm",
                             "--bug ${ids}",
                             "--version ${version_map['version']}"
                         ]
-                    }
+                    )
 
                 }
 
