@@ -108,3 +108,11 @@ if [ "${PERFORM_UPGRADE}" = "true" ]; then
         tar -czf Log_Analyzer_Logs.tar.xz upgrade-diff-logs
     fi
 fi
+
+# Run satellite upgrade only when PERFORM_FOREMAN_MAINTAIN_UPGRADE flag is set
+if [ "${PERFORM_FOREMAN_MAINTAIN_UPGRADE}" = "true" ]; then
+    # setup foreman-maintain
+    fab -u root@"${SATELLITE_HOSTNAME}" setup_foreman_maintain
+    # perform upgrade using foreman-maintain
+    fab -u root@"${SATELLITE_HOSTNAME}" upgrade_using_foreman_maintain
+fi
