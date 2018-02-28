@@ -129,11 +129,11 @@ def mark_bugs_built(build_status, packages_to_build, package_version) {
                             "--bug ${ids}",
                             "--version ${package_version}"
                         ]
-                    }
+                    )
 
                     toolBelt(
-                        command: 'release set-build-state'
-                        config: tool_belt_config
+                        command: 'release set-build-state',
+                        config: tool_belt_config,
                         options: [
                             "--bz-username ${env.BZ_USERNAME}",
                             "--bz-password ${env.BZ_PASSWORD}",
