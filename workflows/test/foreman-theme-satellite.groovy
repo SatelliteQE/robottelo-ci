@@ -65,7 +65,7 @@ node('sat6-rhel7') {
 
                 archive "Gemfile.lock pkg/*"
 
-                cleanup()
+                cleanup(ruby)
 
             }
         }

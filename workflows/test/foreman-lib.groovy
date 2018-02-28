@@ -91,7 +91,7 @@ def cleanup(ruby = '2.2') {
 
     } finally {
 
-        cleanup_rvm(ruby = '2.2')
+        cleanup_rvm('', ruby)
 
     }
 }
