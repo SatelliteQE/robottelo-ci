@@ -40,11 +40,11 @@ node('sat6-rhel7') {
                 release_status = 'failed'
 
                 new_version = query_rpmspec("packages/${package_name}/*.spec", '%{VERSION}')
-                new_release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}').toInteger()
+                new_release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}').toFloat()
 
                 sh "git checkout origin/${env.gitlabTargetBranch}"
                 old_version = query_rpmspec("packages/${package_name}/*.spec", '%{VERSION}')
-                old_release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}').toInteger()
+                old_release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}').toFloat()
                 sh "git checkout -"
 
                 if (new_version != old_version && new_release == 1) {
