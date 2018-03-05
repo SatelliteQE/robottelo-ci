@@ -495,27 +495,27 @@
         - shell: rm -f coverage.*.tar
         - copyartifact:
             project: 'automation-{satellite_version}-tier1-{os}'
-            filter: 'coverage.tier1.tar'
+            filter: 'coverage.tier1.tar,tfm_reports_tier1.tar'
             which-build: last-successful
         - copyartifact:
             project: 'automation-{satellite_version}-tier2-{os}'
-            filter: 'coverage.tier2.tar'
+            filter: 'coverage.tier2.tar,tfm_reports_tier2.tar'
             which-build: last-successful
         - copyartifact:
             project: 'automation-{satellite_version}-tier3-{os}'
-            filter: 'coverage.tier3.tar'
+            filter: 'coverage.tier3.tar,tfm_reports_tier3.tar'
             which-build: last-successful
         - copyartifact:
             project: 'automation-{satellite_version}-tier4-{os}'
-            filter: 'coverage.tier4.tar'
+            filter: 'coverage.tier4.tar,tfm_reports_tier4.tar'
             which-build: last-successful
         - copyartifact:
             project: 'automation-{satellite_version}-rhai-{os}'
-            filter: 'coverage.rhai.tar'
+            filter: 'coverage.rhai.tar,tfm_reports_rhai.tar'
             which-build: last-successful
         - copyartifact:
             project: 'automation-{satellite_version}-destructive-{os}'
-            filter: 'coverage.destructive.tar'
+            filter: 'coverage.destructive.tar,tfm_reports_destructive.tar'
             which-build: last-successful
         - shining-panda:
             build-environment: virtualenv
@@ -544,7 +544,8 @@
                 Please refer the attachment for the consolidated coverage report from,
                 tier1, tier2, tier3, tier4, rhai and destructive jobs.
 
-                The SonarQube Analysis link, ${{SONAR_SERVER_URL}}/dashboard/index/Satellite{satellite_version}_pulp_python_full_analysis
+                The Pulp Python SonarQube Analysis link, ${{SONAR_SERVER_URL}}/dashboard/index/Satellite{satellite_version}_pulp_python_full_analysis
+                The TFM Ruby SonarQube Analysis link, ${{SONAR_SERVER_URL}}/dashboard/index/Satellite{satellite_version}_tfm_ruby_full_analysis
             attachments: coverage/coverage_report.txt
 
 
