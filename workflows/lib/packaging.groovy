@@ -74,7 +74,7 @@ node('sat6-rhel7') {
             gitlabCommitStatus(build_type) {
                 obal {
                     action = build_type
-                    tags = "wait,download"
+                    extraVars = ['build_package_download_logs': 'True']
                     packages = packages_to_build
                 }
             }
