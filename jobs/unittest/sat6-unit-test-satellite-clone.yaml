@@ -1,6 +1,6 @@
 - job:
     name: 'sat6-unit-test-satellite-clone'
-    node: rhsm-qe-2
+    node: sat6-rhel6
     logrotate:
       daysToKeep: 21
       numToKeep: -1
