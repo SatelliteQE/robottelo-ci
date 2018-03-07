@@ -199,6 +199,6 @@ def update_build_description_from_packages(packages_to_build) {
 }
 
 def query_rpmspec(specfile, queryformat) {
-    result = sh(returnStdout: true, script: "rpmspec -q --srpm --undefine=dist --queryformat=${queryformat} ${specfile}").trim()
+    result = sh(returnStdout: true, script: "rpmspec -q --srpm --undefine=dist --undefine=foremandist --queryformat=${queryformat} ${specfile}").trim()
     return result
 }
