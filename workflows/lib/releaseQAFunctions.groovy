@@ -49,7 +49,6 @@ def compareContentViews(body) {
 
         toolBelt(
             command: 'release compare-content-view',
-            config: tool_belt_config,
             options: [
                 "--content-view '${config.content_view}'",
                 "--from-environment '${config.from_lifecycle_environment}'",
