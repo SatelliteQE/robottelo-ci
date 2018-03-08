@@ -1,0 +1,44 @@
+- job:
+    name: satellite6-mass-registration
+    node: sat6-rhel6
+    concurrent: true
+    description: |
+        <p>This can be used to trigger mass registration of content hosts to a Satellite</p>
+    parameters:
+        - string:
+            name: SATELLITE_HOST
+            description: FQDN of the Satellite server.
+        - string:
+            name: CONTAINER_HOST
+            description: FQDN of the Container host (only rhel7 supported).
+        - string:
+            name: CONTENT_HOST_PREFIX
+            description: No special characters allowed.
+        - string:
+            name: ACTIVATION_KEY
+            description: Activation key for a rhel7 content host.
+        - string:
+            name: EXIT_CRITERIA
+            default: registration
+            description: Exit Criteria to terminate the container. Enter `registration` or `katello-agent` or <time in seconds>.
+        - string:
+            name: NUMBER_OF_HOSTS
+            description: Number of content hosts to be created.
+        - bool:
+            name: SETUP_CONTAINER_HOST
+            default: false
+            description: If you already had setup the container host, make sure /content-host-d folder has the flood.py script.
+    scm:
+      - git:
+          url: 'https://github.com/JacobCallahan/content-host-d.git'
+          branches:
+              - origin/master
+          skip-tag: true
+          wipe-workspace: true
+    wrappers:
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+    builders:
+        - shell: 'scripts/satellite6-mass-registration.sh'
