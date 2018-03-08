@@ -20,9 +20,11 @@ function python_code_coverage () {
 function ruby_code_coverage () {
     # Create tar file for each of the Tier Coverage Report files to create a consolidated coverage report.
     ssh -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" "cd /etc/coverage/ruby/tfm/reports/ ; tar -cvf /root/tfm_reports_${ENDPOINT}.tar ./."
+    ssh -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" "cd /etc/coverage/ruby/sys/reports/ ; tar -cvf /root/sys_reports_${ENDPOINT}.tar ./."
 
     # Fetch the tfm_reports.${ENDPOINT}.tar file to the project folder.
     scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:/root/tfm_reports_${ENDPOINT}.tar" .
+    scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:/root/sys_reports_${ENDPOINT}.tar" .
 }
 
 if [[ "${SATELLITE_DISTRIBUTION}" != *"UPSTREAM"* ]] && [[ "${DISTRO}" != "rhel6" ]]; then

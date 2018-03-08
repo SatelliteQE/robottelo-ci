@@ -44,12 +44,17 @@ popd
 
 for i in tier1 tier2 tier3 tier4 rhai destructive; do
     scp -o StrictHostKeyChecking=no tfm_reports.${ENDPOINT}.tar "root@${SERVER_HOSTNAME}:/root/"
+    scp -o StrictHostKeyChecking=no sys_reports.${ENDPOINT}.tar "root@${SERVER_HOSTNAME}:/root/"
 done
 
 for i in tier1 tier2 tier3 tier4 rhai destructive; do
-    ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "mkdir -p /root/coverage_${i} ; tar -xvf /root/tfm_reports_${i}.tar -C /root/coverage_${i}"
+    ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "mkdir -p /root/coverage_tfm_${i} ; tar -xvf /root/tfm_reports_${i}.tar -C /root/coverage_tfm_${i}"
+    ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "mkdir -p /root/coverage_sys_${i} ; tar -xvf /root/sys_reports_${i}.tar -C /root/coverage_sys_${i}"
 done
 
-ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cd /root/ ; ruby merger.rb coverage_tier1 coverage_tier2 coverage_tier3 coverage_tier4 coverage_rhai coverage_destructive"
-
+ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cd /root/ ; ruby merger.rb coverage_tfm_tier1 coverage_tfm_tier2 coverage_tfm_tier3 coverage_tfm_tier4 coverage_tfm_rhai coverage_tfm_destructive"
 ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cp /root/results.json /etc/coverage/ruby/tfm/reports/"
+
+
+ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cd /root/ ; ruby merger.rb coverage_sys_tier1 coverage_sys_tier2 coverage_sys_tier3 coverage_sys_tier4 coverage_sys_rhai coverage_sys_destructive"
+ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cp /root/results.json /etc/coverage/ruby/sys/reports/"
