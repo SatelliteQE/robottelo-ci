@@ -59,3 +59,9 @@
         - string:
             name: IMAGE
             description: 'The custom image name, for the content-host test-cases.'
+        - bool:
+            name: RUBY_CODE_COVERAGE
+            default: false
+            description: |
+                Configure the Base image of Satellite6 with the need Ruby code coverage stuff.
+                Ruby Code coverage is currently set to optional temporarily.
