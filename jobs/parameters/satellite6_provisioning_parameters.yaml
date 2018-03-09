@@ -64,9 +64,3 @@
                 - 'edge'
                 - 'internet explorer'
             description: 'Specify the Sauce Browser to use along with Sauce Platform.'
-        - bool:
-            name: RUBY_CODE_COVERAGE
-            default: false
-            description: |
-                Configure the Base image of Satellite6 with the needed Ruy code coverage stuff.
-                Ruby Code coverage is currently optional temporarily.
