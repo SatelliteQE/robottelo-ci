@@ -72,11 +72,11 @@ node('sat6-rhel7') {
             kerberos_setup()
 
             gitlabCommitStatus(build_type) {
-                obal {
-                    action = build_type
-                    extraVars = ['build_package_download_logs': 'True']
-                    packages = packages_to_build
-                }
+                obal(
+                    action: build_type,
+                    extraVars: ['build_package_download_logs': 'True'],
+                    packages: packages_to_build
+                )
             }
 
             build_status = 'succeeded'

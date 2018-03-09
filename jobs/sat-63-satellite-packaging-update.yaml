@@ -18,7 +18,7 @@
         - workflows/packaging/satellitePackaging.groovy
         - workflows/lib/updatePackaging.groovy
         - workflows/lib/toolbelt.groovy
-        - workflows/lib/obal.groovy
+        - pipelines/lib/obal.groovy
         - workflows/lib/kerberos.groovy
         - workflows/lib/gitlab.groovy
     notifications:

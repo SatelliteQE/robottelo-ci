@@ -81,13 +81,13 @@ node ('sat6-rhel7') {
     stage("Prepare changes") {
 
         dir("tool_belt/repos/${tool_belt_repo_folder}/${packaging_repo}") {
-            obal {
-                action = 'update'
-                packages = package_name
-                extraVars = [
+            obal (
+                action: 'update',
+                packages: package_name,
+                extraVars: [
                     'downstream_version': version,
                     'downstream_changelog': changelog
-                ]
+                )
             }
         }
 
