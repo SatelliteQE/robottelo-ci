@@ -28,5 +28,7 @@ function ruby_code_coverage () {
 if [[ "${SATELLITE_DISTRIBUTION}" != *"UPSTREAM"* ]] && [[ "${DISTRO}" != "rhel6" ]]; then
     python_code_coverage
 
-    ruby_code_coverage
+    if [[ "${RUBY_CODE_COVERAGE}" == "true" ]]; then
+        ruby_code_coverage
+    fi
 fi

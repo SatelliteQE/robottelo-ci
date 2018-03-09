@@ -43,6 +43,12 @@
             name: IMAGE
             description: |
                 Specify custom RHEL source image to be used for automation.
+        - bool:
+            name: RUBY_CODE_COVERAGE
+            default: false
+            description: |
+                Configure the Base image of Satellite6 with the needed Ruby code coverage stuff.
+                Ruby Code coverage is currently optional temporarily.
         - satellite6-provisioning-parameters
         - satellite6-authentication-parameters
     scm:
@@ -97,6 +103,7 @@
                 IMAGE=${{IMAGE}}
                 SAUCE_BROWSER=${{SAUCE_BROWSER}}
                 SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-archiver
