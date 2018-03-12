@@ -2,5 +2,5 @@
     name: satellite6-automation-archiver
     publishers:
         - archive:
-            artifacts: 'robottelo*.log,insights*.log,*-results.xml,foreman-debug.tar.xz,coverage.*.tar,screenshots/*/*.png,robottelo.properties'
+            artifacts: 'robottelo*.log,insights*.log,*-results.xml,foreman-debug.tar.xz,coverage.*.tar,tfm_reports_*.tar,screenshots/*/*.png,robottelo.properties'
             allow-empty: true

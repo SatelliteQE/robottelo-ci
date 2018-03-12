@@ -30,5 +30,7 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"UPSTREAM"* ]] && [[ "${DISTRO}" != "rhel6
 
     if [[ "${RUBY_CODE_COVERAGE}" == "true" ]]; then
         ruby_code_coverage
+    else
+        touch /root/tfm_reports_${ENDPOINT}.tar
     fi
 fi
