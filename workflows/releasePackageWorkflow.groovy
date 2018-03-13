@@ -17,7 +17,7 @@ def branch_map = [
         'repo': 'Satellite 6.4 Source Files',
         'version': '6.4.0',
         'tool_belt_config': './configs/satellite/',
-        'foreman_branch': '1.17-stable',
+        'foreman_branch': '1.18-stable',
         'packaging_job': 'sat-64-satellite-packaging-update'
     ],
     'RHUI-3.0.0': [
