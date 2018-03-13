@@ -21,7 +21,7 @@ node ('sat6-rhel7') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
                 toolBelt(
-                    command: 'bugzilla setup-environment',
+                    command: 'setup-environment',
                     config: tool_belt_config,
                     options: [
                         "--version ${package_version}",
