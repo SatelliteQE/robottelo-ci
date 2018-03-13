@@ -34,7 +34,7 @@ node('rhel') {
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Satellite 6.3 RHEL7'
+          content_view = "Satellite ${satellite_main_version} RHEL7"
           from_lifecycle_environment = 'QA'
           to_lifecycle_environment = version
         }
@@ -48,7 +48,7 @@ node('rhel') {
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Capsule 6.3 RHEL7'
+          content_view = "Capsule ${satellite_main_version} RHEL7"
           from_lifecycle_environment = 'QA'
           to_lifecycle_environment = version
         }
@@ -62,21 +62,21 @@ node('rhel') {
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL7'
+          content_view = "Tools ${satellite_main_version} RHEL7"
           from_lifecycle_environment = 'QA'
           to_lifecycle_environment = version
         }
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL6'
+          content_view = "Tools ${satellite_main_version} RHEL6"
           from_lifecycle_environment = 'QA'
           to_lifecycle_environment = version
         }
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL5'
+          content_view = "Tools ${satellite_main_version} RHEL5"
           from_lifecycle_environment = 'QA'
           to_lifecycle_environment = version
         }
@@ -87,14 +87,14 @@ node('rhel') {
 
       compareContentViews {
         organization = 'Sat6-CI'
-        content_view = 'Satellite 6.3 RHEL7'
+        content_view = "Satellite ${satellite_main_version} RHEL7"
         from_lifecycle_environment = 'Library'
         to_lifecycle_environment = 'QA'
       }
 
       promoteContentView {
         organization = 'Sat6-CI'
-        content_view = 'Satellite 6.3 RHEL7'
+        content_view = "Satellite ${satellite_main_version} RHEL7"
         from_lifecycle_environment = 'Library'
         to_lifecycle_environment = 'QA'
       }
@@ -104,14 +104,14 @@ node('rhel') {
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Capsule 6.3 RHEL7'
+          content_view = "Capsule ${satellite_main_version} RHEL7"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Capsule 6.3 RHEL7'
+          content_view = "Capsule ${satellite_main_version} RHEL7"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
@@ -121,42 +121,42 @@ node('rhel') {
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL7'
+          content_view = "Tools ${satellite_main_version} RHEL7"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL7'
+          content_view = "Tools ${satellite_main_version} RHEL7"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL6'
+          content_view = "Tools ${satellite_main_version} RHEL6"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL6'
+          content_view = "Tools ${satellite_main_version} RHEL6"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL5'
+          content_view = "Tools ${satellite_main_version} RHEL5"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 RHEL5'
+          content_view = "Tools ${satellite_main_version} RHEL5"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
@@ -166,7 +166,7 @@ node('rhel') {
 
 node {
     stage("Run Automation") {
-        build job: 'trigger-satellite-6.3', parameters: [
+        build job: "trigger-satellite-${satellite_main_version}", parameters: [
           [$class: 'StringParameterValue', name: 'SATELLITE_DISTRIBUTION', value: 'INTERNAL'],
           [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${snapVersion}"],
         ]

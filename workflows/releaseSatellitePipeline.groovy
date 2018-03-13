@@ -25,9 +25,9 @@ node('sat6-rhel7') {
             playbook = 'playbooks/build_compose.yml'
             extraVars = [
                 'compose_git_repo': compose_git_repo,
-                'compose_version': 'satellite-6.3',
-                'compose_label': 'Satellite-6.3',
-                'compose_name': 'satellite-6.3'
+                "compose_version": "satellite-${satellite_main_version}",
+                "compose_label": "Satellite-${satellite_main_version}",
+                "compose_name": "satellite-${satellite_main_version}"
             ]
         }
 
@@ -38,9 +38,9 @@ node('sat6-rhel7') {
             playbook = 'playbooks/build_compose.yml'
             extraVars = [
                 'compose_git_repo': compose_git_repo,
-                'compose_version': 'satellite-6.3',
-                'compose_label': 'SatTools-6.3',
-                'compose_name': 'satellite-tools-6.3'
+                "compose_version": "satellite-${satellite_main_version}",
+                "compose_label": "SatTools-${satellite_main_version}",
+                "compose_name": "satellite-tools-${satellite_main_version}"
             ]
         }
     }
@@ -78,7 +78,7 @@ node('sat6-rhel7') {
             name = "sync"
             items = satellite_repositories
             item_name = 'repository'
-            extraVars = ['product': 'Satellite 6.3 Composes']
+            extraVars = ["product": "Satellite ${satellite_main_version} Composes"]
             playbook = 'playbooks/sync_repositories.yml'
         }
     }
@@ -89,7 +89,7 @@ node('sat6-rhel7') {
             name = "sync"
             items = capsule_repositories
             item_name = 'repository'
-            extraVars = ['product': 'Satellite Capsule 6.3 Composes']
+            extraVars = ["product": "Satellite Capsule ${satellite_main_version} Composes"]
             playbook = 'playbooks/sync_repositories.yml'
         }
     }
@@ -100,7 +100,7 @@ node('sat6-rhel7') {
             name = "sync"
             items = tools_repositories
             item_name = 'repository'
-            extraVars = ['product': 'Satellite Tools 6.3 Composes']
+            extraVars = ["product": "Satellite Tools ${satellite_main_version} Composes"]
             playbook = 'playbooks/sync_repositories.yml'
         }
     }
@@ -139,35 +139,35 @@ node('rhel') {
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Satellite 6.3 with RHEL7 Server'
+          content_view = "Satellite ${satellite_main_version} with RHEL7 Server"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Capsule 6.3 with RHEL7 Server'
+          content_view = "Capsule ${satellite_main_version} with RHEL7 Server"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 with RHEL7 Server'
+          content_view = "Tools ${satellite_main_version} with RHEL7 Server"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 with RHEL6 Server'
+          content_view = "Tools ${satellite_main_version} with RHEL6 Server"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Tools 6.3 with RHEL5 Server'
+          content_view = "Tools ${satellite_main_version} with RHEL5 Server"
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }

@@ -3,24 +3,35 @@ def branch_map = [
         'repo': 'Satellite 6.2 Source Files',
         'version': '6.2.0',
         'tool_belt_config': './configs/satellite/',
-        'foreman_branch': '1.11-stable'
+        'foreman_branch': '1.11-stable',
+        'packaging_job': null
     ],
     'SATELLITE-6.3.0': [
         'repo': 'Satellite 6.3 Source Files',
         'version': '6.3.0',
         'tool_belt_config': './configs/satellite/',
-        'foreman_branch': '1.15-stable'
+        'foreman_branch': '1.15-stable',
+        'packaging_job': 'sat-63-satellite-packaging-update'
+    ],
+    'SATELLITE-6.4.0': [
+        'repo': 'Satellite 6.4 Source Files',
+        'version': '6.4.0',
+        'tool_belt_config': './configs/satellite/',
+        'foreman_branch': '1.17-stable',
+        'packaging_job': 'sat-64-satellite-packaging-update'
     ],
     'RHUI-3.0.0': [
         'repo': 'RHUI 3.0 Source Files',
         'version': '3.0.0',
-        'tool_belt_config': './configs/rhui/'
+        'tool_belt_config': './configs/rhui/',
+        'packaging_job': 'rhui-3-rhui-packaging-update'
     ]
 ]
 def release_branch = env.releaseBranch
 def repo_name = gitRepository.split('/')[1]
 def version_map = branch_map[release_branch]
 def tool_belt_config = version_map['tool_belt_config']
+def packaging_job = version_map['packaging_job']
 def releaseTag = ''
 
 node('rvm') {
@@ -260,15 +271,8 @@ node('rvm') {
     }
 
     stage("Trigger packaging update") {
-        if (release_branch == 'SATELLITE-6.3.0') {
-          build job: 'sat-63-satellite-packaging-update', parameters: [
-            [$class: 'StringParameterValue', name: 'project', value: repo_name],
-            [$class: 'StringParameterValue', name: 'version', value: releaseTag],
-            [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch],
-          ]
-        }
-        else if (release_branch == 'RHUI-3.0.0') {
-          build job: 'rhui-3-rhui-packaging-update', parameters: [
+        if (packaging_job) {
+          build job: packaging_job, parameters: [
             [$class: 'StringParameterValue', name: 'project', value: repo_name],
             [$class: 'StringParameterValue', name: 'version', value: releaseTag],
             [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch],

@@ -1,6 +1,6 @@
 - job:
     disabled: false
-    name: sat-63-release-qa
+    name: sat-64-release-qa
     project-type: pipeline
     parameters:
       - string:
@@ -11,7 +11,7 @@
           description: "Previous snap release version"
     dsl:
       !include-raw:
-        - workflows/6.3/releasePipelineAttributes.groovy
+        - workflows/6.4/releasePipelineAttributes.groovy
         - workflows/releaseQAWorkflow.groovy
         - workflows/lib/releaseQAFunctions.groovy
         - workflows/lib/toolbelt.groovy
