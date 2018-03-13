@@ -30,18 +30,31 @@ def tools_repositories = [
     "Satellite Tools 6.4 RHEL5 s390x",
 ]
 
-def content_views = [
-    'Satellite 6.4 RHEL7',
-    'Capsule 6.4 RHEL7',
+def satellite_content_views = [
+    'Satellite 6.4 RHEL7'
+]
+
+def capsule_content_views = [
+    'Capsule 6.4 RHEL7'
+]
+
+def tools_content_views = [
     'Tools 6.4 RHEL7',
     'Tools 6.4 RHEL6',
     'Tools 6.4 RHEL5'
 ]
 
-def composite_content_views = [
-    'Satellite 6.4 with RHEL7 Server',
-    'Capsule 6.4 with RHEL7 Server',
+def content_views = satellite_content_views + capsule_content_views + tools_content_views
+
+def satellite_composite_content_views = [
+    'Satellite 6.4 with RHEL7 Server'
+]
+def capsule_composite_content_views = [
+    'Capsule 6.4 with RHEL7 Server'
+]
+def tools_composite_content_views = [
     'Tools 6.4 with RHEL7 Server',
     'Tools 6.4 with RHEL6 Server',
     'Tools 6.4 with RHEL5 Server'
 ]
+def composite_content_views = satellite_composite_content_views + capsule_composite_content_views + tools_composite_content_views
