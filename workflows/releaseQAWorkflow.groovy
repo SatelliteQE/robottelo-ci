@@ -32,11 +32,13 @@ node('rhel') {
         writeFile file: 'previous_snap', text: previousSnapVersion
         def version = readFile 'previous_snap'
 
-        promoteContentView {
-          organization = 'Sat6-CI'
-          content_view = "Satellite ${satellite_main_version} RHEL7"
-          from_lifecycle_environment = 'QA'
-          to_lifecycle_environment = version
+        satellite_content_views.each { cv ->
+          promoteContentView {
+            organization = 'Sat6-CI'
+            content_view = cv
+            from_lifecycle_environment = 'QA'
+            to_lifecycle_environment = version
+          }
         }
     }
 
@@ -46,11 +48,13 @@ node('rhel') {
         writeFile file: 'previous_snap', text: previousSnapVersion
         def version = readFile 'previous_snap'
 
-        promoteContentView {
-          organization = 'Sat6-CI'
-          content_view = "Capsule ${satellite_main_version} RHEL7"
-          from_lifecycle_environment = 'QA'
-          to_lifecycle_environment = version
+        capsule_content_views.each { cv ->
+          promoteContentView {
+            organization = 'Sat6-CI'
+            content_view = cv
+            from_lifecycle_environment = 'QA'
+            to_lifecycle_environment = version
+          }
         }
     }
 
@@ -60,106 +64,72 @@ node('rhel') {
         writeFile file: 'previous_snap', text: previousSnapVersion
         def version = readFile 'previous_snap'
 
-        promoteContentView {
-          organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} RHEL7"
-          from_lifecycle_environment = 'QA'
-          to_lifecycle_environment = version
-        }
-
-        promoteContentView {
-          organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} RHEL6"
-          from_lifecycle_environment = 'QA'
-          to_lifecycle_environment = version
-        }
-
-        promoteContentView {
-          organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} RHEL5"
-          from_lifecycle_environment = 'QA'
-          to_lifecycle_environment = version
+        tools_content_views.each { cv ->
+          promoteContentView {
+            organization = 'Sat6-CI'
+            content_view = cv
+            from_lifecycle_environment = 'QA'
+            to_lifecycle_environment = version
+          }
         }
 
     }
 
     stage("Promote Satellite to QA") {
 
-      compareContentViews {
-        organization = 'Sat6-CI'
-        content_view = "Satellite ${satellite_main_version} RHEL7"
-        from_lifecycle_environment = 'Library'
-        to_lifecycle_environment = 'QA'
-      }
+      satellite_content_views.each { cv ->
+        compareContentViews {
+          organization = 'Sat6-CI'
+          content_view = cv
+          from_lifecycle_environment = 'Library'
+          to_lifecycle_environment = 'QA'
+        }
 
-      promoteContentView {
-        organization = 'Sat6-CI'
-        content_view = "Satellite ${satellite_main_version} RHEL7"
-        from_lifecycle_environment = 'Library'
-        to_lifecycle_environment = 'QA'
+        promoteContentView {
+          organization = 'Sat6-CI'
+          content_view = cv
+          from_lifecycle_environment = 'Library'
+          to_lifecycle_environment = 'QA'
+        }
       }
     }
 
     stage("Promote Capsule to QA") {
 
+      capsule_content_views.each { cv ->
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = "Capsule ${satellite_main_version} RHEL7"
+          content_view = cv
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = "Capsule ${satellite_main_version} RHEL7"
+          content_view = cv
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
+      }
     }
 
     stage("Promote Tools to QA") {
 
+      tools_content_views.each { cv ->
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} RHEL7"
+          content_view = cv
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} RHEL7"
+          content_view = cv
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
-
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} RHEL6"
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
-
-        promoteContentView {
-          organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} RHEL6"
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
-
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} RHEL5"
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
-
-        promoteContentView {
-          organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} RHEL5"
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+      }
 
     }
 }
