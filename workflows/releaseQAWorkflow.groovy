@@ -32,7 +32,7 @@ node('rhel') {
         writeFile file: 'previous_snap', text: previousSnapVersion
         def version = readFile 'previous_snap'
 
-        satellite_content_views.each { cv ->
+        satellite_composite_content_views.each { cv ->
           promoteContentView {
             organization = 'Sat6-CI'
             content_view = cv
@@ -48,7 +48,7 @@ node('rhel') {
         writeFile file: 'previous_snap', text: previousSnapVersion
         def version = readFile 'previous_snap'
 
-        capsule_content_views.each { cv ->
+        capsule_composite_content_views.each { cv ->
           promoteContentView {
             organization = 'Sat6-CI'
             content_view = cv
@@ -64,7 +64,7 @@ node('rhel') {
         writeFile file: 'previous_snap', text: previousSnapVersion
         def version = readFile 'previous_snap'
 
-        tools_content_views.each { cv ->
+        tools_composite_content_views.each { cv ->
           promoteContentView {
             organization = 'Sat6-CI'
             content_view = cv
@@ -77,7 +77,7 @@ node('rhel') {
 
     stage("Promote Satellite to QA") {
 
-      satellite_content_views.each { cv ->
+      satellite_composite_content_views.each { cv ->
         compareContentViews {
           organization = 'Sat6-CI'
           content_view = cv
@@ -96,7 +96,7 @@ node('rhel') {
 
     stage("Promote Capsule to QA") {
 
-      capsule_content_views.each { cv ->
+      capsule_composite_content_views.each { cv ->
         compareContentViews {
           organization = 'Sat6-CI'
           content_view = cv
@@ -115,7 +115,7 @@ node('rhel') {
 
     stage("Promote Tools to QA") {
 
-      tools_content_views.each { cv ->
+      tools_composite_content_views.each { cv ->
         compareContentViews {
           organization = 'Sat6-CI'
           content_view = cv
