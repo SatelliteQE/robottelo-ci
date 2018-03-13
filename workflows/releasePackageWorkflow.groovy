@@ -147,10 +147,10 @@ node('rvm') {
                             "--dir ../${repo_name}",
                             "--output-file version"
                         ]
-                    }
+                    )
                     archive "version"
                     releaseTag = readFile 'version'
-                )
+                }
 
                 sh "git push origin ${release_branch}"
                 sh "git push origin ${releaseTag}"
