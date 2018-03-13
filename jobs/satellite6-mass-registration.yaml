@@ -41,4 +41,4 @@
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
                   variable: CONFIG_FILES
     builders:
-        - shell: 'scripts/satellite6-mass-registration.sh'
+        - shell: !include-raw: scripts/satellite6-mass-registration.sh
