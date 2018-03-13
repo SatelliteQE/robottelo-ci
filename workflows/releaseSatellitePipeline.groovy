@@ -137,40 +137,15 @@ node('rhel') {
 
     stage("Compare Packages") {
 
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = "Satellite ${satellite_main_version} with RHEL7 Server"
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
+        composite_content_views.each { cv ->
+          compareContentViews {
+            organization = 'Sat6-CI'
+            content_view = cv
+            from_lifecycle_environment = 'Library'
+            to_lifecycle_environment = 'QA'
+          }
         }
 
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = "Capsule ${satellite_main_version} with RHEL7 Server"
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
-
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} with RHEL7 Server"
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
-
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} with RHEL6 Server"
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
-
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = "Tools ${satellite_main_version} with RHEL5 Server"
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
     }
 
     stage("Move to ON_DEV") {
