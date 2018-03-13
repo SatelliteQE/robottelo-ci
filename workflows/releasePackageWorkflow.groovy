@@ -55,14 +55,14 @@ node('rvm') {
     stage("Identify Bugs") {
 
         dir('tool_belt') {
-            toolBelt {
-                command = 'release find-bz-ids'
-                config = tool_belt_config
-                options = [
+            toolBelt(
+                command: 'release find-bz-ids',
+                config: tool_belt_config,
+                options: [
                     "--dir ../${repo_name}",
                     "--output-file bz_ids.json"
                 ]
-            }
+            )
             archive 'bz_ids.json'
         }
     }
@@ -83,16 +83,16 @@ node('rvm') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    toolBelt {
-                        command = 'bugzilla set-cherry-picked'
-                        config = tool_belt_config
+                    toolBelt(
+                        command: 'bugzilla set-cherry-picked',
+                        config: tool_belt_config,
                         options = [
                             "--bz-username ${env.BZ_USERNAME}",
                             "--bz-password ${env.BZ_PASSWORD}",
                             "--bug ${ids}",
                             "--version ${version_map['version']}"
                         ]
-                    }
+                    )
 
                 }
 
@@ -112,17 +112,17 @@ node('rvm') {
 
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    toolBelt {
-                        command = 'bugzilla set-gitlab-tracker'
-                        config = tool_belt_config
-                        options = [
+                    toolBelt(
+                        command: 'bugzilla set-gitlab-tracker',
+                        config: tool_belt_config,
+                        options: [
                             "--bz-username ${env.BZ_USERNAME}",
                             "--bz-password ${env.BZ_PASSWORD}",
                             "--external-tracker \"${hash}\"",
                             "--bug ${id}",
                             "--version ${version_map['version']}"
                         ]
-                    }
+                    )
 
                 }
             }
@@ -140,17 +140,17 @@ node('rvm') {
                 sh "git config user.name 'Jenkins'"
 
                 dir('../tool_belt') {
-                    toolBelt {
-                        command = 'release bump-version'
-                        config = tool_belt_config
-                        options = [
+                    toolBelt(
+                        command: 'release bump-version',
+                        config: tool_belt_config,
+                        options: [
                             "--dir ../${repo_name}",
                             "--output-file version"
                         ]
                     }
                     archive "version"
                     releaseTag = readFile 'version'
-                }
+                )
 
                 sh "git push origin ${release_branch}"
                 sh "git push origin ${releaseTag}"
