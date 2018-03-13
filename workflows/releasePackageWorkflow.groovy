@@ -86,7 +86,7 @@ node('rvm') {
                     toolBelt(
                         command: 'bugzilla set-cherry-picked',
                         config: tool_belt_config,
-                        options = [
+                        options: [
                             "--bz-username ${env.BZ_USERNAME}",
                             "--bz-password ${env.BZ_PASSWORD}",
                             "--bug ${ids}",
