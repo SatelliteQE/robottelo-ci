@@ -110,7 +110,6 @@ node ('sat6-rhel7') {
                     command: 'git merge-request',
                     config: tool_belt_config,
                     options: [
-                        "--project ${project}",
                         "--gitlab-username jenkins",
                         "--gitlab-token ${env.GITLAB_TOKEN}",
                         "--repo '${packaging_repo_project}/${packaging_repo}'",
