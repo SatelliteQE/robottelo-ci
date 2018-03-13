@@ -68,7 +68,7 @@ node('rvm') {
     }
 
 
-    stage("Move Bugs to Modified") {
+    stage("Set Cherry Picked") {
 
         dir('tool_belt') {
             def ids = []
