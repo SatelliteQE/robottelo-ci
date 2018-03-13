@@ -4,6 +4,13 @@
     concurrent: true
     description: |
         <p>This can be used to trigger mass registration of content hosts to a Satellite</p>
+        <p>Please make sure to add the following <strong>ssh key</strong> to the Container host so jenkins can access it.</p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+        <p> <strong>Note:</strong> At the end of the job:</p>
+        <p>   - the flood.py logs will be stored in CONTAINER_HOST:/root/flood.log</p>
+        <p>   - /etc/rhsm/rhsm.log for individual containers will be stored in CONTAINER_HOST:/content-host-d/</p>
     parameters:
         - string:
             name: SATELLITE_HOST
