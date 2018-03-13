@@ -4,6 +4,7 @@ def tools_compose_versions = ['7', '6', '5']
 def os_versions = ['7']
 
 def satellite_short_version = 63
+def satellite_main_version = '6.3'
 def satellite_version = '6.3.0'
 
 def satellite_repositories = [
