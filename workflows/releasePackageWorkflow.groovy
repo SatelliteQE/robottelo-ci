@@ -241,7 +241,7 @@ node('rvm') {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
                     toolBelt(
-                        command: 'release set-build-state',
+                        command: 'bugzilla set-build-state',
                         config: tool_belt_config,
                         options: [
                             "--bz-username ${env.BZ_USERNAME}",
