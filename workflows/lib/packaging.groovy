@@ -125,7 +125,7 @@ def mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
                     toolBelt(
-                        command: 'release set-fixed-in',
+                        command: 'bugzilla set-fixed-in',
                         config: tool_belt_config,
                         options: [
                             "--bz-username ${env.BZ_USERNAME}",
@@ -137,7 +137,7 @@ def mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_
                     )
 
                     toolBelt(
-                        command: 'release set-build-state',
+                        command: 'bugzilla set-build-state',
                         config: tool_belt_config,
                         options: [
                             "--bz-username ${env.BZ_USERNAME}",
