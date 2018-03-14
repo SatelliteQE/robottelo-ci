@@ -93,7 +93,7 @@ node('sat6-rhel7') {
             update_build_description_from_packages(packages_to_build)
 
             if (build_type == 'release') {
-                mark_bugs_built(build_status, packages_to_build, package_version)
+                mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_config)
                 brew_status_comment(build_status)
             }
 
@@ -105,7 +105,7 @@ node('sat6-rhel7') {
     }
 }
 
-def mark_bugs_built(build_status, packages_to_build, package_version) {
+def mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_config) {
     def packages = packages_to_build.split(' ')
     def comment = get_brew_comment(build_status)
 
