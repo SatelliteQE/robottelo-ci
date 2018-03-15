@@ -86,19 +86,21 @@ node('sat6-rhel7') {
 
             build_status = 'succeeded'
 
-        } finally {
+            if (build_type == 'release') {
+                mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_config)
+            }
 
-            kerberos_cleanup()
+        } finally {
 
             update_build_description_from_packages(packages_to_build)
 
+            kerberos_cleanup()
+
             if (build_type == 'release') {
-                mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_config)
                 brew_status_comment(build_status)
             }
 
             archive "kojilogs/**"
-
             deleteDir()
 
         }
