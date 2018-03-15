@@ -142,7 +142,7 @@ def mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_
                         options: [
                             "--bz-username ${env.BZ_USERNAME}",
                             "--bz-password ${env.BZ_PASSWORD}",
-                            "--state rpm_build",
+                            "--state rpm_built",
                             "--bug ${ids}",
                             "--version ${package_version}"
                         ]
