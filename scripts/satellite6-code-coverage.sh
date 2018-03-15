@@ -25,7 +25,7 @@ function ruby_code_coverage () {
     scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:/root/tfm_reports_${ENDPOINT}.tar" .
 }
 
-if [[ "${SATELLITE_DISTRIBUTION}" != *"UPSTREAM"* ]] && [[ "${DISTRO}" != "rhel6" ]]; then
+if [[ ${SATELLITE_DISTRIBUTION} =~ UPSTREAM|KOJI ]] && [[ "${DISTRO}" != "rhel6" ]]; then
     python_code_coverage
 
     if [[ "${RUBY_CODE_COVERAGE}" == "true" ]]; then

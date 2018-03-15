@@ -1193,9 +1193,12 @@
             name: ROBOTTELO_WORKERS
             default: '8'
             description: Number of workers to use while running robottelo test suite
-        - string:
+        - choice:
             name: SATELLITE_DISTRIBUTION
-            default: 'UPSTREAM'
+            choices:
+                 - 'UPSTREAM'
+                 - 'KOJI'
+            description: UPSTREAM gives you nightly from regular repos, while KOJI gives you staging nightly (from koji repos).
         - string:
             name: IDM_REALM
             default: false

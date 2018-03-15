@@ -1,4 +1,4 @@
-if [[ "${SATELLITE_DISTRIBUTION}" != *"UPSTREAM"* ]]; then
+if ! [[ ${SATELLITE_DISTRIBUTION} =~ UPSTREAM|KOJI ]]; then
     echo "Shutting down the Base instance of ${SERVER_HOSTNAME} gracefully"
     # Shutdown the Satellite6 services before shutdown.
     ssh -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" katello-service stop
