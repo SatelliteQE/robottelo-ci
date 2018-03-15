@@ -37,14 +37,16 @@ elif [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
     export DISTRIBUTION="satellite6-cdn"
 elif [ "${SATELLITE_DISTRIBUTION}" = "BETA" ]; then
     export DISTRIBUTION="satellite6-beta"
-elif [ "${SATELLITE_DISTRIBUTION}" = "UPSTREAM" ]; then
-    export DISTRIBUTION="satellite6-upstream"
 elif [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL REPOFILE" ]; then
     export DISTRIBUTION="satellite6-repofile"
 elif [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL AK" ]; then
     export DISTRIBUTION="satellite6-activationkey"
 elif [ "${SATELLITE_DISTRIBUTION}" = "ISO" ]; then
     export DISTRIBUTION="satellite6-iso"
+elif [ "${SATELLITE_DISTRIBUTION}" = "UPSTREAM" ]; then
+    export DISTRIBUTION="satellite6-upstream"
+elif [ "${SATELLITE_DISTRIBUTION}" = "KOJI" ]; then
+    export DISTRIBUTION="satellite6-koji"
 fi
 
 # ISOs require a specific URL

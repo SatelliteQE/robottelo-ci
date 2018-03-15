@@ -22,8 +22,9 @@
                 - INTERNAL REPOFILE
                 - GA 
                 - BETA
-                - UPSTREAM
                 - ISO
+                - UPSTREAM
+                - KOJI
             description: |
                 <p>Choose the distribution type:</p>
                 <ul>
@@ -32,7 +33,8 @@
                   <li><strong>INTERNALREPOFILE</strong>: Install Satellite6.3 via REPOFILE from latest stable internal compose</li>
                   <li><strong>GA</strong>: Install from CDN</li>
                   <li><strong>BETA</strong>: Install from CDN, using the beta repository</li>
-                  <li><strong>UPSTREAM</strong>: Install from latest community nightly build</li>
+                  <li><strong>UPSTREAM</strong>: Install upstream from regular nightly repos</li>
+                  <li><strong>KOJI</strong>: Install staging nightly from koji repos</li>
                 </ul>
         - choice:
             name: SATELLITE_VERSION
