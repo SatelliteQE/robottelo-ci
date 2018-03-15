@@ -72,16 +72,19 @@ node('sat6-rhel7') {
     }
 
     stage("Build packages") {
+        def krbcc
         try {
 
-            kerberos_setup()
+            krbcc = kerberos_setup()
 
             gitlabCommitStatus(build_type) {
-                obal(
-                    action: build_type,
-                    extraVars: ['build_package_download_logs': 'True'],
-                    packages: packages_to_build
-                )
+                withEnv(["KRB5CCNAME=${krbcc}"]) {
+                    obal(
+                        action: build_type,
+                        extraVars: ['build_package_download_logs': 'True'],
+                        packages: packages_to_build
+                    )
+                }
             }
 
             build_status = 'succeeded'
@@ -94,7 +97,7 @@ node('sat6-rhel7') {
 
             update_build_description_from_packages(packages_to_build)
 
-            kerberos_cleanup()
+            kerberos_cleanup(krbcc)
 
             if (build_type == 'release') {
                 brew_status_comment(build_status)
