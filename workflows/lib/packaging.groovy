@@ -46,7 +46,7 @@ node('sat6-rhel7') {
                 new_release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}').toFloat()
 
                 sh "git checkout origin/${env.gitlabTargetBranch}"
-                if (fileExists("packages/${package_name}/*.spec")) {
+                if (fileExists("packages/${package_name}")) {
                     old_version = query_rpmspec("packages/${package_name}/*.spec", '%{VERSION}')
                     old_release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}').toFloat()
                 }
