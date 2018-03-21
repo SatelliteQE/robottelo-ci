@@ -15,11 +15,11 @@ node('sat6-rhel7') {
             merge_info = sh(returnStdout: true, script: "git rev-list --parents -n 1 ${merge_commit}").split()
             // check if we got two parents, otherwise it's not a merge
             if (merge_info.length == 3) {
-                changed_packages = sh(returnStdout: true, script: "git diff ${merge_info[1]}...${merge_info[2]} --name-only 'packages/*.spec' | cut -d'/' -f2 |sort -u").trim()
+                changed_packages = find_changed_packages("${merge_info[1]}...${merge_info[2]}")
                 packages_to_build = changed_packages.split().join(' ')
             }
         } else if (build_type == 'scratch') {
-            changed_packages = sh(returnStdout: true, script: "git diff ..origin/${env.gitlabTargetBranch} --name-only 'packages/*.spec' | cut -d'/' -f2 |sort -u").trim()
+            changed_packages = find_changed_package("..origin/${env.gitlabTargetBranch}")
             packages_to_build = changed_packages.split().join(' ')
         }
         if (!packages_to_build) {
@@ -172,6 +172,10 @@ def mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_
     dir('tool_belt') {
         deleteDir()
     }
+}
+
+def find_changed_packages(diff_range) {
+    return sh(returnStdout: true, script: "git diff ${diff_range} --name-only --diff-filter=d -- 'packages/**.spec' | cut -d'/' -f2 |sort -u").trim()
 }
 
 def get_brew_comment(build_status) {
