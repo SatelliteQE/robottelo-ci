@@ -30,8 +30,10 @@ if [ "${DISTRIBUTION}" = 'DOWNSTREAM' ]; then
     export TOOLS_URL_RHEL7="${TOOLS_RHEL7}"
 fi
 
-# Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
-fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
+if [ "${PERFORM_FOREMAN_MAINTAIN_UPGRADE}" != "true" ]; then
+    # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
+    fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
+fi
 
 set +e
 # Run pre-upgarde scenarios tests
@@ -65,8 +67,15 @@ if [ -n "${CUSTOM_SCRIPT_URL}" ]; then
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SAT_HOST}" /root/${custom_file}
 fi
 
-# Run upgrade for CDN/Downstream
-fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
+# Run satellite upgrade only when PERFORM_FOREMAN_MAINTAIN_UPGRADE flag is set
+if [ "${PERFORM_FOREMAN_MAINTAIN_UPGRADE}" == "true" ]; then
+    # setup foreman-maintain
+    fab -H root@"${SATELLITE_HOSTNAME}" setup_foreman_maintain
+    # perform upgrade using foreman-maintain
+    fab -H root@"${SATELLITE_HOSTNAME}" upgrade_using_foreman_maintain
+else
+    fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
+fi
 
 # Creates the post-upgrade data-store required for existence tests
 if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
