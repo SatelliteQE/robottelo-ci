@@ -20,8 +20,18 @@ if [ "${DISTRIBUTION}" = 'DOWNSTREAM' ]; then
     export BASE_URL="${SATELLITE6_REPO}"
 fi
 
+if [[ -z "${SATELLITE_HOSTNAME}" && "${OPENSTACK_DEPLOY}" = 'true' ]]; then
+    source config/preupgrade_entities.conf
+    fab -u root delete_openstack_instance:"${CUSTOMERDB_NAME}_customerdb_instance"
+    fab -u root create_openstack_instance:"${CUSTOMERDB_NAME}_customerdb_instance","${RHEL7_IMAGE}",500
+fi
+
+if [ "${PARTITION_DISK}" = "true" ]; then
+    fab -D -H root@"${SATELLITE_HOSTNAME}" partition_disk
+fi
+
 # Customer DB Setup
-if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
+if [[ "${CUSTOMERDB_NAME}" != 'NoDB' && "${OPENSTACK_DEPLOY}" != 'true' ]]; then
     source config/preupgrade_entities.conf
     if [ -n "${SATELLITE_HOSTNAME}" ]; then
         INSTANCE_NAME="${SATELLITE_HOSTNAME}"
@@ -40,10 +50,18 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     pushd satellite-clone
     # Copy the satellite-clone-vars.sample.yml to satellite-clone-vars.yml
     cp -a satellite-clone-vars.sample.yml satellite-clone-vars.yml
+    # Define  Backup directory for customer DB
+    BACKUP_DIR="\/var\/tmp\/backup"
+    if [[ -z "${SATELLITE_HOSTNAME}" && "${OPENSTACK_DEPLOY}" = 'true' ]]; then
+        source instance.info
+        INSTANCE_NAME="${OSP_HOSTNAME}"
+        BACKUP_DIR="\/root\/customer-dbs\/${CUSTOMERDB_NAME}"
+        # Install Nfs-client
+        # Mount the Customer DB to Created Instance via NFS Share
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "curl -o /etc/yum.repos.d/rhel.repo "${RHEL_REPO}"; yum install -y nfs-utils; mkdir -p /root/customer-dbs; mount -o v3 "${DBSERVER}":/root/customer-dbs /root/customer-dbs"
+    fi
     # Configuration Updates in inventory file
     sed -i -e 2s/.*/"${INSTANCE_NAME}"/ inventory
-    # Define  Backup directory for customer DB 
-    BACKUP_DIR="\/var\/tmp\/backup"
     # Prepare Customer DB URL
     if [ "${CUSTOMERDB_NAME}" = 'CentralCI' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/Central-CI/6.2-OCT-13-2017/"
@@ -84,7 +102,9 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     sed -i -e '/subscribe machine.*/a\ \ command: subscription-manager subscribe --pool={{ rhn_pool }}' roles/satellite-clone/tasks/main.yml
     # Download the Customer DB data Backup files
     echo "Downloading Customer Data DB's from Server, This may take while depending on the network ....."
-    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar*' "${DB_URL}"" 
+    if [ "${OPENSTACK_DEPLOY}" != 'true' ]; then
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar*' "${DB_URL}""
+    fi
     # Run Ansible command to install satellite with cust DB
     export ANSIBLE_HOST_KEY_CHECKING=False
     ansible all -i inventory -m ping -u root
