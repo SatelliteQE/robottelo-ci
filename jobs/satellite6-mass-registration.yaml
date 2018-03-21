@@ -27,6 +27,9 @@
             name: ACTIVATION_KEY
             description: Activation key for a rhel7 content host.
         - string:
+            name: ORGANIZATION
+            description: Organization for a rhel7 content host. Defaults to `Default_Organization`.
+        - string:
             name: EXIT_CRITERIA
             default: registration
             description: Exit Criteria to terminate the container. Enter `registration` or `katello-agent` or <time in seconds>.
