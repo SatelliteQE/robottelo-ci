@@ -76,6 +76,11 @@
             default: false
             description: |
                  <p>Run tests to verify certain upgarde specific scenarios.</p>
+        - bool:
+            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            default: false
+            description: |
+                <p>Check if you want to perform upgrade using Foreman-Maintain Tool.</p>
         - string:
             name: SATELLITE_HOSTNAME
             description: |
