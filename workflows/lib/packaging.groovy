@@ -175,7 +175,7 @@ def mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_
 }
 
 def find_changed_packages(diff_range) {
-    return sh(returnStdout: true, script: "git diff ${diff_range} --name-only --diff-filter=d -- 'packages/**.spec' | cut -d'/' -f2 |sort -u").trim()
+    return sh(returnStdout: true, script: "git diff ${diff_range} --name-only --diff-filter=D -- 'packages/**.spec' | cut -d'/' -f2 |sort -u").trim()
 }
 
 def get_brew_comment(build_status) {
