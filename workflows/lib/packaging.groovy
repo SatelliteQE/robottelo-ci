@@ -19,7 +19,7 @@ node('sat6-rhel7') {
                 packages_to_build = changed_packages.split().join(' ')
             }
         } else if (build_type == 'scratch') {
-            changed_packages = find_changed_packages("..origin/${env.gitlabTargetBranch}")
+            changed_packages = find_changed_packages("origin/${env.gitlabTargetBranch}")
             packages_to_build = changed_packages.split().join(' ')
         }
         if (!packages_to_build) {
