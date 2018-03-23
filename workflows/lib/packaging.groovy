@@ -1,5 +1,8 @@
 def packages_to_build = null
 def build_status = 'failed'
+def VERCMP_NEWER = 12
+def VERCMP_OLDER = 11
+def VERCMP_EQUAL = 0
 
 node('sat6-rhel7') {
     stage("Fetch git") {
@@ -41,28 +44,37 @@ node('sat6-rhel7') {
 
                 new_version = query_rpmspec("packages/${package_name}/*.spec", '%{VERSION}')
                 new_release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}')
-                try {
-                    new_release = new_release.toFloat()
-                } finally {}
 
                 sh "git checkout origin/${env.gitlabTargetBranch}"
                 if (fileExists("packages/${package_name}")) {
                     old_version = query_rpmspec("packages/${package_name}/*.spec", '%{VERSION}')
                     old_release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}')
-                    try {
-                        old_release = old_release.toFloat()
-                    } finally {}
 
                     sh "git checkout -"
 
-                    if (new_version != old_version && new_release == 1) {
+                    compare_version = sh(
+                      script: "rpmdev-vercmp ${old_version} ${new_version}"
+                      returnStatus: true
+                    )
+
+                    compare_release = sh(
+                      script: "rpmdev-vercmp ${old_release} ${new_release}"
+                      returnStatus: true
+                    )
+
+                    compare_new_to_one = sh(
+                      script: "rpmdev-vercmp 1 ${new_release}"
+                      returnStatus: true
+                    )
+
+                    if (compare_version != VERCMP_EQUAL && (compare_new_to_one == VERCMP_OLDER || compare_new_to_one == VERCMP_EQUAL)) {
                         // new version, release back to 1
                         version_status = 'success'
                         release_status = 'success'
-                    } else if (new_version != old_version && new_release != 1) {
+                    } else if (compare_version != VERCMP_EQUAL && compare_new_to_one == VERCMP_NEWER) {
                         // new version, but release was not reset
                         version_status = 'success'
-                    } else if (new_version == old_version && new_release > old_release) {
+                    } else if (compare_version == VERCMP_EQUAL && compare_release == VERCMP_NEWER) {
                         // old version, release was bumped
                         version_status = 'success'
                         release_status = 'success'
