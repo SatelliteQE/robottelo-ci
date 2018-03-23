@@ -37,6 +37,24 @@
             name: SETUP_CONTAINER_HOST
             default: false
             description: If you already had setup the container host, make sure /content-host-d folder has the flood.py script.
+        - string:
+            name: CUSTOM_CONTAINER_STARTUP_FILE
+            default: none
+            description: Should point to the URL of the custom container startup file eg., http://example.com/startup.sh
+        - choice:
+            name: CONTAINER_OS
+            choices:
+              - RHEL7
+              - RHEL72
+              - RHEL7-Guest
+              - RHEL6
+              - CentOS5
+              - CentOS6
+              - CentOS7
+              - OpenSuse
+              - SLES11
+              - SLES12
+            description: OS of the container for the content hosts creation.
     scm:
       - git:
           url: 'https://github.com/JacobCallahan/content-host-d.git'
