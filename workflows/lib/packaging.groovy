@@ -53,17 +53,17 @@ node('sat6-rhel7') {
                     sh "git checkout -"
 
                     compare_version = sh(
-                      script: "rpmdev-vercmp ${old_version} ${new_version}"
+                      script: "rpmdev-vercmp ${old_version} ${new_version}",
                       returnStatus: true
                     )
 
                     compare_release = sh(
-                      script: "rpmdev-vercmp ${old_release} ${new_release}"
+                      script: "rpmdev-vercmp ${old_release} ${new_release}",
                       returnStatus: true
                     )
 
                     compare_new_to_one = sh(
-                      script: "rpmdev-vercmp 1 ${new_release}"
+                      script: "rpmdev-vercmp 1 ${new_release}",
                       returnStatus: true
                     )
 
