@@ -42,10 +42,6 @@ pipeline {
       timestamps()
     }
 
-    environment {
-      releaseTag = readFile 'version'
-    }
-
     stages {
         stage("Setup Environment") {
             steps {
@@ -111,7 +107,7 @@ pipeline {
                                 toolBelt(
                                     command: 'bugzilla set-cherry-picked',
                                     config: tool_belt_config,
-                                    options = [
+                                    options: [
                                         "--bz-username ${env.BZ_USERNAME}",
                                         "--bz-password ${env.BZ_PASSWORD}",
                                         "--bug ${ids}",
@@ -177,6 +173,10 @@ pipeline {
                                 ]
                             )
                             archive "version"
+                        }
+
+                        script {
+                            releaseTag = readFile '../tool_belt/version'
                         }
 
                         sh "git push origin ${release_branch}"
