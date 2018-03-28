@@ -92,6 +92,30 @@ node('sat6-rhel7') {
         }
     }
 
+    stage("Check brew builds") {
+        if (build_type == 'scratch') {
+            def packages = packages_to_build.split(' ')
+
+            for (int i = 0; i < packages.size(); i++) {
+                package_name = packages[i]
+
+                version = query_rpmspec("packages/${package_name}/*.spec", '%{VERSION}')
+                release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}')
+
+                brew_buildinfo = sh(
+                  script: "brew buildinfo ${package_name}-${version}-${release}.el7sat",
+                  returnStatus: true
+                ).trim()
+
+                if(brew_buildinfo.contains('No such build')) {
+                  updateGitlabCommitStatus name: "${package_name}_brew_build", state: "success"
+                } else {
+                  updateGitlabCommitStatus name: "${package_name}_brew_build", state: "failed"
+                }
+            }
+        }
+    }
+
     stage("Build packages") {
         def krbcc
         try {
