@@ -1,0 +1,15 @@
+- builder:
+    name: satellite6-provisioning-builders
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: "{cpython_version}"
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-provisioning.sh'
+                    - 'satellite6-foreman-debug.sh'
+                    - 'satellite6-graceful-shutdown.sh'
+

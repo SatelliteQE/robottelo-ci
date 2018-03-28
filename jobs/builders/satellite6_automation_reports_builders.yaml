@@ -1,0 +1,10 @@
+- builder:
+    name: satellite6-automation-reports-builders
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: "{cpython_version}"
+            clear: true
+            nature: shell
+            command:
+              !include-raw-escape: 'satellite6-automation-report.sh'

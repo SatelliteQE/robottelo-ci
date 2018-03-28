@@ -56,6 +56,11 @@
                 - 'edge'
                 - 'internet explorer'
             description: 'Specify the Sauce Browser to use along with Sauce Platform.'
+        - choice:
+            name: CPYTHON_VERSION
+            choices:
+                - '2.7'
+                - '3.6'
         - string:
             name: IMAGE
             description: 'The custom image name, for the content-host test-cases.'

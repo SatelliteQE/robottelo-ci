@@ -43,6 +43,11 @@
             name: IMAGE
             description: |
                 Specify custom RHEL source image to be used for automation.
+        - choice:
+            name: CPYTHON_VERSION
+            choices:
+                - '2.7'
+                - '3.6'
         - bool:
             name: RUBY_CODE_COVERAGE
             default: false
@@ -70,17 +75,20 @@
         - build-name:
             name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
     builders:
-        - shining-panda:
-            build-environment: virtualenv
-            python-version: System-CPython-3.6
-            clear: true
-            nature: shell
-            command:
-                !include-raw-escape:
-                    - 'pip-install-pycurl.sh'
-                    - 'satellite6-provisioning.sh'
-                    - 'satellite6-foreman-debug.sh'
-                    - 'satellite6-graceful-shutdown.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (2\.7)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-provisioning-builders:
+                    cpython_version: "System-CPython-2.7"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (3\.6)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-provisioning-builders:
+                    cpython_version: "System-CPython-3.6"
         - inject:
             properties-file: build_env.properties
         - trigger-builds:
@@ -104,6 +112,7 @@
                 SAUCE_BROWSER=${{SAUCE_BROWSER}}
                 SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
                 RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
+                CPYTHON_VERSION=${{CPYTHON_VERSION}}
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-archiver
@@ -138,7 +147,20 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
-        - satellite6-automation-builders
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (2\.7)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-2.7"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (3\.6)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-3.6"
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
@@ -196,7 +218,20 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
-        - satellite6-automation-builders
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (2\.7)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-2.7"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (3\.6)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-3.6"
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
@@ -239,7 +274,20 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
-        - satellite6-automation-builders
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (2\.7)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-2.7"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (3\.6)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-3.6"
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
@@ -282,7 +330,20 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
-        - satellite6-automation-builders
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (2\.7)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-2.7"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (3\.6)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-3.6"
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - conditional-step:
@@ -341,10 +402,23 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (2\.7)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-2.7"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (3\.6)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-3.6"
         - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
         - inject:
             properties-file: build_env.txt
-        - satellite6-automation-builders
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
@@ -401,7 +475,20 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
-        - satellite6-automation-builders
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (2\.7)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-2.7"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (3\.6)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-builders:
+                    cpython_version: "System-CPython-3.6"
         - conditional-step:
             condition-kind: and
             condition-operands:
@@ -433,6 +520,11 @@
               'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
               Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
               Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
+      - choice:
+          name: CPYTHON_VERSION
+          choices:
+            - '2.7'
+            - '3.6'
     scm:
         - git:
             url: https://github.com/SatelliteQE/robottelo-ci.git
@@ -460,13 +552,20 @@
             project: 'automation-{satellite_version}-tier4-{os}'
             filter: '*-results.xml'
             which-build: last-successful
-        - shining-panda:
-            build-environment: virtualenv
-            python-version: System-CPython-3.6
-            clear: true
-            nature: shell
-            command:
-                !include-raw-escape: 'satellite6-automation-report.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (2\.7)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-reports-builders:
+                    cpython_version: "System-CPython-2.7"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (3\.6)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-automation-reports-builders:
+                    cpython_version: "System-CPython-3.6"
     publishers:
         - email-ext:
             recipients: ${{QE_EMAIL_LIST}}
@@ -524,19 +623,21 @@
             project: 'automation-{satellite_version}-destructive-{os}'
             filter: 'coverage.destructive.tar,tfm_reports_destructive.tar'
             which-build: last-successful
-        - shining-panda:
-            build-environment: virtualenv
-            python-version: System-CPython-3.6
-            clear: true
-            nature: shell
-            command:
-                !include-raw-escape:
-                    - 'pip-install-pycurl.sh'
-                    - 'satellite6-automation-source.sh'
-                    - 'satellite6-automation-instances.sh'
-                    - 'satellite6-consolidated-coverage-report.sh'
-                    - 'satellite6-configure-sonarqube.sh'
-                    - 'satellite6-graceful-shutdown.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (2\.7)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-consolidated-reports-builders:
+                    cpython_version: "System-CPython-2.7"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (3\.6)
+            label: ${{ENV,var="CPYTHON_VERSION"}}
+            steps:
+                - satellite6-consolidated-reports-builders:
+                    cpython_version: "System-CPython-3.6"
+
     publishers:
         - satellite6-automation-coverage:
             file_path: "coverage/coverage.xml"

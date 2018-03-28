@@ -1,5 +1,5 @@
 - builder:
-    name: satellite6-automation-builders
+    name: satellite6-consolidated-reports-builders
     builders:
         - shining-panda:
             build-environment: virtualenv
@@ -8,9 +8,10 @@
             nature: shell
             command:
               !include-raw-escape:
+                  - 'pip-install-pycurl.sh'       
                   - 'satellite6-automation-source.sh'
                   - 'satellite6-automation-instances.sh'
-                  - 'satellite6-automation.sh'
-                  - 'satellite6-foreman-debug.sh'
-                  - 'satellite6-code-coverage.sh'
+                  - 'satellite6-consolidated-coverage-report.sh'
+                  - 'satellite6-configure-sonarqube.sh'
                   - 'satellite6-graceful-shutdown.sh'
+
