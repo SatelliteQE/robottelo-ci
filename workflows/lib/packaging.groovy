@@ -104,7 +104,7 @@ node('sat6-rhel7') {
 
                 brew_buildinfo = sh(
                   script: "brew buildinfo ${package_name}-${version}-${release}.el7sat",
-                  returnStatus: true
+                  returnStdout: true
                 ).trim()
 
                 if(brew_buildinfo.contains('No such build')) {
