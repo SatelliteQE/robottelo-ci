@@ -1,5 +1,3 @@
-#!/usr/bin/groovy
-
 node('rhel') {
     stage("Setup Workspace") {
 
