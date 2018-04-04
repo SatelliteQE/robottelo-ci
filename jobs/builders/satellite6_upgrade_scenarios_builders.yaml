@@ -1,0 +1,13 @@
+- builder:
+    name: satellite6-upgrade-scenarios-builders
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-upgrade-source.sh'
+                    - 'satellite6-upgrade-run-scenarios.sh'

@@ -1,10 +1,27 @@
 - builder:
     name: satellite6-automation-reports-builders
     builders:
-        - shining-panda:
-            build-environment: virtualenv
-            python-version: "{cpython_version}"
-            clear: true
-            nature: shell
-            command:
-              !include-raw-escape: 'satellite6-automation-report.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[12])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - shining-panda:
+                    build-environment: virtualenv
+                    python-version: System-CPython-2.7
+                    clear: true
+                    nature: shell
+                    command:
+                        !include-raw-escape: 'satellite6-automation-report.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[34])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - shining-panda:
+                    build-environment: virtualenv
+                    python-version: System-CPython-3.6
+                    clear: true
+                    nature: shell
+                    command:
+                        !include-raw-escape: 'satellite6-automation-report.sh'
