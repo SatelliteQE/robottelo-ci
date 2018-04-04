@@ -1,8 +1,8 @@
 - builder:
-    name: satellite6-provisioning-builders
+    name: satellite6-upgrade-tiers-builders
     builders:
         - conditional-step:
-            condition-kind: regex-match
+            condition-kind: regex-match     
             regex: (6\.[12])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
@@ -13,12 +13,10 @@
                     nature: shell
                     command:
                         !include-raw-escape:
-                            - 'pip-install-pycurl.sh'
-                            - 'satellite6-provisioning.sh'
+                            - 'satellite6-upgrade-tier-source.sh'
                             - 'satellite6-foreman-debug.sh'
-                            - 'satellite6-graceful-shutdown.sh'
         - conditional-step:
-            condition-kind: regex-match
+            condition-kind: regex-match     
             regex: (6\.[34])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
@@ -29,7 +27,5 @@
                     nature: shell
                     command:
                         !include-raw-escape:
-                            - 'pip-install-pycurl.sh'
-                            - 'satellite6-provisioning.sh'
+                            - 'satellite6-upgrade-tier-source.sh'
                             - 'satellite6-foreman-debug.sh'
-                            - 'satellite6-graceful-shutdown.sh'
