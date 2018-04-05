@@ -5,6 +5,12 @@
     build-discarder:
       days-to-keep: 45
       num-to-keep: -1
+    properties:
+      - build-discarder:
+          days-to-keep: 45
+          num-to-keep: -1
+      - gitlab:
+          connection: gitlab-conn
     parameters:
       - string:
           name: project
