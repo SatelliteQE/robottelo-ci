@@ -24,6 +24,10 @@ else
 fi
 
 # Sauce Labs Configuration
+if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+    SAUCE_BROWSER="chrome"
+fi
+
 
 if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"

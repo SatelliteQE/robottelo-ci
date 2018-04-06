@@ -7,6 +7,9 @@ sed -i "s|# screenshots_path=.*|screenshots_path=$(pwd)/screenshots|" robottelo.
 sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottelo.properties
 
 # Sauce Labs Configuration
+if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+    SAUCE_BROWSER="chrome"
+fi
 
 if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"
@@ -29,6 +32,8 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     # Temporary change to test Selenium and Firefox changes.
     if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         SELENIUM_VERSION=2.48.0
+    elif [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+        SELENIUM_VERSION=3.8.1
     else
         SELENIUM_VERSION=2.53.1
     fi
