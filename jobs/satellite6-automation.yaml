@@ -747,6 +747,7 @@
                 !include-raw-escape:
                     - 'pip-install-pycurl.sh'
                     - 'satellite6-libvirt-install.sh'
+                    - 'satellite6-add-provison-host.sh'
                     - 'satellite6-libvirt-install-manifest.sh'
                     - 'satellite6-configure-variables.sh'
 

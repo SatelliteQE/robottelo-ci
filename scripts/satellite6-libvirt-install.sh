@@ -58,7 +58,8 @@ echo "Credentials: admin/changeme"
 echo "========================================"
 
 # Download the Satellite6 Configure Template.
-wget ${HTTP_SERVER_HOSTNAME}/pub/satellite6-populate-template.sh
+wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/scripts/satellite6-populate-template.sh
+wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/scripts/satellite6-provision-host-template.sh
 
 cp satellite6-populate-template.sh satellite6-populate.sh
 chmod 755 satellite6-populate.sh
