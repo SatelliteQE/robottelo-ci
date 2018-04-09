@@ -15,7 +15,7 @@
       - gitlab_build_on_change
     builders:
       - merge_request
-      - test_bastion_javascript
+      - shell: !include-raw: scripts/test/test_bastion_javascript.sh
     publishers:
       - gitlab-notifier
       - cobertura:
