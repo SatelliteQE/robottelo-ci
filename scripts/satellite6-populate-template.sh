@@ -349,8 +349,7 @@ else
 fi
 
 # Create OpenStack CR
-# Disabled this temporarily till we investigate the change in login details.
-#satellite_runner compute-resource create --name openstack_provider --provider Openstack --url "${OS_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --user "${OS_USERNAME}" --password "${OS_PASSWORD}"
+satellite_runner compute-resource create --name openstack_provider --provider Openstack --url "${OS_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --user "${OS_USERNAME}" --password "${OS_PASSWORD}"
 
 # Associations
 
@@ -378,15 +377,21 @@ echo "RHEL7 OS ID is: ${RHEL7_OS_ID}"
 RHEL6_OS_ID=$(satellite --csv os list | grep "6" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL6 OS ID is: ${RHEL6_OS_ID}"
 
-
 if [ "${SAT_VERSION}" = "6.3" ]; then
+
+    RHEL7_KS_ID=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 7/ {print $1}')
+    echo "RHEL7 KS ID is: ${RHEL7_KS_ID}"
+
+    RHEL6_KS_ID=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 6/ {print $1}')
+    echo "RHEL6 KS ID is: ${RHEL6_KS_ID}"
+
     # Create Host-Groups and associate activation key as a parameter.
 
-    satellite_runner hostgroup create --name='RHEL 6 Server 64-bit HG' --content-view='RHEL 6 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL6_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS'
+    satellite_runner hostgroup create --name='RHEL 6 Server 64-bit HG' --content-view='RHEL 6 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL6_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS' --kickstart-repository-id="${RHEL6_KS_ID}"
 
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 6 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-6'
 
-    satellite_runner hostgroup create --name='RHEL 7 Server 64-bit HG' --content-view='RHEL 7 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL7_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS'
+    satellite_runner hostgroup create --name='RHEL 7 Server 64-bit HG' --content-view='RHEL 7 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL7_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS' --kickstart-repository-id="${RHEL7_KS_ID}"
 
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-7'
 else
@@ -424,9 +429,3 @@ satellite_runner host-collection create --name="RHEL 7 Host collection" --organi
 echo "RHEL 7 Host collection created"
 satellite_runner host-collection create --name="RHEL 6 Host collection" --organization-id "${ORG}"
 echo "RHEL 6 Host collection created"
-
-# Provision a host with Libvirt Provider.
-# Better create hosts from UI, as it has too many parameters to be passed and things appear to keep changing.
-#satellite_runner host create --name='rhel-7-libvirt' --root-pass='changeme' --organization-id="${ORG}" --location-id="${LOC}" --hostgroup="RHEL 7 Server 64-bit HG" --compute-resource="$COMPUTE_RESOURCE_NAME_LIBVIRT" --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
-
-#satellite_runner host create --name='rhel-6-libvirt' --root-pass='changeme' --organization-id="${ORG}" --location-id="${LOC}" --hostgroup="RHEL 6 Server 64-bit HG" --compute-resource="$COMPUTE_RESOURCE_NAME_LIBVIRT" --compute-attributes="cpus=1, memory=1073741824, start=1" --interface="primary=true, compute_type=bridge, compute_bridge=${SUBNET_NAME}, compute_model=virtio" --volume="capacity=10G,format_type=qcow2"
