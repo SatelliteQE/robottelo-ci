@@ -750,7 +750,63 @@
                     - 'satellite6-add-provison-host.sh'
                     - 'satellite6-libvirt-install-manifest.sh'
                     - 'satellite6-configure-variables.sh'
+        - trigger-builds:
+            - project: 'capsule-sanity-check-{satellite_version}-{os}'
+              current-parameters: true
+              predefined-parameters: |
+                SATELLITE_SERVER_ID=${{SERVER_ID}}
+                BUILD_LABEL=${{BUILD_LABEL}}
 
+
+- job-template:
+    name: 'capsule-sanity-check-{satellite_version}-{os}'
+    description: |
+        Quickly up an instance using VLANs for Sanity Check of every build, by provisioning a Host on Libvirt Compute Resource.
+    node: sat6-{os}
+    parameters:
+        - string:
+            name: BUILD_LABEL
+            description: |
+                'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
+        - string:
+            name: ADMIN_PASSWORD
+            default: changeme
+            description: "Specify the admin password if changed from the default set."
+        - string:
+            name: SATELLITE_SERVER_ID
+            description: "Specify the Server ID of Satellite6. Example sat-feature-rhel7 or sat-feature-rhel6"
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                PROVISIONING_ID=paprika
+                SERVER_ID=cap-feature-{os}
+                DISTRO={os}
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="PROVISIONING_ID"}} ${{ENV,var="SERVER_ID"}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-3.6
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-libvirt-capsule-install.sh'
 
 - job-template:
     disabled: false
@@ -1383,6 +1439,7 @@
           os: 'rhel6'
     jobs:
         - 'satellite6-sanity-check-{satellite_version}-{os}'
+        - 'capsule-sanity-check-{satellite_version}-{os}'
 
 
 # Let's have a separate project for Upgrade Jobs.
