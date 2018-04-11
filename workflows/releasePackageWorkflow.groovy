@@ -31,6 +31,7 @@ def release_branch = env.releaseBranch
 def repo_name = gitRepository.split('/')[1]
 def version_map = branch_map[release_branch]
 def tool_belt_config = version_map['tool_belt_config']
+def packaging_job = version_map['packaging_job']
 
 pipeline {
 
@@ -296,22 +297,16 @@ pipeline {
         }
 
         stage("Trigger packaging update") {
+            when {
+                expression { packaging_job }
+            }
             steps {
                 script {
-                    if (release_branch == 'SATELLITE-6.3.0') {
-                      build job: 'sat-63-satellite-packaging-update', parameters: [
-                        [$class: 'StringParameterValue', name: 'project', value: repo_name],
-                        [$class: 'StringParameterValue', name: 'version', value: releaseTag],
-                        [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch],
-                      ]
-                    }
-                    else if (release_branch == 'RHUI-3.0.0') {
-                      build job: 'rhui-3-rhui-packaging-update', parameters: [
-                        [$class: 'StringParameterValue', name: 'project', value: repo_name],
-                        [$class: 'StringParameterValue', name: 'version', value: releaseTag],
-                        [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch],
-                      ]
-                    }
+                    build job: packaging_job, parameters: [
+                      [$class: 'StringParameterValue', name: 'project', value: repo_name],
+                      [$class: 'StringParameterValue', name: 'version', value: releaseTag],
+                      [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch],
+                    ]
                 }
             }
         }

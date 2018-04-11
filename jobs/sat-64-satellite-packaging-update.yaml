@@ -1,0 +1,25 @@
+- job:
+    name: sat-64-satellite-packaging-update
+    project-type: pipeline
+    build-discarder:
+      days-to-keep: 45
+      num-to-keep: -1
+    parameters:
+      - string:
+          name: project
+          description: 'Name of the project to update from satellite-packaging.'
+      - string:
+          name: version
+          description: 'Version of the project to update to.'
+      - merge_request
+    dsl:
+      !include-raw:
+        - workflows/lib/gitlabEnv.groovy
+        - workflows/packaging/satellitePackaging.groovy
+        - workflows/lib/updatePackaging.groovy
+        - workflows/lib/toolbelt.groovy
+        - pipelines/lib/obal.groovy
+        - workflows/lib/kerberos.groovy
+        - workflows/lib/gitlab.groovy
+    notifications:
+      - snapper_notifications
