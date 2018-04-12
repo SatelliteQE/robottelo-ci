@@ -37,7 +37,7 @@
 - job-template:
     disabled: false
     name: polarion-test-run-{satellite_version}-{os}
-    node: sat6-{os}
+    node: sat6-rhel7
     scm:
         - git:
             url: https://github.com/SatelliteQE/robottelo.git
