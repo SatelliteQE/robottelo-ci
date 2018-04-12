@@ -44,6 +44,6 @@ export SUBNET_GATEWAY="${GATEWAY}"
 export CAPSULE_FQDN="${SERVER_HOSTNAME}"
 export SATELLITE_FQDN="${SATELLITE_SERVER_HOSTNAME}"
 
-fab -D -H "root@${SATELLITE_FQDN}" "generate_capsule_certs"
+fab -t 60 -D -H "root@${SATELLITE_FQDN}" "generate_capsule_certs"
 
 fab -D -H "root@${CAPSULE_FQDN}" "setup_capsule"
