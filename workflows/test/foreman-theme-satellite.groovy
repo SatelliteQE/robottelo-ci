@@ -1,11 +1,7 @@
 def plugin_name = 'foreman_theme_satellite'
 
-if (env.gitlabTargetBranch == 'master' ) {
-    ruby = '2.4'
-} else {
-    def version_map = branch_map[env.gitlabTargetBranch]
-    ruby = version_map['ruby']
-}
+def version_map = branch_map[env.gitlabTargetBranch]
+def ruby = version_map['ruby']
 
 node('sat6-rhel7') {
 

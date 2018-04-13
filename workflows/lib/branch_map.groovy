@@ -28,5 +28,12 @@ def branch_map = [
         'version': '3.0.0',
         'tool_belt_config': './configs/rhui/',
         'packaging_job': 'rhui-3-rhui-packaging-update'
+    ],
+    'master': [
+        'version': '6.4.0',
+        'tool_belt_config': './configs/satellite/',
+        'foreman_branch': 'develop',
+        'ruby': '2.4',
+        'packaging_job': null
     ]
 ]
