@@ -11,6 +11,7 @@
     dsl:
       !include-raw:
         - workflows/lib/gitlabEnv.groovy
+        - workflows/lib/branch_map.groovy
         - workflows/test/foreman-theme-satellite.groovy
         - workflows/test/foreman-lib.groovy
         - workflows/lib/rvm.groovy
