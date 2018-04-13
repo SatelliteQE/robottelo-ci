@@ -8,6 +8,7 @@
       !include-raw:
           - ./repos/foreman_bootdisk_repo.groovy
           - ./source_types/sourceTypeGem.groovy
+          - workflows/lib/branch_map.groovy
           - workflows/releasePackageWorkflow.groovy
           - workflows/lib/toolbelt.groovy
           - workflows/lib/runPlaybook.groovy
