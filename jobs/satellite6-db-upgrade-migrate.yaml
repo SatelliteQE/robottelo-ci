@@ -63,6 +63,11 @@
             description:
                 <p>Currently, only supports Verizon database. Instance will be created on OSP</p>
                 <p>Make sure to check resources available on Openstack before using the option</p>
+        - string:
+            name: VOLUME_SIZE
+            default: '500'
+            description: |
+                <p>The Size of the volume for creating OSP Instance. Defaults to 500 GB</p>
         - bool:
             name: INCLUDE_PULP_DATA
             default: false

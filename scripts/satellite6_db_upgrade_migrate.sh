@@ -22,20 +22,16 @@ fi
 
 if [[ -z "${SATELLITE_HOSTNAME}" && "${OPENSTACK_DEPLOY}" = 'true' ]]; then
     source config/preupgrade_entities.conf
-    fab -u root delete_openstack_instance:"${CUSTOMERDB_NAME}_customerdb_instance"
-    fab -u root create_openstack_instance:"${CUSTOMERDB_NAME}_customerdb_instance","${RHEL7_IMAGE}",500
-fi
-
-if [ "${PARTITION_DISK}" = "true" ]; then
-    fab -D -H root@"${SATELLITE_HOSTNAME}" partition_disk
+    fab -D -u root delete_openstack_instance:"${CUSTOMERDB_NAME}_customerdb_instance"
+    fab -D -u root create_openstack_instance:"${CUSTOMERDB_NAME}_customerdb_instance","${RHEL7_IMAGE}","${VOLUME_SIZE}"
 fi
 
 # Customer DB Setup
-if [[ "${CUSTOMERDB_NAME}" != 'NoDB' && "${OPENSTACK_DEPLOY}" != 'true' ]]; then
+if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     source config/preupgrade_entities.conf
     if [ -n "${SATELLITE_HOSTNAME}" ]; then
         INSTANCE_NAME="${SATELLITE_HOSTNAME}"
-    elif [ -z "${SATELLITE_HOSTNAME}" ]; then
+    elif [[ -z "${SATELLITE_HOSTNAME}" && -z "${OPENSTACK_DEPLOY}" ]]; then
         RHEV_INSTANCE_NAME="${CUSTOMERDB_NAME}_customerdb_instance"
         # Delete  if an instance with same name is already there in rhevm
         fab -u root delete_rhevm_instance:"${RHEV_INSTANCE_NAME}"
@@ -53,12 +49,15 @@ if [[ "${CUSTOMERDB_NAME}" != 'NoDB' && "${OPENSTACK_DEPLOY}" != 'true' ]]; then
     # Define  Backup directory for customer DB
     BACKUP_DIR="\/var\/tmp\/backup"
     if [[ -z "${SATELLITE_HOSTNAME}" && "${OPENSTACK_DEPLOY}" = 'true' ]]; then
-        source instance.info
+        source /tmp/instance.info
         INSTANCE_NAME="${OSP_HOSTNAME}"
         BACKUP_DIR="\/root\/customer-dbs\/${CUSTOMERDB_NAME}"
         # Install Nfs-client
         # Mount the Customer DB to Created Instance via NFS Share
         ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "curl -o /etc/yum.repos.d/rhel.repo "${RHEL_REPO}"; yum install -y nfs-utils; mkdir -p /root/customer-dbs; mount -o v3 "${DBSERVER}":/root/customer-dbs /root/customer-dbs"
+    fi
+    if [ "${PARTITION_DISK}" = "true" ]; then
+        fab -D -H root@"${INSTANCE_NAME}" partition_disk
     fi
     # Configuration Updates in inventory file
     sed -i -e 2s/.*/"${INSTANCE_NAME}"/ inventory
