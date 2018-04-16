@@ -1,7 +1,7 @@
 pip install -U -r requirements.txt docker-py pytest-xdist sauceclient
 
 # Sourcing and exporting required env vars
-source "${{CONFIG_FILES}}"
+source "${CONFIG_FILES}"
 source config/compute_resources.conf
 source config/sat6_upgrade.conf
 source config/sat6_repos_urls.conf
@@ -12,7 +12,7 @@ source config/installation_environment.conf
 
 set +e
 # Run pre-upgarde scenarios tests
-if [ ${{ENDPOINT}} == 'pre-upgrade' ]; then
+if [ ${ENDPOINT} == 'pre-upgrade' ]; then
     $(which py.test)  -v --continue-on-collection-errors -s -m pre_upgrade --junit-xml=test_scenarios-pre-results.xml upgrade_tests/test_scenarios/
     # Creates the pre-upgrade data-store required for existence tests
     echo "Setting up pre-upgrade data-store for existence tests"

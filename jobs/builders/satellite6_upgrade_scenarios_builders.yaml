@@ -7,7 +7,7 @@
             clear: true
             nature: shell
             command:
-                !include-raw-escape:
+                !include-raw:
                     - 'pip-install-pycurl.sh'
                     - 'satellite6-upgrade-source.sh'
                     - 'satellite6-upgrade-run-scenarios.sh'
