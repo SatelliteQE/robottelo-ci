@@ -16,11 +16,11 @@ echo "RHEL7 hosts IP is: ${RHEL7_IP}"
 echo "RHEL6 hosts IP is: ${RHEL6_IP}"
 
 # This sleep is needed, because of the provisioning phase during this period.
-sleep 1800
+sleep 1200
 
-satellite_runner host package install --host "${RHEL7_LIBVIRT_HOST}.${DOMAIN_NAME}"  --packages zsh
+#satellite_runner host package install --host "${RHEL7_LIBVIRT_HOST}.${DOMAIN_NAME}"  --packages zsh
 
-satellite_runner host package install --host "${RHEL6_LIBVIRT_HOST}.${DOMAIN_NAME}"  --packages zsh
+#satellite_runner host package install --host "${RHEL6_LIBVIRT_HOST}.${DOMAIN_NAME}"  --packages zsh
 
 satellite_runner host delete --name "${RHEL7_LIBVIRT_HOST}.${DOMAIN_NAME}"
 

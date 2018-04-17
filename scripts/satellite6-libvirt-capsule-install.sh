@@ -51,3 +51,7 @@ fi
 fab -D -H "root@${CAPSULE_FQDN}" "setup_capsule_firewall"
 
 fab -D -H "root@${CAPSULE_FQDN}" "setup_capsule"
+
+if [[ "${PROVISIONING_SETUP}" == "true" ]]; then
+    fab -D -H "root@${CAPSULE_FQDN}" "setup_external_capsule"
+fi
