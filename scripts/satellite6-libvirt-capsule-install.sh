@@ -44,6 +44,10 @@ export SUBNET_GATEWAY="${GATEWAY}"
 export CAPSULE_FQDN="${SERVER_HOSTNAME}"
 export SATELLITE_FQDN="${SATELLITE_SERVER_HOSTNAME}"
 
-fab -t 60 -D -H "root@${SATELLITE_FQDN}" "generate_capsule_certs"
+if [[ "${RERUN}" == "false" ]]; then
+    fab -t 60 -D -H "root@${SATELLITE_FQDN}" "generate_capsule_certs"
+fi
+
+fab -D -H "root@${CAPSULE_FQDN}" "setup_capsule_firewall"
 
 fab -D -H "root@${CAPSULE_FQDN}" "setup_capsule"
