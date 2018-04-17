@@ -5,5 +5,5 @@
             script-only-if-succeeded: True
             mark-unstable-if-failed: True
             builders:
+              - build-steps:
                 - shell: !include-raw: destroy-keytab.sh
-
