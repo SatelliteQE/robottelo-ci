@@ -93,11 +93,7 @@ DOMAIN_ID=$(satellite --csv domain list --search "${CAPSULE_HOSTNAME#*.}" | grep
 echo DOMAIN_ID is "${DOMAIN_ID}"
 
 echo Adding Smart-Proxy to Default location and to 'Default Organization'
-satellite_runner location add-smart-proxy --id="${LOC}" --smart-proxy-id="${SMARTPROXYID}"
-satellite_runner organization add-smart-proxy --id="${ORG}" --smart-proxy-id="${SMARTPROXYID}"
-
-echo Adding Default Organization to Default Location
-satellite_runner location add-organization --id="${LOC}" --organization='Default Organization'
+satellite_runner capsule update --id "${SMARTPROXYID}" --organization-ids "${ORG}" --location-ids "${LOC}"
 
 # Add Life-Cycle Environment to Capsule and Synchronize the content.
 satellite_runner capsule content add-lifecycle-environment --id "${SMARTPROXYID}" --environment DEV --organization-id "${ORG}"

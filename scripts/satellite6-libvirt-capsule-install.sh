@@ -55,3 +55,8 @@ fab -D -H "root@${CAPSULE_FQDN}" "setup_capsule"
 if [[ "${PROVISIONING_SETUP}" == "true" ]]; then
     fab -D -H "root@${CAPSULE_FQDN}" "setup_external_capsule"
 fi
+
+wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/scripts/satellite6-populate-capsule-template.sh
+
+cp satellite6-populate-capsule-template.sh satellite6-populate-capsule.sh
+chmod +x satellite6-populate-capsule.sh
