@@ -12,7 +12,7 @@
                     clear: true
                     nature: shell
                     command:
-                        !include-raw-escape:
+                        !include-raw:
                             - 'satellite6-automation-source.sh'
                             - 'satellite6-automation-instances.sh'
                             - 'satellite6-automation.sh'
@@ -30,7 +30,7 @@
                     clear: true
                     nature: shell
                     command:
-                        !include-raw-escape:
+                        !include-raw:
                             - 'satellite6-automation-source.sh'
                             - 'satellite6-automation-instances.sh'
                             - 'satellite6-automation.sh'
