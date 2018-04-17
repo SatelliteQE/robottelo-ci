@@ -4,7 +4,7 @@
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[12])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
+            label: ${ENV,var="SATELLITE_VERSION"}
             steps:
                 - shining-panda:
                     build-environment: virtualenv
@@ -12,7 +12,7 @@
                     clear: true
                     nature: shell
                     command:
-                        !include-raw-escape:
+                        !include-raw:
                             - 'pip-install-pycurl.sh'
                             - 'satellite6-provisioning.sh'
                             - 'satellite6-foreman-debug.sh'
@@ -20,7 +20,7 @@
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[34])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
+            label: ${ENV,var="SATELLITE_VERSION"}
             steps:
                 - shining-panda:
                     build-environment: virtualenv
@@ -28,7 +28,7 @@
                     clear: true
                     nature: shell
                     command:
-                        !include-raw-escape:
+                        !include-raw:
                             - 'pip-install-pycurl.sh'
                             - 'satellite6-provisioning.sh'
                             - 'satellite6-foreman-debug.sh'
