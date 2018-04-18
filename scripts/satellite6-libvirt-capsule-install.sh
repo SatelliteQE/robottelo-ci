@@ -40,6 +40,7 @@ echo "========================================"
 export SUBNET_RANGE="${SUBNET}"
 export SUBNET_MASK="${NETMASK}"
 export SUBNET_GATEWAY="${GATEWAY}"
+export INTERFACE="${INTERFACE}"
 
 export CAPSULE_FQDN="${SERVER_HOSTNAME}"
 export SATELLITE_FQDN="${SATELLITE_SERVER_HOSTNAME}"
