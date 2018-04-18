@@ -1,17 +1,19 @@
+ssh_opts='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+
 function remove_instance () {
     echo "========================================"
     echo " Remove any running instances if any of ${TARGET_IMAGE} virsh domain."
     echo "========================================"
     set +e
-    ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh destroy ${TARGET_IMAGE}
-    ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh undefine ${TARGET_IMAGE}
-    ssh -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" virsh vol-delete --pool default /var/lib/libvirt/images/${TARGET_IMAGE}.img
+    ssh $ssh_opts root@"${PROVISIONING_HOST}" virsh destroy ${TARGET_IMAGE}
+    ssh $ssh_opts root@"${PROVISIONING_HOST}" virsh undefine ${TARGET_IMAGE}
+    ssh $ssh_opts root@"${PROVISIONING_HOST}" virsh vol-delete --pool default /var/lib/libvirt/images/${TARGET_IMAGE}.img
     set -e
 }
 
 function setup_instance () {
     # Provision the instance using satellite6 base image as the source image.
-    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${PROVISIONING_HOST}" \
+    ssh $ssh_opts root@"${PROVISIONING_HOST}" \
     snap-guest -b "${SOURCE_IMAGE}" -t "${TARGET_IMAGE}" --hostname "${SERVER_HOSTNAME}" \
     -m "${VM_RAM}" -c "${VM_CPU}" -d "${VM_DOMAIN}" -f -n bridge="${BRIDGE}" --static-ipaddr "${IPADDR}" \
     --static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
@@ -20,7 +22,7 @@ function setup_instance () {
     sleep 60
 
     # Restart Satellite6 service for a clean state of the running instance.
-    ssh -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" 'katello-service restart'
+    ssh $ssh_opts root@"${SERVER_HOSTNAME}" 'katello-service restart'
 }
 
 if ! [[ ${SATELLITE_DISTRIBUTION} =~ UPSTREAM|KOJI ]]; then
