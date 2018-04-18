@@ -25,13 +25,11 @@ function setup_instance () {
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" 'katello-service restart'
 }
 
-if ! [[ ${SATELLITE_DISTRIBUTION} =~ UPSTREAM|KOJI ]]; then
-    # Provisioning jobs TARGET_IMAGE becomes the SOURCE_IMAGE for Tier and RHAI jobs.
-    # source-image at this stage for example: qe-sat63-rhel7-base
-    export SOURCE_IMAGE="${TARGET_IMAGE}"
-    # target-image at this stage for example: qe-sat63-rhel7-tier1
-    export TARGET_IMAGE="${TARGET_IMAGE%%-base}-${ENDPOINT}"
+# Provisioning jobs TARGET_IMAGE becomes the SOURCE_IMAGE for Tier and RHAI jobs.
+# source-image at this stage for example: qe-sat63-rhel7-base
+export SOURCE_IMAGE="${TARGET_IMAGE}"
+# target-image at this stage for example: qe-sat63-rhel7-tier1
+export TARGET_IMAGE="${TARGET_IMAGE%%-base}-${ENDPOINT}"
 
-    remove_instance
-    setup_instance
-fi
+remove_instance
+setup_instance
