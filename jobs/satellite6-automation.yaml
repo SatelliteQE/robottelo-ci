@@ -1177,13 +1177,13 @@
                         IDM_REALM=${{IDM_REALM}}
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[234])
+            regex: (6\.[2])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
-                    - project: satellite6-sanity-check-{satellite_version}-rhel7
+                    - project: satellite6-sanity-check-{satellite_version}-rhel6
                       predefined-parameters: |
-                        BASE_URL=${{RHEL7_SATELLITE_URL}}
+                        BASE_URL=${{RHEL6_SATELLITE_URL}}
                         SELINUX_MODE=${{SELINUX_MODE}}
                         SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
                         PROXY_MODE=${{PROXY_MODE}}
