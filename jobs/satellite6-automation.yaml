@@ -685,16 +685,7 @@
         - build-name:
             name: '#${{BUILD_NUMBER}} ${{ENV,var="PROVISIONING_ID"}} ${{ENV,var="SERVER_ID"}} ${{ENV,var="BUILD_LABEL"}}'
     builders:
-        - shining-panda:
-            build-environment: virtualenv
-            python-version: System-CPython-3.6
-            clear: true
-            nature: shell
-            command:
-                !include-raw-escape:
-                    - 'pip-install-pycurl.sh'
-                    - 'satellite6-libvirt-capsule-install.sh'
-                    - 'satellite6-configure-capsule-variables.sh'
+        - satellite6-capsule-sanity-check-builders
 
 - job-template:
     disabled: false
