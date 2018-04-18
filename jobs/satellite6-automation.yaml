@@ -718,6 +718,11 @@
             description: |
                 This option is helpful in manually triggering this job for zStream upgrade.
                 e.g 6.3.0 to 6.3.1
+        - bool:
+            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            default: true
+            description: |
+                This option allows to use foreman-maintain for satellite-upgrade.
     scm:
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
@@ -756,6 +761,7 @@
                 BUILD_LABEL=${{BUILD_LABEL}}
                 DISCOVERY_ISO=${{DISCOVERY_ISO}}
                 ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                PERFORM_FOREMAN_MAINTAIN_UPGRADE=${{PERFORM_FOREMAN_MAINTAIN_UPGRADE}}
     publishers:
         - satellite6-automation-mails
         - archive:
@@ -833,6 +839,11 @@
             description: |
                 This option is helpful in manually triggering this job for zStream upgrade.
                 e.g 6.3.0 to 6.3.1
+        - bool:
+            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            default: true
+            description: |
+                This option allows to use foreman-maintain for satellite-upgrade.
     scm:
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
