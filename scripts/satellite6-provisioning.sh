@@ -6,6 +6,9 @@ source config/auth_servers.conf
 source config/installation_environment.conf
 source config/provisioning_environment.conf
 source config/proxy_config_environment.conf
+if [ "$TEMPORARY_FIXES" = 'true' ]; then
+    source config/temporary_fixes.conf
+fi
 source config/subscription_config.conf
 if [ "${STAGE_TEST}" = 'true' ]; then
     source config/stage_environment.conf

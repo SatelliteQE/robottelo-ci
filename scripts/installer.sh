@@ -10,6 +10,9 @@ source config/installation_environment.conf
 source config/proxy_config_environment.conf
 # OS_VERSION needs to be defined before sourcing sat6_repos_urls.conf
 source config/sat6_repos_urls.conf
+if [ "$TEMPORARY_FIXES" = 'true' ]; then
+    source config/temporary_fixes.conf
+fi
 # DISTRO needs to be defined before sourcing subscription_config.conf
 source config/subscription_config.conf
 if [ "$STAGE_TEST" = 'true' ]; then
