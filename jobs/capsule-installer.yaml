@@ -1,0 +1,119 @@
+- job:
+    name: 'capsule-installer'
+    concurrent: true
+    display-name: 'Capsule Installer'
+    description: |
+        <p><strong> Please run Satellite6 Populate Job before using this Capsule Installer Job.</strong></p>
+        <p>Job that installs <strong>Capsule</strong> on a machine.</p>
+        <p>Please make sure to add the following <strong>ssh key</strong> to your server so that this <strong>Jenkins</strong> job can access it.</p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+    node: sat6-rhel7
+    parameters:
+        - string:
+            name: SATELLITE_SERVER_HOSTNAME
+            description: "FQDN for your server where you want to install Satellite 6 Server."
+        - string:
+            name: CAPSULE_SERVER_HOSTNAME
+            description: "FQDN for your server where you want to install Capsule Server."
+        - string:
+            name: ADMIN_PASSWORD
+            default: "changeme"
+            description: "Satellite6 Admin password which is set"
+        - bool:
+            name: PARTITION_DISK
+            default: false
+            description: |
+                Run a task to re-partition disk to increase the size of /root
+                to handle synchronization of larger repositories
+        - string:
+            name: AUTO_TOOLS_REPO
+            default: https://github.com/SatelliteQE/automation-tools.git
+            description: |
+                You can override this to your automation-tools repo, if needed.
+        - string:
+            name: AUTO_TOOLS_BRANCH
+            default: master
+            description: |
+                You can override this to any branch.
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - "6.3"
+                - "6.4"
+                - "6.2"
+            description: |
+                Satellite 6 version to be configured.
+        - bool:
+            name: RERUN
+            default: false
+            description: |
+                If Capsule is required to be Re-run.
+        - bool:
+            name: PROVISIONING_SETUP
+            default: false
+        - string:
+            name: INTERFACE
+            default: "virbr0"
+            description: |
+                Leave it blank if using a beaker machine for Capsule or any capsule machine which has a DHCP IP.
+                Used for --foreman-proxy-dns-interface and --foreman-proxy-dhcp-interface installer options.
+                Helpful in configuring capsule where the interface needed to configure is
+                eth0(feature vm's on rhev), eno33559296(vmware). Otherwise this is Optional.
+        - string:
+            name: GATEWAY
+            default: "192.168.200.1"
+            description: |
+                Used for, --foreman-proxy-dhcp-gateway and --foreman-proxy-dns-reverse installer options.
+                If using isolated vlans explicitly specify the gateway here, which would be in the format
+                'zz.xx.yy.254'. Mandatory if installing Capsule which has isolated VLANs and when provisioning
+                setup parameter is set to true.
+        - string:
+            name: SUBNET
+            default: "192.168.200.0"
+            description: |
+                Used to define subnet that is used by External capsule.
+                Mandatory if installing capsule which has isolated VLANs and when provisioning setup
+                parameter is set to true.
+        - string:
+            name: NETMASK
+            default: "255.255.255.0"
+            description: |
+                Used to define netmask that is used by External capsule.
+                Mandatory if installing capsule which has isolated VLANs and when provisioning setup
+                parameter is set to true. 
+        - string:
+            name: DHCP_RANGE
+            default: "192.168.200.10 192.168.200.250"
+            description: |
+                This is required when we need to set a custom DHCP range operated by external capsule.
+                Mandatory if installing capsule which has isolated VLANs and when provisioning setup
+                parameter is set to true. 
+    scm:
+        - git:
+            url: ${AUTO_TOOLS_REPO}
+            branches:
+                - origin/${AUTO_TOOLS_BRANCH}
+            skip-tag: true
+    wrappers:
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="CAPSULE_SERVER_HOSTNAME"}'
+        - build-user-vars
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - default-wrappers
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-3.6
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-capsule-install-req.sh'
+                    - 'satellite6-libvirt-capsule-install.sh'
+                    - 'satellite6-configure-capsule-variables.sh'
