@@ -29,7 +29,7 @@ sed -i "s|SAT_VERSION=.*|SAT_VERSION=\"${SATELLITE_VERSION}\"|" satellite6-popul
 # Set the Capsule Hostname appropriately.
 sed -i "s|CAPSULE_HOSTNAME=.*|CAPSULE_HOSTNAME=\"${CAPSULE_FQDN}\"|" satellite6-populate-capsule.sh
 
-if [[ "${RERUN}" == "true" ]]; then
+if [[ "${RERUN}" == "false" ]]; then
     scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no satellite6-populate-capsule.sh root@"${SATELLITE_SERVER_HOSTNAME}":/root/
 fi
 
