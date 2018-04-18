@@ -130,3 +130,57 @@
             selector: satellite6 = 'upgrade-testcases'
     publishers:
         - satellite6-automation-mails
+
+
+- job-template:
+    disabled: false
+    name: polarion-upgraded-test-run-{satellite_version}-{os}
+    node: sat6-rhel7
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    properties:
+        - satellite6-polarion-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    parameters:
+        - string:
+            name: TEST_RUN_ID
+            description: |
+                'The resulting test run id is going to be suffixed with tierN '
+                'to differentiate between all tiers.'
+        - string:
+            name: POLARION_RELEASE
+    wrappers:
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="TEST_RUN_ID"}}'
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+    builders:
+        - copyartifact:
+            project: automation-upgraded-{satellite_version}-tier1-{os}
+            filter: '*-results.xml'
+            which-build: upstream-build
+        - copyartifact:
+            project: automation-upgraded-{satellite_version}-tier2-{os}
+            filter: '*-results.xml'
+            which-build: upstream-build
+        - shining-panda:
+            build-environment: virtualenv
+            name: betelgeuse
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape:
+                    - scripts/satellite6-install-pylarion.sh
+                    - scripts/satellite6-betelgeuse-test-run.sh
+    publishers:
+        - satellite6-automation-mails

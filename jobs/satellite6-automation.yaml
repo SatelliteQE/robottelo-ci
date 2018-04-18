@@ -463,6 +463,48 @@
                 ${{FILE, path="report.txt"}}
             attachments: report.html
 
+- job-template:
+    disabled: false
+    name: 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
+    node: sat6-rhel7
+    parameters:
+      - string:
+          name: BUILD_LABEL
+          description: |
+              'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+              Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+              Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo-ci.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - shell: rm -f *.xml
+        - copyartifact:
+            project: 'automation-upgraded-{satellite_version}-tier1-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-upgraded-{satellite_version}-tier2-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - satellite6-automation-reports-builders
+    publishers:
+        - email-ext:
+            recipients: ${{QE_EMAIL_LIST}}
+            success: true
+            failure: false
+            subject: 'Satellite {satellite_version} Upgrade Tiers Automation Report for {os}'
+            body: |
+                The build ${{BUILD_URL}} has been completed.
+
+                ${{FILE, path="report.txt"}}
+            attachments: report.html
 
 - job-template:
     name: 'report-consolidated-coverage-{satellite_version}-{os}'
@@ -1034,6 +1076,18 @@
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-upgrade-tiers-builders
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
+        - trigger-builds:
+            - project: 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
+              predefined-parameters: |
+                  BUILD_LABEL=${{BUILD_LABEL}}
+        - trigger-builds:
+            - project: 'polarion-upgraded-test-run-{satellite_version}-{os}'
+              predefined-parameters: |
+                  TEST_RUN_ID=$BUILD_LABEL {os} upgrade
+                  POLARION_RELEASE=$POLARION_RELEASE
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -1291,6 +1345,8 @@
         - 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
         - 'automation-upgraded-{satellite_version}-tier1-{os}'
         - 'automation-upgraded-{satellite_version}-tier2-{os}'
+        - 'polarion-upgraded-test-run-{satellite_version}-{os}'
+        - 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
 
 
 # Let's have a separate project for triggers.
