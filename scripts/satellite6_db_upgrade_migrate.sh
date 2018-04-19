@@ -112,6 +112,8 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     popd
 fi
 
+export SATELLITE_HOSTNAME="${INSTANCE_NAME}"
+
 # Run satellite upgrade only when PERORM_UPGRADE flag is set.
 if [ "${PERFORM_UPGRADE}" = "true" ]; then
     # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
