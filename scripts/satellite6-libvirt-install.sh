@@ -1,6 +1,11 @@
 pip install -r requirements.txt
 
 source ${CONFIG_FILES}
+
+if [ -n "${DISTRO}" ]; then
+    export OS_VERSION="${DISTRO}"
+fi
+
 source config/fake_manifest.conf
 source config/installation_environment.conf
 source config/auth_servers.conf

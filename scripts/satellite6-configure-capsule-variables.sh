@@ -16,7 +16,7 @@ sed -i "s|^ADMIN_PASSWORD=.*|ADMIN_PASSWORD=\"${ADMIN_PASSWORD}\"|" satellite6-p
 # Note: foreman network is already configured via satellite6-installer Job, using the below command,
 # "puppet module install -i /tmp sat6qe/katellovirt"
 if [ -z "${BRIDGE}" ]; then
-    export BRIDGE="foreman"
+    export BRIDGE="foreman-capsule"
 fi
 sed -i "s|SUBNET_NAME=.*|SUBNET_NAME=\"${BRIDGE}\"|" satellite6-populate-capsule.sh
 sed -i "s|SUBNET_RANGE=.*|SUBNET_RANGE=\"${SUBNET}\"|" satellite6-populate-capsule.sh
