@@ -11,64 +11,70 @@ node('rhel') {
         // Remove old package report
         sh 'rm -rf package_report.yaml'
 
-        // Work around for parameters not being accessible in functions
-        writeFile file: 'previous_snap', text: previousSnapVersion
-        def version = readFile 'previous_snap'
+        if (previousSnapVersion) {
+            // Work around for parameters not being accessible in functions
+            writeFile file: 'previous_snap', text: previousSnapVersion
+            def version = readFile 'previous_snap'
 
-        createLifecycleEnvironment {
-            name = version
-            prior = 'Library'
-            organization = 'Sat6-CI'
+            createLifecycleEnvironment {
+                name = version
+                prior = 'Library'
+                organization = 'Sat6-CI'
+            }
         }
     }
 
     stage("Archive Satellite") {
 
-        def versionInArchive = null
+        if (previousSnapVersion) {
+            // Work around for parameters not being accessible in functions
+            writeFile file: 'previous_snap', text: previousSnapVersion
+            def version = readFile 'previous_snap'
 
-        // Work around for parameters not being accessible in functions
-        writeFile file: 'previous_snap', text: previousSnapVersion
-        def version = readFile 'previous_snap'
-
-        satellite_composite_content_views.each { cv ->
-          promoteContentView {
-            organization = 'Sat6-CI'
-            content_view = cv
-            from_lifecycle_environment = 'QA'
-            to_lifecycle_environment = version
-          }
+            satellite_composite_content_views.each { cv ->
+              promoteContentView {
+                organization = 'Sat6-CI'
+                content_view = cv
+                from_lifecycle_environment = 'QA'
+                to_lifecycle_environment = version
+              }
+            }
         }
     }
 
     stage("Archive Capsule") {
 
-        // Work around for parameters not being accessible in functions
-        writeFile file: 'previous_snap', text: previousSnapVersion
-        def version = readFile 'previous_snap'
+        if (previousSnapVersion) {
+            // Work around for parameters not being accessible in functions
+            writeFile file: 'previous_snap', text: previousSnapVersion
+            def version = readFile 'previous_snap'
 
-        capsule_composite_content_views.each { cv ->
-          promoteContentView {
-            organization = 'Sat6-CI'
-            content_view = cv
-            from_lifecycle_environment = 'QA'
-            to_lifecycle_environment = version
-          }
+            capsule_composite_content_views.each { cv ->
+              promoteContentView {
+                organization = 'Sat6-CI'
+                content_view = cv
+                from_lifecycle_environment = 'QA'
+                to_lifecycle_environment = version
+              }
+            }
         }
     }
 
     stage("Archive Tools") {
 
-        // Work around for parameters not being accessible in functions
-        writeFile file: 'previous_snap', text: previousSnapVersion
-        def version = readFile 'previous_snap'
+        if (previousSnapVersion) {
+            // Work around for parameters not being accessible in functions
+            writeFile file: 'previous_snap', text: previousSnapVersion
+            def version = readFile 'previous_snap'
 
-        tools_composite_content_views.each { cv ->
-          promoteContentView {
-            organization = 'Sat6-CI'
-            content_view = cv
-            from_lifecycle_environment = 'QA'
-            to_lifecycle_environment = version
-          }
+            tools_composite_content_views.each { cv ->
+              promoteContentView {
+                organization = 'Sat6-CI'
+                content_view = cv
+                from_lifecycle_environment = 'QA'
+                to_lifecycle_environment = version
+              }
+            }
         }
 
     }
