@@ -99,6 +99,25 @@
                 of the user to provide a valid rhel6/rhel7 URL. For ISO, you
                 can provide the url or the iso.
         - string:
+            name: CAPSULE_SERVER_HOSTNAME
+            description: |
+                FQDN for your server where you want to install Capsule.
+                Specify the Capsule hostname here and select CONFIGURE_CAPSULE from POST_INSTALL.
+        - string:
+            name: MANIFEST_LOCATION_URL
+            description: |
+                Specify the Manifest Location URL which will be used by the Satellite6 Populate job.
+                Required only if, Populating Satellite6 with content and/or configuring Capsule.
+        - choice:
+            name: POST_INSTALL
+            choices:
+                - 'NO_INSTALL'
+                - 'POPULATE_SAT6'
+                - 'CONFIGURE_CAPSULE'
+            description: |
+                Specify whether you want Satellite6 to be populated with content and/or install & configure capsule.
+                Please note, capsule installation would first populate content and then install and configure capsule.
+        - string:
             name: INTERFACE
             description: |
                 Default value is virbr1 if not specified. Leave it blank if using a
@@ -197,3 +216,37 @@
                 !include-raw:
                     - 'pip-install-pycurl.sh'
                     - 'installer.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (POPULATE_SAT6)
+            label: ${ENV,var="POST_INSTALL"}
+            steps:
+                - trigger-builds:
+                    - project: satellite6-populate
+                      predefined-parameters: |
+                        SERVER_HOSTNAME=${SERVER_HOSTNAME}
+                        SATELLITE_VERSION=${SATELLITE_VERSION}
+                        SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}
+                        MANIFEST_LOCATION_URL=${MANIFEST_LOCATION_URL}
+                        CAPSULE_SERVER_HOSTNAME=${CAPSULE_SERVER_HOSTNAME}
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (CONFIGURE_CAPSULE)
+            label: ${ENV,var="POST_INSTALL"}
+            steps:
+                - trigger-builds:
+                    - project: satellite6-populate
+                      predefined-parameters: |
+                        SERVER_HOSTNAME=${SERVER_HOSTNAME}
+                        SATELLITE_VERSION=${SATELLITE_VERSION}
+                        SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}
+                        MANIFEST_LOCATION_URL=${MANIFEST_LOCATION_URL}
+                        CAPSULE_SERVER_HOSTNAME=${CAPSULE_SERVER_HOSTNAME}
+                - trigger-builds:
+                    - project: capsule-installer
+                      predefined-parameters: |
+                        SATELLITE_SERVER_HOSTNAME=${SERVER_HOSTNAME}
+                        CAPSULE_SERVER_HOSTNAME=${CAPSULE_SERVER_HOSTNAME}
+                        SATELLITE_VERSION=${SATELLITE_VERSION}
+                        PROVISIONING_SETUP=true
+                        PARTITION_DISK=true

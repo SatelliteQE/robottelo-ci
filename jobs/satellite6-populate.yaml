@@ -35,8 +35,8 @@
         - choice:
             name: DOWNLOAD_POLICY
             choices:
-                - 'immediate'
                 - 'on_demand'
+                - 'immediate'
                 - 'background'
             description: |
                 For satellite 6.2 - the default installation setup is immediate.
