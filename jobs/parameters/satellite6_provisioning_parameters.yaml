@@ -28,6 +28,11 @@
             description: |
                 Points to RHSM stage for stage installation test. Used only
                 in CDN provisioning.
+        - bool:
+            name: TEMPORARY_FIXES
+            default: false
+            description: |
+                Apply temporary pre/postinstall fixes from jenkins-configs
         - choice:
             name: HOTFIX
             choices:
