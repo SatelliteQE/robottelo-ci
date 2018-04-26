@@ -23,9 +23,14 @@ else
     sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
-# Sauce Labs Configuration
+# Sauce Labs Configuration and pytest-env setting
 if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
     SAUCE_BROWSER="chrome"
+
+    pip install -U pytest-env
+
+    env =
+        PYTHONHASHSEED=0
 fi
 
 

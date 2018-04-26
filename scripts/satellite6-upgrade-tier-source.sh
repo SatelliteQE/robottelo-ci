@@ -12,10 +12,15 @@ sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
 sed -i "s|# screenshots_path=.*|screenshots_path=$(pwd)/screenshots|" robottelo.properties
 sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottelo.properties
 
-# Sauce Labs Configuration
+# Sauce Labs Configuration and pytest-env setting.
 
 if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
     SAUCE_BROWSER="chrome"
+
+    pip install -U pytest-env
+
+    env =
+        PYTHONHASHSEED=0
 fi
 
 if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
