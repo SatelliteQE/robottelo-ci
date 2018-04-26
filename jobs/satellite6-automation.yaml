@@ -432,6 +432,9 @@
     wrappers:
         - build-name:
             name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
     builders:
         - shell: rm -f *.xml
         - copyartifact:
@@ -483,6 +486,9 @@
     wrappers:
         - build-name:
             name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
     builders:
         - shell: rm -f *.xml
         - copyartifact:
