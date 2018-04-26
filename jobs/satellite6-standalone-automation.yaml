@@ -47,6 +47,7 @@
                 - 'endtoend-ui'
                 - 'all'
                 - 'endtoend-all'
+                - 'upgrade'
             description: |
                 Be aware that the all TEST_TYPE will last for more than 4-5 hours
         - string:
