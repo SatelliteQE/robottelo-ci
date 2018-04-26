@@ -75,7 +75,7 @@
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
-            - project: 'automation-{satellite_version}-tier1-{os}'
+            - project: 'automation-{satellite_version}-trigger-tiers-{os}'
               predefined-parameters: |
                 SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
                 SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
@@ -97,15 +97,48 @@
         - satellite6-automation-mails
         - satellite6-automation-archiver
 
+
+- job-template:
+    name: 'automation-{satellite_version}-trigger-tiers-{os}'
+    project-type: multijob
+    node: sat6-rhel7
+    build-discarder:
+        num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    wrappers:
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                DISTRO={os}
+    builders:
+        - multijob:
+            name: PhaseOne
+            condition: UNSTABLE
+            projects:
+              - name: 'automation-{satellite_version}-tier1-{os}'
+                current-parameters: true
+              - name: 'automation-{satellite_version}-tier2-{os}'
+                current-parameters: true
+              - name: 'automation-{satellite_version}-tier3-{os}'
+                current-parameters: true
+        - multijob:
+            name: PhaseTwo
+            condition: UNSTABLE
+            projects:
+              - name: 'report-automation-results-{satellite_version}-{os}'
+                predefined-parameters: |
+                  BUILD_LABEL=${{BUILD_LABEL}}
+              - name: 'report-consolidated-coverage-{satellite_version}-{os}'
+                current-parameters: true
+
+
 - job-template:
     name: 'automation-{satellite_version}-tier1-{os}'
     node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     properties:
-        - satellite6-build_blocker:
-            satellite_version: "{satellite_version}"
-            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -135,11 +168,14 @@
             sequential_results: "tier1-sequential-results.xml"
             satellite_version: "{satellite_version}"
             os: "{os}"
-        - trigger-builds:
-            - project: 'satellite6-manifest-downloader'
-        - trigger-builds:
-            - project: 'automation-{satellite_version}-tier2-{os}'
-              current-parameters: true
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[1234])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'automation-{satellite_version}-tier4-{os}'
+                      current-parameters: true
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[1234])
@@ -168,9 +204,6 @@
     build-discarder:
         num-to-keep: 16
     properties:
-        - satellite6-build_blocker:
-            satellite_version: "{satellite_version}"
-            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -200,11 +233,14 @@
             sequential_results: "tier2-sequential-results.xml"
             satellite_version: "{satellite_version}"
             os: "{os}"
-        - trigger-builds:
-            - project: 'satellite6-manifest-downloader'
-        - trigger-builds:
-            - project: 'automation-{satellite_version}-tier3-{os}'
-              current-parameters: true
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[1234])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'automation-{satellite_version}-destructive-{os}'
+                      current-parameters: true
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -218,9 +254,6 @@
     build-discarder:
         num-to-keep: 16
     properties:
-        - satellite6-build_blocker:
-            satellite_version: "{satellite_version}"
-            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -250,11 +283,6 @@
             sequential_results: "tier3-sequential-results.xml"
             satellite_version: "{satellite_version}"
             os: "{os}"
-        - trigger-builds:
-            - project: 'satellite6-manifest-downloader'
-        - trigger-builds:
-            - project: 'automation-{satellite_version}-tier4-{os}'
-              current-parameters: true
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -268,9 +296,6 @@
     build-discarder:
         num-to-keep: 16
     properties:
-        - satellite6-build_blocker:
-            satellite_version: "{satellite_version}"
-            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -299,16 +324,6 @@
             foreman_results: "foreman-results.xml"
             satellite_version: "{satellite_version}"
             os: "{os}"
-        - trigger-builds:
-            - project: 'satellite6-manifest-downloader'
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[234])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: 'automation-{satellite_version}-destructive-{os}'
-                      current-parameters: true
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-archiver
@@ -333,9 +348,6 @@
     build-discarder:
         num-to-keep: 16
     properties:
-        - satellite6-build_blocker:
-            satellite_version: "{satellite_version}"
-            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -365,12 +377,6 @@
             sequential_results: "tier4-sequential-results.xml"
             satellite_version: "{satellite_version}"
             os: "{os}"
-        - trigger-builds:
-            - project: 'satellite6-manifest-downloader'
-        - trigger-builds:
-            - project: 'report-automation-results-{satellite_version}-{os}'
-              predefined-parameters: |
-                  BUILD_LABEL=${{BUILD_LABEL}}
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[1234])
@@ -392,9 +398,6 @@
     build-discarder:
         num-to-keep: 16
     properties:
-        - satellite6-build_blocker:
-            satellite_version: "{satellite_version}"
-            os: "{os}"
         - build-discarder:
             num-to-keep: 16
     parameters:
@@ -423,19 +426,6 @@
             foreman_results: "foreman-results.xml"
             satellite_version: "{satellite_version}"
             os: "{os}"
-        - conditional-step:
-            condition-kind: and
-            condition-operands:
-                - condition-kind: regex-match
-                  regex: (rhel7)
-                  label: ${{ENV,var="DISTRO"}}
-                - condition-kind: regex-match
-                  regex: (6\.[234])
-                  label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: 'report-consolidated-coverage-{satellite_version}-{os}'
-                      current-parameters: true
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -1335,6 +1325,7 @@
         - 'polarion-test-run-{satellite_version}-{os}'
         - 'report-automation-results-{satellite_version}-{os}'
         - 'report-consolidated-coverage-{satellite_version}-{os}'
+        - 'automation-{satellite_version}-trigger-tiers-{os}'
 
 
 - project:
