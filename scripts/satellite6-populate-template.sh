@@ -216,7 +216,7 @@ if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
     create-repo "${RHEL6_TOOLS_PRD}" "${RHEL6_TOOLS_REPO}" "${RHEL6_TOOLS_URL}"
     create-repo "${RHEL7_TOOLS_PRD}" "${RHEL7_TOOLS_REPO}" "${RHEL7_TOOLS_URL}"
     create-repo "${SAT6C7_PRODUCT}" "${CAPSULE7_REPO}" "${CAPSULE7_URL}"
-    if [ "${SAT_VERSION}" != "6.3" ]; then
+    if [ "${SAT_VERSION}" != "6.3" ] && [ "${SAT_VERSION}" != "6.4" ]; then
         create-repo "${SAT6C6_PRODUCT}" "${CAPSULE6_REPO}" "${CAPSULE6_URL}"
     fi
 fi
@@ -293,7 +293,7 @@ fi
 # Add both RHEL6 and RHEL7 Capsule Activation keys.
 SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
 if [ "${POPULATE_CLIENTS_ARCH}" = "true" ]; then
-    SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Capsule Server" |  awk -F "," '{print $1}' | grep -vi id)
+    SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Capsule Server (Capsule Server only, RHEL not included)" |  awk -F "," '{print $1}' | grep -vi id)
 fi
 if [ "${RHELOS}" = "7" ]; then
 
@@ -342,7 +342,7 @@ satellite_runner subnet create --name "${SUBNET_NAME}" --network "${SUBNET_RANGE
 satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_LIBVIRT}" --provider Libvirt --url "${LIBVIRT_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --set-console-password false
 
 # Create Ovirt CR
-if [ "${SAT_VERSION}" = "6.3" ]; then
+if [ "${SAT_VERSION}" = "6.3" ] && [ "${SAT_VERSION}" = "6.4" ]; then
     satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${RHEV_DATACENTER_UUID}"
 else
     satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --uuid "${RHEV_DATACENTER_UUID}"
@@ -414,7 +414,7 @@ else
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-7'
 fi
 
-if [ "${SAT_VERSION}" = "6.3" ]; then
+if [ "${SAT_VERSION}" = "6.3" ] && [ "${SAT_VERSION}" = "6.4" ]; then
     RHEL7_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel7 default content"' | cut -d ',' -f1 | grep -vi 'id')
     RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel6 default content"' | cut -d ',' -f1 | grep -vi 'id')
 
