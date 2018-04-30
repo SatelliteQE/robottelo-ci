@@ -492,11 +492,11 @@
     builders:
         - shell: rm -f *.xml
         - copyartifact:
-            project: 'automation-upgraded-{satellite_version}-tier1-{os}'
+            project: 'automation-upgraded-{satellite_version}-all-tiers-{os}'
             filter: '*-results.xml'
             which-build: last-successful
         - copyartifact:
-            project: 'automation-upgraded-{satellite_version}-tier2-{os}'
+            project: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
             filter: '*-results.xml'
             which-build: last-successful
         - satellite6-automation-reports-builders
@@ -754,7 +754,7 @@
             name: ROBOTTELO_WORKERS
             default: '8'
             description: |
-                Number of workers to use while running robottelo tier1 test suite
+                Number of workers to use while running robottelo all tiers test suite
                 after the upgrade.
         - bool:
             name: ZSTREAM_UPGRADE
@@ -875,7 +875,7 @@
             name: ROBOTTELO_WORKERS
             default: '8'
             description: |
-                Number of workers to use while running robottelo tier1 test suite
+                Number of workers to use while running robottelo all tiers test suite
                 after the upgrade.
         - bool:
             name: ZSTREAM_UPGRADE
@@ -1009,7 +1009,7 @@
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
-            - project: 'automation-upgraded-{satellite_version}-tier1-{os}'
+            - project: 'automation-upgraded-{satellite_version}-all-tiers-{os}'
               current-parameters: true
     publishers:
         - satellite6-automation-mails
@@ -1019,7 +1019,7 @@
 
 - job-template:
     disabled: false
-    name: 'automation-upgraded-{satellite_version}-tier1-{os}'
+    name: 'automation-upgraded-{satellite_version}-all-tiers-{os}'
     node: sat6-rhel7
     build-discarder:
         num-to-keep: 16
@@ -1042,7 +1042,7 @@
         - inject:
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
-                ENDPOINT=tier1,tier2,tier3
+                ENDPOINT=all-tiers
                 OS={os}
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
@@ -1051,7 +1051,7 @@
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
-            - project: 'automation-upgraded-{satellite_version}-tier2-{os}'
+            - project: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
               current-parameters: true
     publishers:
         - satellite6-automation-mails
@@ -1060,7 +1060,7 @@
 
 - job-template:
     disabled: false
-    name: 'automation-upgraded-{satellite_version}-tier2-{os}'
+    name: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
     node: sat6-rhel7
     build-discarder:
         num-to-keep: 16
@@ -1356,8 +1356,8 @@
         - 'upgrade-phase-{satellite_version}-{os}'
         - 'automation-upgraded-{satellite_version}-existence-tests-{os}'
         - 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
-        - 'automation-upgraded-{satellite_version}-tier1-{os}'
-        - 'automation-upgraded-{satellite_version}-tier2-{os}'
+        - 'automation-upgraded-{satellite_version}-all-tiers-{os}'
+        - 'automation-upgraded-{satellite_version}-end-to-end-{os}'
         - 'polarion-upgraded-test-run-{satellite_version}-{os}'
         - 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
 
