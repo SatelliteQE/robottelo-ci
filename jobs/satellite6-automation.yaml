@@ -1100,7 +1100,7 @@
             - project: 'polarion-upgraded-test-run-{satellite_version}-{os}'
               predefined-parameters: |
                   TEST_RUN_ID=$BUILD_LABEL {os} upgrade
-                  POLARION_RELEASE=$POLARION_RELEASE
+                  POLARION_RELEASE=$POLARION_RELEASE upgrade
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
