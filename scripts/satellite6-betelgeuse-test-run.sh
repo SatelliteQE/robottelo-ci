@@ -17,19 +17,12 @@ else
     exit 1
 fi
 
-# Change Test plan name for upgrade
-if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
-    TEST_PLAN_NAME = "${TEST_RUN_ID} upgrade"
-else
-    TEST_PLAN_NAME = "${TEST_RUN_ID}"
-fi
-
 # Create a new iteration for the current run
 if [ -n "$POLARION_RELEASE" ]; then
-    betelgeuse test-plan --name "${TEST_PLAN_NAME}" --parent-name "${POLARION_RELEASE}" \
+    betelgeuse test-plan --name "${TEST_RUN_ID}" --parent-name "${POLARION_RELEASE}" \
         --plan-type iteration "${POLARION_PROJECT}"
 else
-    betelgeuse test-plan --name "${TEST_PLAN_NAME}" \
+    betelgeuse test-plan --name "${TEST_RUN_ID}" \
         --plan-type iteration "${POLARION_PROJECT}"
 fi
 
