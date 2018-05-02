@@ -8,5 +8,5 @@
             - "upgrade-phase-{satellite_version}-{os}"
             - "automation-upgraded-{satellite_version}-existence-tests-{os}"
             - "automation-postupgrade-{satellite_version}-scenario-tests-{os}"
-            - "automation-upgraded-{satellite_version}-tier1-{os}"
-            - "automation-upgraded-{satellite_version}-tier2-{os}"
+            - "automation-upgraded-{satellite_version}-all-tiers-{os}"
+            - "automation-upgraded-{satellite_version}-end-to-end-{os}"

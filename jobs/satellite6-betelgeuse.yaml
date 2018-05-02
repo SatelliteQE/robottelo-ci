@@ -165,11 +165,11 @@
                 SATELLITE_VERSION={satellite_version}
     builders:
         - copyartifact:
-            project: automation-upgraded-{satellite_version}-tier1-{os}
+            project: automation-upgraded-{satellite_version}-all-tiers-{os}
             filter: '*-results.xml'
             which-build: upstream-build
         - copyartifact:
-            project: automation-upgraded-{satellite_version}-tier2-{os}
+            project: automation-upgraded-{satellite_version}-end-to-end-{os}
             filter: '*-results.xml'
             which-build: upstream-build
         - shining-panda:
