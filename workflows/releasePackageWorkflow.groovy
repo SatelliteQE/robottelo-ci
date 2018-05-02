@@ -167,9 +167,9 @@ pipeline {
                         dir(repo_name) {
                             try {
 
-                                withRVM(['gem install bundler'])
-                                withRVM(['bundle install'])
-                                withRVM(["FOREMAN_BRANCH=${version_map['foreman_branch']} rake pkg:generate_source"])
+                                withRVM(['gem install bundler'], 2.2)
+                                withRVM(['bundle install'], 2.2)
+                                withRVM(["FOREMAN_BRANCH=${version_map['foreman_branch']} rake pkg:generate_source"], 2.2)
 
                                 sh 'ls pkg/*.tar.* > ../tool_belt/artifact'
 
