@@ -29,6 +29,7 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.4'
                 - '6.3'
                 - '6.2'
             description: "Currently this job populates completely for 6.2 and 6.3 only. As a lot of hammer-cli options differ for 6.1."
