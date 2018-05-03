@@ -54,6 +54,18 @@
         - string:
             name: MANIFEST_LOCATION_URL
             description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
+        - choice:
+            name: POST_INSTALL
+            choices:
+                - 'NO_INSTALL'
+                - 'CONFIGURE_CAPSULE'
+            description: |
+                Specify whether you want to Install & Configure Capsule.
+        - string:
+            name: CAPSULE_SERVER_HOSTNAME
+            description: |
+                Provide the Capsule Server Hostname.
+                Needed only if POST_INSTALL is set to 'CONFIGURE_CAPSULE'.
         - string:
             name: SUBNET_RANGE
             default: 192.168.100.0
@@ -146,3 +158,16 @@
                 !include-raw:
                     - 'scripts/satellite6-configure.sh'
                     - 'scripts/satellite6-configure-variables.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (CONFIGURE_CAPSULE)
+            label: ${ENV,var="POST_INSTALL"}
+            steps:
+                - trigger-builds:
+                    - project: capsule-installer
+                      predefined-parameters: |
+                        SATELLITE_SERVER_HOSTNAME=${SERVER_HOSTNAME}
+                        CAPSULE_SERVER_HOSTNAME=${CAPSULE_SERVER_HOSTNAME}
+                        SATELLITE_VERSION=${SATELLITE_VERSION}
+                        PROVISIONING_SETUP=true
+                        PARTITION_DISK=true

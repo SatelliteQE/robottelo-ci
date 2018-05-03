@@ -1,7 +1,5 @@
 pip install -r requirements.txt
 
-export PYTHONHTTPSVERIFY=0
-
 cat > jenkins_jobs.ini <<EOF
 [job_builder]
 keep_descriptions=False
