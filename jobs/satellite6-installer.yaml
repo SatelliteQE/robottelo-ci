@@ -224,7 +224,7 @@
                     - 'installer.sh'
         - conditional-step:
             condition-kind: regex-match
-            regex: (POPULATE_SAT6)
+            regex: (POPULATE_SAT6|CONFIGURE_CAPSULE)
             label: ${ENV,var="POST_INSTALL"}
             steps:
                 - trigger-builds:
@@ -235,24 +235,4 @@
                         SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}
                         MANIFEST_LOCATION_URL=${MANIFEST_LOCATION_URL}
                         CAPSULE_SERVER_HOSTNAME=${CAPSULE_SERVER_HOSTNAME}
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (CONFIGURE_CAPSULE)
-            label: ${ENV,var="POST_INSTALL"}
-            steps:
-                - trigger-builds:
-                    - project: satellite6-populate
-                      predefined-parameters: |
-                        SERVER_HOSTNAME=${SERVER_HOSTNAME}
-                        SATELLITE_VERSION=${SATELLITE_VERSION}
-                        SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}
-                        MANIFEST_LOCATION_URL=${MANIFEST_LOCATION_URL}
-                        CAPSULE_SERVER_HOSTNAME=${CAPSULE_SERVER_HOSTNAME}
-                - trigger-builds:
-                    - project: capsule-installer
-                      predefined-parameters: |
-                        SATELLITE_SERVER_HOSTNAME=${SERVER_HOSTNAME}
-                        CAPSULE_SERVER_HOSTNAME=${CAPSULE_SERVER_HOSTNAME}
-                        SATELLITE_VERSION=${SATELLITE_VERSION}
-                        PROVISIONING_SETUP=true
-                        PARTITION_DISK=true
+                        POST_INSTALL=${POST_INSTALL}
