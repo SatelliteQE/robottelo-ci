@@ -1,7 +1,7 @@
 - job:
     disabled: false
     name: polarion-test-case
-    node: sat6-rhel7
+    node: sat6-rhel
     scm:
         - git:
             url: https://github.com/SatelliteQE/robottelo.git
@@ -37,7 +37,7 @@
 - job-template:
     disabled: false
     name: polarion-test-run-{satellite_version}-{os}
-    node: sat6-rhel7
+    node: sat6-{os}
     scm:
         - git:
             url: https://github.com/SatelliteQE/robottelo.git
@@ -99,7 +99,7 @@
 - job:
     disabled: false
     name: polarion-upgrade-test-case
-    node: sat6-rhel7
+    node: sat6-{os}
     scm:
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
@@ -135,7 +135,7 @@
 - job-template:
     disabled: false
     name: polarion-upgraded-test-run-{satellite_version}-{os}
-    node: sat6-rhel7
+    node: sat6-{os}
     scm:
         - git:
             url: https://github.com/SatelliteQE/robottelo.git
