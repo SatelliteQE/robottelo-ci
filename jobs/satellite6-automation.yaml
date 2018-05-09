@@ -1110,7 +1110,7 @@
     disabled: false
     name: trigger-satellite-{satellite_version}
     description: Triggers automation for Satellite 6
-    node: sat6-{os}
+    node: sat6-rhel
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -1381,7 +1381,7 @@
     disabled: false
     name: trigger-upstream-nightly
     description: Triggers automation for Satellite 6 upstream using katello-deploy.
-    node: sat6-{os}
+    node: sat6-rhel
     parameters:
         - string:
             name: ROBOTTELO_WORKERS
