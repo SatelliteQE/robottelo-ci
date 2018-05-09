@@ -60,6 +60,7 @@
             name: POST_INSTALL
             choices:
                 - 'NO_INSTALL'
+                - 'POPULATE_SAT6'
                 - 'CONFIGURE_CAPSULE'
             description: |
                 Specify whether you want to Install & Configure Capsule.
