@@ -1,0 +1,31 @@
+- builder:
+    name: satellite6-standalone-automation-builders
+    builders:
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[12])
+            label: ${ENV,var="SATELLITE_VERSION"}
+            steps:
+                - shining-panda:
+                    build-environment: virtualenv
+                    python-version: System-CPython-2.7
+                    clear: true
+                    nature: shell
+                    command:
+                        !include-raw:
+                            - 'satellite6-standalone-automation.sh'
+                            - 'satellite6-foreman-debug.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[34]|upstream-nightly)
+            label: ${ENV,var="SATELLITE_VERSION"}
+            steps:
+                - shining-panda:
+                    build-environment: virtualenv
+                    python-version: System-CPython-3.6
+                    clear: true
+                    nature: shell
+                    command:
+                        !include-raw:
+                            - 'satellite6-standalone-automation.sh'
+                            - 'satellite6-foreman-debug.sh'

@@ -151,7 +151,7 @@
     builders:
         - shining-panda:
             build-environment: virtualenv
-            python-version: System-CPython-2.7
+            python-version: System-CPython-3.6
             clear: true
             nature: shell
             command:
