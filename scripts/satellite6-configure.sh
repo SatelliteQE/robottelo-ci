@@ -11,6 +11,15 @@ else
     OS_URL="http://${OSP_HOSTNAME}:5000/v2.0/tokens"
 fi
 
+if [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL' ]; then
+    export SATELLITE_DISTRIBUTION="INTERNAL"
+elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL REPOFILE' ]; then
+    export SATELLITE_DISTRIBUTION="INTERNAL"
+elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL AK' ]; then
+    export SATELLITE_DISTRIBUTION="INTERNAL"
+fi
+
+
 if [[ -n "${POPULATE_CLIENTS_ARCH}" ]]; then
     wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/scripts/satellite6-populate-template.sh
     wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/scripts/satellite6-client-arch-template.sh
