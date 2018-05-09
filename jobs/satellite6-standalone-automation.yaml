@@ -114,15 +114,7 @@
             mask-password-params: true
         - satellite6-sauce-ondemand-wrappers
     builders:
-        - shining-panda:
-            build-environment: virtualenv
-            python-version: System-CPython-2.7
-            clear: true
-            nature: shell
-            command:
-                !include-raw:
-                    - 'satellite6-standalone-automation.sh'
-                    - 'satellite6-foreman-debug.sh'
+        - satellite6-standalone-automation-builders
     publishers:
         - satellite6-automation-publishers
         - satellite6-automation-archiver
