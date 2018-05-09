@@ -49,8 +49,10 @@
             choices:
                 - 'INTERNAL'
                 - 'GA'
+                - 'INTERNAL AK'
+                - 'INTERNAL REPOFILE'
             description: |
-                Depending upon INTERNAL and GA, either DOGFOOD or CDN content is synced.
+                Depending upon Distribution, INTERNAL and/or GA is decided and either DOGFOOD or CDN content is synced.
         - string:
             name: MANIFEST_LOCATION_URL
             description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
