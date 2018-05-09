@@ -11,7 +11,7 @@ cd _build
 
 git clone --depth 1 https://github.com/theforeman/foreman-infra.git
 pushd foreman-infra
-git grep -l '/etc/profile.d/rvm.sh' |xargs sed -i '1 s|^.*$|#!/bin/bash -exl|; s|\. /etc/profile.d/rvm.sh||'
+git grep -l '/etc/profile.d/rvm.sh' | grep -v yaml |xargs sed -i '1 s|^.*$|#!/bin/bash -exl|; s|\. /etc/profile.d/rvm.sh||'
 popd
 
 cd ..
