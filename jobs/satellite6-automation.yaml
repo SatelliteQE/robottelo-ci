@@ -8,7 +8,7 @@
         - satellite6-build_blocker:
             satellite_version: "{satellite_version}"
             os: "{os}"
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -101,7 +101,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-tier1-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     properties:
@@ -159,7 +159,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-tier2-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     properties:
@@ -202,7 +202,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-tier3-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     properties:
@@ -245,7 +245,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-rhai-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     properties:
@@ -304,7 +304,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-tier4-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     properties:
@@ -364,7 +364,7 @@
 - job-template:
     disabled: false
     name: 'automation-{satellite_version}-destructive-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     properties:
@@ -415,7 +415,7 @@
 - job-template:
     disabled: false
     name: 'report-automation-results-{satellite_version}-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     parameters:
       - string:
           name: BUILD_LABEL
@@ -469,7 +469,7 @@
 - job-template:
     disabled: false
     name: 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     parameters:
       - string:
           name: BUILD_LABEL
@@ -514,7 +514,7 @@
 
 - job-template:
     name: 'report-consolidated-coverage-{satellite_version}-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     parameters:
         - satellite6-automation-parameters
     wrappers:
@@ -580,7 +580,7 @@
     description: |
         Quickly up an instance using VLANs for feature and Bug testing. We could use the two new physical hardware which were
         recently procured. This would help fully automate sat6 installation to do Libvirt, RHEVM and Openstack CR Testing.
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -681,7 +681,7 @@
     name: 'capsule-sanity-check-{satellite_version}-{os}'
     description: |
         Quickly up an instance using VLANs for Sanity Check of every build, by provisioning a Host on Libvirt Compute Resource.
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     parameters:
         - string:
             name: BUILD_LABEL
@@ -743,7 +743,7 @@
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
             os: "{os}"
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     parameters:
         - string:
             name: BUILD_LABEL
@@ -820,7 +820,7 @@
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
             os: "{os}"
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     scm:
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
@@ -864,7 +864,7 @@
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
             os: "{os}"
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     parameters:
         - string:
             name: BUILD_LABEL
@@ -933,7 +933,7 @@
 - job-template:
     disabled: false
     name: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     properties:
@@ -980,7 +980,7 @@
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
             os: "{os}"
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     scm:
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
@@ -1020,7 +1020,7 @@
 - job-template:
     disabled: false
     name: 'automation-upgraded-{satellite_version}-all-tiers-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     properties:
@@ -1061,7 +1061,7 @@
 - job-template:
     disabled: false
     name: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
-    node: sat6-{os}
+    node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     properties:
