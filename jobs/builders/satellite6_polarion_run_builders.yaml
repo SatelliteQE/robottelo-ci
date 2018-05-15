@@ -1,0 +1,13 @@
+- builder:
+    name: satellite6-polarion-run-builders
+    builders:
+        - shining-panda:
+            build-environment: virtualenv   
+            name: betelgeuse
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - scripts/satellite6-install-pylarion.sh
+                    - scripts/satellite6-polarion-test-run.sh

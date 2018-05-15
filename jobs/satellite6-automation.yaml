@@ -129,6 +129,9 @@
         - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-automation-builders
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
@@ -149,6 +152,17 @@
                         parameter-name: JUNIT
                         file-pattern: tier1-parallel-results.xml
                         no-files-found-action: FAIL
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[1234])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                  - project: 'polarion-testcase-run-{satellite_version}-tier1-{os}'
+                    predefined-parameters: |
+                      TEST_RUN_ID=$BUILD_LABEL {os}
+                      POLARION_RELEASE=${{POLARION_RELEASE}}
+                      ENDPOINT=${{ENDPOINT}}
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -186,12 +200,26 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
         - satellite6-automation-builders
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier3-{os}'
               current-parameters: true
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[1234])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                  - project: 'polarion-testcase-run-{satellite_version}-tier2-{os}'
+                    predefined-parameters: |
+                      TEST_RUN_ID=$BUILD_LABEL {os}
+                      POLARION_RELEASE=${{POLARION_RELEASE}}
+                      ENDPOINT=${{ENDPOINT}}
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -229,12 +257,26 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
         - satellite6-automation-builders
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
             - project: 'automation-{satellite_version}-tier4-{os}'
               current-parameters: true
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[1234])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                  - project: 'polarion-testcase-run-{satellite_version}-tier3-{os}'
+                    predefined-parameters: |
+                      TEST_RUN_ID=$BUILD_LABEL {os}
+                      POLARION_RELEASE=${{POLARION_RELEASE}}
+                      ENDPOINT=${{ENDPOINT}}
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -349,11 +391,17 @@
                 - trigger-builds:
                     - project: 'automation-{satellite_version}-rhai-{os}'
                       current-parameters: true
-        - trigger-builds:
-            - project: 'polarion-test-run-{satellite_version}-{os}'
-              predefined-parameters: |
-                  TEST_RUN_ID=$BUILD_LABEL {os}
-                  POLARION_RELEASE=$POLARION_RELEASE
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[1234])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'polarion-testcase-run-{satellite_version}-tier4-{os}'
+                      predefined-parameters: |
+                        TEST_RUN_ID=$BUILD_LABEL {os}
+                        POLARION_RELEASE=${{POLARION_RELEASE}}
+                        ENDPOINT=${{ENDPOINT}}
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -1308,6 +1356,10 @@
         - 'automation-{satellite_version}-rhai-{os}'
         - 'automation-{satellite_version}-destructive-{os}'
         - 'polarion-test-run-{satellite_version}-{os}'
+        - 'polarion-testcase-run-{satellite_version}-tier1-{os}'
+        - 'polarion-testcase-run-{satellite_version}-tier2-{os}'
+        - 'polarion-testcase-run-{satellite_version}-tier3-{os}'
+        - 'polarion-testcase-run-{satellite_version}-tier4-{os}'
         - 'report-automation-results-{satellite_version}-{os}'
         - 'report-consolidated-coverage-{satellite_version}-{os}'
 

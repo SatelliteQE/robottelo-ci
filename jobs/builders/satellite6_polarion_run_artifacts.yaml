@@ -1,0 +1,8 @@
+- builder:
+    name: satellite6-polarion-run-artifacts
+    builders:
+        - copyartifact:
+            project: "{job_name}"
+            filter: '*-results.xml'
+            which-build: upstream-build
+
