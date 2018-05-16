@@ -191,6 +191,9 @@ satellite_runner repository-set enable --name="Red Hat Enterprise Linux 6 Server
 satellite_runner repository-set enable --name="Red Hat Enterprise Linux 7 Server (RPMs)" --basearch="x86_64" --releasever="7Server" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
 satellite_runner repository-set enable --name="Red Hat Enterprise Linux 6 Server (RPMs)" --basearch="x86_64" --releasever="6Server" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
 
+# RHSCL repos
+satellite_runner repository-set enable --name="Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server" --basearch="x86_64" --releasever="7Server" --product "Red Hat Software Collections for RHEL Server" --organization-id="${ORG}"
+
 # Satellite6 CDN RPMS
 if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
     # Satellite6 Tools RPMS
@@ -244,6 +247,7 @@ satellite_runner  content-view version promote --content-view='RHEL 6 CV' --orga
 if [ "${RHELOS}" = "7" ]; then
     # Capsule RHEL7
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server'
+    satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Software Collections for RHEL Server' --repository='Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server x86_64 7Server'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product="${RHEL7_TOOLS_PRD}" --repository="${RHEL7_TOOLS_REPO}"
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product="${SAT6C7_PRODUCT}" --repository="${CAPSULE7_REPO}"
     satellite_runner  content-view publish --name='Capsule RHEL 7 CV' --organization-id="${ORG}"
@@ -349,7 +353,7 @@ elif [ "${SAT_VERSION}" == "6.3" ] || [ "${SAT_VERSION}" == "6.4" ]; then
 fi
 
 # Create OpenStack CR
-satellite_runner compute-resource create --name openstack_provider --provider Openstack --url "${OS_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --user "${OS_USERNAME}" --password "${OS_PASSWORD}"
+# satellite_runner compute-resource create --name openstack_provider --provider Openstack --url "${OS_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --user "${OS_USERNAME}" --password "${OS_PASSWORD}"
 
 # Associations
 
@@ -377,7 +381,7 @@ echo "RHEL7 OS ID is: ${RHEL7_OS_ID}"
 RHEL6_OS_ID=$(satellite --csv os list | grep "6" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL6 OS ID is: ${RHEL6_OS_ID}"
 
-if [ "${SAT_VERSION}" = "6.3" ] || [ "${SAT_VERSION}" = "6.4"]; then
+if [ "${SAT_VERSION}" = "6.3" ] || [ "${SAT_VERSION}" = "6.4" ]; then
 
     RHEL7_KS_ID=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 7/ {print $1}')
     echo "RHEL7 KS ID is: ${RHEL7_KS_ID}"
