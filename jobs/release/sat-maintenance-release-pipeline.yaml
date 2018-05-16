@@ -1,6 +1,8 @@
 - job:
     name: sat-maintenance-release-pipeline
     project-type: pipeline
+    triggers:
+      - timed: 'H 06 * * *'
     dsl:
       !include-raw:
         - workflows/maintenance/releasePipeline.groovy
