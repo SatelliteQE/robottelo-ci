@@ -52,7 +52,7 @@ elif [ "${SATELLITE_DISTRIBUTION}" = 'INTERNAL AK' ]; then
     export DISTRIBUTION="satellite6-activationkey"
 fi
 
-fab -D -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
+fab -D -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
 
 echo
 echo "========================================"
