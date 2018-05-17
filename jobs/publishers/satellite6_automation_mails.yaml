@@ -5,7 +5,7 @@
             recipients: ${QE_EMAIL_LIST}
             success: false
             failure: true
+            attach-build-log : true
             subject: 'The Build Number ${BUILD_NUMBER} of JOB ${JOB_NAME} has failed.'
             body: |
                 This build ${BUILD_URL} has failed, may need to fix and re-trigger.
-
