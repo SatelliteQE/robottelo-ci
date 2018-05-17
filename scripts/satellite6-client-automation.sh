@@ -29,7 +29,7 @@ if [ -z "${SERVER_HOSTNAME}" ]; then
     set +e
     fab -D -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
     set -e
-    fab -D -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
+    fab -D -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
     export SERVER_HOSTNAME="${TARGET_IMAGE}.${VM_DOMAIN}"
 fi
 

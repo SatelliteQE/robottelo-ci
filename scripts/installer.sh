@@ -72,7 +72,7 @@ if [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL" ]; then
     fi
 fi
 
-fab -D -H root@${SERVER_HOSTNAME} product_install:${DISTRIBUTION},sat_cdn_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}
+fab -D -H root@${SERVER_HOSTNAME} product_install:${DISTRIBUTION},sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}
 
 if [ ${SETUP_FAKE_MANIFEST_CERTIFICATE} = "true" ]; then
     source config/fake_manifest.conf
