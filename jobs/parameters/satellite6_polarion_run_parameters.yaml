@@ -1,0 +1,10 @@
+- parameter:
+    name: satellite6-polarion-run-parameters
+    parameters:
+        - string:
+            name: TEST_RUN_ID
+            description: |
+                'The resulting test run id is going to be suffixed with tierN '
+                'to differentiate between all tiers.'
+        - string:
+            name: POLARION_RELEASE

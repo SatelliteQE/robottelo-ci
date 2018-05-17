@@ -36,6 +36,141 @@
 
 - job-template:
     disabled: false
+    name: polarion-testcase-run-{satellite_version}-tier1-{os}
+    node: sat6-{satellite_version}
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    properties:
+        - satellite6-polarion-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    parameters:
+        - satellite6-polarion-run-parameters
+    wrappers:
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="TEST_RUN_ID"}}'
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier1
+    builders:
+        - satellite6-polarion-run-artifacts:
+            job_name: automation-{satellite_version}-tier1-{os}
+        - satellite6-polarion-run-builders
+    publishers:
+        - satellite6-automation-mails
+
+
+- job-template:
+    disabled: false
+    name: polarion-testcase-run-{satellite_version}-tier2-{os}
+    node: sat6-{satellite_version}
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    properties:
+        - satellite6-polarion-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    parameters:
+        - satellite6-polarion-run-parameters
+    wrappers:
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="TEST_RUN_ID"}}'
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier2
+    builders:
+        - satellite6-polarion-run-artifacts:
+            job_name: automation-{satellite_version}-tier2-{os}
+        - satellite6-polarion-run-builders
+    publishers:
+        - satellite6-automation-mails
+
+
+- job-template:
+    disabled: false
+    name: polarion-testcase-run-{satellite_version}-tier3-{os}
+    node: sat6-{satellite_version}
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    properties:
+        - satellite6-polarion-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    parameters:
+        - satellite6-polarion-run-parameters
+    wrappers:
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="TEST_RUN_ID"}}'
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier3
+    builders:
+        - satellite6-polarion-run-artifacts:
+            job_name: automation-{satellite_version}-tier3-{os}
+        - satellite6-polarion-run-builders
+    publishers:
+        - satellite6-automation-mails
+
+
+- job-template:
+    disabled: false
+    name: polarion-testcase-run-{satellite_version}-tier4-{os}
+    node: sat6-{satellite_version}
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    properties:
+        - satellite6-polarion-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    parameters:
+        - satellite6-polarion-run-parameters
+    wrappers:
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="TEST_RUN_ID"}}'
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier4
+    builders:
+        - satellite6-polarion-run-artifacts:
+            job_name: automation-{satellite_version}-tier4-{os}
+        - satellite6-polarion-run-builders
+    publishers:
+        - satellite6-automation-mails
+
+- job-template:
+    disabled: false
     name: polarion-test-run-{satellite_version}-{os}
     node: sat6-{satellite_version}
     scm:
