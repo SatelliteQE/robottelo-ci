@@ -56,6 +56,8 @@
                 'to differentiate between all tiers.'
         - string:
             name: POLARION_RELEASE
+        - string:
+            name: ENDPOINT
     wrappers:
         - inject-passwords:
             global: true
@@ -66,22 +68,6 @@
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
     builders:
-        - copyartifact:
-            project: automation-{satellite_version}-tier1-{os}
-            filter: '*-results.xml'
-            which-build: upstream-build
-        - copyartifact:
-            project: automation-{satellite_version}-tier2-{os}
-            filter: '*-results.xml'
-            which-build: upstream-build
-        - copyartifact:
-            project: automation-{satellite_version}-tier3-{os}
-            filter: '*-results.xml'
-            which-build: upstream-build
-        - copyartifact:
-            project: automation-{satellite_version}-tier4-{os}
-            filter: '*-results.xml'
-            which-build: upstream-build
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse

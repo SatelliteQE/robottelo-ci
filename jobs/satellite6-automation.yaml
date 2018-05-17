@@ -128,7 +128,15 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
         - satellite6-automation-builders
+        - satellite6-polarion-testrun-builders:
+            parallel_results: "tier1-parallel-results.xml"
+            sequential_results: "tier1-sequential-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
@@ -186,7 +194,15 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
         - satellite6-automation-builders
+        - satellite6-polarion-testrun-builders:
+            parallel_results: "tier2-parallel-results.xml"
+            sequential_results: "tier2-sequential-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
@@ -229,7 +245,15 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
         - satellite6-automation-builders
+        - satellite6-polarion-testrun-builders:
+            parallel_results: "tier3-parallel-results.xml"
+            sequential_results: "tier3-sequential-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
@@ -331,10 +355,15 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
-        - satellite6-automation-builders
         - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
         - inject:
             properties-file: build_env.txt
+        - satellite6-automation-builders
+        - satellite6-polarion-testrun-builders:
+            parallel_results: "tier4-parallel-results.xml"
+            sequential_results: "tier4-sequential-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - trigger-builds:
@@ -349,11 +378,6 @@
                 - trigger-builds:
                     - project: 'automation-{satellite_version}-rhai-{os}'
                       current-parameters: true
-        - trigger-builds:
-            - project: 'polarion-test-run-{satellite_version}-{os}'
-              predefined-parameters: |
-                  TEST_RUN_ID=$BUILD_LABEL {os}
-                  POLARION_RELEASE=$POLARION_RELEASE
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
