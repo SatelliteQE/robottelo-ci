@@ -15,7 +15,7 @@
                         !include-raw-escape: 'satellite6-automation-report.sh'
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[34])
+            regex: (6\.[34]|upstream-nightly)
             label: ${ENV,var="SATELLITE_VERSION"}
             steps:
                 - shining-panda:
