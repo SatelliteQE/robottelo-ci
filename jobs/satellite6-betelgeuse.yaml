@@ -14,7 +14,7 @@
             mask-password-params: true
         - inject:
             properties-content: |
-                BETELGEUSE_TC_PATH=tests/foreman/api tests/foreman/cli tests/foreman/ui tests/foreman/longrun tests/foreman/sys tests/foreman/installer
+                BETELGEUSE_TC_PATH=tests/foreman/api tests/foreman/cli tests/foreman/ui tests/foreman/longrun tests/foreman/sys tests/foreman/installer tests/foreman/rhai
                 BETELGEUSE_AUTOMATION_PROJECT=robottelo
                 BETELGEUSE_RESPONSE_PROPERTY=satellite6=testcases
     builders:

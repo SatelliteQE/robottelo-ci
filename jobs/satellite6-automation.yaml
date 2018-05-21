@@ -296,7 +296,14 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
         - satellite6-automation-builders
+        - satellite6-polarion-testcase-run-builders:
+            foreman_results: "foreman-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
         - conditional-step:
@@ -415,7 +422,14 @@
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
     builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
         - satellite6-automation-builders
+        - satellite6-polarion-testcase-run-builders:
+            foreman_results: "foreman-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - conditional-step:
             condition-kind: and
             condition-operands:
