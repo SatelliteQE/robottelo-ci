@@ -699,6 +699,8 @@
               predefined-parameters: |
                 SATELLITE_SERVER_ID=${{SERVER_ID}}
                 BUILD_LABEL=${{BUILD_LABEL}}
+    publishers:
+        - satellite6-automation-mails
 
 
 - job-template:
@@ -758,6 +760,8 @@
             name: '#${{BUILD_NUMBER}} ${{ENV,var="PROVISIONING_ID"}} ${{ENV,var="SERVER_ID"}} ${{ENV,var="BUILD_LABEL"}}'
     builders:
         - satellite6-capsule-sanity-check-builders
+    publishers:
+        - satellite6-automation-mails
 
 - job-template:
     disabled: false
