@@ -1,0 +1,6 @@
+- publisher:
+    name: foreman-maintain-automation-archiver
+    publishers:
+        - archive:
+            artifacts: 'testfm.log,*-results.xml'
+            allow-empty: true

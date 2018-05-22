@@ -1,0 +1,85 @@
+- job:
+    name: 'foreman-maintain-automation'
+    concurrent: true
+    display-name: 'Foreman-Maintain automation'
+    description: |
+        <p> Triggers automation for <strong>Foreman-Maintain</strong> Testing.</p>
+        <p> Satellite server should have foreman-maintain Installed unless TEST_UPSTREAM parameter is checked.</p>
+        <p>Please make sure to add the following <strong>ssh key</strong> to your server so that this <strong>Jenkins</strong> job can access it.</p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+    node: sat6-rhel7
+    parameters:
+        - choice:
+            name: PRODUCT
+            description: "Select product where you want to test foreman-maintain."
+            choices:
+                - 'satellite'
+                - 'capsule'
+        - string:
+            name: SERVER_HOSTNAME
+            description: "FQDN for your satellite/Capsule server where you want to test foreman-maintain. Mandatory."
+        - string:
+            name: BUILD_LABEL
+            description: "Label you want to set for job."
+        - bool:
+            name: TEST_UPSTREAM
+            description: "If checked, will use foreman-maintain from upstream by cloning repo https://github.com/theforeman/foreman_maintain."
+        - bool:
+            name: TEST_OPEN_PR
+            description: "If checked, will use foreman-maintain upstream open PRs for testing."
+        - string:
+            name: PR_NUMBER
+            description: "Mandatory if TEST_OPEN_PR is checked."
+        - string:
+            name: BRANCH_NAME
+            description: "Mandatory if TEST_OPEN_PR is checked."
+        - string:
+            name: PYTEST_MARKS
+            description: "Specify the py.test marks you want to run or skip when specifying PYTEST_OPTIONS. If product selected is capsule, PYTEST_MARKS value is 'capsule' by default."
+        - string:
+            name: PYTEST_OPTIONS
+            description: "If you know how to run py.test and want to provide the options for a more granular testing you can specify the options here. For example tests/test_health.py -k test_positive_check_hammer_ping."
+        - string:
+            name: TestFM_REPO
+            default: https://github.com/SatelliteQE/testfm.git
+            description: "You can override this to your TestFM repo, if needed."
+        - string:
+            name: TestFM_BRANCH
+            default: master
+            description: "You can override this to any branch. Example: fix_test_health."
+    scm:
+        - git:
+            url: ${TestFM_REPO}
+            branches:
+                - origin/${TestFM_BRANCH}
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - build-name:
+            name: '#${BUILD_NUMBER}  ${ENV,var="SERVER_HOSTNAME"}  ${ENV,var="BUILD_LABEL"}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-2.7
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'scripts/foreman-maintain-automation.sh'
+    publishers:
+        - satellite6-automation-publishers
+        - foreman-maintain-automation-archiver
+        - email-ext:
+            recipients: ${BUILD_USER_EMAIL}
+            success: true
+            failure: true
+            subject: 'Your Foreman-Maintain automation finished'
+            body: |
+
+                Build URL: ${BUILD_URL}
