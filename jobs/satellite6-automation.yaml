@@ -1223,7 +1223,7 @@
                         PROXY_MODE=${{PROXY_MODE}}
                         BUILD_LABEL=${{BUILD_LABEL}}
                         EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
-                        IDM_REALM=${{IDM_REALM}}
+                        IDM_REALM=false
                         IMAGE=${{RHEL6_IMAGE}}
                         SAUCE_BROWSER=${{SAUCE_BROWSER}}
                         SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
