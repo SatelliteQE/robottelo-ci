@@ -188,7 +188,7 @@ pipeline {
                                 options: [
                                     "--dir ../${repo_name}",
                                     "--type ${sourceType}",
-                                    "--output-file artifact"
+                                    "--output-file artifacts"
                                 ]
                             )
                         }
