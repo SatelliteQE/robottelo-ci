@@ -205,26 +205,25 @@ pipeline {
                     def artifact_path = ''
 
                     dir('tool_belt') {
-                        artifact = readFile('artifact').replace('"', '').trim()
+                        artifacts = readJSON(file: 'artifacts')
                     }
 
                     dir(repo_name) {
-                        artifact_path = sh(returnStdout: true, script: 'pwd').trim()
-                        artifact_path = artifact_path + '/' + artifact
+                        artifact_base_path = sh(returnStdout: true, script: 'pwd').trim()
                     }
 
-                    runPlaybook {
-                        playbook = 'playbooks/upload_package.yml'
-                        extraVars = [
-                            'artifact': artifact_path,
-                            'repo': version_map['repo'],
-                            'product': 'Source Files',
-                            'organization': 'Sat6-CI'
-                        ]
-                    }
+                    for (i = 0; i < artifacts.size(); i += 1) {
+                        artifact_path = artifact_base_path + '/' + artifacts[i]
 
-                    dir('tool_belt') {
-                        sh "rm ${artifact_path}"
+                        runPlaybook {
+                            playbook = 'playbooks/upload_package.yml'
+                            extraVars = [
+                                'artifact': artifact_path,
+                                'repo': version_map['repo'],
+                                'product': 'Source Files',
+                                'organization': 'Sat6-CI'
+                            ]
+                        }
                     }
                 }
             }
