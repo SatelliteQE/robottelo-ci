@@ -7,6 +7,6 @@
             failure: true
             attach-build-log : true
             fixed-unhealthy: true
-            subject: 'The Build Number ${BUILD_NUMBER} of JOB ${JOB_NAME} has failed.'
+            subject: 'The Build Number ${BUILD_NUMBER} of JOB ${JOB_NAME} is ${BUILD_STATUS}.'
             body: |
-                This build ${BUILD_URL} has failed, may need to fix and re-trigger.
+                This build ${BUILD_URL} is ${BUILD_STATUS}. If failed, may need to fix and re-trigger.
