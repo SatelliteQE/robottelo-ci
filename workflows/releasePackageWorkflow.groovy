@@ -171,7 +171,8 @@ pipeline {
                                 withRVM(['bundle install'], 2.2)
                                 withRVM(["FOREMAN_BRANCH=${version_map['foreman_branch']} rake pkg:generate_source"], 2.2)
 
-                                sh 'ls pkg/*.tar.* > ../tool_belt/artifact'
+                                sources = sh(returnStdout: true, script: "ls pkg/*.tar.*").trim().split()
+                                writeYaml(file: '../tool_belt/artifacts', data: sources.toList())
 
                             } finally {
 
@@ -205,7 +206,7 @@ pipeline {
                     def artifact_path = ''
 
                     dir('tool_belt') {
-                        artifacts = readJSON(file: 'artifacts')
+                        artifacts = readYaml(file: 'artifacts')
                     }
 
                     dir(repo_name) {
