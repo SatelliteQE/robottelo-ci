@@ -1,0 +1,54 @@
+- job:
+    disabled: false
+    name: 'satellite6-discovery-remaster'
+    display-name: 'Satellite6-Discovery-Remaster'
+    description: |
+        Update the discovery images using discovery-remaster.
+    node: sat6-rhel7
+    parameters:
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.4'
+                - '6.3'
+                - '6.2'
+                - '6.1'
+            description: "Select version of satellite for which discovery-image need to create."
+        - choice:
+            name: DISTRO
+            choices:
+                - 'rhel7'
+                - 'rhel6'
+            description: "Select distribution of operating system"
+        - choice:
+            name: ENDPOINT
+            choices:
+                - 'tier3'
+                - 'tier2'
+                - 'tier1'
+                - 'tier4'
+                - 'destructive'
+            description: "Select endpoint. Currently supports only for tier3."
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-3.6
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'satellite6-discovery-remaster.sh'
+    publishers:
+        - satellite6-automation-mails
