@@ -2,9 +2,14 @@
     name: satellite6-consolidated-reports-builders
     builders:
         - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[12])
-            label: ${ENV,var="SATELLITE_VERSION"}
+            condition-kind: and
+            condition-operands:
+                - condition-kind: regex-match
+                  regex: (rhel7)
+                  label: ${ENV,var="DISTRO"}
+                - condition-kind: regex-match
+                  regex: (6\.[12])
+                  label: ${ENV,var="SATELLITE_VERSION"}
             steps:
                 - shining-panda:
                     build-environment: virtualenv
@@ -12,7 +17,7 @@
                     clear: true
                     nature: shell
                     command:
-                        !include-raw-escape:
+                        !include-raw:
                             - 'pip-install-pycurl.sh'
                             - 'satellite6-automation-source.sh'
                             - 'satellite6-automation-instances.sh'
@@ -20,9 +25,14 @@
                             - 'satellite6-configure-sonarqube.sh'
                             - 'satellite6-graceful-shutdown.sh'
         - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[34])
-            label: ${ENV,var="SATELLITE_VERSION"}
+            condition-kind: and
+            condition-operands:
+                - condition-kind: regex-match
+                  regex: (rhel7)
+                  label: ${ENV,var="DISTRO"}
+                - condition-kind: regex-match
+                  regex: (6\.[34])
+                  label: ${ENV,var="SATELLITE_VERSION"}
             steps:
                 - shining-panda:
                     build-environment: virtualenv
@@ -30,7 +40,7 @@
                     clear: true
                     nature: shell
                     command:
-                        !include-raw-escape:
+                        !include-raw:
                             - 'pip-install-pycurl.sh'
                             - 'satellite6-automation-source.sh'
                             - 'satellite6-automation-instances.sh'
