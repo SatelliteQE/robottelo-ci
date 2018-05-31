@@ -32,7 +32,7 @@
                 - '6.4'
                 - '6.3'
                 - '6.2'
-            description: "Currently this job populates completely for 6.2 and 6.3 only. As a lot of hammer-cli options differ for 6.1."
+            description: "Currently this job populates completely for 6.2 and higher. As a lot of hammer-cli options differ for 6.1."
         - choice:
             name: DOWNLOAD_POLICY
             choices:
@@ -41,7 +41,7 @@
                 - 'background'
             description: |
                 For satellite 6.2 - the default installation setup is immediate.
-                For satellite 6.3 - the default installation setup is on_demand
+                For satellite 6.3 and higher - the default installation setup is on_demand
                 The chosen download policy will override the installation download policy on your satellite.
                 Immediate is the default choice for this job as this is more stable option.
         - choice:
