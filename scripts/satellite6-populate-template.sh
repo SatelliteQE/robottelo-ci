@@ -348,8 +348,10 @@ satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_LIBVIRT
 # Create Ovirt CR
 if [ "${SAT_VERSION}" == "6.2" ]; then
     satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --uuid "${RHEV_DATACENTER_UUID}"
-elif [ "${SAT_VERSION}" == "6.3" ] || [ "${SAT_VERSION}" == "6.4" ]; then
+elif [ "${SAT_VERSION}" == "6.3" ]; then
     satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${RHEV_DATACENTER_UUID}"
+elif [ "${SAT_VERSION}" == "6.4" ]; then
+    (satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${RHEV_DATACENTER_UUID}" --use-v4 true) || true
 fi
 
 # Create OpenStack CR
@@ -364,8 +366,11 @@ echo Adding Smart-Proxy to Default location and to 'Default Organization'
 satellite_runner location add-smart-proxy --id="${LOC}" --smart-proxy-id="${SMARTPROXYID}"
 satellite_runner organization add-smart-proxy --id="${ORG}" --smart-proxy-id="${SMARTPROXYID}"
 
-echo Adding Default Organization to Default Location
-satellite_runner location add-organization --id="${LOC}" --organization='Default Organization'
+# TODO, fix for sat6.4, may need to file a bug.
+if [ "${SAT_VERSION}" != "6.4" ]; then
+    echo Adding Default Organization to Default Location
+    satellite_runner location add-organization --id="${LOC}" --organization='Default Organization'
+fi
 
 echo Assign Default Organization and Default Location to Production Puppet Environment.
 satellite_runner environment update --organization-ids "${ORG}" --location-ids "${LOC}" --id 1
@@ -381,7 +386,7 @@ echo "RHEL7 OS ID is: ${RHEL7_OS_ID}"
 RHEL6_OS_ID=$(satellite --csv os list | grep "6" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL6 OS ID is: ${RHEL6_OS_ID}"
 
-if [ "${SAT_VERSION}" = "6.3" ] || [ "${SAT_VERSION}" = "6.4" ]; then
+if [ "${SAT_VERSION}" = "6.3" ]; then
 
     RHEL7_KS_ID=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 7/ {print $1}')
     echo "RHEL7 KS ID is: ${RHEL7_KS_ID}"
@@ -398,6 +403,25 @@ if [ "${SAT_VERSION}" = "6.3" ] || [ "${SAT_VERSION}" = "6.4" ]; then
     satellite_runner hostgroup create --name='RHEL 7 Server 64-bit HG' --content-view='RHEL 7 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL7_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS' --kickstart-repository-id="${RHEL7_KS_ID}"
 
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-7'
+
+# TODO, fix for sat6.4 , may need to file a bug
+elif [ "${SAT_VERSION}" = "6.4" ]; then
+    RHEL7_KS_ID=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 7/ {print $1}')
+    echo "RHEL7 KS ID is: ${RHEL7_KS_ID}"
+
+    RHEL6_KS_ID=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 6/ {print $1}')
+    echo "RHEL6 KS ID is: ${RHEL6_KS_ID}"
+
+    # Create Host-Groups and associate activation key as a parameter.
+
+    satellite_runner hostgroup create --name='RHEL 6 Server 64-bit HG' --content-view='RHEL 6 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL6_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS'
+
+    satellite_runner hostgroup set-parameter --hostgroup='RHEL 6 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-6'
+
+    satellite_runner hostgroup create --name='RHEL 7 Server 64-bit HG' --content-view='RHEL 7 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL7_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS'
+
+    satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-7'
+
 else
     # Assign Default Location to RHEL6 and RHEL7 medium.
     # NOTE: Medium does not appear to exist for Satellite6.3 and Satellite6.4
@@ -418,7 +442,8 @@ else
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-7'
 fi
 
-if [ "${SAT_VERSION}" = "6.3" ] || [ "${SAT_VERSION}" = "6.4" ]; then
+# TODO, fix for sat6.4
+if [ "${SAT_VERSION}" = "6.3" ]; then
     RHEL7_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel7 default content"' | cut -d ',' -f1 | grep -vi 'id')
     RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel6 default content"' | cut -d ',' -f1 | grep -vi 'id')
 
@@ -433,3 +458,7 @@ satellite_runner host-collection create --name="RHEL 7 Host collection" --organi
 echo "RHEL 7 Host collection created"
 satellite_runner host-collection create --name="RHEL 6 Host collection" --organization-id "${ORG}"
 echo "RHEL 6 Host collection created"
+
+if [ "${SAT_VERSION}" = "6.4" ]; then
+    exit 0
+fi
