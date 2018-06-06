@@ -170,11 +170,15 @@
             description: |
                 Upgrade OS using this repo URL(s), typically RHEL candidate repo.
                 This can be space-separated list of repos' URLs to specify multiple repos.
-        - bool:
+        - choice:
             name: PUPPET4
-            default: false
+            choices:
+                - 'no'
+                - 'yes'
+                - 'upgrade'
             description: |
-                Install Satellite with Puppet v4 (for Satellite 6.3+ only).
+                Install Satellite with Puppet v4 (Satellite 6.3 only). 
+                no = default puppet3, yes = fresh puppet4, upgrade = upgraded puppet4 install
         - choice:
             name: EXTERNAL_AUTH
             choices:

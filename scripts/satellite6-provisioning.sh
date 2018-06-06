@@ -6,15 +6,13 @@ source config/auth_servers.conf
 source config/installation_environment.conf
 source config/provisioning_environment.conf
 source config/proxy_config_environment.conf
+source config/sat6_repos_urls.conf
 if [ "$TEMPORARY_FIXES" = 'true' ]; then
     source config/temporary_fixes.conf
 fi
 source config/subscription_config.conf
 if [ "${STAGE_TEST}" = 'true' ]; then
     source config/stage_environment.conf
-fi
-if [ "${PUPPET4}" = 'true' ]; then
-    export PUPPET4_REPO # sourced from installation_environment.conf
 fi
 
 export EXTERNAL_AUTH
@@ -74,7 +72,7 @@ echo "DISCOVERY_ISO=${DISCOVERY_ISO}" >> build_env.properties
 # Run installation after writing the build_env.properties to make sure the
 # values are available for the post build actions, specially the foreman-debug
 # capturing.
-fab -D -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}"
+fab -D -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST},puppet4=${PUPPET4}"
 
 echo
 echo "========================================"
