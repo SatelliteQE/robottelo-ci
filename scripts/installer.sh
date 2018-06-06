@@ -18,9 +18,6 @@ source config/subscription_config.conf
 if [ "$STAGE_TEST" = 'true' ]; then
     source config/stage_environment.conf
 fi
-if [ "${PUPPET4}" = 'true' ]; then
-    export PUPPET4_REPO # sourced from installation_environment.conf
-fi
 
 export EXTERNAL_AUTH
 export IDM_REALM
@@ -72,7 +69,7 @@ if [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL" ]; then
     fi
 fi
 
-fab -D -H root@${SERVER_HOSTNAME} product_install:${DISTRIBUTION},sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST}
+fab -D -H root@${SERVER_HOSTNAME} product_install:${DISTRIBUTION},sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST},puppet4=${PUPPET4}
 
 if [ ${SETUP_FAKE_MANIFEST_CERTIFICATE} = "true" ]; then
     source config/fake_manifest.conf
