@@ -99,10 +99,11 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         echo "satellite_version: "${FROM_VERSION}"" >> satellite-clone-vars.yml
         echo "activationkey: "test_ak"" >> satellite-clone-vars.yml
         echo "org: "Default Organization"" >> satellite-clone-vars.yml
-        echo "backup_dir: "${BACKUP_DIR}"" >> satellite-clone-vars.yml
+        echo "backup_dir: "/root/customer-dbs/${CUSTOMERDB_NAME}"" >> satellite-clone-vars.yml
         echo "include_pulp_data: "${INCLUDE_PULP_DATA}"" >> satellite-clone-vars.yml
         echo "restorecon: "${RESTORECON}"" >> satellite-clone-vars.yml
-        sed -i -e "/#org.*/arhn_pool: "${RHN_POOLID}"" satellite-clone-vars.yml
+        echo "register_to_portal: true" >> satellite-clone-vars.yml
+        sed -i -e "/#org.*/arhn_pool: "$(echo ${RHN_POOLID} | cut -d' ' -f1)"" satellite-clone-vars.yml
         sed -i -e "/#org.*/arhn_password: "${RHN_PASSWORD}"" satellite-clone-vars.yml
         sed -i -e "/#org.*/arhn_user: "${RHN_USERNAME}"" satellite-clone-vars.yml
         sed -i -e "/#org.*/arhelversion: "${OS_VERSION}"" satellite-clone-vars.yml
