@@ -41,8 +41,12 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         source /tmp/rhev_instance.txt
         INSTANCE_NAME="${SAT_INSTANCE_FQDN}"
     fi
-    # Clone the 'satellite-clone' w/ tag 1.0.1 that includes the ansible playbook to install sat server along with customer DB.
-    git clone -b 1.1.1 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
+     # Clone the 'satellite-clone' w/ tag 1.1.1/master that includes the ansible playbook to install sat server along with customer DB.
+    if [[ "${FROM_VERSION}" == '6.1' ]] || [ "${FROM_VERSION}" == "6.2" ]; then
+        git clone -b 1.1.1 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
+    else
+        git clone -b master --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
+    fi
     pushd satellite-clone
     # Copy the satellite-clone-vars.sample.yml to satellite-clone-vars.yml
     cp -a satellite-clone-vars.sample.yml satellite-clone-vars.yml
@@ -70,24 +74,39 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/Verizon/OCT-2-2017-62"
     elif [ "${CUSTOMERDB_NAME}" = 'Walmart' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/walmart/6.2-OCT-2017"
+    elif [ "${CUSTOMERDB_NAME}" = 'CreditSuisse' ]; then
+        DB_URL="http://"${cust_db_server}"/customer-databases2/credit-suisse/MAY-21-2018-631/"
     elif [ "${CUSTOMERDB_NAME}" = 'Sat62RHEL6Migrate' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/qe-rhel6-db/sat62-rhel6-db"
     elif [ "${CUSTOMERDB_NAME}" = 'CustomDbURL' ]; then
         DB_URL="${CUSTOM_DB_URL}"
     fi
     # Configuration updates in vars file
-    sed -i -e "s/^satellite_version.*/satellite_version: "${FROM_VERSION}"/" satellite-clone-vars.yml
-    sed -i -e "s/^activationkey.*/activationkey: "test_ak"/" satellite-clone-vars.yml
-    sed -i -e "s/^org.*/org: "Default\ Organization"/" satellite-clone-vars.yml
-    sed -i -e "s/^#backup_dir.*/backup_dir: "${BACKUP_DIR}"/" satellite-clone-vars.yml
-    sed -i -e "s/^#include_pulp_data.*/include_pulp_data: "${INCLUDE_PULP_DATA}"/" satellite-clone-vars.yml
-    sed -i -e "s/^#restorecon.*/restorecon: "${RESTORECON}"/" satellite-clone-vars.yml
-    # Note: Statements related to RHN_POOLID, RHN_PASSWORD, RHN_USERNAME and OS_VERSION added to support satellite6 upgrade through CDN
-    # There are no such variables defined in satellite-clone-vars-sample.yaml
-    sed -i -e "/org.*/arhn_pool: "${RHN_POOLID}"" satellite-clone-vars.yml
-    sed -i -e "/org.*/arhn_password: "${RHN_PASSWORD}"" satellite-clone-vars.yml
-    sed -i -e "/org.*/arhn_user: "${RHN_USERNAME}"" satellite-clone-vars.yml
-    sed -i -e "/org.*/arhelversion: "${OS_VERSION}"" satellite-clone-vars.yml
+    if [[ "${FROM_VERSION}" == '6.1' ]] || [ "${FROM_VERSION}" == "6.2" ]; then
+        sed -i -e "s/^satellite_version.*/satellite_version: "${FROM_VERSION}"/" satellite-clone-vars.yml
+        sed -i -e "s/^activationkey.*/activationkey: "test_ak"/" satellite-clone-vars.yml
+        sed -i -e "s/^org.*/org: "Default\ Organization"/" satellite-clone-vars.yml
+        sed -i -e "s/^#backup_dir.*/backup_dir: "${BACKUP_DIR}"/" satellite-clone-vars.yml
+        sed -i -e "s/^#include_pulp_data.*/include_pulp_data: "${INCLUDE_PULP_DATA}"/" satellite-clone-vars.yml
+        sed -i -e "s/^#restorecon.*/restorecon: "${RESTORECON}"/" satellite-clone-vars.yml
+        # Note: Statements related to RHN_POOLID, RHN_PASSWORD, RHN_USERNAME and OS_VERSION added to support satellite6 upgrade through CDN
+        # There are no such variables defined in satellite-clone-vars-sample.yaml
+        sed -i -e "/org.*/arhn_pool: "${RHN_POOLID}"" satellite-clone-vars.yml
+        sed -i -e "/org.*/arhn_password: "${RHN_PASSWORD}"" satellite-clone-vars.yml
+        sed -i -e "/org.*/arhn_user: "${RHN_USERNAME}"" satellite-clone-vars.yml
+        sed -i -e "/org.*/arhelversion: "${OS_VERSION}"" satellite-clone-vars.yml
+    else
+        echo "satellite_version: "${FROM_VERSION}"" >> satellite-clone-vars.yml
+        echo "activationkey: "test_ak"" >> satellite-clone-vars.yml
+        echo "org: "Default Organization"" >> satellite-clone-vars.yml
+        echo "backup_dir: "${BACKUP_DIR}"" >> satellite-clone-vars.yml
+        echo "include_pulp_data: "${INCLUDE_PULP_DATA}"" >> satellite-clone-vars.yml
+        echo "restorecon: "${RESTORECON}"" >> satellite-clone-vars.yml
+        sed -i -e "/#org.*/arhn_pool: "${RHN_POOLID}"" satellite-clone-vars.yml
+        sed -i -e "/#org.*/arhn_password: "${RHN_PASSWORD}"" satellite-clone-vars.yml
+        sed -i -e "/#org.*/arhn_user: "${RHN_USERNAME}"" satellite-clone-vars.yml
+        sed -i -e "/#org.*/arhelversion: "${OS_VERSION}"" satellite-clone-vars.yml
+    fi
     # Set the flag true in case of migrating the rhel6 satellite server to rhel7 machine
     if [ ${RHEL_MIGRATION} = "true" ]; then
         sed -i -e "s/^#rhel_migration.*/rhel_migration: "${RHEL_MIGRATION}"/" satellite-clone-vars.yml
@@ -96,7 +115,11 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     fi
     # Configuration updates in tasks file wrt vars file
     sed -i -e '/subscription-manager register.*/d' roles/satellite-clone/tasks/main.yml
-    sed -i -e '/register host.*/a\ \ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/satellite-clone/tasks/main.yml
+    if [[ "${FROM_VERSION}" == '6.1' ]] || [ "${FROM_VERSION}" == "6.2" ]; then
+        sed -i -e '/register host.*/a\ \ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/satellite-clone/tasks/main.yml
+    else
+        sed -i -e '/Register\/Subscribe the system to Red Hat Portal.*/a\ \ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/satellite-clone/tasks/main.yml
+    fi
     sed -i -e '/subscription-manager register.*/a- name: subscribe machine' roles/satellite-clone/tasks/main.yml
     sed -i -e '/subscribe machine.*/a\ \ command: subscription-manager subscribe --pool={{ rhn_pool }}' roles/satellite-clone/tasks/main.yml
     # Download the Customer DB data Backup files

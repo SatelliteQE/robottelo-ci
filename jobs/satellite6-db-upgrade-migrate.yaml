@@ -36,6 +36,7 @@
                 - 'ExpressScripts'
                 - 'Verizon'
                 - 'Walmart'
+                - 'CreditSuisse'
                 - 'Sat62RHEL6Migrate'
                 - 'CustomDbURL'
 
@@ -45,6 +46,7 @@
                 <p>For ExpressScript, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For Verizon, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For Walmart, <b> From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
+                <p>For CreditSuisse, <b> From version</b> should be <b>6.3</b> and OS should be <b>RHEL7</b></p>
                 <p>For Sat62RHEL6Migrate, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For CustomDbURL, You need to provide CUSTOM_DB_URL parameter, also specify From version and OS accordingly.</p>
         - string:
