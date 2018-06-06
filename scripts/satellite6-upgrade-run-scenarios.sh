@@ -20,6 +20,8 @@ if [ ${ENDPOINT} == 'pre-upgrade' ]; then
     fab -u root set_datastore:"preupgrade","api"
 else
     $(which py.test) -v --continue-on-collection-errors -s -m post_upgrade --junit-xml=test_scenarios-post-results.xml upgrade_tests/test_scenarios/
+    # Delete the Original Manifest from the box to run robottelo tests
+    fab -u root delete_manifest:"Default Organization"
 fi
 set -e
 
