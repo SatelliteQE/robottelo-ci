@@ -95,6 +95,11 @@
             description: |
                 <p>Un-Check if you do not want to perform upgrade post Satellite Clone or Migration</p>
         - bool:
+            name: PUPPET4_UPGRADE
+            default: false
+            description: |
+                <p>Check if satellite is 6.3 and you want to upgrade puppet3 to puppet4 before upgrading to 6.4.</p>
+        - bool:
             name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
             default: false
             description: |
