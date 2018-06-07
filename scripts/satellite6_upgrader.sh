@@ -30,6 +30,11 @@ if [ "${DISTRIBUTION}" = 'DOWNSTREAM' ]; then
     export TOOLS_URL_RHEL7="${TOOLS_RHEL7}"
 fi
 
+if [ "${PUPPET4_UPGRADE}" = "true" ]; then
+    # perform puppet3 to puppet4 upgrade
+    fab -H root@"${SATELLITE_HOSTNAME}" upgrade_puppet3_to_puppet4
+fi
+
 if [ "${PERFORM_FOREMAN_MAINTAIN_UPGRADE}" != "true" ]; then
     # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
     fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
