@@ -1,0 +1,124 @@
+- job:
+    block-downstream: false
+    block-upstream: false
+    builders:
+    - raw:
+        xml: |
+          <jenkins.plugins.shiningpanda.builders.VirtualenvBuilder plugin="shiningpanda@0.23">
+          <pythonName>System-CPython-3.6</pythonName>
+          <home>claims</home>
+          <clear>false</clear>
+          <systemSitePackages>true</systemSitePackages>
+          <nature>shell</nature>
+          <command>/bin/bash gitlab-repos
+          pip install -r requirements.txt
+          # symlinking the config and rules files from claims-rules to claim_stats repo:
+          ln -fs claims-rules/kb.json kb.json
+          ln -fs claims-rules/config.yaml config.yaml
+          ls -l</command>
+          <ignoreExitCode>false</ignoreExitCode>
+          </jenkins.plugins.shiningpanda.builders.VirtualenvBuilder>
+    - raw:
+        xml: |
+          <hudson.plugins.python.Python plugin="python@1.3">
+          <command>import sys
+          import os
+          # jenkins exposes the workspace directory through env.
+          sys.path.append(os.environ['WORKSPACE'])
+          # jenkins exposes the workspace directory through env.
+          sys.path.append(os.environ['WORKSPACE'])
+          target_url = os.environ.get('TARGET_URL')
+          if not target_url:
+          raise TypeError('no build url specified')
+
+          import claims
+
+          rules = claims.load_rules()
+
+          r = claims.fetch_test_report(build_url=target_url)
+          f = claims.filter_fails(r)
+
+          # let's take only unclaimed fails
+          u = claims.filter_not_claimed(f)
+
+          claims.claim_by_rules(u, rules)
+
+          </command>
+          </hudson.plugins.python.Python>
+    concurrent: true
+    description: |-
+      reads the test results of the specified job-build and performs automatic failure claiming based on the defined rules.
+      This project uses claim-stats and claims-rules repos.
+    disabled: false
+    name: !!python/unicode 'claim-failures'
+    parameters:
+    - string:
+        default: ''
+        description: |-
+          the jenkins URL of the job-build to be processed.
+          The claim-stats will parse the test information of the provided job-build and claim it according the claims-rules
+        name: TARGET_URL
+    project-type: freestyle
+    properties:
+    - raw:
+        xml: |
+          <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+          <useBuildBlocker>false</useBuildBlocker>
+          <blockLevel>GLOBAL</blockLevel>
+          <scanQueueFor>DISABLED</scanQueueFor>
+          <blockingJobs />
+          </hudson.plugins.buildblocker.BuildBlockerProperty>
+    - raw:
+        xml: |
+          <hudson.plugins.disk__usage.DiskUsageProperty plugin="disk-usage@0.28" />
+    - raw:
+        xml: |
+          <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.3">
+          <gitLabConnection>gitlab-conn</gitLabConnection>
+          </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+    - raw:
+        xml: |
+          <org.jenkinsci.plugins.ZMQEventPublisher.HudsonNotificationProperty plugin="zmq-event-publisher@0.0.5">
+          <enabled>false</enabled>
+          </org.jenkinsci.plugins.ZMQEventPublisher.HudsonNotificationProperty>
+    - raw:
+        xml: |
+          <com.synopsys.arc.jenkins.plugins.ownership.jobs.JobOwnerJobProperty plugin="ownership@0.11.0" />
+    - raw:
+        xml: |
+          <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.27">
+          <autoRebuild>false</autoRebuild>
+          <rebuildDisabled>false</rebuildDisabled>
+          </com.sonyericsson.rebuild.RebuildSettings>
+    - raw:
+        xml: |
+          <hudson.plugins.throttleconcurrents.ThrottleJobProperty plugin="throttle-concurrents@2.0.1">
+          <maxConcurrentPerNode>0</maxConcurrentPerNode>
+          <maxConcurrentTotal>0</maxConcurrentTotal>
+          <categories class="java.util.concurrent.CopyOnWriteArrayList" />
+          <throttleEnabled>false</throttleEnabled>
+          <throttleOption>project</throttleOption>
+          <limitOneJobWithMatchingParams>false</limitOneJobWithMatchingParams>
+          <paramsToUseForLimit />
+          </hudson.plugins.throttleconcurrents.ThrottleJobProperty>
+    publishers: []
+    scm:
+    - git:
+        branches:
+        - '*/master'
+        url: https://github.com/rplevka/claim_stats
+    triggers: []
+    wrappers:
+    - raw:
+        xml: |
+          <org.jenkinsci.plugins.configfiles.buildwrapper.ConfigFileBuildWrapper plugin="config-file-provider@2.17">
+          <managedFiles>
+          <org.jenkinsci.plugins.configfiles.buildwrapper.ManagedFile>
+          <fileId>041c7fb9-0289-4520-a5d2-530c8d338d75</fileId>
+          <targetLocation>gitlab-repos</targetLocation>
+          <replaceTokens>false</replaceTokens>
+          </org.jenkinsci.plugins.configfiles.buildwrapper.ManagedFile>
+          </managedFiles>
+          </org.jenkinsci.plugins.configfiles.buildwrapper.ConfigFileBuildWrapper>
+    - build-name:
+        name: '#${BUILD_NUMBER} - ${TARGET_URL}'
