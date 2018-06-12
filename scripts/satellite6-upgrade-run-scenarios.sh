@@ -11,6 +11,13 @@ source config/installation_environment.conf
 
 
 set +e
+# Replace nailgun version for older versions
+if [ "${FROM_VERSION}" = '6.1' ] || [ "${FROM_VERSION}" = '6.2' ]; then
+    sed -ir s/nailgun.git/nailgun.git@"${FROM_VERSION}".z/ requirements.txt
+elif [ "${TO_VERSION}" = '6.1' ] || [ "${TO_VERSION}" = '6.2' ]; then
+    sed -ir s/nailgun.git/nailgun.git@"${TO_VERSION}".z/ requirements.txt
+fi
+
 # Run pre-upgarde scenarios tests
 if [ ${ENDPOINT} == 'pre-upgrade' ]; then
     $(which py.test)  -v --continue-on-collection-errors -s -m pre_upgrade --junit-xml=test_scenarios-pre-results.xml upgrade_tests/test_scenarios/
