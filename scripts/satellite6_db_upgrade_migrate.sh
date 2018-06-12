@@ -22,8 +22,8 @@ fi
 
 if [[ -z "${SATELLITE_HOSTNAME}" && "${OPENSTACK_DEPLOY}" = 'true' ]]; then
     source config/preupgrade_entities.conf
-    fab -D -u root delete_openstack_instance:"${CUSTOMERDB_NAME}_customerdb_instance"
-    fab -D -u root create_openstack_instance:"${CUSTOMERDB_NAME}_customerdb_instance","${RHEL7_IMAGE}","${VOLUME_SIZE}"
+    fab -D -u root delete_openstack_instance:"customerdb_${CUSTOMERDB_NAME}"
+    fab -D -u root create_openstack_instance:"customerdb_${CUSTOMERDB_NAME}","${RHEL7_IMAGE}","${VOLUME_SIZE}"
 fi
 
 # Customer DB Setup
