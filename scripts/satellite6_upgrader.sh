@@ -82,6 +82,12 @@ else
     fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
 fi
 
+# Creates Templates after upgrading the instances
+if [ "${CREATE_TEMPLATES}" == 'true' ]; then
+    echo "Creating Upgraded Instances of Satellite and Capsule"
+    fab -u root validate_and_create_product_templates:"${UPGRADE_PRODUCT}"
+fi
+
 # Creates the post-upgrade data-store required for existence tests
 if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
     echo "Setting up post-upgrade data-store for existence tests"
