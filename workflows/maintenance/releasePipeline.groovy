@@ -7,7 +7,9 @@ def products = [
 def content_views = [
     'Satellite Maintenance RHEL7'
 ]
-
+def composite_content_views = [
+    'Satellite Maintenance with RHEL7 Server'
+]
 
 node('sat6-rhel7') {
 
@@ -63,5 +65,13 @@ node('sat6-rhel7') {
             playbook = 'playbooks/publish_content_views.yml'
         }
 
+    }
+
+    stage("Publish Composite Content Views") {
+      runPlaybookSequentially {
+          items = composite_content_views
+          item_name = 'content_view'
+          playbook = 'playbooks/publish_content_views.yml'
+      }
     }
 }
