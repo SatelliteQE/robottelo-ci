@@ -24,5 +24,12 @@ node('rhel') {
           to_lifecycle_environment = 'QA'
         }
 
+        promoteContentView {
+          organization = 'Sat6-CI'
+          content_view = 'Satellite Maintenance with RHEL7 Server'
+          from_lifecycle_environment = 'Library'
+          to_lifecycle_environment = 'QA'
+        }
+
     }
 }
