@@ -33,6 +33,10 @@
         - string:
             name: NUMBER_OF_HOSTS
             description: Number of content hosts to be created.
+        - string:
+            name: LIMIT
+            default: "100"
+            description: The limit of how many hosts should run at a time.
         - bool:
             name: SETUP_CONTAINER_HOST
             default: false
