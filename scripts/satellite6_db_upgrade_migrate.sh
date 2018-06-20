@@ -55,10 +55,10 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     if [[ -z "${SATELLITE_HOSTNAME}" && "${OPENSTACK_DEPLOY}" = 'true' ]]; then
         source /tmp/instance.info
         INSTANCE_NAME="${OSP_HOSTNAME}"
-        BACKUP_DIR="\/root\/customer-dbs\/${CUSTOMERDB_NAME}"
+        BACKUP_DIR="\/tmp\/customer-dbs\/${CUSTOMERDB_NAME}"
         # Install Nfs-client
         # Mount the Customer DB to Created Instance via NFS Share
-        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "curl -o /etc/yum.repos.d/rhel.repo "${RHEL_REPO}"; yum install -y nfs-utils; mkdir -p /root/customer-dbs; mount -o v3 "${DBSERVER}":/root/customer-dbs /root/customer-dbs"
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "curl -o /etc/yum.repos.d/rhel.repo "${RHEL_REPO}"; yum install -y nfs-utils; mkdir -p /tmp/customer-dbs; mount -o v3 "${DBSERVER}":/root/customer-dbs /tmp/customer-dbs"
     fi
     if [ "${PARTITION_DISK}" = "true" ]; then
         fab -D -H root@"${INSTANCE_NAME}" partition_disk
@@ -76,6 +76,8 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/walmart/6.2-OCT-2017"
     elif [ "${CUSTOMERDB_NAME}" = 'CreditSuisse' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases2/credit-suisse/MAY-21-2018-631/"
+    elif [ "${CUSTOMERDB_NAME}" = 'ATPC' ]; then
+        DB_URL="http://"${cust_db_server}"/customer-databases2/ATPC/JUN-16-2018-631/"
     elif [ "${CUSTOMERDB_NAME}" = 'Sat62RHEL6Migrate' ]; then
         DB_URL="http://"${cust_db_server}"/customer-databases/qe-rhel6-db/sat62-rhel6-db"
     elif [ "${CUSTOMERDB_NAME}" = 'CustomDbURL' ]; then
@@ -99,7 +101,7 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         echo "satellite_version: "${FROM_VERSION}"" >> satellite-clone-vars.yml
         echo "activationkey: "test_ak"" >> satellite-clone-vars.yml
         echo "org: "Default Organization"" >> satellite-clone-vars.yml
-        echo "backup_dir: "/root/customer-dbs/${CUSTOMERDB_NAME}"" >> satellite-clone-vars.yml
+        sed -i -e "s/^#backup_dir.*/backup_dir: "${BACKUP_DIR}"/" satellite-clone-vars.yml
         echo "include_pulp_data: "${INCLUDE_PULP_DATA}"" >> satellite-clone-vars.yml
         echo "restorecon: "${RESTORECON}"" >> satellite-clone-vars.yml
         echo "register_to_portal: true" >> satellite-clone-vars.yml
