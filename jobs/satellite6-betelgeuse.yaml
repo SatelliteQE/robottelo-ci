@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: polarion-test-case
     node: sat6-rhel
     scm:
@@ -35,7 +34,6 @@
 
 
 - job-template:
-    disabled: false
     name: polarion-test-run-{satellite_version}-{os}
     node: sat6-{satellite_version}
     scm:
@@ -83,7 +81,6 @@
 
 
 - job:
-    disabled: false
     name: polarion-upgrade-test-case
     node: sat6-rhel
     scm:
@@ -119,7 +116,6 @@
 
 
 - job-template:
-    disabled: false
     name: polarion-upgraded-test-run-{satellite_version}-{os}
     node: sat6-{satellite_version}
     scm:

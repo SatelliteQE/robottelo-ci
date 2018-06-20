@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'sat-release-pulp-docker'
     project-type: pipeline
     parameters:

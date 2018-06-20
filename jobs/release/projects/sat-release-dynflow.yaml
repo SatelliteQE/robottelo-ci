@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'sat-release-dynflow'
     project-type: pipeline
     parameters:

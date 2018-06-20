@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'sat-release-foreman-theme-satellite'
     project-type: pipeline
     parameters:

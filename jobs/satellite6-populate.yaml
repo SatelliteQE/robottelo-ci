@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'satellite6-populate'
     concurrent: true
     display-name: 'Satellite 6 Populate'

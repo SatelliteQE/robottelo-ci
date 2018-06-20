@@ -49,7 +49,6 @@
     description: |-
       reads the test results of the specified job-build and performs automatic failure claiming based on the defined rules.
       This project uses claim-stats and claims-rules repos.
-    disabled: false
     name: !!python/unicode 'claim-failures'
     parameters:
     - string:

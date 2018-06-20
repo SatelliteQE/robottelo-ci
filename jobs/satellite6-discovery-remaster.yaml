@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'satellite6-discovery-remaster'
     display-name: 'Satellite6-Discovery-Remaster'
     description: |

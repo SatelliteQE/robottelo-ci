@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'satellite6-client-populate'
     concurrent: true
     display-name: 'Satellite 6 Client automation'

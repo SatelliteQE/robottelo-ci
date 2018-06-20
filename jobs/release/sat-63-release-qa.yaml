@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: sat-63-release-qa
     project-type: pipeline
     parameters:

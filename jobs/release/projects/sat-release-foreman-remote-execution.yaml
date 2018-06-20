@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'sat-release-foreman-remote-execution'
     project-type: pipeline
     parameters:

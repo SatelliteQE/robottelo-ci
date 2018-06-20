@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'satellite6-manifest-downloader'
     display-name: 'Satellite6-Manifest-Downloader'
     description: |
