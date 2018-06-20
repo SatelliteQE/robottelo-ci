@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: satellite6-upgrade-cleanup
     node: sat6-rhel7
     concurrent: false

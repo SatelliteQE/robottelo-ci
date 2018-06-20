@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: robottelo-ci-update-jobs
     node: sat6-rhel7
     scm:

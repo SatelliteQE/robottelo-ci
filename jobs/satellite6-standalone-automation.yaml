@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: satellite6-standalone-automation
     concurrent: true
     description: |

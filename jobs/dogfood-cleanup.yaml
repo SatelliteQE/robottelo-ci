@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: dogfood-cleanup
     project-type: pipeline
     auth-token: ""

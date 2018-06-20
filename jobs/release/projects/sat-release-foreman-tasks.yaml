@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'sat-release-foreman-tasks'
     project-type: pipeline
     parameters:

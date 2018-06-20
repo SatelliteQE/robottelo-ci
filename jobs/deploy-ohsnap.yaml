@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: deploy-ohsnap
     project-type: pipeline
     auth-token: ""

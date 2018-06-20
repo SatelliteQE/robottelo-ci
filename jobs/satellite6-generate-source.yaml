@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: satellite6-generate-source
     build-discarder:
       days-to-keep: -1

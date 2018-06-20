@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'release-test-repo'
     project-type: pipeline
     parameters:

@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'rhui-release-pulp-rpm'
     project-type: pipeline
     parameters:

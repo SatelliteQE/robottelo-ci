@@ -2,7 +2,6 @@
 # Job Templates
 #==============================================================================
 - job-template:
-    disabled: false
     name: 'provisioning-{satellite_version}-{os}'
     properties:
         - satellite6-build_blocker:
@@ -99,7 +98,6 @@
         - satellite6-automation-archiver
 
 - job-template:
-    disabled: false
     name: 'automation-{satellite_version}-tier1-{os}'
     node: sat6-{satellite_version}
     build-discarder:
@@ -165,7 +163,6 @@
             file_path: "coverage.xml"
 
 - job-template:
-    disabled: false
     name: 'automation-{satellite_version}-tier2-{os}'
     node: sat6-{satellite_version}
     build-discarder:
@@ -216,7 +213,6 @@
             file_path: "coverage.xml"
 
 - job-template:
-    disabled: false
     name: 'automation-{satellite_version}-tier3-{os}'
     node: sat6-{satellite_version}
     build-discarder:
@@ -267,7 +263,6 @@
             file_path: "coverage.xml"
 
 - job-template:
-    disabled: false
     name: 'automation-{satellite_version}-rhai-{os}'
     node: sat6-{satellite_version}
     build-discarder:
@@ -333,7 +328,6 @@
             success: true
 
 - job-template:
-    disabled: false
     name: 'automation-{satellite_version}-tier4-{os}'
     node: sat6-{satellite_version}
     build-discarder:
@@ -393,7 +387,6 @@
             file_path: "coverage.xml"
 
 - job-template:
-    disabled: false
     name: 'automation-{satellite_version}-destructive-{os}'
     node: sat6-{satellite_version}
     build-discarder:
@@ -451,7 +444,6 @@
             file_path: "coverage.xml"
 
 - job-template:
-    disabled: false
     name: 'report-automation-results-{satellite_version}-{os}'
     node: sat6-{satellite_version}
     parameters:
@@ -505,7 +497,6 @@
             attachments: report.html
 
 - job-template:
-    disabled: false
     name: 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
     node: sat6-{satellite_version}
     parameters:
@@ -778,7 +769,6 @@
         - satellite6-automation-mails
 
 - job-template:
-    disabled: false
     name: 'upgrade-to-{satellite_version}-{os}'
     concurrent: true
     properties:
@@ -855,7 +845,6 @@
 
 
 - job-template:
-    disabled: false
     name: 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
     concurrent: true
     properties:
@@ -899,7 +888,6 @@
 
 
 - job-template:
-    disabled: false
     name: 'upgrade-phase-{satellite_version}-{os}'
     concurrent: true
     properties:
@@ -973,7 +961,6 @@
             attachments: full_upgrade, Log_Analyzer_Logs.tar.xz
 
 - job-template:
-    disabled: false
     name: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
     node: sat6-{satellite_version}
     build-discarder:
@@ -1015,7 +1002,6 @@
             artifacts: 'postupgrade_*,preupgrade_*,scenario_entities,product_setup'
 
 - job-template:
-    disabled: false
     name: 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
     concurrent: true
     properties:
@@ -1060,7 +1046,6 @@
             artifacts: 'scenario_entities,product_setup'
 
 - job-template:
-    disabled: false
     name: 'automation-upgraded-{satellite_version}-all-tiers-{os}'
     node: sat6-{satellite_version}
     build-discarder:
@@ -1101,7 +1086,6 @@
         - satellite6-automation-archiver
 
 - job-template:
-    disabled: false
     name: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
     node: sat6-{satellite_version}
     build-discarder:
@@ -1149,7 +1133,6 @@
         - satellite6-automation-archiver
 
 - job-template:
-    disabled: false
     name: trigger-satellite-{satellite_version}
     description: Triggers automation for Satellite 6
     node: sat6-rhel
@@ -1420,7 +1403,6 @@
 # Jobs
 #==============================================================================
 - job:
-    disabled: false
     name: trigger-upstream-nightly
     description: Triggers automation for Satellite 6 upstream using katello-deploy.
     node: sat6-rhel

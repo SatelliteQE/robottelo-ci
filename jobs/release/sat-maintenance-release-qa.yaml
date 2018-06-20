@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: sat-maintenance-release-qa
     project-type: pipeline
     parameters:

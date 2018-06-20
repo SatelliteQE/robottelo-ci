@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'sat-release-foreman-selinux'
     project-type: pipeline
     parameters:

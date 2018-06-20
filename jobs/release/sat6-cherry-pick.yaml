@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: sat6-cherry-pick
     project-type: pipeline
     dsl:

@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'satellite5-installer'
     concurrent: true
     display-name: 'Satellite 5 Installer'

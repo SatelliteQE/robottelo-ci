@@ -1,5 +1,4 @@
 - job:
-    disabled: false
     name: 'sat-release-foreman-virt-who-configure'
     project-type: pipeline
     parameters:
