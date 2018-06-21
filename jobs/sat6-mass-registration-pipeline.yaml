@@ -1,0 +1,66 @@
+- job:
+    name: sat6-mass-registration-pipeline
+    project-type: pipeline
+    parameters:
+    concurrent: true
+    description: |
+        <p>This can be used to trigger mass registration of content hosts to a Satellite</p>
+        <p>Please make sure to add the following <strong>ssh key</strong> to the Container host so jenkins can access it.</p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+        <p> <strong>Note:</strong> At the end of the job, the following logs will be useful to review the results:</p>
+        <p>   - CONTAINER_HOST:/content-host-d/flood.log - stores the logs of flood.py run</p>
+        <p>   - CONTAINER_HOST:/content-host-d/container.log - stores the container console logs for all containers</p>
+        <p>   - CONTAINER_HOST:/content-host-d/rhsm_logs - this directory stores the /etc/rhsm/rhsm.log for individual containers</p>
+        <p>   - jenkins console output shows the logs of the ansible playbook run</p>
+    parameters:
+        - string:
+            name: SATELLITE_HOST
+            description: FQDN of the Satellite server.
+        - string:
+            name: CONTAINER_HOST
+            description: FQDN of the Container host (only rhel7 supported).
+        - string:
+            name: CONTENT_HOST_PREFIX
+            description: No special characters allowed.
+        - string:
+            name: ACTIVATION_KEY
+            description: Activation key for a rhel7 content host.
+        - string:
+            name: EXIT_CRITERIA
+            default: registration
+            description: Exit Criteria to terminate the container. Enter `registration` or `katello-agent` or <time in seconds>.
+        - string:
+            name: NUMBER_OF_HOSTS
+            description: Number of content hosts to be created.
+        - string:
+            name: LIMIT
+            default: "100"
+            description: The limit of how many hosts should run at a time.
+        - bool:
+            name: SETUP_CONTAINER_HOST
+            default: false
+            description: If you already had setup the container host, make sure /content-host-d folder has the flood.py script.
+        - string:
+            name: CUSTOM_CONTAINER_STARTUP_FILE
+            default: none
+            description: Should point to the URL of the custom container startup file eg., http://example.com/startup.sh
+        - choice:
+            name: CONTAINER_OS
+            choices:
+              - RHEL7
+              - RHEL72
+              - RHEL7-Guest
+              - RHEL6
+              - CentOS5
+              - CentOS6
+              - CentOS7
+              - OpenSuse
+              - SLES11
+              - SLES12
+            description: OS of the container for the content hosts creation.
+    dsl:
+      !include-raw:
+        - qe/workflows/tools/satellite6MassRegistration.groovy
+        - qe/workflows/lib/runPlaybook.groovy
