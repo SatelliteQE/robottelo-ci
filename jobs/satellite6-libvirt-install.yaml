@@ -10,7 +10,7 @@
             choices:
                 - 'basil'
             description: |
-                The recommended one to choose is paprika for the below Server ID's, basil is used for robottelo-automation.
+                Currently we only have basil for this task.
         - choice:
             name: SERVER_ID
             choices:
