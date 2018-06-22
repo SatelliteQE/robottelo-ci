@@ -8,7 +8,6 @@
         - choice:
             name: PROVISIONING_ID
             choices:
-                - 'paprika'
                 - 'basil'
             description: |
                 The recommended one to choose is paprika for the below Server ID's, basil is used for robottelo-automation.
