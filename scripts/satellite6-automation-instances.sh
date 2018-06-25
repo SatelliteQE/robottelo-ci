@@ -28,7 +28,6 @@ function setup_instance () {
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" 'katello-service restart'
     sleep 40
     if [[ "${SATELLITE_VERSION}" == "6.2" ]] || [[ "${SATELLITE_VERSION}" == "upstream-nightly" ]]; then
-        sleep 600 # upstream take very long time to start candleping service.
         ssh $ssh_opts root@"${SERVER_HOSTNAME}" katello-change-hostname "${SERVER_HOSTNAME}" -y -u admin -p changeme
     elif [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         echo "Changing of Satellite6 Hostname is not supported for Satellite6.1, it is only supported from Sat6.2 and later."

@@ -101,7 +101,7 @@
 - job-template:
     name: 'automation-{satellite_version}-trigger-tiers-{os}'
     project-type: multijob
-    node: sat6-rhel7
+    node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
     parameters:
