@@ -64,7 +64,7 @@
                 Run a task to updates /etc/hosts with FQDN and IP
         - bool:
             name: PARTITION_DISK
-            default: false
+            default: true
             description: |
                 Run a task to re-partition disk to increase the size of /root
                 to handle synchronization of larger repositories
