@@ -35,10 +35,8 @@ if [ "${PUPPET4_UPGRADE}" = "true" ]; then
     fab -H root@"${SATELLITE_HOSTNAME}" upgrade_puppet3_to_puppet4
 fi
 
-if [ "${PERFORM_FOREMAN_MAINTAIN_UPGRADE}" != "true" ]; then
-    # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
-    fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
-fi
+# Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
+fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
 
 set +e
 # Run pre-upgarde scenarios tests
@@ -57,6 +55,7 @@ fi
 # Get the Satellite hostname which will be used by job
 if [ -z "${SATELLITE_HOSTNAME}" ]; then
     export SAT_HOST="${RHEV_SAT_HOST}"
+    export SATELLITE_HOSTNAME="${RHEV_SAT_HOST}"
 fi
 
 # Run pre-upgrade scripts to replicate custom scenarios
