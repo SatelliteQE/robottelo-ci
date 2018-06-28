@@ -34,6 +34,83 @@
 
 
 - job-template:
+    name: polarion-trigger-{satellite_version}-{os}
+    project-type: multijob
+    node: sat6-{satellite_version}
+    parameters:
+        - string:
+            name: TEST_RUN_ID
+            description: |
+                'The resulting test run id is going to be suffixed with tierN '
+                'to differentiate between all tiers.'
+        - string:
+            name: POLARION_RELEASE
+    wrappers:
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="TEST_RUN_ID"}}'
+    builders:
+        - multijob:
+            name: PhaseOne
+            condition: ALWAYS
+            projects:
+              - name: 'polarion-test-run-{satellite_version}-{os}'
+                predefined-parameters: |
+                  TEST_RUN_ID=${{TEST_RUN_ID}}
+                  POLARION_RELEASE=${{POLARION_RELEASE}}
+                  PULL_ARTIFACTS=true
+                  ENDPOINT=tier1
+        - multijob:
+            name: PhaseTwo
+            condition: ALWAYS
+            projects:
+              - name: 'polarion-test-run-{satellite_version}-{os}'
+                predefined-parameters: |
+                  TEST_RUN_ID=${{TEST_RUN_ID}}
+                  POLARION_RELEASE=${{POLARION_RELEASE}}
+                  PULL_ARTIFACTS=true
+                  ENDPOINT=tier2
+        - multijob:
+            name: PhaseThree
+            condition: ALWAYS
+            projects:
+              - name: 'polarion-test-run-{satellite_version}-{os}'
+                predefined-parameters: |
+                  TEST_RUN_ID=${{TEST_RUN_ID}}
+                  POLARION_RELEASE=${{POLARION_RELEASE}}
+                  PULL_ARTIFACTS=true
+                  ENDPOINT=tier3
+        - multijob:
+            name: PhaseFour
+            condition: ALWAYS
+            projects:
+              - name: 'polarion-test-run-{satellite_version}-{os}'
+                predefined-parameters: |
+                  TEST_RUN_ID=${{TEST_RUN_ID}}
+                  POLARION_RELEASE=${{POLARION_RELEASE}}
+                  PULL_ARTIFACTS=true
+                  ENDPOINT=tier4
+        - multijob:
+            name: PhaseFive
+            condition: ALWAYS
+            projects:
+              - name: 'polarion-test-run-{satellite_version}-{os}'
+                predefined-parameters: |
+                  TEST_RUN_ID=${{TEST_RUN_ID}}
+                  POLARION_RELEASE=${{POLARION_RELEASE}}
+                  PULL_ARTIFACTS=true
+                  ENDPOINT=rhai
+        - multijob:
+            name: PhaseSix
+            condition: ALWAYS
+            projects:
+              - name: 'polarion-test-run-{satellite_version}-{os}'
+                predefined-parameters: |
+                  TEST_RUN_ID=${{TEST_RUN_ID}}
+                  POLARION_RELEASE=${{POLARION_RELEASE}}
+                  PULL_ARTIFACTS=true
+                  ENDPOINT=destructive
+
+- job-template:
     name: polarion-test-run-{satellite_version}-{os}
     node: sat6-{satellite_version}
     scm:
@@ -54,8 +131,21 @@
                 'to differentiate between all tiers.'
         - string:
             name: POLARION_RELEASE
-        - string:
+        - choice:
             name: ENDPOINT
+            choices:
+                 - 'none'
+                 - 'tier1'
+                 - 'tier2'
+                 - 'tier3'
+                 - 'tier4'
+                 - 'rhai'
+                 - 'destructive'
+        - bool:
+            name: PULL_ARTIFACTS
+            default: false
+            description: |
+                'Required only when manually triggering the job.'
     wrappers:
         - inject-passwords:
             global: true
@@ -66,6 +156,9 @@
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
     builders:
+        - satellite6-pull-artifacts-builders:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse

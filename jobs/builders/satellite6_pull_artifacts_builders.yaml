@@ -1,0 +1,87 @@
+- builder:
+    name: satellite6-pull-artifacts-builders
+    builders:
+        - conditional-step:
+            condition-kind: and
+            condition-operands:
+                - condition-kind: regex-match
+                  regex: (true)
+                  label: ${{ENV,var="PULL_ARTIFACTS"}}
+                - condition-kind: regex-match
+                  regex: (tier1)
+                  label: ${{ENV,var="ENDPOINT"}}
+            steps:
+                - copyartifact:
+                    project: 'automation-{satellite_version}-tier1-{os}'
+                    filter: '*-results.xml'
+                    which-build: last-successful
+        - conditional-step:
+            condition-kind: and
+            condition-operands:
+                - condition-kind: regex-match
+                  regex: (true)
+                  label: ${{ENV,var="PULL_ARTIFACTS"}}
+                - condition-kind: regex-match
+                  regex: (tier2)
+                  label: ${{ENV,var="ENDPOINT"}}
+            steps:
+                - copyartifact:
+                    project: 'automation-{satellite_version}-tier2-{os}'
+                    filter: '*-results.xml'
+                    which-build: last-successful
+        - conditional-step:
+            condition-kind: and
+            condition-operands:
+                - condition-kind: regex-match
+                  regex: (true)
+                  label: ${{ENV,var="PULL_ARTIFACTS"}}
+                - condition-kind: regex-match
+                  regex: (tier3)
+                  label: ${{ENV,var="ENDPOINT"}}
+            steps:
+                - copyartifact:
+                    project: 'automation-{satellite_version}-tier3-{os}'
+                    filter: '*-results.xml'
+                    which-build: last-successful
+        - conditional-step:
+            condition-kind: and
+            condition-operands:
+                - condition-kind: regex-match
+                  regex: (true)
+                  label: ${{ENV,var="PULL_ARTIFACTS"}}
+                - condition-kind: regex-match
+                  regex: (tier4)
+                  label: ${{ENV,var="ENDPOINT"}}
+            steps:
+                - copyartifact:
+                    project: 'automation-{satellite_version}-tier4-{os}'
+                    filter: '*-results.xml'
+                    which-build: last-successful
+        - conditional-step:
+            condition-kind: and
+            condition-operands:
+                - condition-kind: regex-match
+                  regex: (true)
+                  label: ${{ENV,var="PULL_ARTIFACTS"}}
+                - condition-kind: regex-match
+                  regex: (rhai)
+                  label: ${{ENV,var="ENDPOINT"}}
+            steps:
+                - copyartifact:
+                    project: 'automation-{satellite_version}-rhai-{os}'
+                    filter: '*-results.xml'
+                    which-build: last-successful
+        - conditional-step:
+            condition-kind: and
+            condition-operands:
+                - condition-kind: regex-match
+                  regex: (true)
+                  label: ${{ENV,var="PULL_ARTIFACTS"}}
+                - condition-kind: regex-match
+                  regex: (destructive)
+                  label: ${{ENV,var="ENDPOINT"}}
+            steps:
+                - copyartifact:
+                    project: 'automation-{satellite_version}-destructive-{os}'
+                    filter: '*-results.xml'
+                    which-build: last-successful
