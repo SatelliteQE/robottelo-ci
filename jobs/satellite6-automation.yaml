@@ -1323,6 +1323,7 @@
         - 'automation-{satellite_version}-rhai-{os}'
         - 'automation-{satellite_version}-destructive-{os}'
         - 'polarion-test-run-{satellite_version}-{os}'
+        - 'polarion-trigger-{satellite_version}-{os}'
         - 'report-automation-results-{satellite_version}-{os}'
         - 'report-consolidated-coverage-{satellite_version}-{os}'
         - 'automation-{satellite_version}-trigger-tiers-{os}'
