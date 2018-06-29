@@ -35,6 +35,10 @@ function setup_instance () {
     else
         ssh $ssh_opts root@"${SERVER_HOSTNAME}" satellite-change-hostname "${SERVER_HOSTNAME}" -y -u admin -p changeme
     fi
+
+    if [ "${ENDPOINT}" == "tier1" ] || [ "${ENDPOINT}" == "tier2" ]; then
+        ssh $ssh_opts root@"${SERVER_HOSTNAME}" systemctl stop dhcp
+    fi
 }
 
 # Provisioning jobs TARGET_IMAGE becomes the SOURCE_IMAGE for Tier and RHAI jobs.
