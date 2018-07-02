@@ -14,7 +14,7 @@ node('rvm') {
             gitlabCommitStatus {
                 withRVM(["gem install bundler"])
                 withRVM(["bundle install"])
-                withRVM(["FOREMAN_BRANCH=1.15-stable bundle exec rake"])
+                withRVM(["bundle exec rake"])
             }
 
         } finally {
