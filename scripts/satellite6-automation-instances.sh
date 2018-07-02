@@ -37,7 +37,7 @@ function setup_instance () {
     fi
 
     if [ "${ENDPOINT}" == "tier1" ] || [ "${ENDPOINT}" == "tier2" ]; then
-        ssh $ssh_opts root@"${SERVER_HOSTNAME}" systemctl stop dhcp
+        ssh $ssh_opts root@"${SERVER_HOSTNAME}" systemctl stop dhcpd
     fi
 }
 
