@@ -1,3 +1,4 @@
+source config/installation_environment.conf
 # Setup for the Python Code Coverage
 pip install coverage
 
@@ -45,12 +46,16 @@ popd
 if [[ "${RUBY_CODE_COVERAGE}" == "true" ]]; then
 
     for i in tier1 tier2 tier3 tier4 rhai destructive; do
-        scp -o StrictHostKeyChecking=no tfm_reports_${ENDPOINT}.tar "root@${SERVER_HOSTNAME}:/root/"
+        scp -o StrictHostKeyChecking=no tfm_reports_${i}.tar "root@${SERVER_HOSTNAME}:/root/"
     done
 
     for i in tier1 tier2 tier3 tier4 rhai destructive; do
         ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "mkdir -p /root/coverage_${i} ; tar -xvf /root/tfm_reports_${i}.tar -C /root/coverage_${i}"
     done
+
+    wget -O merger.rb ${HTTP_SERVER_HOSTNAME}/code_coverage/ruby/merger.rb
+
+    scp -o StrictHostKeyChecking=no merger.rb "root@${SERVER_HOSTNAME}:/root/"
 
     ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cd /root/ ; ruby merger.rb coverage_tier1 coverage_tier2 coverage_tier3 coverage_tier4 coverage_rhai coverage_destructive"
 
