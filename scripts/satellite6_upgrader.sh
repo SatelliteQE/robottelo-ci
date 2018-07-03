@@ -84,7 +84,7 @@ fi
 # Creates Templates after upgrading the instances
 if [ "${CREATE_TEMPLATES}" == 'true' ]; then
     echo "Creating Upgraded Instances of Satellite and Capsule"
-    fab -u root validate_and_create_product_templates:"${UPGRADE_PRODUCT}"
+    fab -u root validate_and_create_rhevm4_templates:"${UPGRADE_PRODUCT}"
 fi
 
 # Creates the post-upgrade data-store required for existence tests
