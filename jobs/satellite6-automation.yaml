@@ -666,7 +666,7 @@
         - inject:
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
-                PROVISIONING_ID=basil
+                PROVISIONING_ID=rosemary
                 SERVER_ID=sat-feature-{os}
                 DISTRO={os}
         - config-file-provider:
@@ -744,7 +744,7 @@
         - inject:
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
-                PROVISIONING_ID=basil
+                PROVISIONING_ID=rosemary
                 SERVER_ID=cap-feature-{os}
                 DISTRO={os}
         - config-file-provider:
