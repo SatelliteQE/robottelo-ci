@@ -23,11 +23,6 @@ if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
         PYTHONHASHSEED=0
 fi
 
-# Temporary change to check test performance without saucelabs
-if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
-    SAUCE_PLATFORM="no_saucelabs"
-fi
-
 if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"
     sed -i "s/^browser.*/browser=saucelabs/" robottelo.properties
