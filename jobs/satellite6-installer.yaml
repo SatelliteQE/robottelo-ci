@@ -27,7 +27,7 @@
             description: |
                 <p>Choose the distribution type:</p>
                 <ul>
-                  <li><strong>INTERNALAK</strong>: Install Satellite6.3 via AK from latest stable internal compose</li>
+                  <li><strong>INTERNALAK</strong>: Install Satellite 6.4 via AK from latest stable internal compose</li>
                   <li><strong>INTERNAL</strong>: Install Satellite6 from latest stable internal compose</li>
                   <li><strong>INTERNALREPOFILE</strong>: Install Satellite6.3 via REPOFILE from latest stable internal compose</li>
                   <li><strong>GA</strong>: Install from CDN</li>
