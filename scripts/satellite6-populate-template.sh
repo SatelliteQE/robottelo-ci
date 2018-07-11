@@ -91,7 +91,7 @@ fi
 # Below are the default ID's of various Satellite6 entities.
 # Basic Variables.
 # ORG of ID 1 refers to 'Default Organization'
-ORG=1 
+ORG=1
 # LOC of ID 2 refers to 'Default Location'
 LOC=2
 
@@ -380,10 +380,10 @@ satellite_runner capsule import-classes --id 1 --environment-id 1
 
 # Populate the RHEL6 and RHEL7 OS ID
 
-RHEL7_OS_ID=$(satellite --csv os list | grep "7" | cut -d ',' -f1 | grep -vi "^id")
+RHEL7_OS_ID=$(satellite --csv os list | grep "7.5" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL7 OS ID is: ${RHEL7_OS_ID}"
 
-RHEL6_OS_ID=$(satellite --csv os list | grep "6" | cut -d ',' -f1 | grep -vi "^id")
+RHEL6_OS_ID=$(satellite --csv os list | grep "6.9" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL6 OS ID is: ${RHEL6_OS_ID}"
 
 if [ "${SAT_VERSION}" = "6.3" ]; then

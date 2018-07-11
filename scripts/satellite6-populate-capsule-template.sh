@@ -21,7 +21,7 @@ SUBNET_NAME=""
 SUBNET_RANGE=""
 SUBNET_MASK=""
 SUBNET_GATEWAY=""
-  
+
 if [[ -z "${SUBNET_NAME}" || -z "${SUBNET_RANGE}" || -z "${SUBNET_MASK}" || -z "${SUBNET_GATEWAY}" ]]; then
     echo "You need to specify SUBNET_NAME, SUBNET_RANGE, SUBNET_MASK and SUBNET_GATEWAY to be added as a subnet."
     exit 1
@@ -50,7 +50,7 @@ fi
 # Below are the default ID's of various Satellite6 entities.
 # Basic Variables.
 # ORG of ID 1 refers to 'Default Organization'
-ORG=1 
+ORG=1
 # LOC of ID 2 refers to 'Default Location'
 LOC=2
 
@@ -103,7 +103,7 @@ satellite_runner capsule content synchronize --id "${SMARTPROXYID}"
 
 if [[ "${PROVISIONING_SETUP}" = "false" ]] ; then
     exit 0
-fi 
+fi
 
 # Create subnet and associate various entities to it.
 satellite_runner subnet create --name "${SUBNET_NAME}" --network "${SUBNET_RANGE}" --mask "${SUBNET_MASK}" --gateway "${SUBNET_GATEWAY}" --dns-id "${SMARTPROXYID}" --dhcp-id "${SMARTPROXYID}" --tftp-id "${SMARTPROXYID}" --domain-ids "${DOMAIN_ID}" --ipam DHCP --boot-mode DHCP --organization-ids="${ORG}" --location-ids="${LOC}"
@@ -118,10 +118,10 @@ satellite_runner subnet create --name "${SUBNET_NAME}" --network "${SUBNET_RANGE
 
 # Populate the RHEL6 and RHEL7 OS ID
 
-RHEL7_OS_ID=$(satellite --csv os list | grep "7" | cut -d ',' -f1 | grep -vi "^id")
+RHEL7_OS_ID=$(satellite --csv os list | grep "7.5" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL7 OS ID is: ${RHEL7_OS_ID}"
 
-RHEL6_OS_ID=$(satellite --csv os list | grep "6" | cut -d ',' -f1 | grep -vi "^id")
+RHEL6_OS_ID=$(satellite --csv os list | grep "6.9" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL6 OS ID is: ${RHEL6_OS_ID}"
 
 if [ "${SAT_VERSION}" = "6.3" ]; then
