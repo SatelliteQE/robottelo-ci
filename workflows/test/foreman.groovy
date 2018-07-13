@@ -15,7 +15,7 @@ node('sat6-rhel7') {
 
     stage('Configure Database') {
 
-        setup_foreman()
+        setup_foreman(get_ruby_version())
 
     }
 
@@ -24,7 +24,7 @@ node('sat6-rhel7') {
         try {
 
             gitlabCommitStatus {
-                withRVM(['bundle exec rake jenkins:unit jenkins:integration TESTOPTS="-v"'], 2.2)
+                withRVM(['bundle exec rake jenkins:unit jenkins:integration TESTOPTS="-v"'], get_ruby_version())
             }
 
         } finally {
@@ -32,7 +32,7 @@ node('sat6-rhel7') {
             archive "Gemfile.lock pkg/*"
             junit keepLongStdio: true, testResults: 'jenkins/reports/unit/*.xml'
 
-            cleanup()
+            cleanup(get_ruby_version())
 
         }
     }
