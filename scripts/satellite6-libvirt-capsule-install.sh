@@ -24,12 +24,16 @@ if [[ "${RERUN}" == "false" ]]; then
     fi
 fi
 
+# This is the actual stage where in the capsule box is registered,
+# capsule package installed and then satellite-installer --scenarios capsule run.
 fab -D -H "root@${CAPSULE_FQDN}" "setup_capsule"
 
+# Configures all the needed libvirt stuff for setting up capsule.
 if [[ "${PROVISIONING_SETUP}" == "true" ]]; then
     fab -D -H "root@${CAPSULE_FQDN}" "setup_external_capsule"
 fi
 
+# Configures all the needed stuff for provisioning on Capsule
 wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/scripts/satellite6-populate-capsule-template.sh
 
 cp satellite6-populate-capsule-template.sh satellite6-populate-capsule.sh

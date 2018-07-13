@@ -82,7 +82,7 @@ function satellite_runner () {
 }
 
 # TODO
-# Update the DOWNLOAD_POLICY to sync content.
+# Update the Capsule DOWNLOAD_POLICY to sync content.
 # satellite_runner settings set --name default_download_policy --value "${DOWNLOAD_POLICY}"
 
 SMARTPROXYID=$(satellite --csv proxy list | grep "${CAPSULE_HOSTNAME}" | awk -F ',' '{print $1}')
