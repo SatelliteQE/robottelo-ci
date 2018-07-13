@@ -28,10 +28,15 @@ EOT
     } catch(all) {
 
         updateGitlabCommitStatus state: 'failed'
-        cleanup()
+        cleanup(get_ruby_version())
         throw(all)
 
     }
+}
+
+def get_ruby_version() {
+  target_branch = env.getProperty('gitlabTargetBranch')
+  return branch_map[target_branch]['ruby']
 }
 
 def setup_foreman(ruby = '2.2') {
@@ -53,7 +58,7 @@ def setup_foreman(ruby = '2.2') {
     } catch (all) {
 
         updateGitlabCommitStatus state: 'failed'
-        cleanup()
+        cleanup(get_ruby_version())
         throw(all)
 
     }
@@ -77,7 +82,7 @@ def setup_plugin(plugin_name, ruby = '2.2') {
     } catch (all) {
 
         updateGitlabCommitStatus state: 'failed'
-        cleanup()
+        cleanup(get_ruby_version())
         throw(all)
 
     }
