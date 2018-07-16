@@ -200,6 +200,9 @@ satellite_runner repository-set enable --name="Red Hat Software Collections RPMs
 # Foreman-Maintain repos
 satellite_runner repository-set enable --name="Red Hat Satellite Maintenance 6 (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
 
+# Ansible repos
+satellite_runner repository-set enable --name="Red Hat Ansible Engine 2 RPMs for Red Hat Enterprise Linux 7 Server" --basearch="x86_64" --product "Red Hat Ansible Engine" --organization-id="${ORG}"
+
 # Satellite6 CDN RPMS
 if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
     # Satellite6 Tools RPMS
@@ -256,8 +259,10 @@ if [ "${RHELOS}" = "7" ]; then
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Satellite Maintenance 6 for RHEL 7 Server RPMs x86_64'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Software Collections for RHEL Server' --repository='Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server x86_64 7Server'
+    satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Ansible Engine' --repository='Red Hat Ansible Engine 2 RPMs for Red Hat Enterprise Linux 7 Server x86_64'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product="${RHEL7_TOOLS_PRD}" --repository="${RHEL7_TOOLS_REPO}"
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product="${SAT6C7_PRODUCT}" --repository="${CAPSULE7_REPO}"
+    satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product="${SAT6M7_PRODUCT}" --repository="${MAINTAIN7_REPO}"
     satellite_runner  content-view publish --name='Capsule RHEL 7 CV' --organization-id="${ORG}"
     satellite_runner  content-view version promote --content-view='Capsule RHEL 7 CV' --organization-id="${ORG}" --to-lifecycle-environment=DEV --from-lifecycle-environment="Library"
 else
@@ -284,6 +289,7 @@ satellite_runner  activation-key update --name "ak-capsule-${RHELOS}" --auto-att
 # RHEL7 Section
 # Add Subscriptions to RHEL 7 activation key
 RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
+ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id)
 if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Standard (Physical or Virtual Nodes)" |  awk -F "," '{print $1}' | grep -vi id)
 fi
@@ -324,7 +330,10 @@ if [ "${RHELOS}" = "7" ]; then
 
     satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
     satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${CAPSULE7_SUBS_ID}"
+    satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${ANSIBLE_SUBS_ID}"
+
     satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-server-rhscl-7-rpms" --value=true  --organization-id=${ORG}
+    satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-7-server-ansible-2-rpms" --value=true  --organization-id=${ORG}
 
     # As we require a specific version of satellite-maintenance, which is available only from INTERNAL
     if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
