@@ -51,6 +51,7 @@ sed -i "s|RHEL6_TOOLS_URL=.*|RHEL6_TOOLS_URL=\"${TOOLS_RHEL6}\"|" satellite6-pop
 sed -i "s|RHEL7_TOOLS_URL=.*|RHEL7_TOOLS_URL=\"${TOOLS_RHEL7}\"|" satellite6-populate.sh
 sed -i "s|CAPSULE6_URL=.*|CAPSULE6_URL=\"${CAPSULE_RHEL6}\"|" satellite6-populate.sh
 sed -i "s|CAPSULE7_URL=.*|CAPSULE7_URL=\"${CAPSULE_RHEL7}\"|" satellite6-populate.sh
+sed -i "s|MAINTAIN7_URL=.*|MAINTAIN7_URL=\"${MAINTAIN_REPO}\"|" satellite6-populate.sh
 
 # Set Satellite6 Version, So that MEDIUM-ID is used accordingly. Note, Sat6.3 may not use MEDIUM.
 sed -i "s|SAT_VERSION=.*|SAT_VERSION=\"${SATELLITE_VERSION}\"|" satellite6-populate.sh

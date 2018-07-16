@@ -134,6 +134,9 @@ else
     SAT6C7_PRODUCT=Sat6Capsule7
     CAPSULE7_REPO=capsule7
     CAPSULE7_URL="capsule7_url"
+    SAT6M7_PRODUCT=Sat6Maintain7
+    MAINTAIN7_REPO=maintain7
+    MAINTAIN7_URL="maintain7_url"
 fi
 
 # Use this directly for ENV_VAR population and non side-effects on Satellite6 setup.
@@ -222,6 +225,7 @@ if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
     create-repo "${RHEL6_TOOLS_PRD}" "${RHEL6_TOOLS_REPO}" "${RHEL6_TOOLS_URL}"
     create-repo "${RHEL7_TOOLS_PRD}" "${RHEL7_TOOLS_REPO}" "${RHEL7_TOOLS_URL}"
     create-repo "${SAT6C7_PRODUCT}" "${CAPSULE7_REPO}" "${CAPSULE7_URL}"
+    create-repo "${SAT6M7_PRODUCT}" "${MAINTAIN7_REPO}" "${MAINTAIN7_URL}"
     if [ "${SAT_VERSION}" == "6.2" ]; then
         create-repo "${SAT6C6_PRODUCT}" "${CAPSULE6_REPO}" "${CAPSULE6_URL}"
     fi
@@ -275,12 +279,15 @@ satellite_runner  activation-key update --name 'ak-rhel-7' --auto-attach no --or
 satellite_runner  activation-key update --name 'ak-rhel-6' --auto-attach no --organization-id="${ORG}"
 satellite_runner  activation-key update --name "ak-capsule-${RHELOS}" --auto-attach no --organization-id="${ORG}"
 
-# Add both RHEL6 and RHEL7 Activation keys.
-# RHEL 7 activation key
+
+# Add Subscriptions to both RHEL6 and RHEL7 Activation keys.
+# RHEL7 Section
+# Add Subscriptions to RHEL 7 activation key
 RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
 if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Standard (Physical or Virtual Nodes)" |  awk -F "," '{print $1}' | grep -vi id)
 fi
+
 TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
 satellite_runner  activation-key add-subscription --name='ak-rhel-7' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
 
@@ -289,7 +296,8 @@ if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
     satellite_runner  activation-key add-subscription --name='ak-rhel-7' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID}"
 fi
 
-# RHEL 6 activation key
+# RHEL6 Section
+# Add Subscriptions to RHEL 6 activation key
 TOOLS6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL6_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
 satellite_runner  activation-key add-subscription --name='ak-rhel-6' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
 
@@ -298,24 +306,34 @@ if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
     satellite_runner  activation-key add-subscription --name='ak-rhel-6' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID}"
 fi
 
-# Add both RHEL6 and RHEL7 Capsule Activation keys.
+# Add Subscriptions to both RHEL6 and RHEL7 Capsule Activation keys.
+
 SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
 if [ "${POPULATE_CLIENTS_ARCH}" = "true" ]; then
     SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Capsule Server (Capsule Server only, RHEL not included)" |  awk -F "," '{print $1}' | grep -vi id)
 fi
-if [ "${RHELOS}" = "7" ]; then
 
+if [ "${RHELOS}" = "7" ]; then
     # Capsule 7 activation key
     if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
         CAPSULE7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+        MAINTAIN7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6M7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
     else
         CAPSULE7_SUBS_ID="${SATELLITE_SUBS_ID}"
     fi
 
     satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
     satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${CAPSULE7_SUBS_ID}"
-    satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-7-server-satellite-maintenance-6-rpms" --value=true  --organization-id=${ORG}
     satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-server-rhscl-7-rpms" --value=true  --organization-id=${ORG}
+
+    # As we require a specific version of satellite-maintenance, which is available only from INTERNAL
+    if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
+        # For GA the SUBS_ID would come from RHEL.
+        satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-7-server-satellite-maintenance-6-rpms" --value=true  --organization-id=${ORG}
+    else
+        # For Internal no need to do content-override as for custom repos it is enabled by default.
+        satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${MAINTAIN7_SUBS_ID}"
+    fi
 
     # As SATELLITE TOOLS REPO is already part of RHEL subscription.
     if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
