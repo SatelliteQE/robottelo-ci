@@ -88,10 +88,6 @@ function satellite_runner () {
 SMARTPROXYID=$(satellite --csv proxy list | grep "${CAPSULE_HOSTNAME}" | awk -F ',' '{print $1}')
 echo SMART-PROXY ID: "${SMARTPROXYID}"
 
-# Update Domain with Capsule's ID.
-DOMAIN_ID=$(satellite --csv domain list --search "${CAPSULE_HOSTNAME#*.}" | grep -vi ID | awk -F "," '{print $1}')
-echo DOMAIN_ID is "${DOMAIN_ID}"
-
 echo Adding Smart-Proxy to Default location and to 'Default Organization'
 satellite_runner capsule update --id "${SMARTPROXYID}" --organization-ids "${ORG}" --location-ids "${LOC}"
 
@@ -104,6 +100,11 @@ satellite_runner capsule content synchronize --id "${SMARTPROXYID}"
 if [[ "${PROVISIONING_SETUP}" = "false" ]] ; then
     exit 0
 fi
+
+
+# Update Domain with Capsule's ID.
+DOMAIN_ID=$(satellite --csv domain list --search "${CAPSULE_HOSTNAME#*.}" | grep -vi ID | awk -F "," '{print $1}')
+echo DOMAIN_ID is "${DOMAIN_ID}"
 
 # Create subnet and associate various entities to it.
 satellite_runner subnet create --name "${SUBNET_NAME}" --network "${SUBNET_RANGE}" --mask "${SUBNET_MASK}" --gateway "${SUBNET_GATEWAY}" --dns-id "${SMARTPROXYID}" --dhcp-id "${SMARTPROXYID}" --tftp-id "${SMARTPROXYID}" --domain-ids "${DOMAIN_ID}" --ipam DHCP --boot-mode DHCP --organization-ids="${ORG}" --location-ids="${LOC}"
@@ -141,7 +142,7 @@ if [ "${SAT_VERSION}" = "6.3" ]; then
     satellite_runner hostgroup create --name='RHEL 7 Server 64-bit Capsule HG' --content-view='RHEL 7 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${SMARTPROXYID}" --puppet-proxy="${CAPSULE_HOSTNAME}" --puppet-ca-proxy="${CAPSULE_HOSTNAME}" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id=${DOMAIN_ID} --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id=${RHEL7_OS_ID} --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS' --kickstart-repository-id=${RHEL7_KS_ID}
 
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit Capsule HG' --name='kt_activation_keys' --value='ak-rhel-7'
-elif
+elif [ "${SAT_VERSION}" = "6.4" ]; then
     RHEL7_KS_ID=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 7/ {print $1}')
     echo "RHEL7 KS ID is: ${RHEL7_KS_ID}"
 
