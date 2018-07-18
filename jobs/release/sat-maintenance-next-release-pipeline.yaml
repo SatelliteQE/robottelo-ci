@@ -1,0 +1,11 @@
+- job:
+    name: sat-maintenance-next-release-pipeline
+    project-type: pipeline
+    triggers:
+      - timed: 'H 06 * * *'
+    dsl:
+      !include-raw:
+        - workflows/maintenance/releasePipeline.groovy
+        - workflows/lib/runPlaybook.groovy
+    notifications:
+      - snapper_notifications

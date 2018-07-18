@@ -1,14 +1,14 @@
 def compose_versions = ['7']
 def os_versions = ['7']
-def satellite_version = 'maintenance'
+def satellite_version = 'maintenance-next'
 def products = [
-    'Satellite Maintenance Composes'
+    'Satellite Maintenance Next Composes'
 ]
 def content_views = [
-    'Satellite Maintenance RHEL7'
+    'Satellite Maintenance Next RHEL7'
 ]
 def composite_content_views = [
-    'Satellite Maintenance with RHEL7 Server'
+    'Satellite Maintenance Next with RHEL7 Server'
 ]
 
 node('sat6-rhel7') {
@@ -40,7 +40,7 @@ node('sat6-rhel7') {
                 'compose_version': 'sat-maintenance-6',
                 'compose_label': 'SatMaintenance-6',
                 'compose_name': 'satellite-maintenance-6',
-                'compose_tag': 'candidate'
+                'compose_tag': 'next'
             ]
         }
 
