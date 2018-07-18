@@ -27,7 +27,8 @@ node('sat6-rhel7') {
                 'compose_git_repo': compose_git_repo,
                 "compose_version": "satellite-${satellite_main_version}",
                 "compose_label": "Satellite-${satellite_main_version}",
-                "compose_name": "satellite-${satellite_main_version}"
+                "compose_name": "satellite-${satellite_main_version}",
+                'compose_tag': 'candidate'
             ]
         }
 
@@ -40,7 +41,8 @@ node('sat6-rhel7') {
                 'compose_git_repo': compose_git_repo,
                 "compose_version": "satellite-${satellite_main_version}",
                 "compose_label": "SatTools-${satellite_main_version}",
-                "compose_name": "satellite-tools-${satellite_main_version}"
+                "compose_name": "satellite-tools-${satellite_main_version}",
+                'compose_tag': 'candidate'
             ]
         }
     }

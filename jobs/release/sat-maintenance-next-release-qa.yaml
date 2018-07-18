@@ -1,0 +1,18 @@
+- job:
+    name: sat-maintenance-next-release-qa
+    project-type: pipeline
+    parameters:
+      - string:
+          name: snapVersion
+          description: "Snap release version"
+      - string:
+          name: previousSnapVersion
+          description: "Previous snap release version"
+    dsl:
+      !include-raw:
+        - workflows/maintenance/releaseQAWorkflow.groovy
+        - workflows/lib/releaseQAFunctions.groovy
+        - workflows/lib/toolbelt.groovy
+        - workflows/lib/runPlaybook.groovy
+    notifications:
+      - snapper_notifications
