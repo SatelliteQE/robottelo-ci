@@ -10,12 +10,12 @@
       - gitlab_build_on_change
     dsl:
       !include-raw:
+        - workflows/lib/branch_map.groovy
         - ./repos/foreman_remote_execution.groovy
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/foreman-plugin.groovy
         - workflows/test/foreman-lib.groovy
         - workflows/lib/rvm.groovy
         - workflows/lib/gitlab.groovy
-        - workflows/lib/branch_map.groovy
     notifications:
       - snapper_notifications
