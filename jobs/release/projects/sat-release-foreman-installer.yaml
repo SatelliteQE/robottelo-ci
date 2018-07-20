@@ -6,9 +6,9 @@
     auth-token: ""
     dsl:
       !include-raw:
+          - workflows/lib/branch_map.groovy
           - ./repos/foreman_installer_repo.groovy
           - ./source_types/sourceTypeRake.groovy
-          - workflows/lib/branch_map.groovy
           - workflows/releasePackageWorkflow.groovy
           - workflows/lib/toolbelt.groovy
           - workflows/lib/runPlaybook.groovy
