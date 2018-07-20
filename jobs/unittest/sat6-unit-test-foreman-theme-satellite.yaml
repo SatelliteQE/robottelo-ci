@@ -16,6 +16,5 @@
         - workflows/test/foreman-lib.groovy
         - workflows/lib/rvm.groovy
         - workflows/lib/gitlab.groovy
-        - workflows/lib/branch_map.groovy
     notifications:
       - snapper_notifications
