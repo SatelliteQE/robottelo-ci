@@ -107,6 +107,11 @@
             description: |
                 <p>Check if you want to perform upgrade using Foreman-Maintain Tool. This needs PERFORM_UPGRADE parameter unchecked.</p>
         - bool:
+            name: USE_CLONE_RPM
+            default: false
+            description: |
+                <p>Check if you want to perform restore using satellite-clone rpm.</p>
+        - bool:
             name: RUN_EXISTENCE_TESTS
             default: false
             description: |
