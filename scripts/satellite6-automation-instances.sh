@@ -36,7 +36,7 @@ function setup_instance () {
         ssh $ssh_opts root@"${SERVER_HOSTNAME}" satellite-change-hostname "${SERVER_HOSTNAME}" -y -u admin -p changeme
     fi
 
-    if [ "${ENDPOINT}" == "tier1" ] || [ "${ENDPOINT}" == "tier2" ]; then
+    if [ "${ENDPOINT}" == "tier1" ] || [ "${ENDPOINT}" == "tier2" ] || [ "${ENDPOINT}" == "rhai" ] || [ "${ENDPOINT}" == "destructive" ] || [ "${ENDPOINT}" == "tier4" ]; then
         ssh $ssh_opts root@"${SERVER_HOSTNAME}" systemctl stop dhcpd
     fi
 }
