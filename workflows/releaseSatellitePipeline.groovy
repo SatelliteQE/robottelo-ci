@@ -132,9 +132,7 @@ node('rhel') {
     stage("Setup Packaging Workspace") {
 
         deleteDir()
-        dir('tool_belt') {
-            setup_toolbelt()
-        }
+
     }
 
     stage("Compare Packages") {
@@ -151,23 +149,20 @@ node('rhel') {
     }
 
     stage("Move to ON_DEV") {
-        dir('tool_belt') {
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                toolBelt(
-                    command: 'bugzilla move-to-on-dev',
-                    options: [
-                        "--bz-username ${env.BZ_USERNAME}",
-                        "--bz-password ${env.BZ_PASSWORD}",
-                        "--version ${satellite_version}",
-                        "--packages package_report.yaml",
-                        " --commit"
-                    ]
-                )
+            toolBelt(
+                command: 'bugzilla move-to-on-dev',
+                options: [
+                    "--bz-username ${env.BZ_USERNAME}",
+                    "--bz-password ${env.BZ_PASSWORD}",
+                    "--version ${satellite_version}",
+                    "--packages package_report.yaml",
+                    " --commit"
+                ]
+            )
 
-            }
         }
-
     }
 }
 
