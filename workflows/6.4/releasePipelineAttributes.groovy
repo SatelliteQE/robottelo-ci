@@ -58,3 +58,15 @@ def tools_composite_content_views = [
     'Tools 6.4 with RHEL5 Server'
 ]
 def composite_content_views = satellite_composite_content_views + capsule_composite_content_views + tools_composite_content_views
+
+def satellite_activation_keys = [
+    'satellite-6.4.0-qa-rhel7'
+]
+def capsule_activation_keys = [
+    'capsule-6.4.0-qa-rhel7'
+]
+def tools_activation_keys = [
+    'satellite-tools-6.4.0-qa-rhel7',
+    'satellite-tools-6.4.0-qa-rhel6',
+    'satellite-tools-6.4.0-qa-rhel5'
+]

@@ -1,5 +1,18 @@
 // Library Methods
 
+def copyActivationKey(args) {
+
+    runPlaybook {
+      playbook = 'playbooks/copy_activation_key.yml'
+      extraVars = [
+          'activation_key_name': args.activation_key,
+          'organization': args.organization,
+          'lifecycle_environment': args.lifecycle_environment,
+      ]
+    }
+
+}
+
 def promoteContentView(body) {
 
     def config = [:]

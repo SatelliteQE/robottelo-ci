@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  tasks:
+  - name: "Copy Activation Key"
+    katello_activation_key:
+      username: "{{ username }}"
+      password: "{{ password }}"
+      server_url: "{{ server }}"
+      verify_ssl: False
+      name: "{{ activation_key_name }}"
+      new_name: "{{ activation_key_name }}-{{ lifecycle_environment }}"
+      organization: "{{ organization }}"
+      state: 'copied'
+
+  - name: "Set Lifecycle Environment for Activation Key"
+    katello_activation_key:
+      username: "{{ username }}"
+      password: "{{ password }}"
+      server_url: "{{ server }}"
+      verify_ssl: False
+      name: "{{ activation_key_name }}-{{ lifecycle_environment }}"
+      organization: "{{ organization }}"
+      state: 'present'
+      lifecycle_environment: "{{ lifecycle_environment }}"
