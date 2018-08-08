@@ -122,6 +122,11 @@
             default: true
             description: |
                 If set to true, will populate the different client architecture repos to the Satellite6 Server for further client testing.
+        - bool:
+            name: NMINUSONE
+            default: false
+            description: |
+                If set to true, will populate N-1 client repos ex: testing 6.3 clients with 6.4 satellite.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git

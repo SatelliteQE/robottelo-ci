@@ -30,3 +30,12 @@ else
     cp ${PWD}/scripts/satellite6-populate-template.sh satellite6-populate.sh
     chmod 755 satellite6-populate.sh
 fi
+
+
+if [[ -n "${NMINUSONE}" ]]; then
+    if [[ "${SATELLITE_VERSION}" = "6.4" ]]; then
+        export SATELLITE_VERSION=6.3
+    elif [[ "${SATELLITE_VERSION}" = "6.3" ]]; then
+        export SATELLITE_VERSION=6.2
+    fi
+fi
