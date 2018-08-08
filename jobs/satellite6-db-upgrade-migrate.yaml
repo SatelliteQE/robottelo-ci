@@ -116,6 +116,11 @@
             default: false
             description: |
                 <p>Run tests to verify if the entities and their associations exists post upgrade</p>
+        - bool:
+            name: RUN_UPGRADE_TESTS
+            default: false
+            description: |
+                <p>Run tests to perform post upgrade sanity check of satellite(allow to run tests from robottelo having upgrade marker).</p>
         - string:
             name: SATELLITE_HOSTNAME
             description: |
@@ -145,6 +150,18 @@
                 !include-raw:
                     - 'pip-install-pycurl.sh'
                     - 'satellite6_db_upgrade_migrate.sh'
+          - conditional-step:
+              condition-kind: regex-match
+              regex: (true)
+              label: ${ENV,var="RUN_UPGRADE_TESTS"}
+              steps:
+                  - trigger-builds:
+                      - project: 'satellite6-standalone-automation'
+                        predefined-parameters: |
+                          SATELLITE_VERSION=${{TO_VERSION}}
+                          SERVER_HOSTNAME=${{SATELLITE_HOSTNAME}}
+                          PYTEST_MARKS='upgrade'
+                          PYTEST_OPTIONS=${{TESTS}}
     publishers:
         - email-ext:
             recipients: $BUILD_USER_EMAIL
