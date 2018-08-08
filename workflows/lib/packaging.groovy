@@ -159,57 +159,51 @@ def mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_
     def packages = packages_to_build.split(' ')
     def comment = get_brew_comment(build_status)
 
-    dir('tool_belt') {
-        setup_toolbelt()
-    }
-
     for (int i = 0; i < packages.size(); i++) {
         package_name = packages[i]
         rpm = query_rpmspec("packages/${package_name}/*.spec", "${package_name}-%{VERSION}-%{RELEASE}")
         ids = sh(returnStdout: true, script: "rpmspec -q --srpm --queryformat=%{CHANGELOGTEXT} packages/${package_name}/*.spec |grep '^- BZ' | sed -E 's/^- BZ[ #]+?([0-9]+).*/\\1/'").trim()
 
-        dir('tool_belt') {
-            if (ids.size() > 0) {
-                ids = ids.split("\n").join(' --bug ')
+        if (ids.size() > 0) {
+            ids = ids.split("\n").join(' --bug ')
 
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                    toolBelt(
-                        command: 'bugzilla set-fixed-in',
-                        config: tool_belt_config,
-                        options: [
-                            "--bz-username ${env.BZ_USERNAME}",
-                            "--bz-password ${env.BZ_PASSWORD}",
-                            "--rpm ${rpm}",
-                            "--bug ${ids}",
-                            "--version ${package_version}"
-                        ]
-                    )
+                toolBelt(
+                    command: 'bugzilla set-fixed-in',
+                    config: tool_belt_config,
+                    options: [
+                        "--bz-username ${env.BZ_USERNAME}",
+                        "--bz-password ${env.BZ_PASSWORD}",
+                        "--rpm ${rpm}",
+                        "--bug ${ids}",
+                        "--version ${package_version}"
+                    ]
+                )
 
-                    toolBelt(
-                        command: 'bugzilla set-build-state',
-                        config: tool_belt_config,
-                        options: [
-                            "--bz-username ${env.BZ_USERNAME}",
-                            "--bz-password ${env.BZ_PASSWORD}",
-                            "--state rpm_built",
-                            "--bug ${ids}",
-                            "--version ${package_version}"
-                        ]
-                    )
+                toolBelt(
+                    command: 'bugzilla set-build-state',
+                    config: tool_belt_config,
+                    options: [
+                        "--bz-username ${env.BZ_USERNAME}",
+                        "--bz-password ${env.BZ_PASSWORD}",
+                        "--state rpm_built",
+                        "--bug ${ids}",
+                        "--version ${package_version}"
+                    ]
+                )
 
-                    toolBelt(
-                        command: 'bugzilla add-comment',
-                        config: tool_belt_config,
-                        options: [
-                            "--bz-username ${env.BZ_USERNAME}",
-                            "--bz-password ${env.BZ_PASSWORD}",
-                            "--bug ${ids}",
-                            "--version ${package_version}",
-                            "--comment '${comment}'"
-                        ]
-                    )
-                }
+                toolBelt(
+                    command: 'bugzilla add-comment',
+                    config: tool_belt_config,
+                    options: [
+                        "--bz-username ${env.BZ_USERNAME}",
+                        "--bz-password ${env.BZ_PASSWORD}",
+                        "--bug ${ids}",
+                        "--version ${package_version}",
+                        "--comment '${comment}'"
+                    ]
+                )
             }
         }
     }

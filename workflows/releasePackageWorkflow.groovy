@@ -38,25 +38,22 @@ pipeline {
                     }
                 }
 
-                dir('tool_belt') {
-                    setup_toolbelt()
-                }
             }
         }
 
         stage("Identify Bugs") {
             steps {
-                dir('tool_belt') {
-                    toolBelt(
-                        command: 'release find-bz-ids',
-                        config: tool_belt_config,
-                        options: [
-                            "--dir ../${repo_name}",
-                            "--output-file bz_ids.json"
-                        ]
-                    )
-                    archive 'bz_ids.json'
-                }
+
+                toolBelt(
+                    command: 'release find-bz-ids',
+                    config: tool_belt_config,
+                    options: [
+                        "--dir ../${repo_name}",
+                        "--output-file bz_ids.json"
+                    ]
+                )
+                archive 'bz_ids.json'
+
             }
         }
 
@@ -64,63 +61,31 @@ pipeline {
         stage("Move Bugs to Modified") {
             steps {
                 script {
-                    dir('tool_belt') {
-                        def ids = []
-                        def bzs = readJSON(file: 'bz_ids.json')
-                        for (bz in bzs) {
-                            ids << bz['id']
-                        }
 
-                        if (ids.size() > 0) {
-                            ids = ids.join(' --bug ')
+                    def ids = []
+                    def bzs = readJSON(file: 'bz_ids.json')
+                    for (bz in bzs) {
+                        ids << bz['id']
+                    }
 
-                            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+                    if (ids.size() > 0) {
+                        ids = ids.join(' --bug ')
 
-                                toolBelt(
-                                    command: 'bugzilla set-cherry-picked',
-                                    config: tool_belt_config,
-                                    options: [
-                                        "--bz-username ${env.BZ_USERNAME}",
-                                        "--bz-password ${env.BZ_PASSWORD}",
-                                        "--bug ${ids}",
-                                        "--version ${version_map['version']}"
-                                    ]
-                                )
-                            }
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+
+                            toolBelt(
+                                command: 'bugzilla set-cherry-picked',
+                                config: tool_belt_config,
+                                options: [
+                                    "--bz-username ${env.BZ_USERNAME}",
+                                    "--bz-password ${env.BZ_PASSWORD}",
+                                    "--bug ${ids}",
+                                    "--version ${version_map['version']}"
+                                ]
+                            )
                         }
                     }
-                }
-            }
-        }
 
-        stage("Set External Tracker for Commit") {
-            steps {
-                script {
-                    dir('tool_belt') {
-                        def commits = readJSON(file: 'bz_ids.json')
-
-                        for (i = 0; i < commits.size(); i += 1) {
-                            def commit = commits[i]
-                            def hash = (gitRepository + '/commit/' + commit['commit']).toString()
-                            def id = commit['id'].toString()
-
-                            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
-
-                                toolBelt(
-                                    command: 'bugzilla set-gitlab-tracker',
-                                    config: tool_belt_config,
-                                    options: [
-                                        "--bz-username ${env.BZ_USERNAME}",
-                                        "--bz-password ${env.BZ_PASSWORD}",
-                                        "--external-tracker \"${hash}\"",
-                                        "--bug ${id}",
-                                        "--version ${version_map['version']}"
-                                    ]
-                                )
-
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -135,17 +100,15 @@ pipeline {
                         sh "git config user.email 'sat6-jenkins@redhat.com'"
                         sh "git config user.name 'Jenkins'"
 
-                        dir('../tool_belt') {
-                            toolBelt(
-                                command: 'release bump-version',
-                                config: tool_belt_config,
-                                options: [
-                                    "--dir ../${repo_name}",
-                                    "--output-file version"
-                                ]
-                            )
-                            archive "version"
-                        }
+                        toolBelt(
+                            command: 'release bump-version',
+                            config: tool_belt_config,
+                            options: [
+                                "--dir ../${repo_name}",
+                                "--output-file version"
+                            ]
+                        )
+                        archive "version"
 
                         script {
                             releaseTag = readFile '../tool_belt/version'
@@ -182,17 +145,15 @@ pipeline {
                         }
                     } else {
 
-                        dir('tool_belt') {
-                            toolBelt(
-                                command: 'release build-source',
-                                config: tool_belt_config,
-                                options: [
-                                    "--dir ../${repo_name}",
-                                    "--type ${sourceType}",
-                                    "--output-file artifacts"
-                                ]
-                            )
-                        }
+                        toolBelt(
+                            command: 'release build-source',
+                            config: tool_belt_config,
+                            options: [
+                                "--dir ../${repo_name}",
+                                "--type ${sourceType}",
+                                "--output-file artifacts"
+                            ]
+                        )
                     }
                 }
             }
@@ -234,34 +195,33 @@ pipeline {
             steps {
 
                 script {
-                    dir('tool_belt') {
-                        def ids = []
-                        def bzs = readJSON(file: 'bz_ids.json')
 
-                        for (bz in bzs) {
-                            ids << bz['id']
-                        }
+                    def ids = []
+                    def bzs = readJSON(file: 'bz_ids.json')
 
-                        if (ids.size() > 0) {
-                            ids = ids.join(' --bug ')
+                    for (bz in bzs) {
+                        ids << bz['id']
+                    }
 
-                            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+                    if (ids.size() > 0) {
+                        ids = ids.join(' --bug ')
 
-                                toolBelt(
-                                    command: 'bugzilla set-build-state',
-                                    config: tool_belt_config,
-                                    options: [
-                                        "--bz-username ${env.BZ_USERNAME}",
-                                        "--bz-password ${env.BZ_PASSWORD}",
-                                        "--state needs_rpm",
-                                        "--bug ${ids}",
-                                        "--version ${version_map['version']}"
-                                    ]
-                                )
+                        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
-                            }
+                            toolBelt(
+                                command: 'bugzilla set-build-state',
+                                config: tool_belt_config,
+                                options: [
+                                    "--bz-username ${env.BZ_USERNAME}",
+                                    "--bz-password ${env.BZ_PASSWORD}",
+                                    "--state needs_rpm",
+                                    "--bug ${ids}",
+                                    "--version ${version_map['version']}"
+                                ]
+                            )
 
                         }
+
                     }
                 }
             }

@@ -42,21 +42,17 @@ def compareContentViews(body) {
     body.delegate = config
     body()
 
-    dir('tool_belt') {
+    def archive_file = 'package_report.yaml'
 
-        setup_toolbelt()
-        def archive_file = 'package_report.yaml'
+    toolBelt(
+        command: 'release compare-content-view',
+        options: [
+            "--content-view '${config.content_view}'",
+            "--from-environment '${config.from_lifecycle_environment}'",
+            "--to-environment '${config.to_lifecycle_environment}'",
+            "--output '${archive_file}'"
+        ]
+    )
 
-        toolBelt(
-            command: 'release compare-content-view',
-            options: [
-                "--content-view '${config.content_view}'",
-                "--from-environment '${config.from_lifecycle_environment}'",
-                "--to-environment '${config.to_lifecycle_environment}'",
-                "--output '${archive_file}'"
-            ]
-        )
-
-        archive archive_file
-    }
+    archive archive_file
 }

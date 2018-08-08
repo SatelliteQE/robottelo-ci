@@ -4,7 +4,6 @@ def milestone = '6.2.15'
 node('rhel') {
 
     stage("Setup ToolBelt") {
-        setup_toolbelt()
         toolBelt(
             command: 'setup-environment',
             options: [

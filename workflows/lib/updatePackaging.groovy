@@ -9,72 +9,62 @@ node ('sat6-rhel7') {
 
         deleteDir()
 
-        dir('tool_belt') {
-            setup_toolbelt()
-        }
-
     }
 
     stage("Clone packaging git") {
 
-        dir("tool_belt") {
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
+        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'jenkins-gitlab', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
 
-                toolBelt(
-                    command: 'setup-environment',
-                    config: tool_belt_config,
-                    options: [
-                        "--version ${package_version}",
-                        "--gitlab-username ${env.USERNAME}",
-                        "--gitlab-password ${env.PASSWORD}",
-                        "--gitlab-clone-method https",
-                        "--repos ${packaging_repo}"
-                    ]
-                )
-            }
+            toolBelt(
+                command: 'setup-environment',
+                config: tool_belt_config,
+                options: [
+                    "--version ${package_version}",
+                    "--gitlab-username ${env.USERNAME}",
+                    "--gitlab-password ${env.PASSWORD}",
+                    "--gitlab-clone-method https",
+                    "--repos ${packaging_repo}"
+                ]
+            )
         }
 
     }
 
     stage("Get package name") {
 
-        dir("tool_belt") {
-            toolBelt(
-                command: 'release package-name',
-                config: tool_belt_config,
-                options: [
-                    "--version ${package_version}",
-                    "--project ${project}",
-                    "--output-file package_name",
-                    "--no-update-repos"
-                ]
-            )
-            package_name = readFile 'package_name'
-        }
+        toolBelt(
+            command: 'release package-name',
+            config: tool_belt_config,
+            options: [
+                "--version ${package_version}",
+                "--project ${project}",
+                "--output-file package_name",
+                "--no-update-repos"
+            ]
+        )
+        package_name = readFile 'package_name'
 
     }
 
     stage("Generate changelog entry") {
 
-        dir("tool_belt") {
-            withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
+        withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
 
-                toolBelt(
-                    command: 'release changelog',
-                    config: tool_belt_config,
-                    options: [
-                        "--version ${package_version}",
-                        "--project ${project}",
-                        "--gitlab-username jenkins",
-                        "--gitlab-token ${env.GITLAB_TOKEN}",
-                        "--update-to ${version}",
-                        "--output-file changelog"
-                    ]
-                )
+            toolBelt(
+                command: 'release changelog',
+                config: tool_belt_config,
+                options: [
+                    "--version ${package_version}",
+                    "--project ${project}",
+                    "--gitlab-username jenkins",
+                    "--gitlab-token ${env.GITLAB_TOKEN}",
+                    "--update-to ${version}",
+                    "--output-file changelog"
+                ]
+            )
 
-            }
-            changelog = readFile 'changelog'
         }
+        changelog = readFile 'changelog'
 
     }
 
@@ -103,23 +93,21 @@ node ('sat6-rhel7') {
             sh "git push jenkins ${branch} -f"
         }
 
-        dir("tool_belt") {
-            withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
+        withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
 
-                toolBelt(
-                    command: 'git merge-request',
-                    config: tool_belt_config,
-                    options: [
-                        "--gitlab-username jenkins",
-                        "--gitlab-token ${env.GITLAB_TOKEN}",
-                        "--repo '${packaging_repo_project}/${packaging_repo}'",
-                        "--source-branch ${branch}",
-                        "--target-branch ${env.gitlabTargetBranch}",
-                        "--title '${commit_msg}'"
-                    ]
-                )
+            toolBelt(
+                command: 'git merge-request',
+                config: tool_belt_config,
+                options: [
+                    "--gitlab-username jenkins",
+                    "--gitlab-token ${env.GITLAB_TOKEN}",
+                    "--repo '${packaging_repo_project}/${packaging_repo}'",
+                    "--source-branch ${branch}",
+                    "--target-branch ${env.gitlabTargetBranch}",
+                    "--title '${commit_msg}'"
+                ]
+            )
 
-            }
         }
 
     }
