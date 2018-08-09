@@ -52,7 +52,7 @@ pipeline {
                         "--output-file bz_ids.json"
                     ]
                 )
-                archive 'bz_ids.json'
+                archive 'tool_belt/bz_ids.json'
 
             }
         }
@@ -63,7 +63,7 @@ pipeline {
                 script {
 
                     def ids = []
-                    def bzs = readJSON(file: 'bz_ids.json')
+                    def bzs = readJSON(file: 'tool_belt/bz_ids.json')
                     for (bz in bzs) {
                         ids << bz['id']
                     }
@@ -100,20 +100,23 @@ pipeline {
                         sh "git config user.email 'sat6-jenkins@redhat.com'"
                         sh "git config user.name 'Jenkins'"
 
-                        toolBelt(
-                            command: 'release bump-version',
-                            config: tool_belt_config,
-                            options: [
-                                "--dir ../${repo_name}",
-                                "--output-file version"
-                            ]
-                        )
-                        archive "version"
+                    }
 
-                        script {
-                            releaseTag = readFile '../tool_belt/version'
-                        }
+                    toolBelt(
+                        command: 'release bump-version',
+                        config: tool_belt_config,
+                        options: [
+                            "--dir ../${repo_name}",
+                            "--output-file version"
+                        ]
+                    )
+                    archive "tool_belt/version"
 
+                    script {
+                        releaseTag = readFile 'tool_belt/version'
+                    }
+
+                    dir(repo_name) {
                         sh "git push origin ${release_branch}"
                         sh "git push origin ${releaseTag}"
                     }
@@ -166,9 +169,7 @@ pipeline {
                     def artifact = ''
                     def artifact_path = ''
 
-                    dir('tool_belt') {
-                        artifacts = readYaml(file: 'artifacts')
-                    }
+                    artifacts = readYaml(file: 'tool_belt/artifacts')
 
                     dir(repo_name) {
                         artifact_base_path = sh(returnStdout: true, script: 'pwd').trim()
@@ -197,7 +198,7 @@ pipeline {
                 script {
 
                     def ids = []
-                    def bzs = readJSON(file: 'bz_ids.json')
+                    def bzs = readJSON(file: 'tool_belt/bz_ids.json')
 
                     for (bz in bzs) {
                         ids << bz['id']
