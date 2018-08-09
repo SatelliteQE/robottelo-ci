@@ -42,7 +42,7 @@ node ('sat6-rhel7') {
                 "--no-update-repos"
             ]
         )
-        package_name = readFile 'package_name'
+        package_name = readFile 'tool_belt/package_name'
 
     }
 
@@ -64,7 +64,7 @@ node ('sat6-rhel7') {
             )
 
         }
-        changelog = readFile 'changelog'
+        changelog = readFile 'tool_belt/changelog'
 
     }
 
