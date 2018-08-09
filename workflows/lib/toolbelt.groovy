@@ -1,13 +1,15 @@
 def setup_toolbelt() {
-    checkout([
-        $class : 'GitSCM',
-        branches : [[name: 'master']],
-        extensions: [[$class: 'CleanCheckout']],
-        userRemoteConfigs: [
-            [url: "https://${env.GIT_HOSTNAME}/${env.GIT_ORGANIZATION}/tool_belt.git"]
-        ]
-    ])
-    sh 'bundle install --without=development'
+    dir ('tool_belt') {
+        checkout([
+            $class : 'GitSCM',
+            branches : [[name: 'master']],
+            extensions: [[$class: 'CleanCheckout']],
+            userRemoteConfigs: [
+                [url: "https://${env.GIT_HOSTNAME}/${env.GIT_ORGANIZATION}/tool_belt.git"]
+            ]
+        ])
+        sh 'bundle install --without=development'
+    }
 }
 
 def toolBelt(args) {
