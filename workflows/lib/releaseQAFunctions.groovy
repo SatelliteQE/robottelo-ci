@@ -54,5 +54,5 @@ def compareContentViews(body) {
         ]
     )
 
-    archive archive_file
+    archive "tool_belt/${archive_file}"
 }
