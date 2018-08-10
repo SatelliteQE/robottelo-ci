@@ -221,7 +221,13 @@ def get_brew_comment(build_status) {
     def tasks = get_koji_tasks()
     def comment = "build status: ${build_status}\n\nbrew:"
     for (String task: tasks) {
-        comment += "\n * https://brewweb.engineering.redhat.com/brew/taskinfo?taskID=${task}"
+        taskinfo = sh(returnStdout: true, script: "brew taskinfo -v ${task}").trim()
+        taskinfo_yaml = readYaml text: taskinfo
+        build_status = taskinfo_yaml["State"]
+        build_package = taskinfo_yaml["Request Parameters"]["Source"]
+        build_package = build_package.split('/')[-1]
+        build_package = build_package.split('\\?')[0]
+        comment += "\n * ${build_package}: ${build_status} - https://brewweb.engineering.redhat.com/brew/taskinfo?taskID=${task}"
     }
     return comment
 }
