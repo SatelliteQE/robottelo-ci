@@ -50,7 +50,9 @@ node('sat6-rhel7') {
 
                 gitlabCommitStatus {
                     withRVM(['bundle exec rake jenkins:katello TESTOPTS="-v" --trace'], ruby)
-                    withRVM(['bundle exec rake db:drop db:create db:migrate'], ruby)
+                    withRVM(['bundle exec rake db:drop || true'], ruby)
+                    withRVM(['bundle exec rake db:create'], ruby)
+                    withRVM(['bundle exec rake db:migrate'], ruby)
                     withRVM(['bundle exec rake db:seed'], ruby)
                 }
 
