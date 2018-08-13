@@ -1,5 +1,5 @@
 - job:
-    name: 'sat6-unit-test-katello '
+    name: 'sat6-unit-test-katello'
     project-type: pipeline
     build-discarder:
       days-to-keep: 21
