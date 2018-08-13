@@ -35,13 +35,21 @@ node('sat6-rhel7') {
 
     }
 
+    stage('Setup plugin') {
+
+        dir('foreman') {
+            setup_plugin(plugin_name, ruby)
+        }
+
+    }
+
     stage('Run Tests') {
 
         dir('foreman') {
             try {
 
                 gitlabCommitStatus {
-                    withRVM(['bundle exec rake test:katello'], ruby)
+                    withRVM(['bundle exec rake jenkins:katello TESTOPTS="-v" --trace'], ruby)
                     withRVM(['bundle exec rake db:drop db:create db:migrate'], ruby)
                     withRVM(['bundle exec rake db:seed'], ruby)
                 }
