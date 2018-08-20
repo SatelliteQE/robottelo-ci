@@ -39,6 +39,14 @@ node('rhel') {
                 to_lifecycle_environment = version
               }
             }
+
+            satellite_activation_keys.each { ak ->
+              copyActivationKey(
+                organization: 'Sat6-CI',
+                activation_key: ak,
+                lifecycle_environment: version
+              )
+            }
         }
     }
 
@@ -57,6 +65,14 @@ node('rhel') {
                 to_lifecycle_environment = version
               }
             }
+
+            capsule_activation_keys.each { ak ->
+              copyActivationKey(
+                organization: 'Sat6-CI',
+                activation_key: ak,
+                lifecycle_environment: version
+              )
+            }
         }
     }
 
@@ -74,6 +90,14 @@ node('rhel') {
                 from_lifecycle_environment = 'QA'
                 to_lifecycle_environment = version
               }
+            }
+
+            tools_activation_keys.each { ak ->
+              copyActivationKey(
+                organization: 'Sat6-CI',
+                activation_key: ak,
+                lifecycle_environment: version
+              )
             }
         }
 
