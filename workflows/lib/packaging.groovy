@@ -235,9 +235,19 @@ def get_brew_comment(build_status) {
 def get_koji_tasks() {
     def tasks = []
     if(fileExists('kojilogs')) {
-        tasks = sh(returnStdout: true, script: "ls kojilogs -1 |grep -o '[0-9]*\$'").trim().split()
+        parent_tasks = get_koji_tasks_from_folder('kojilogs')
+        child_tasks = get_koji_tasks_from_folder('kojilogs/*')
+        if (parent_tasks.size() == child_tasks.size()) {
+            tasks = child_tasks
+        } else {
+            tasks = parent_tasks
+        }
     }
     return tasks
+}
+
+def get_koji_tasks_from_folder(folder) {
+   return sh(returnStdout: true, script: "ls #{folder} -1 |grep -o '[0-9]*\$'").trim().split()
 }
 
 def brew_status_comment(build_status) {
