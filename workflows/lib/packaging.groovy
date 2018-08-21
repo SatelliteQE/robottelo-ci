@@ -247,7 +247,7 @@ def get_koji_tasks() {
 }
 
 def get_koji_tasks_from_folder(folder) {
-   return sh(returnStdout: true, script: "ls #{folder} -1 |grep -o '[0-9]*\$'").trim().split()
+   return sh(returnStdout: true, script: "ls ${folder} -1 |grep -o '[0-9]*\$'").trim().split()
 }
 
 def brew_status_comment(build_status) {
