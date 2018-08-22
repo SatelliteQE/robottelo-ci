@@ -1,4 +1,4 @@
-node('sat6-rhel7') {
+node('sat6-build') {
 
     stage("Setup Workspace") {
 
@@ -127,7 +127,7 @@ node('sat6-rhel7') {
     }
 }
 
-node('rhel') {
+node('sat6-build') {
 
     stage("Setup Packaging Workspace") {
 

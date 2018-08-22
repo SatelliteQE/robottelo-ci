@@ -1,6 +1,6 @@
 def plugin_name = 'foreman_bootdisk'
 
-node('sat6-rhel7') {
+node('sat6-build') {
 
     stage('Setup Git Repos') {
 

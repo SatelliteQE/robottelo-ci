@@ -1,4 +1,4 @@
-node('sat6-rhel7') {
+node('sat6-build') {
   stage('one') {
     sh "echo Maybe?"
   }

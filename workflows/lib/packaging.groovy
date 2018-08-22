@@ -4,7 +4,7 @@ def VERCMP_NEWER = 12
 def VERCMP_OLDER = 11
 def VERCMP_EQUAL = 0
 
-node('sat6-rhel7') {
+node('sat6-build') {
     stage("Fetch git") {
         deleteDir()
         gitlab_clone_and_merge("${packaging_repo_project}/${packaging_repo}", build_type)

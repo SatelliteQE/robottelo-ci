@@ -1,7 +1,7 @@
 def version = '6.2.0'
 def milestone = '6.2.15'
 
-node('rhel') {
+node('sat6-build') {
 
     stage("Setup ToolBelt") {
         toolBelt(

@@ -3,7 +3,7 @@ def plugin_name = 'katello'
 def version_map = branch_map[env.gitlabTargetBranch]
 def ruby = version_map['ruby']
 
-node('sat6-rhel7') {
+node('sat6-build') {
 
     stage('Setup Git Repos') {
 

@@ -1,7 +1,7 @@
 #!/usr/bin/groovy
 
 
-node('rhel') {
+node('sat6-build') {
     stage("Setup Workspace") {
 
         deleteDir()

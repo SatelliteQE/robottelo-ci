@@ -1,4 +1,4 @@
-node('rhel') {
+node('sat6-build') {
 
    // ssh into bread.usersys.redhat.com
    // cd ~/dolly

@@ -1,4 +1,4 @@
-node('rhel') {
+node('sat6-build') {
 
     stage("Setup Workspace") {
 
