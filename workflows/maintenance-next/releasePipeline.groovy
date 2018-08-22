@@ -11,7 +11,7 @@ def composite_content_views = [
     'Satellite Maintenance Next with RHEL7 Server'
 ]
 
-node('sat6-rhel7') {
+node('sat6-build') {
 
     stage("Setup Workspace") {
 

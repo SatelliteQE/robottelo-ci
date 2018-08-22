@@ -3,7 +3,7 @@ def project = env.project
 def changelog = ''
 def package_name = ''
 
-node ('sat6-rhel7') {
+node ('sat6-build') {
 
     stage("Setup Environment") {
 

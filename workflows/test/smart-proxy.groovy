@@ -14,7 +14,7 @@ node('rvm') {
         updateGitlabCommitStatus name: name, state: 'pending'
 
         tests[name] = {
-            node('rhel') {
+            node('sat6-build') {
 
                 try {
 
