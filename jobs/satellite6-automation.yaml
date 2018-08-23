@@ -935,9 +935,14 @@
         - satellite6-upgrade-builders
         - inject:
             properties-file: properties.txt
-        - trigger-builds:
-            - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
-              current-parameters: true
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[234])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+                      current-parameters: true
     publishers:
         - archive:
             artifacts: '*.tar.xz,postupgrade_*,preupgrade_*,scenario_entities,product_setup'
