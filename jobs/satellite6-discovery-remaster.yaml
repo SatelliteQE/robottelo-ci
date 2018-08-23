@@ -48,6 +48,7 @@
             nature: shell
             command:
                 !include-raw:
+                    - 'pip-install-pycurl.sh'
                     - 'satellite6-discovery-remaster.sh'
     publishers:
         - satellite6-automation-mails
