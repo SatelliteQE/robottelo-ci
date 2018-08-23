@@ -135,4 +135,5 @@
             nature: shell
             command:
                 !include-raw:
+                    - 'scripts/pip-install-pycurl.sh'
                     - 'scripts/satellite6-rcm-compose.sh'

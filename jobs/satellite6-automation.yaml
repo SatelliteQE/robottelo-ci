@@ -755,6 +755,30 @@
             name: '#${{BUILD_NUMBER}} ${{ENV,var="PROVISIONING_ID"}} ${{ENV,var="SERVER_ID"}} ${{ENV,var="BUILD_LABEL"}}'
     builders:
         - satellite6-capsule-sanity-check-builders
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[4])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'foreman-maintain-automation'
+                      current-parameters: true
+                      predefined-parameters: |
+                        COMPONENT='satellite'
+                        SERVER_HOSTNAME=${{SATELLITE_SERVER_HOSTNAME}}
+                        BUILD_LABEL=${{BUILD_LABEL}}
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[4])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'foreman-maintain-automation'
+                      current-parameters: true
+                      predefined-parameters: |
+                        COMPONENT='capsule'
+                        SERVER_HOSTNAME=${{CAPSULE_SERVER_HOSTNAME}}
+                        BUILD_LABEL=${{BUILD_LABEL}}
     publishers:
         - satellite6-automation-mails
 

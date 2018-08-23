@@ -12,7 +12,7 @@
     node: sat6-rhel7
     parameters:
         - choice:
-            name: PRODUCT
+            name: COMPONENT
             description: "Select product where you want to test foreman-maintain."
             choices:
                 - 'satellite'
@@ -76,10 +76,12 @@
         - satellite6-automation-publishers
         - foreman-maintain-automation-archiver
         - email-ext:
-            recipients: ${BUILD_USER_EMAIL}
+            recipients: ${QE_EMAIL_LIST}
             success: true
             failure: true
-            subject: 'Your Foreman-Maintain automation finished'
+            unstable: true
+            subject: 'Foreman-Maintain Automation Report ${ENV,var="COMPONENT"} for ${{ENV,var="BUILD_LABEL"}}'
             body: |
+                The build ${BUILD_URL} has been completed.
 
-                Build URL: ${BUILD_URL}
+                ${FILE, path="report.txt"}

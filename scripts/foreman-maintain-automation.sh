@@ -2,8 +2,9 @@ source ${CONFIG_FILES}
 source config/sat6_repos_urls.conf
 
 pip install -U -r requirements.txt
+cp testfm/inventory.sample testfm/inventory
 
-if [ "${PRODUCT}" == "capsule" ]; then
+if [ "${COMPONENT}" == "capsule" ]; then
     sed -i "s/<capsule_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
 else
     sed -i "s/<server_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
@@ -17,19 +18,27 @@ if [[ "$TEST_UPSTREAM" = "true" ]]; then
     fi
 fi
 export ANSIBLE_HOST_KEY_CHECKING=False
-if [ "${PRODUCT}" == "capsule" ]; then
+if [ "${COMPONENT}" == "capsule" ]; then
     export PYTEST_MARKS=capsule
 fi
+set +e
 if [ -n "${PYTEST_OPTIONS}" ]; then
-    pytest -v --junit-xml=foreman-results.xml --ansible-host-pattern "${PRODUCT}" --ansible-user root --ansible-inventory testfm/inventory ${PYTEST_OPTIONS}
+    pytest -v --junit-xml=foreman-results.xml --ansible-host-pattern "${COMPONENT}" --ansible-user root --ansible-inventory testfm/inventory ${PYTEST_OPTIONS}
 elif [ -n "${PYTEST_MARKS}" ]; then
-    pytest -v --junit-xml=foreman-results.xml --ansible-host-pattern "${PRODUCT}" --ansible-user root --ansible-inventory testfm/inventory tests/ -m "${PYTEST_MARKS}"
+    pytest -v --junit-xml=foreman-results.xml --ansible-host-pattern "${COMPONENT}" --ansible-user root --ansible-inventory testfm/inventory tests/ -m "${PYTEST_MARKS}"
 else
-    pytest -v --junit-xml=foreman-results.xml --ansible-host-pattern "${PRODUCT}" --ansible-user root --ansible-inventory testfm/inventory tests/
+    pytest -v --junit-xml=foreman-results.xml --ansible-host-pattern "${COMPONENT}" --ansible-user root --ansible-inventory testfm/inventory tests/
 fi
-
+set -e
 if [[ "$TEST_UPSTREAM" != "true" ]]; then
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@${SERVER_HOSTNAME} 'cat /var/log/foreman-maintain/foreman-maintain.log | grep -i error'
 else
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@${SERVER_HOSTNAME} 'cat ~/foreman_maintain/logs/foreman-maintain.log | grep -i error'
 fi
+
+pip install click jinja2
+
+wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/lib/python/satellite6-automation-report.py
+mkdir templates
+wget -O templates/report.html https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/lib/python/templates/report.html
+python satellite6-automation-report.py *.xml > report.txt
