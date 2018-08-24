@@ -12,21 +12,21 @@ node('sat6-build') {
 
         compareContentViews {
           organization = 'Sat6-CI'
-          content_view = 'Satellite Maintenance RHEL7'
+          content_view = content_view
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Satellite Maintenance RHEL7'
+          content_view = content_view
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }
 
         promoteContentView {
           organization = 'Sat6-CI'
-          content_view = 'Satellite Maintenance with RHEL7 Server'
+          content_view = composite_content_view
           from_lifecycle_environment = 'Library'
           to_lifecycle_environment = 'QA'
         }

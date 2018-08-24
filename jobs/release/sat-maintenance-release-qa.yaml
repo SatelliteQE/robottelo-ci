@@ -10,6 +10,7 @@
           description: "Previous snap release version"
     dsl:
       !include-raw:
+        - workflows/maintenance/releasePipelineAttributes.groovy
         - workflows/maintenance/releaseQAWorkflow.groovy
         - workflows/lib/releaseQAFunctions.groovy
         - workflows/lib/toolbelt.groovy
