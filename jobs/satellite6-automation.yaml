@@ -975,6 +975,13 @@
             files:
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
                   variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=upgrade
+                OS={os}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} Existence-tests-{os} ${{BUILD_LABEL}}'
     builders:
         - copyartifact:
             project: 'upgrade-phase-{satellite_version}-{os}'
@@ -1017,7 +1024,7 @@
                 ENDPOINT=post-upgrade
                 OS={os}
         - build-name:
-            name: '#${{BUILD_NUMBER}} Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
+            name: '#${{BUILD_NUMBER}} postupgrade-scenarios-Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
     builders:
         - copyartifact:
             project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
