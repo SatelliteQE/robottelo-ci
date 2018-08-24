@@ -127,9 +127,12 @@ if [ "${ENDPOINT}" != "end-to-end" ]; then
 elif [ "${ENDPOINT}" == "end-to-end" ]; then
     set +e
     # Run end-to-end , also known as smoke tests
-    $(which py.test) -v --junit-xml="smoke-tests-results.xml" tests/foreman/endtoend
+    if [[ "${SATELLITE_VERSION}" != "6.1" && "${SATELLITE_VERSION}" != "6.2" && "${SATELLITE_VERSION}" != "6.3" ]]; then
+        $(which py.test) -v --junit-xml="smoke-tests-results.xml" tests/foreman/endtoend/test_{api,cli}_endtoend.py
+    else
+        $(which py.test) -v --junit-xml="smoke-tests-results.xml" tests/foreman/endtoend
+    fi
     set -e
-
 else
     make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=${ROBOTTELO_WORKERS}
 fi
