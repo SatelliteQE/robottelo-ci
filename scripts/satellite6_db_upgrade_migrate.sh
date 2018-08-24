@@ -193,7 +193,7 @@ if [ "${PERFORM_UPGRADE}" = "true" ]; then
     fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
     # Run existance tests
     if [ "${RUN_EXISTENCE_TESTS}" == 'true' ]; then
-        $(which py.test) -v --junit-xml=test_existance-results.xml upgrade_tests/test_existance_relations/
+        $(which py.test) -v --junit-xml=test_existance-results.xml -o junit_suite_name=test_existance upgrade_tests/test_existance_relations/
     fi
     # Post Upgrade archive logs from log analyzer tool
     if [ -d upgrade-diff-logs ]; then

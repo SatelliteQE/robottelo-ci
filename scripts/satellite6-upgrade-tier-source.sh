@@ -116,11 +116,13 @@ if [ "${ENDPOINT}" != "end-to-end" ]; then
     set +e
     # Run all tiers sequential tests with upgrade mark
     $(which py.test) -v --junit-xml="${ENDPOINT}-upgrade-sequential-results.xml" \
+        -o junit_suite_name="${ENDPOINT}-upgrade-sequential" \
         -m "upgrade and run_in_one_thread and not stubbed" \
         ${TEST_TYPE}
 
     # Run all tiers parallel tests with upgrade mark
     $(which py.test) -v --junit-xml="${ENDPOINT}-upgrade-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
+        -o junit_suite_name="${ENDPOINT}-upgrade-parallel" \
         -m "upgrade and not run_in_one_thread and not stubbed" \
         ${TEST_TYPE}
     set -e
@@ -128,9 +130,9 @@ elif [ "${ENDPOINT}" == "end-to-end" ]; then
     set +e
     # Run end-to-end , also known as smoke tests
     if [[ "${SATELLITE_VERSION}" != "6.1" && "${SATELLITE_VERSION}" != "6.2" && "${SATELLITE_VERSION}" != "6.3" ]]; then
-        $(which py.test) -v --junit-xml="smoke-tests-results.xml" tests/foreman/endtoend/test_{api,cli}_endtoend.py
+        $(which py.test) -v --junit-xml="smoke-tests-results.xml" -o junit_suite_name="smoke-tests" tests/foreman/endtoend/test_{api,cli}_endtoend.py
     else
-        $(which py.test) -v --junit-xml="smoke-tests-results.xml" tests/foreman/endtoend
+        $(which py.test) -v --junit-xml="smoke-tests-results.xml" -o junit_suite_name="smoke-tests" tests/foreman/endtoend
     fi
     set -e
 else

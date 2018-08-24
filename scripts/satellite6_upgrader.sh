@@ -41,7 +41,7 @@ fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
 set +e
 # Run pre-upgarde scenarios tests
 if [ "${RUN_SCENARIO_TESTS}" == 'true' ]; then
-    $(which py.test) -v -s -m pre_upgrade --junit-xml=test_scenarios-pre-results.xml upgrade_tests/test_scenarios/
+    $(which py.test) -v -s -m pre_upgrade --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre upgrade_tests/test_scenarios/
 fi
 set -e
 
@@ -97,7 +97,7 @@ fi
 set +e
 # Run post-upgarde scenarios tests
 if [ "${RUN_SCENARIO_TESTS}" == 'true' ]; then
-    $(which py.test) -v -s -m post_upgrade --junit-xml=test_scenarios-post-results.xml upgrade_tests/test_scenarios/
+    $(which py.test) -v -s -m post_upgrade --junit-xml=test_scenarios-post-results.xml -o junit_suite_name=test_scenarios-post upgrade_tests/test_scenarios/
 fi
 set -e
 
@@ -111,10 +111,10 @@ export BUGZILLA_ENVIRON_SAT_VERSION="${TO_VERSION}"
 if [ "${RUN_EXISTANCE_TESTS}" == 'true' ]; then
     set +e
     export ENDPOINT='cli'
-    $(which py.test) -v --continue-on-collection-errors --junit-xml=test_existance_cli-results.xml upgrade_tests/test_existance_relations/cli/
+    $(which py.test) -v --continue-on-collection-errors --junit-xml=test_existance_cli-results.xml -o junit_suite_name=test_existance_cli upgrade_tests/test_existance_relations/cli/
 
     export ENDPOINT='api'
-    $(which py.test) -v --continue-on-collection-errors --junit-xml=test_existance_api-results.xml upgrade_tests/test_existance_relations/api/
+    $(which py.test) -v --continue-on-collection-errors --junit-xml=test_existance_api-results.xml -o junit_suite_name=test_existance_api upgrade_tests/test_existance_relations/api/
     set -e
 fi
 

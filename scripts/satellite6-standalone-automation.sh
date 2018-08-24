@@ -55,7 +55,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
 fi
 
 pytest() {
-    $(which py.test) -v --junit-xml=foreman-results.xml -m "${PYTEST_MARKS}" "$@"
+    $(which py.test) -v --junit-xml=foreman-results.xml -o junit_suite_name=standalone-automation -m "${PYTEST_MARKS}" "$@"
 }
 
 if [ -n "${PYTEST_OPTIONS:-}" ]; then
