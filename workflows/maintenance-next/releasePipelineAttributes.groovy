@@ -11,3 +11,8 @@ def content_views = [
 def composite_content_views = [
     'Satellite Maintenance Next with RHEL7 Server'
 ]
+
+def release_name = 'satellite-maintenance-next'
+def release_version = 'all'
+
+def autorelease_enabled = true

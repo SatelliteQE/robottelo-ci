@@ -58,4 +58,18 @@ node('sat6-build') {
       }
 
     }
+
+    stage("Release SNAP") {
+        when {
+            expression { autorelease_enabled }
+        }
+
+        steps {
+            release_snap(
+                release_name: release_name,
+                release_version: release_version,
+                snap_version: snap_version
+            )
+        }
+    }
 }
