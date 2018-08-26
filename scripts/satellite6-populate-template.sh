@@ -399,11 +399,8 @@ echo Adding Smart-Proxy to Default location and to 'Default Organization'
 satellite_runner location add-smart-proxy --id="${LOC}" --smart-proxy-id="${SMARTPROXYID}"
 satellite_runner organization add-smart-proxy --id="${ORG}" --smart-proxy-id="${SMARTPROXYID}"
 
-# TODO, fix for sat6.4, may need to file a bug.
-if [ "${SAT_VERSION}" != "6.4" ]; then
-    echo Adding Default Organization to Default Location
-    satellite_runner location add-organization --id="${LOC}" --organization='Default Organization'
-fi
+echo Adding Default Organization to Default Location
+satellite_runner location add-organization --id="${LOC}" --organization='Default Organization'
 
 echo Assign Default Organization and Default Location to Production Puppet Environment.
 satellite_runner environment update --organization-ids "${ORG}" --location-ids "${LOC}" --id 1
