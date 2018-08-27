@@ -50,9 +50,9 @@ pipeline {
                     options: [
                         "--dir ../${repo_name}",
                         "--output-file bz_ids.json"
-                    ]
+                    ],
+                    archive_file: 'bz_ids.json'
                 )
-                archive 'tool_belt/bz_ids.json'
 
             }
         }
@@ -109,9 +109,9 @@ pipeline {
                         options: [
                             "--dir ../${repo_name}",
                             "--output-file version"
-                        ]
+                        ],
+                        archive_file: 'version'
                     )
-                    archive "tool_belt/version"
 
                     script {
                         releaseTag = readFile 'tool_belt/version'

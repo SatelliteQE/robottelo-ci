@@ -49,8 +49,8 @@ def compareContentViews(args) {
             "--from-environment '${args.from_lifecycle_environment}'",
             "--to-environment '${args.to_lifecycle_environment}'",
             "--output '${archive_file}'"
-        ]
+        ],
+        archive_file: archive_file
     )
 
-    archive "tool_belt/${archive_file}"
 }

@@ -27,10 +27,10 @@ node('sat6-build') {
                         "--version ${version}",
                         "--milestone ${milestone}",
                         "--no-update-repos"
-                    ]
+                    ],
+                    archive_file: "releases/${version}/bugzillas"
                 )
 
-                archive "releases/${version}/bugzillas"
           }
     }
 
