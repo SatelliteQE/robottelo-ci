@@ -21,5 +21,9 @@ def toolBelt(args) {
         tool_belt_config = args.config ? "TOOL_BELT_CONFIGS=${args.config}" : ""
 
         sh "${tool_belt_config} bundle exec ruby ./bin/tool-belt ${args.command} ${args.options.join(' ')}"
+
+        if (args.archive_file) {
+            archiveArtifacts artifacts: args.archive_file
+        }
     }
 }

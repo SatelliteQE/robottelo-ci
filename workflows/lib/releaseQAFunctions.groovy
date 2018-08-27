@@ -64,8 +64,8 @@ def compareContentViews(body) {
             "--from-environment '${config.from_lifecycle_environment}'",
             "--to-environment '${config.to_lifecycle_environment}'",
             "--output '${archive_file}'"
-        ]
+        ],
+        archive_file: archive_file
     )
 
-    archive "tool_belt/${archive_file}"
 }
