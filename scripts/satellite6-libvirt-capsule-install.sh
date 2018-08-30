@@ -15,6 +15,11 @@ export GATEWAY="${GATEWAY}"
 export CAPSULE_FQDN="${CAPSULE_SERVER_HOSTNAME}"
 export SATELLITE_FQDN="${SATELLITE_SERVER_HOSTNAME}"
 
+# Write a properties file to allow passing variables to other build steps
+echo "SATELLITE_SERVER_HOSTNAME=${SATELLITE_SERVER_HOSTNAME}" > build_env.properties
+echo "CAPSULE_SERVER_HOSTNAME=${CAPSULE_SERVER_HOSTNAME}" >> build_env.properties
+
+
 if [[ "${RERUN}" == "false" ]]; then
     fab -t 60 -D -H "root@${SATELLITE_FQDN}" "generate_capsule_certs"
     fab -D -H "root@${CAPSULE_FQDN}" "setup_capsule_firewall"

@@ -158,10 +158,10 @@
                   - trigger-builds:
                       - project: 'satellite6-standalone-automation'
                         predefined-parameters: |
-                          SATELLITE_VERSION=${{TO_VERSION}}
-                          SERVER_HOSTNAME=${{SATELLITE_HOSTNAME}}
-                          PYTEST_MARKS='upgrade'
-                          PYTEST_OPTIONS=${{TESTS}}
+                          SATELLITE_VERSION=${TO_VERSION}
+                          SERVER_HOSTNAME=${SATELLITE_HOSTNAME}
+                          PYTEST_MARKS=upgrade
+                          PYTEST_OPTIONS=${PYTEST_OPTIONS}
     publishers:
         - email-ext:
             recipients: $BUILD_USER_EMAIL

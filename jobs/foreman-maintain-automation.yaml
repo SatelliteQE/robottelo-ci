@@ -66,7 +66,7 @@
     builders:
         - shining-panda:
             build-environment: virtualenv
-            python-version: System-CPython-2.7
+            python-version: System-CPython-3.6
             clear: true
             nature: shell
             command:
@@ -80,7 +80,7 @@
             success: true
             failure: true
             unstable: true
-            subject: 'Foreman-Maintain Automation Report ${ENV,var="COMPONENT"} for ${{ENV,var="BUILD_LABEL"}}'
+            subject: 'Foreman-Maintain Automation Report ${ENV,var="COMPONENT"} for ${ENV,var="BUILD_LABEL"}'
             body: |
                 The build ${BUILD_URL} has been completed.
 

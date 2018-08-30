@@ -13,7 +13,7 @@ export SATELLITE_VERSION="${TO_VERSION}"
 source config/sat6_repos_urls.conf
 source config/subscription_config.conf
 
-export TESTS="tests/foreman/cli/test_activationkey.py tests/foreman/cli/test_contentview.py tests/foreman/cli/test_repository.py tests/foreman/cli/test_product.py"
+export PYTEST_OPTIONS="tests/foreman/cli/test_activationkey.py tests/foreman/cli/test_contentview.py tests/foreman/cli/test_repository.py tests/foreman/cli/test_product.py"
 # Export required Environment variables for Downstream job
 # As code in Automation Tools understands its Downstream :)
 if [ "${DISTRIBUTION}" = 'DOWNSTREAM' ]; then
