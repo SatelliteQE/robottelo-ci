@@ -18,8 +18,8 @@ function setup_instance () {
     -m "${VM_RAM}" -c "${VM_CPU}" -d "${VM_DOMAIN}" -f -n bridge="${BRIDGE}" --static-ipaddr "${TIER_IPADDR}" \
     --static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
 
-    # Let's wait for 30 secs for the instance to be up and along with it it's services
-    sleep 30
+    # Let's wait for the instance to be up and along with it it's services
+    fab -u root host_ssh_availability_check:"${TIER_IPADDR}"
 
     # Restart Satellite6 service for a clean state of the running instance.
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" hostnamectl set-hostname "${TIER_SOURCE_IMAGE%%-base}.${VM_DOMAIN}"
