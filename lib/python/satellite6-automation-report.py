@@ -169,7 +169,7 @@ def print_html_summary(results):
 
     jinjaenv = Environment(loader=FileSystemLoader(
         os.path.join(os.path.dirname(__file__), 'templates')))
-    template = jinjaenv.get_template('report.html')
+    template = jinjaenv.get_template('email_report.html')
     click.echo(template.render(context))
 
 

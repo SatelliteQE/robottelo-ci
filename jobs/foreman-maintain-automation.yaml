@@ -1,6 +1,6 @@
 - job:
     name: 'foreman-maintain-automation'
-    concurrent: true
+    concurrent: false
     display-name: 'Foreman-Maintain automation'
     description: |
         <p> Triggers automation for <strong>Foreman-Maintain</strong> Testing.</p>
@@ -77,11 +77,13 @@
         - foreman-maintain-automation-archiver
         - email-ext:
             recipients: ${QE_EMAIL_LIST}
+            content-type: html
             success: true
             failure: true
             unstable: true
             subject: 'Foreman-Maintain Automation Report ${ENV,var="COMPONENT"} for ${ENV,var="BUILD_LABEL"}'
             body: |
-                The build ${BUILD_URL} has been completed.
 
-                ${FILE, path="report.txt"}
+                ${FILE, path="email_report.html"}
+
+                The build ${BUILD_URL} has been completed.
