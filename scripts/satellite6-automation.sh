@@ -6,6 +6,15 @@ sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
 sed -i "s|# screenshots_path=.*|screenshots_path=$(pwd)/screenshots|" robottelo.properties
 sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottelo.properties
 
+# Robottelo logging configuration
+sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
+# for rp_logger configuration
+cp config/pytest.ini ./tests/foreman/pytest.ini
+
+sed -i "s|rp_project =.*|rp_project = Satellite${SATELLITE_VERSION//[.]/}|" ./tests/foreman/pytest.ini
+sed -i "s|rp_launch =.*|rp_launch = Satellite${ENDPOINT}|" ./tests/foreman/pytest.ini
+RP_LAUNCH_TAGS="\'${BUILD_LABEL}\' \'${ENDPOINT}\' \'${BRIDGE}\' \'${SAUCE_PLATFORM}\'"
+
 # Sauce Labs Configuration and pytest-env setting.
 if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
     SAUCE_BROWSER="chrome"
@@ -43,6 +52,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
         SELENIUM_VERSION=2.53.1
     fi
     sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},tags=[${JOB_NAME}]/" robottelo.properties
+    RP_LAUNCH_TAGS="\'${RP_LAUNCH_TAGS}\' \'${SAUCE_BROWSER}_${BROWSER_VERSION}\'"
 fi
 
 # Bugzilla Login Details
@@ -68,9 +78,6 @@ if [ -n "${IMAGE}" ]; then
     sed -i "s/^# image_el6=.*/image_el6=${IMAGE}/" robottelo.properties
     sed -i "s/^# image_el7=.*/image_el7=${IMAGE}/" robottelo.properties
 fi
-
-# Robottelo logging configuration
-sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 
 # upstream = 1 for Distributions: UPSTREAM (default in robottelo.properties)
 # upstream = 0 for Distributions: DOWNSTREAM, CDN, BETA, ISO
@@ -110,11 +117,15 @@ if [ "${ENDPOINT}" == "destructive" ]; then
 elif [ "${ENDPOINT}" != "rhai" ]; then
     set +e
     # Run sequential tests
+    sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}-sequential|" ./tests/foreman/pytest.ini
+    sed -i "s|rp_launch_tags =.*|rp_launch_tags = ${RP_LAUNCH_TAGS} \'sequential\'|" ./tests/foreman/pytest.ini
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
         ${TEST_TYPE}
 
     # Run parallel tests
+    sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}-parallel|" ./tests/foreman/pytest.ini
+    sed -i "s|rp_launch_tags =.*|rp_launch_tags = ${RP_LAUNCH_TAGS} \'parallel\' \'gw${ROBOTTELO_WORKERS}\'|" ./tests/foreman/pytest.ini
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
         ${TEST_TYPE}
