@@ -17,6 +17,7 @@ popd
 cd ..
 
 cp -rf _build/foreman-infra/puppet/modules/jenkins_job_builder/files/theforeman.org foreman-infra
+cp -rf _build/foreman-infra/puppet/modules/jenkins_job_builder/files/jenkins-lint.py foreman-infra
 rm -rf _build
 
 # Clean up foreman-infra defaults and jobs
