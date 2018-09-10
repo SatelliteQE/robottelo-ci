@@ -1,0 +1,16 @@
+- job:
+    name: 'sat-release-foreman-hooks'
+    project-type: pipeline
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - workflows/lib/branch_map.groovy
+          - ./repos/foreman_hooks_repo.groovy
+          - ./source_types/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/toolbelt.groovy
+          - workflows/lib/runPlaybook.groovy
+    notifications:
+      - snapper_notifications
