@@ -40,5 +40,6 @@ pip install click jinja2
 
 wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/lib/python/satellite6-automation-report.py
 mkdir templates
-wget -O templates/report.html https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/lib/python/templates/report.html
+wget -O templates/email_report.html https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/lib/python/templates/email_report.html
 python satellite6-automation-report.py *.xml > report.txt
+python satellite6-automation-report.py -o html *.xml > email_report.html

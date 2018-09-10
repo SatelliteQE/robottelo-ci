@@ -477,14 +477,15 @@
     publishers:
         - email-ext:
             recipients: ${{QE_EMAIL_LIST}}
+            content-type: html
             success: true
             failure: false
             subject: 'Satellite {satellite_version} Automation Report for {os}'
             body: |
-                The build ${{BUILD_URL}} has been completed.
 
-                ${{FILE, path="report.txt"}}
-            attachments: report.html
+                ${{FILE, path="email_report.html"}}
+
+                The build ${{BUILD_URL}} has been completed.
 
 - job-template:
     name: 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
@@ -522,14 +523,15 @@
     publishers:
         - email-ext:
             recipients: ${{QE_EMAIL_LIST}}
+            content-type: html
             success: true
             failure: false
             subject: 'Satellite {satellite_version} Upgrade Tiers Automation Report for {os}'
             body: |
-                The build ${{BUILD_URL}} has been completed.
 
-                ${{FILE, path="report.txt"}}
-            attachments: report.html
+                ${{FILE, path="email_report.html"}}
+
+                The build ${{BUILD_URL}} has been completed.
 
 - job-template:
     name: 'report-consolidated-coverage-{satellite_version}-{os}'
