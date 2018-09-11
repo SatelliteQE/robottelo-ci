@@ -1,3 +1,5 @@
+pip install -U -r requirements.txt
+
 ssh_opts='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
 function remove_instance () {
