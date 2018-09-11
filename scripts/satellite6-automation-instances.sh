@@ -20,7 +20,7 @@ function setup_instance () {
     --static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
 
     # Let's wait for the instance to be up and along with it it's services
-    for i in {{1..120}}; do nc -vn "${TIER_IPADDR}" 22 <<< "" && exit 0; sleep 1; done; exit 1
+    sleep 240
 
     # Restart Satellite6 service for a clean state of the running instance.
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" hostnamectl set-hostname "${TIER_SOURCE_IMAGE%%-base}.${VM_DOMAIN}"
