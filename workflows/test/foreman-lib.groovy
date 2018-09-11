@@ -69,7 +69,7 @@ def setup_plugin(plugin_name, ruby = '2.2') {
         // Ensure we don't mention the gem twice in the Gemfile in case it's already mentioned there
         sh "find Gemfile bundler.d -type f -exec sed \"/gem ['\\\"]${plugin_name}['\\\"]/d\" {} \\;"
         // Now let's introduce the plugin
-        sh "echo \"gemspec :path => '\$(pwd)/../plugin', :development_group => '${plugin_name}_dev'\" >> bundler.d/Gemfile.local.rb"
+        sh "echo \"gemspec :path => '\$(pwd)/../plugin', :name => '${plugin_name}', :development_group => '${plugin_name}_dev'\" >> bundler.d/Gemfile.local.rb"
         // Plugin specifics..
         if(fileExists("../plugin/gemfile.d/${plugin_name}.rb")) {
             sh "cat ../plugin/gemfile.d/${plugin_name}.rb >> bundler.d/Gemfile.local.rb"
