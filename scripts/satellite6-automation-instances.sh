@@ -1,6 +1,15 @@
 
 ssh_opts='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
+function wait_for_ssh () {
+    sleeps=${2:-120}
+    for ((i=0; i<$sleeps; i++)); do
+        nc -n "$1" 22 <<< "" 2>/dev/null && break
+        sleep 1
+    done
+    echo "$i sleeps" 
+}
+
 function remove_instance () {
     echo "========================================"
     echo " Remove any running instances if any of ${TARGET_IMAGE} virsh domain."
@@ -19,8 +28,8 @@ function setup_instance () {
     -m "${VM_RAM}" -c "${VM_CPU}" -d "${VM_DOMAIN}" -f -n bridge="${BRIDGE}" --static-ipaddr "${TIER_IPADDR}" \
     --static-netmask "${NETMASK}" --static-gateway "${GATEWAY}"
 
-    # Let's wait for the instance to be up and along with it it's services
-    sleep 240
+    # Let's wait for the instance to be up to ssh into it
+    wait_for_ssh "${TIER_IPADDR}" 120
 
     # Restart Satellite6 service for a clean state of the running instance.
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" hostnamectl set-hostname "${TIER_SOURCE_IMAGE%%-base}.${VM_DOMAIN}"
@@ -28,16 +37,19 @@ function setup_instance () {
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" "echo ${TIER_IPADDR} ${TIER_SOURCE_IMAGE%%-base}.${VM_DOMAIN} ${TIER_SOURCE_IMAGE%%-base} >> /etc/hosts"
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" 'katello-service restart'
     sleep 40
-    if [[ "${SATELLITE_VERSION}" == "6.2" ]] || [[ "${SATELLITE_VERSION}" == "upstream-nightly" ]]; then
-        sleep 240
-        ssh $ssh_opts root@"${SERVER_HOSTNAME}" katello-change-hostname "${SERVER_HOSTNAME}" -y -u admin -p changeme
-    elif [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
+    if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         echo "Changing of Satellite6 Hostname is not supported for Satellite6.1, it is only supported from Sat6.2 and later."
     else
-        ssh $ssh_opts root@"${SERVER_HOSTNAME}" satellite-change-hostname "${SERVER_HOSTNAME}" -y -u admin -p changeme
+        if [[ ${SATELLITE_VERSION} =~ ^(6.2|upstream-nightly)$ ]]; then
+            sleep 240
+            rename_cmd="katello-change-hostname"
+        else
+            rename_cmd="satellite-change-hostname"
+        fi
+        ssh $ssh_opts root@"${SERVER_HOSTNAME}" $rename_cmd "${SERVER_HOSTNAME}" -y -u admin -p changeme
     fi
 
-    if [ "${ENDPOINT}" == "tier1" ] || [ "${ENDPOINT}" == "tier2" ] || [ "${ENDPOINT}" == "rhai" ] || [ "${ENDPOINT}" == "destructive" ] || [ "${ENDPOINT}" == "tier4" ]; then
+    if [[ ${ENDPOINT} =~ ^(tier1|tier2|rhai|destructive)$ ]]; then
         ssh $ssh_opts root@"${SERVER_HOSTNAME}" systemctl stop dhcpd
     fi
 }
