@@ -1,0 +1,20 @@
+- job:
+    name: 'sat6-unit-test-dynflow'
+    project-type: pipeline
+    build-discarder:
+      days-to-keep: 21
+      num-to-keep: -1
+    parameters:
+      - merge_request
+    triggers:
+      - gitlab_build_on_change
+    dsl:
+      !include-raw:
+        - workflows/lib/branch_map.groovy
+        - ./repos/dynflow.groovy
+        - workflows/lib/gitlabEnv.groovy
+        - workflows/test/dynflow.groovy
+        - workflows/lib/rvm.groovy
+        - workflows/lib/gitlab.groovy
+    notifications:
+      - snapper_notifications
