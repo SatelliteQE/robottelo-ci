@@ -10,6 +10,15 @@ function wait_for_ssh () {
     echo "$i sleeps" 
 }
 
+function wait_for_hammerping () {
+    sleeps=${2:-120}
+    for ((i=0; i<$sleeps; i+=10)); do
+        ssh $ssh_opts root@"$1" hammer ping && break
+        sleep 10
+    done
+    echo "$i sleeps" 
+}
+
 function remove_instance () {
     echo "========================================"
     echo " Remove any running instances if any of ${TARGET_IMAGE} virsh domain."
@@ -36,16 +45,16 @@ function setup_instance () {
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" sed -i '/redhat.com/d' /etc/hosts
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" "echo ${TIER_IPADDR} ${TIER_SOURCE_IMAGE%%-base}.${VM_DOMAIN} ${TIER_SOURCE_IMAGE%%-base} >> /etc/hosts"
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" 'katello-service restart'
-    sleep 40
+
     if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         echo "Changing of Satellite6 Hostname is not supported for Satellite6.1, it is only supported from Sat6.2 and later."
     else
         if [[ ${SATELLITE_VERSION} =~ ^(6.2|upstream-nightly)$ ]]; then
-            sleep 240
             rename_cmd="katello-change-hostname"
         else
             rename_cmd="satellite-change-hostname"
         fi
+        wait_for_hammerping "${SERVER_HOSTNAME}" 240
         ssh $ssh_opts root@"${SERVER_HOSTNAME}" $rename_cmd "${SERVER_HOSTNAME}" -y -u admin -p changeme
     fi
 
