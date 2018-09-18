@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt docker-py pytest-xdist sauceclient
+pip install -U -r requirements.txt docker-py pytest-xdist sauceclient git+git://github.com/reportportal/agent-python-pytest@c5789e6
 
 cp config/robottelo.properties ./robottelo.properties
 
@@ -9,10 +9,10 @@ sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottel
 # Robottelo logging configuration
 sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 # for rp_logger configuration
-cp config/pytest.ini ./tests/foreman/pytest.ini
+cp config/pytest.ini ./pytest.ini
 
-sed -i "s|rp_project =.*|rp_project = Satellite${SATELLITE_VERSION//[.]/}|" ./tests/foreman/pytest.ini
-sed -i "s|rp_launch =.*|rp_launch = Satellite${ENDPOINT}|" ./tests/foreman/pytest.ini
+sed -i "s|rp_project =.*|rp_project = Satellite${SATELLITE_VERSION//[.]/}|" pytest.ini
+sed -i "s|rp_launch =.*|rp_launch = Satellite${ENDPOINT}|" pytest.ini
 RP_LAUNCH_TAGS="\'${BUILD_LABEL}\' \'${ENDPOINT}\' \'${BRIDGE}\' \'${SAUCE_PLATFORM}\'"
 
 # Sauce Labs Configuration and pytest-env setting.
@@ -117,19 +117,21 @@ if [ "${ENDPOINT}" == "destructive" ]; then
 elif [ "${ENDPOINT}" != "rhai" ]; then
     set +e
     # Run sequential tests
-    sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}-sequential|" ./tests/foreman/pytest.ini
-    sed -i "s|rp_launch_tags =.*|rp_launch_tags = ${RP_LAUNCH_TAGS} \'sequential\'|" ./tests/foreman/pytest.ini
+    sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}-sequential|" pytest.ini
+    sed -i "s|rp_launch_tags =.*|rp_launch_tags = ${RP_LAUNCH_TAGS} \'sequential\'|" pytest.ini
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -o junit_suite_name="${ENDPOINT}-sequential" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
+        --reportportal \
         ${TEST_TYPE}
 
     # Run parallel tests
-    sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}-parallel|" ./tests/foreman/pytest.ini
-    sed -i "s|rp_launch_tags =.*|rp_launch_tags = ${RP_LAUNCH_TAGS} \'parallel\' \'gw${ROBOTTELO_WORKERS}\'|" ./tests/foreman/pytest.ini
+    sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}-parallel|" pytest.ini
+    sed -i "s|rp_launch_tags =.*|rp_launch_tags = ${RP_LAUNCH_TAGS} \'parallel\' \'gw${ROBOTTELO_WORKERS}\'|" pytest.ini
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -o junit_suite_name="${ENDPOINT}-parallel" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
+        --reportportal \
         ${TEST_TYPE}
     set -e
 else
