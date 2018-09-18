@@ -12,7 +12,7 @@ sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 cp config/pytest.ini ./pytest.ini
 
 sed -i "s|rp_project =.*|rp_project = Satellite${SATELLITE_VERSION//[.]/}|" pytest.ini
-sed -i "s|rp_launch =.*|rp_launch = Satellite${ENDPOINT}|" pytest.ini
+sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}|" pytest.ini
 RP_LAUNCH_TAGS="\'${BUILD_LABEL}\' \'${ENDPOINT}\' \'${BRIDGE}\' \'${SAUCE_PLATFORM}\'"
 
 # Sauce Labs Configuration and pytest-env setting.
@@ -52,7 +52,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
         SELENIUM_VERSION=2.53.1
     fi
     sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},tags=[${JOB_NAME}]/" robottelo.properties
-    RP_LAUNCH_TAGS="\'${RP_LAUNCH_TAGS}\' \'${SAUCE_BROWSER}_${BROWSER_VERSION}\'"
+    RP_LAUNCH_TAGS="${RP_LAUNCH_TAGS} \'${SAUCE_BROWSER}_${BROWSER_VERSION}\'"
 fi
 
 # Bugzilla Login Details
