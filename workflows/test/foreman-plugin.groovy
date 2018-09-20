@@ -1,3 +1,6 @@
+def version_map = branch_map[env.gitlabTargetBranch]
+def ruby = version_map['ruby']
+
 node('sat6-build') {
 
     stage('Setup Git Repos') {
@@ -23,7 +26,7 @@ node('sat6-build') {
     stage('Configure Database') {
 
         dir('foreman') {
-            setup_foreman()
+            setup_foreman(ruby)
         }
 
     }
@@ -31,7 +34,7 @@ node('sat6-build') {
     stage('Setup plugin') {
 
         dir('foreman') {
-            setup_plugin(plugin_name)
+            setup_plugin(plugin_name, ruby)
         }
 
     }
@@ -42,16 +45,16 @@ node('sat6-build') {
             try {
 
                 gitlabCommitStatus {
-                    withRVM(['bundle exec rake jenkins:unit jenkins:integration'], 2.2)
-                    withRVM(['bundle exec rake db:drop db:create db:migrate'], 2.2)
-                    withRVM(['bundle exec rake db:seed'], 2.2)
+                    withRVM(['bundle exec rake jenkins:unit jenkins:integration'], ruby)
+                    withRVM(['bundle exec rake db:drop db:create db:migrate'], ruby)
+                    withRVM(['bundle exec rake db:seed'], ruby)
                 }
 
             } finally {
 
                 archive "Gemfile.lock pkg/*"
 
-                cleanup()
+                cleanup(ruby)
 
             }
         }
