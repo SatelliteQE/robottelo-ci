@@ -1,0 +1,115 @@
+- job:
+    name: 'satellite6-custom-certs-automation'
+    concurrent: True
+    display-name: 'Custom Certs Automation'
+    description: |
+        <p> Job to install and upgrade satellite with custom certs through Compose or CDN. </p>
+        <hr>
+        <p> Please make sure to add following ssh-key manually to your satellite system.</p>
+        <hr>
+        <p><strong>SSH KEY:</strong></p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+    node: sat6-rhel7
+    parameters:
+        - choice:
+            name: ACTION
+            choices:
+                - INSTALL
+                - CUSTOM_CERTS
+                - UPGRADE
+            description: |
+                <p>Install will perform installation of <b>satellite with custom certs</b>.</p>
+                <p>Update custom certs on already installed satellite using CUSTOM_CERTS.</p>
+                <p>Upgrade will install or update satellite with custom certs as well as upgrade satellite to target version.</p>
+        - string:
+            name: SERVER_HOSTNAME
+            description: |
+                <p>User provided Satellite on which install/upgrade will be performed.</p>
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.5'
+                - '6.4'
+                - '6.3'
+                - '6.2'
+            description: |
+                <p>Select Satellite version to install.</p>
+        - choice:
+            name: SATELLITE_INSTALL_DISTRIBUTION
+            choices:
+                - 'INTERNAL AK'
+                - 'INTERNAL'
+                - 'GA'
+                - 'BETA'
+            description: |
+                <p>Choose the distribution type: INTERNALAK: Install Satellite 6.4 via AK from latest stable internal compose INTERNAL: Install Satellite6 from latest stable internal compose GA: Install from CDN BETA: Install from CDN, using the beta repository </p>
+        - choice:
+            name: UPGRADE_TO_VERSION
+            choices:
+                - '6.5'
+                - '6.4'
+                - '6.3'
+                - '6.2'
+            description: |
+                <p>Select Satellite version to upgrade. Mandatory if ACTION selected is upgrade.</p>
+        - choice:
+            name: SATELLITE_UPGRADE_DISTRIBUTION
+            choices:
+                - 'CDN'
+                - 'DOWNSTREAM'
+            description: |
+                <p><strong>CDN</strong>-Upgrade to released version available from CDN.</p>
+                <p><strong>DOWNSTREAM</strong>-Upgrade to latest stable internal compose.</p>
+        - string:
+            name: SATELLITE6_CUSTOM_BASEURL
+            description: |
+                <p>Used in INTERNAL install only. Provide baseurl for satellite install.</p>
+        - choice:
+            name: PUPPET4
+            choices:
+                - 'no'
+                - 'yes'
+                - 'upgrade'
+            description: |
+                <p>Install Satellite with Puppet v4 (Satellite 6.3 only). no = default puppet3, yes = fresh puppet4, upgrade = upgraded puppet4 install.</p>
+        - bool:
+            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            default: true
+            description: |
+                 <p>Check if you want to perform upgrade using Foreman-Maintain Tool.</p>
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="SERVER_HOSTNAME"}'
+        - build-user-vars
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - default-wrappers
+    builders:
+          - shining-panda:
+              build-environment: virtualenv
+              python-version: System-CPython-2.7
+              clear: true
+              nature: shell
+              command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'custom_certs.sh'
+    publishers:
+        - email-ext:
+            recipients: $BUILD_USER_EMAIL
+            success: true
+            failure: true
+            subject: 'Your custom-certs-automation Job finished!!'
+            body: |
+
+                Build URL: $BUILD_URL
