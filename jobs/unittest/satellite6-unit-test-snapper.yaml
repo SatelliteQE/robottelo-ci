@@ -1,6 +1,7 @@
 
 - job:
     name: satellite6-unit-test-snapper
+    concurrent: true
     node: rvm
     build-discarder:
       days-to-keep: -1

@@ -1,5 +1,6 @@
 - job:
     name: satellite6-unit-test-test-repo
+    concurrent: true
     node: rvm
     project-type: matrix
     build-discarder:
