@@ -1,5 +1,6 @@
 - job:
     name: satellite6-unit-test-tool-belt
+    concurrent: true
     node: rvm
     build-discarder:
       days-to-keep: -1

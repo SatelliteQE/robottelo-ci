@@ -2,6 +2,7 @@
     name: satellite6-unit-test-smart-proxy-openscap
     node: rvm
     project-type: matrix
+    concurrent: true
     build-discarder:
       days-to-keep: -1
       num-to-keep: 16
