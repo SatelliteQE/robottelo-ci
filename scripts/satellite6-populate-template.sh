@@ -39,6 +39,17 @@ if [[ -z "$OS_URL" || -z "$OS_USERNAME" || -z "$OS_PASSWORD" ]]; then
     exit 1
 fi
 
+# VMware Compute Resource
+COMPUTE_RESOURCE_NAME_VMWARE="VMware"
+VMWARE_URL=""
+VMWARE_USERNAME=""
+VMWARE_PASSWORD=""
+VMWARE_DATACENTER=""
+
+if [[ -z "$VMWARE_URL" || -z "$VMWARE_USERNAME" || -z "$VMWARE_PASSWORD" || -z "$VMWARE_DATACENTER" ]]; then
+    echo "You need to specify VMWARE_URL, VMWARE_USERNAME, VMWARE_PASSWORD, VMWARE_DATACENTER to be used as Compute Resource."
+    exit 1
+fi
 
 # The below values get populated from the satellite6_libvirt_install.conf file.
 # DOMAIN and SUBNET Variables.
@@ -386,6 +397,9 @@ elif [ "${SAT_VERSION}" == "6.3" ]; then
 elif [ "${SAT_VERSION}" == "6.4" ]; then
     (satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${RHEV_DATACENTER_UUID}" --use-v4 true) || true
 fi
+
+# Create VMware CR
+satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_VMWARE}" --provider VMware --server "${VMWARE_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${VMWARE_DATACENTER}" --user "${VMWARE_USERNAME}" --password "${VMWARE_PASSWORD}"
 
 # Create OpenStack CR
 # satellite_runner compute-resource create --name openstack_provider --provider Openstack --url "${OS_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --user "${OS_USERNAME}" --password "${OS_PASSWORD}"

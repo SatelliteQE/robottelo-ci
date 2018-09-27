@@ -28,6 +28,12 @@ sed -i "s|RHEV_USERNAME=.*|RHEV_USERNAME=\"${RHEV_USER}\"|" satellite6-populate.
 sed -i "s|RHEV_PASSWORD=.*|RHEV_PASSWORD=\"${RHEV_PASSWD}\"|" satellite6-populate.sh
 sed -i "s|RHEV_DATACENTER_UUID=.*|RHEV_DATACENTER_UUID=\"${RHEV_DATACENTER_UUID}\"|" satellite6-populate.sh
 
+# Populate the VMware CR information.
+sed -i "s|VMWARE_URL=.*|VMWARE_URL=\"${VMWARE_URL}\"|" satellite6-populate.sh
+sed -i "s|VMWARE_USERNAME=.*|VMWARE_USERNAME=\"${VMWARE_USERNAME}\"|" satellite6-populate.sh
+sed -i "s|VMWARE_PASSWORD=.*|VMWARE_PASSWORD=\"${VMWARE_PASSWORD}\"|" satellite6-populate.sh
+sed -i "s|VMWARE_DATACENTER=.*|VMWARE_DATACENTER=\"${VMWARE_DATACENTER}\"|" satellite6-populate.sh
+
 # Populate the OSP CR Information.
 sed -i "s|OS_URL=.*|OS_URL=\"${OS_URL}\"|" satellite6-populate.sh
 sed -i "s|OS_USERNAME=.*|OS_USERNAME=\"${OS_USERNAME}\"|" satellite6-populate.sh
@@ -91,4 +97,3 @@ if [[ "${ONLY_POPULATE_TEMPLATE}" = 'true' ]]; then
 else
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" /root/satellite6-populate.sh
 fi
-
