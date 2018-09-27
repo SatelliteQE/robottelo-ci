@@ -53,7 +53,7 @@ def setup_foreman(ruby = '2.2') {
     if (fileExists('package.json')) {
         steps['node'] = {
             sh 'npm install npm@\\<"5.0.0"'
-            sh './node_modules/.bin/npm install --no-optional --ignore-scripts --global-style true'
+            sh './node_modules/.bin/npm install --no-optional --global-style true || true'
             sh 'npm install phantomjs'
         }
     }
