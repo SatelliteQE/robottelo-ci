@@ -40,20 +40,31 @@ def get_ruby_version(branches) {
 }
 
 def setup_foreman(ruby = '2.2') {
-    try {
+    def steps = [:]
 
+    steps['ruby'] = {
         withRVM(['gem install bundler'], ruby)
-        withRVM(['bundle install --without mysql:mysql2'], ruby)
-
-        if (fileExists('package.json')) {
-            withRVM(['npm install npm@\\<"5.0.0"'], ruby)
-            withRVM(['./node_modules/.bin/npm install --no-optional --global-style true'], ruby)
-            withRVM(['npm install phantomjs'], ruby)
-            withRVM(['./node_modules/webpack/bin/webpack.js --bail --config config/webpack.config.js'], ruby)
-        }
+        withRVM(['bundle install --jobs=5 --retry=2 --without mysql:mysql2'], ruby)
 
         // Create DB first in development as migrate behaviour can change
         withRVM(['bundle exec rake db:drop db:create db:migrate DISABLE_DATABASE_ENVIRONMENT_CHECK=true'], ruby)
+    }
+
+    if (fileExists('package.json')) {
+        steps['node'] = {
+            sh 'npm install npm@\\<"5.0.0"'
+            sh './node_modules/.bin/npm install --no-optional --ignore-scripts --global-style true'
+            sh 'npm install phantomjs'
+        }
+    }
+
+    try {
+
+        parallel steps
+
+        if (fileExists('package.json')) {
+            withRVM(['./node_modules/.bin/npm install --no-optional --global-style true'], ruby)
+        }
 
     } catch (all) {
 
