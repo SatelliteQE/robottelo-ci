@@ -13,7 +13,7 @@
       !include-raw:
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/satelliteInstaller.groovy
-        - workflows/lib/rvm.groovy
+        - pipelines/lib/rvm.groovy
         - workflows/lib/gitlab.groovy
     notifications:
       - snapper_notifications

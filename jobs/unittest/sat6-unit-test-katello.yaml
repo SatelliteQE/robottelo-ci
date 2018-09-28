@@ -15,7 +15,7 @@
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/katello.groovy
         - workflows/test/foreman-lib.groovy
-        - workflows/lib/rvm.groovy
+        - pipelines/lib/rvm.groovy
         - workflows/lib/gitlab.groovy
     notifications:
       - snapper_notifications

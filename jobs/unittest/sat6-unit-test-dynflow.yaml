@@ -15,7 +15,7 @@
         - ./repos/dynflow.groovy
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/dynflow.groovy
-        - workflows/lib/rvm.groovy
+        - pipelines/lib/rvm.groovy
         - workflows/lib/gitlab.groovy
     notifications:
       - snapper_notifications
