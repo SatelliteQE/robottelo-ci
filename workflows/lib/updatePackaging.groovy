@@ -71,6 +71,8 @@ node ('sat6-build') {
     stage("Prepare changes") {
 
         dir("tool_belt/repos/${tool_belt_repo_folder}/${packaging_repo}") {
+            setup_obal()
+
             obal(
                 action: 'update',
                 packages: package_name,
