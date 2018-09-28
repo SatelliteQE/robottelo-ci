@@ -19,7 +19,7 @@ node('sat6-build') {
         } finally {
 
             archive "Gemfile.lock"
-            cleanup_rvm(ruby = '2.0')
+            cleanupRVM('2.0')
 
         }
     }

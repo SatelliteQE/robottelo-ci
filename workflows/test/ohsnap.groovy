@@ -68,7 +68,7 @@ def cleanup(ruby = my_ruby) {
 
     } finally {
 
-        cleanup_rvm(ruby)
+        cleanupRVM(ruby)
 
     }
 }

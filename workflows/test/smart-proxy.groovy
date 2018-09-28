@@ -36,7 +36,7 @@ node('rvm') {
                     archive "Gemfile.lock pkg/*"
                     junit keepLongStdio: true, testResults: 'jenkins/reports/unit/*.xml'
 
-                    cleanup_rvm(name)
+                    cleanupRVM(combo['ruby_version'], name)
 
                 }
             }

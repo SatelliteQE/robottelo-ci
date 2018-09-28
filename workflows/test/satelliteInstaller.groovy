@@ -20,7 +20,7 @@ node('rvm') {
         } finally {
 
             archive "Gemfile.lock pkg/*"
-            cleanup_rvm()
+            cleanupRVM()
 
         }
 

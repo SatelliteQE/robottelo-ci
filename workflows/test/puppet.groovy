@@ -31,7 +31,7 @@ node('rvm') {
 
                 } finally {
 
-                    cleanup_rvm(name)
+                    cleanupRVM(combo['ruby_version'], name)
 
                 }
             }

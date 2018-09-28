@@ -143,7 +143,7 @@ pipeline {
 
                             } finally {
 
-                                cleanup_rvm()
+                                cleanupRVM()
 
                             }
                         }
