@@ -21,6 +21,7 @@ node('rvm') {
                     wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                         deleteDir()
                         gitlab_clone_and_merge(puppet_repo)
+                        configureRVM(combo['ruby_version'], name)
 
                         gitlabCommitStatus(name) {
                             withRVM(["PUPPET_VERSION=${combo['puppet_version']} bundle install --without system_tests development"], combo['ruby_version'], name)

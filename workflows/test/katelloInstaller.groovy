@@ -7,6 +7,12 @@ node('rvm') {
 
     }
 
+    stage('Setup RVM') {
+
+        configureRVM()
+
+    }
+
     stage('Tests') {
 
         try {

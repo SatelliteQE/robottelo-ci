@@ -14,6 +14,7 @@ pipeline {
             parallel {
                 stage('bundle') {
                     steps {
+                        configureRVM(ruby)
                         withRVM(['bundle install'], ruby)
                     }
                 }

@@ -7,6 +7,12 @@ node('sat6-build') {
 
     }
 
+    stage('Setup RVM') {
+
+         configureRVM('2.0')
+
+    }
+
     stage('Run Tests') {
 
         try {

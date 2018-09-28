@@ -21,6 +21,7 @@ node('rvm') {
                     wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                         deleteDir()
                         gitlab_clone_and_merge('smart-proxy')
+                        configureRVM(combo['ruby_version'], name)
 
                         gitlabCommitStatus(name) {
                             sh "cp config/settings.yml.example config/settings.yml"

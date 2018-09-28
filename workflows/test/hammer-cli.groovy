@@ -10,6 +10,12 @@ node('sat6-build') {
 
     }
 
+    stage('Setup RVM') {
+
+        configureRVM(ruby)
+
+    }
+
     stage('Run Tests') {
 
         if (plugin_name == 'hammer_cli_katello') {
