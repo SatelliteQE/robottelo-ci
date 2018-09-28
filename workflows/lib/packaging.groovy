@@ -122,6 +122,8 @@ node('sat6-build') {
 
             krbcc = kerberos_setup()
 
+            setup_obal()
+
             gitlabCommitStatus(build_type) {
                 withEnv(["KRB5CCNAME=${krbcc}"]) {
                     obal(
