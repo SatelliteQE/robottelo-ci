@@ -12,7 +12,6 @@ node('rvm') {
         try {
 
             gitlabCommitStatus {
-                withRVM(["gem install bundler"])
                 withRVM(["bundle install"])
                 withRVM(["bundle exec rake"])
             }

@@ -12,7 +12,6 @@ node('rvm') {
         try {
 
             gitlabCommitStatus {
-                withRVM(["gem install bundler"], '2.3')
                 withRVM(["bundle install"], '2.3')
                 withRVM(["bundle exec rake rubocop"], '2.3')
                 withRVM(["bundle exec rake test"], '2.3')

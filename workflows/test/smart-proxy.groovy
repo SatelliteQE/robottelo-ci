@@ -25,7 +25,6 @@ node('rvm') {
                         gitlabCommitStatus(name) {
                             sh "cp config/settings.yml.example config/settings.yml"
                             sh "sed -i \"/^\\s*gem.*puppet/ s/\\\$/, '~> ${combo['puppet_version']}'/\" bundler.d/puppet.rb"
-                            withRVM(["gem install bundler"], combo['ruby_version'], name)
                             withRVM(["bundle install --without development"], combo['ruby_version'], name)
                             withRVM(["bundle exec rake pkg:generate_source jenkins:unit"], combo['ruby_version'], name)
                         }
