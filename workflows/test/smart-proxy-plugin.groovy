@@ -7,6 +7,12 @@ node('sat6-build') {
 
     }
 
+    stage('Setup RVM') {
+
+         configureRVM('2.0')
+
+    }
+
     stage('Run Tests') {
 
         try {
@@ -19,7 +25,7 @@ node('sat6-build') {
         } finally {
 
             archive "Gemfile.lock"
-            cleanup_rvm(ruby = '2.0')
+            cleanupRVM('2.0')
 
         }
     }

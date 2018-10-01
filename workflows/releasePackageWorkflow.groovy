@@ -134,7 +134,8 @@ pipeline {
                         dir(repo_name) {
                             try {
 
-                                withRVM(['gem install bundler'], 2.2)
+                                configureRVM('2.2')
+
                                 withRVM(['bundle install'], 2.2)
                                 withRVM(["FOREMAN_BRANCH=${version_map['foreman_branch']} rake pkg:generate_source"], 2.2)
 
@@ -143,7 +144,7 @@ pipeline {
 
                             } finally {
 
-                                cleanup_rvm()
+                                cleanupRVM('2.2')
 
                             }
                         }

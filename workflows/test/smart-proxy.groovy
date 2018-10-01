@@ -21,11 +21,11 @@ node('rvm') {
                     wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
                         deleteDir()
                         gitlab_clone_and_merge('smart-proxy')
+                        configureRVM(combo['ruby_version'], name)
 
                         gitlabCommitStatus(name) {
                             sh "cp config/settings.yml.example config/settings.yml"
                             sh "sed -i \"/^\\s*gem.*puppet/ s/\\\$/, '~> ${combo['puppet_version']}'/\" bundler.d/puppet.rb"
-                            withRVM(["gem install bundler"], combo['ruby_version'], name)
                             withRVM(["bundle install --without development"], combo['ruby_version'], name)
                             withRVM(["bundle exec rake pkg:generate_source jenkins:unit"], combo['ruby_version'], name)
                         }
@@ -36,7 +36,7 @@ node('rvm') {
                     archive "Gemfile.lock pkg/*"
                     junit keepLongStdio: true, testResults: 'jenkins/reports/unit/*.xml'
 
-                    cleanup_rvm(name)
+                    cleanupRVM(combo['ruby_version'], name)
 
                 }
             }

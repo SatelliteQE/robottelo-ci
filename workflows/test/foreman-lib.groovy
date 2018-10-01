@@ -43,7 +43,8 @@ def setup_foreman(ruby = '2.2') {
     def steps = [:]
 
     steps['ruby'] = {
-        withRVM(['gem install bundler'], ruby)
+        configureRVM(ruby)
+
         withRVM(['bundle install --jobs=5 --retry=2 --without mysql:mysql2'], ruby)
 
         // Create DB first in development as migrate behaviour can change
@@ -107,7 +108,7 @@ def cleanup(ruby = '2.2') {
 
     } finally {
 
-        cleanup_rvm('', ruby)
+        cleanupRVM(ruby)
 
     }
 }

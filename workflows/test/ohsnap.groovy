@@ -14,6 +14,7 @@ pipeline {
             parallel {
                 stage('bundle') {
                     steps {
+                        configureRVM(ruby)
                         withRVM(['bundle install'], ruby)
                     }
                 }
@@ -68,7 +69,7 @@ def cleanup(ruby = my_ruby) {
 
     } finally {
 
-        cleanup_rvm(ruby)
+        cleanupRVM(ruby)
 
     }
 }

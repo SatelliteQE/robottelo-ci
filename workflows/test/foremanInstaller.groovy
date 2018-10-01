@@ -7,12 +7,17 @@ node('rvm') {
 
     }
 
+    stage('Setup RVM') {
+
+        configureRVM()
+
+    }
+
     stage('Tests') {
 
         try {
 
             gitlabCommitStatus {
-                withRVM(["gem install bundler"])
                 withRVM(["bundle install"])
                 withRVM(["bundle exec rake"])
             }
@@ -20,7 +25,7 @@ node('rvm') {
         } finally {
 
             archive "Gemfile.lock pkg/*"
-            cleanup_rvm()
+            cleanupRVM()
 
         }
 

@@ -7,12 +7,17 @@ node('rvm') {
 
     }
 
+    stage('Setup RVM') {
+
+        configureRVM('2.3')
+
+    }
+
     stage('Tests') {
 
         try {
 
             gitlabCommitStatus {
-                withRVM(["gem install bundler"], '2.3')
                 withRVM(["bundle install"], '2.3')
                 withRVM(["bundle exec rake rubocop"], '2.3')
                 withRVM(["bundle exec rake test"], '2.3')
@@ -21,7 +26,7 @@ node('rvm') {
         } finally {
 
             archive "Gemfile.lock pkg/*"
-            cleanup_rvm(ruby: "2.3")
+            cleanupRVM('2.3')
 
         }
 

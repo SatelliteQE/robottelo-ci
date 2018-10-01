@@ -14,7 +14,7 @@
         - ./repos/smart_proxy_dynflow.groovy
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/smart-proxy-plugin.groovy
-        - workflows/lib/rvm.groovy
+        - pipelines/lib/rvm.groovy
         - workflows/lib/gitlab.groovy
     notifications:
       - snapper_notifications
