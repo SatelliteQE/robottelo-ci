@@ -23,6 +23,14 @@ def branch_map = [
         'ruby': '2.4',
         'packaging_job': 'sat-64-satellite-packaging-update'
     ],
+    'SATELLITE-6.5.0': [
+        'repo': 'Satellite 6.5 Source Files',
+        'version': '6.5.0',
+        'tool_belt_config': './configs/satellite/',
+        'foreman_branch': '1.20-stable',
+        'ruby': '2.5',
+        'packaging_job': 'sat-65-satellite-packaging-update'
+    ],
     'RHUI-3.0.0': [
         'repo': 'RHUI 3.0 Source Files',
         'version': '3.0.0',
