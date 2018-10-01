@@ -1,5 +1,5 @@
 - job:
-    name: sat-63-satellite-packaging-scratch-build
+    name: satellite-packaging-scratch-build
     project-type: pipeline
     concurrent: true
     build-discarder:
