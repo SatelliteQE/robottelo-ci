@@ -1283,6 +1283,8 @@
                         IDM_REALM=${{IDM_REALM}}
         - trigger-builds:
             - project: polarion-test-case
+              predefined-parameters: |
+                SATELLITE_VERSION={satellite_version}
         - trigger-builds:
             - project: polarion-upgrade-test-case
         - conditional-step:
