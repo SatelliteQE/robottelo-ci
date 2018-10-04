@@ -5,9 +5,6 @@
       - string:
           name: snapVersion
           description: "Snap release version"
-      - string:
-          name: previousSnapVersion
-          description: "Previous snap release version"
     dsl:
       !include-raw:
         - workflows/6.5/releasePipelineAttributes.groovy
