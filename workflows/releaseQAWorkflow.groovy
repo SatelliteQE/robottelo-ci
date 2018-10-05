@@ -66,15 +66,11 @@ node('sat6-build') {
 
     stage("Create Archive Environment") {
 
-      // Work around for parameters not being accessible in functions
-      writeFile file: 'snap_version', text: snapVersion
-      def version = readFile 'snap_version'
-
-      createLifecycleEnvironment {
-          name = version
-          prior = 'Library'
-          organization = 'Sat6-CI'
-      }
+      createLifecycleEnvironment (
+          name: snapVersion,
+          prior: 'Library',
+          organization: 'Sat6-CI'
+      )
 
     }
 

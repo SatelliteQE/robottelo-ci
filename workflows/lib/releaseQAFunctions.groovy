@@ -31,19 +31,14 @@ def promoteContentView(body) {
     }
 }
 
-def createLifecycleEnvironment(body) {
-
-    def config = [:]
-    body.resolveStrategy = Closure.DELEGATE_FIRST
-    body.delegate = config
-    body()
+def createLifecycleEnvironment(args) {
 
     runPlaybook {
       playbook = 'playbooks/create_lifecycle_environment.yml'
       extraVars = [
-          'lifecycle_environment_name': config.name,
-          'organization': config.organization,
-          'prior': config.prior,
+          'lifecycle_environment_name': args.name,
+          'organization': args.organization,
+          'prior': args.prior,
       ]
     }
 }

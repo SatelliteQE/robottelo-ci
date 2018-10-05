@@ -13,15 +13,11 @@ node('sat6-build') {
         // Remove old package report
         sh 'rm -rf package_report.yaml'
 
-        // Work around for parameters not being accessible in functions
-        writeFile file: 'previous_snap', text: previousSnapVersion
-        def version = readFile 'previous_snap'
-
-        createLifecycleEnvironment {
-            name = version
-            prior = 'Library'
-            organization = 'Sat6-CI'
-        }
+        createLifecycleEnvironment (
+            name: previousSnapVersion,
+            prior: 'Library',
+            organization: 'Sat6-CI'
+        )
 
     }
 
