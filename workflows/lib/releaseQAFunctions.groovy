@@ -13,20 +13,15 @@ def copyActivationKey(args) {
 
 }
 
-def promoteContentView(body) {
-
-    def config = [:]
-    body.resolveStrategy = Closure.DELEGATE_FIRST
-    body.delegate = config
-    body()
+def promoteContentView(args) {
 
     runPlaybook {
       playbook = 'playbooks/promote_content_view.yml'
       extraVars = [
-          'content_view_name': config.content_view,
-          'organization': config.organization,
-          'to_lifecycle_environment': config.to_lifecycle_environment,
-          'from_lifecycle_environment': config.from_lifecycle_environment,
+          'content_view_name': args.content_view,
+          'organization': args.organization,
+          'to_lifecycle_environment': args.to_lifecycle_environment,
+          'from_lifecycle_environment': args.from_lifecycle_environment,
       ]
     }
 }
