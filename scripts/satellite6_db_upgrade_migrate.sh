@@ -1,4 +1,5 @@
 pip install -U -r requirements.txt
+pip install -r requirements-optional.txt
 
 # Set OS version for further use
 export OS_VERSION="${OS#rhel}"

@@ -1,4 +1,5 @@
 pip install -U -r requirements.txt docker-py pytest-xdist sauceclient
+pip install -r requirements-optional.txt
  # Sourcing and exporting required env vars for tier jobs
 source ${CONFIG_FILES}
 source config/compute_resources.conf
