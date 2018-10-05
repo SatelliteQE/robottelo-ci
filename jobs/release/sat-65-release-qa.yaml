@@ -3,8 +3,12 @@
     project-type: pipeline
     parameters:
       - string:
+          name: releaseVersion
+          description: "release version in X.Y.Z format"
+          default: "6.5.0"
+      - string:
           name: snapVersion
-          description: "Snap release version"
+          description: "snap version in X.Y format (optional)"
     dsl:
       !include-raw:
         - workflows/6.5/releasePipelineAttributes.groovy
