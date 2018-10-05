@@ -1,0 +1,19 @@
+- job:
+    name: sat-65-release-qa
+    project-type: pipeline
+    parameters:
+      - string:
+          name: snapVersion
+          description: "Snap release version"
+      - string:
+          name: previousSnapVersion
+          description: "Previous snap release version"
+    dsl:
+      !include-raw:
+        - workflows/6.5/releasePipelineAttributes.groovy
+        - workflows/releaseQAWorkflow.groovy
+        - workflows/lib/releaseQAFunctions.groovy
+        - workflows/lib/toolbelt.groovy
+        - workflows/lib/runPlaybook.groovy
+    notifications:
+      - snapper_notifications
