@@ -38,21 +38,16 @@ def createLifecycleEnvironment(args) {
     }
 }
 
-def compareContentViews(body) {
-
-    def config = [:]
-    body.resolveStrategy = Closure.DELEGATE_FIRST
-    body.delegate = config
-    body()
+def compareContentViews(args) {
 
     def archive_file = 'package_report.yaml'
 
     toolBelt(
         command: 'release compare-content-view',
         options: [
-            "--content-view '${config.content_view}'",
-            "--from-environment '${config.from_lifecycle_environment}'",
-            "--to-environment '${config.to_lifecycle_environment}'",
+            "--content-view '${args.content_view}'",
+            "--from-environment '${args.from_lifecycle_environment}'",
+            "--to-environment '${args.to_lifecycle_environment}'",
             "--output '${archive_file}'"
         ]
     )

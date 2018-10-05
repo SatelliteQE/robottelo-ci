@@ -80,12 +80,12 @@ node('sat6-build') {
     }
 
     stage("Promote Satellite to QA") {
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = 'Satellite 6.2 RHEL7'
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+        compareContentViews (
+          organization: 'Sat6-CI',
+          content_view: 'Satellite 6.2 RHEL7',
+          from_lifecycle_environment: 'Library',
+          to_lifecycle_environment: 'QA'
+        )
 
         promoteContentView (
           organization: 'Sat6-CI',
@@ -94,12 +94,12 @@ node('sat6-build') {
           to_lifecycle_environment: 'QA'
         )
 
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = 'Satellite 6.2 RHEL6'
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+        compareContentViews (
+          organization: 'Sat6-CI',
+          content_view: 'Satellite 6.2 RHEL6',
+          from_lifecycle_environment: 'Library',
+          to_lifecycle_environment: 'QA'
+        )
 
         promoteContentView (
           organization: 'Sat6-CI',
@@ -110,12 +110,12 @@ node('sat6-build') {
     }
 
     stage("Promote Capsule to QA") {
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = 'Capsule 6.2 RHEL7'
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+        compareContentViews (
+          organization: 'Sat6-CI',
+          content_view: 'Capsule 6.2 RHEL7',
+          from_lifecycle_environment: 'Library',
+          to_lifecycle_environment: 'QA'
+        )
 
         promoteContentView (
           organization: 'Sat6-CI',
@@ -124,12 +124,12 @@ node('sat6-build') {
           to_lifecycle_environment: 'QA'
         )
 
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = 'Capsule 6.2 RHEL6'
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+        compareContentViews (
+          organization: 'Sat6-CI',
+          content_view: 'Capsule 6.2 RHEL6',
+          from_lifecycle_environment: 'Library',
+          to_lifecycle_environment: 'QA'
+        )
 
         promoteContentView (
           organization: 'Sat6-CI',
@@ -140,12 +140,12 @@ node('sat6-build') {
     }
 
     stage("Promote Tools to QA") {
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = 'Tools 6.2 RHEL7'
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+        compareContentViews (
+          organization: 'Sat6-CI',
+          content_view: 'Tools 6.2 RHEL7',
+          from_lifecycle_environment: 'Library',
+          to_lifecycle_environment: 'QA'
+        )
 
         promoteContentView (
           organization: 'Sat6-CI',
@@ -154,12 +154,12 @@ node('sat6-build') {
           to_lifecycle_environment: 'QA'
         )
 
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = 'Tools 6.2 RHEL6'
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+        compareContentViews (
+          organization: 'Sat6-CI',
+          content_view: 'Tools 6.2 RHEL6',
+          from_lifecycle_environment: 'Library',
+          to_lifecycle_environment: 'QA'
+        )
 
         promoteContentView (
           organization: 'Sat6-CI',
@@ -168,12 +168,12 @@ node('sat6-build') {
           to_lifecycle_environment: 'QA'
         )
 
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = 'Tools 6.2 RHEL5'
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+        compareContentViews (
+          organization: 'Sat6-CI',
+          content_view: 'Tools 6.2 RHEL5',
+          from_lifecycle_environment: 'Library',
+          to_lifecycle_environment: 'QA'
+        )
 
         promoteContentView (
           organization: 'Sat6-CI',

@@ -9,12 +9,12 @@ node('sat6-build') {
     stage("Promote Satellite to QA") {
 
       satellite_composite_content_views.each { cv ->
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = cv
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+        compareContentViews (
+          organization: 'Sat6-CI',
+          content_view: cv,
+          from_lifecycle_environment: 'Library',
+          to_lifecycle_environment: 'QA'
+        )
 
         promoteContentView (
           organization: 'Sat6-CI',
@@ -28,12 +28,12 @@ node('sat6-build') {
     stage("Promote Capsule to QA") {
 
       capsule_composite_content_views.each { cv ->
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = cv
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+        compareContentViews (
+          organization: 'Sat6-CI',
+          content_view: cv,
+          from_lifecycle_environment: 'Library',
+          to_lifecycle_environment: 'QA'
+        )
 
         promoteContentView (
           organization: 'Sat6-CI',
@@ -47,12 +47,12 @@ node('sat6-build') {
     stage("Promote Tools to QA") {
 
       tools_composite_content_views.each { cv ->
-        compareContentViews {
-          organization = 'Sat6-CI'
-          content_view = cv
-          from_lifecycle_environment = 'Library'
-          to_lifecycle_environment = 'QA'
-        }
+        compareContentViews (
+          organization: 'Sat6-CI',
+          content_view: cv,
+          from_lifecycle_environment: 'Library',
+          to_lifecycle_environment: 'QA'
+        )
 
         promoteContentView (
           organization: 'Sat6-CI',
