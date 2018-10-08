@@ -170,27 +170,12 @@
             os: "{os}"
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[1234])
+            regex: (6\.[12345])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
                     - project: 'automation-{satellite_version}-tier4-{os}'
                       current-parameters: true
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[1234])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                  - project: 'satellite6-automation-performance-report'
-                    predefined-parameters: |
-                      OS={os}
-                      BUILD_LABEL=${{BUILD_LABEL}}
-                    parameter-factories:
-                      - factory: binaryfile
-                        parameter-name: JUNIT
-                        file-pattern: tier1-parallel-results.xml
-                        no-files-found-action: FAIL
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
@@ -235,7 +220,7 @@
             os: "{os}"
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[1234])
+            regex: (6\.[12345])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -379,7 +364,7 @@
             os: "{os}"
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[1234])
+            regex: (6\.[12345])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -761,7 +746,7 @@
             properties-file: build_env.properties
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[4])
+            regex: (6\.[45])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -773,7 +758,7 @@
                         BUILD_LABEL=${{BUILD_LABEL}}
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[4])
+            regex: (6\.[45])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -1268,7 +1253,7 @@
                 SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[234])
+            regex: (6\.[2345])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -1312,7 +1297,7 @@
                         ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[234])
+            regex: (6\.[2345])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -1328,13 +1313,13 @@
     name: satellite6-automation
     scm-branch: origin/master
     satellite_version:
-        - '6.1':
-            scm-branch: origin/6.1.z
         - '6.2':
             scm-branch: origin/6.2.z
         - '6.3':
             scm-branch: origin/6.3.z
-        - '6.4'
+        - '6.4':
+            scm-branch: origin/6.4.z
+        - '6.5'
         - 'upstream-nightly'
         - 'downstream-nightly'
     os:
@@ -1344,6 +1329,8 @@
         - satellite_version: '6.3'
           os: 'rhel6'
         - satellite_version: '6.4'
+          os: 'rhel6'
+        - satellite_version: '6.5'
           os: 'rhel6'
         - satellite_version: 'upstream-nightly'
           os: 'rhel6'
@@ -1371,6 +1358,7 @@
         - '6.2'
         - '6.3'
         - '6.4'
+        - '6.5'
     os:
         - 'rhel6'
         - 'rhel7'
@@ -1378,6 +1366,8 @@
         - satellite_version: '6.3'
           os: 'rhel6'
         - satellite_version: '6.4'
+          os: 'rhel6'
+        - satellite_version: '6.5'
           os: 'rhel6'
     jobs:
         - 'satellite6-sanity-check-{satellite_version}-{os}'
@@ -1393,7 +1383,9 @@
             scm-branch: origin/6.2.z
         - '6.3':
             scm-branch: origin/6.3.z
-        - '6.4'
+        - '6.4':
+            scm-branch: origin/6.4.z
+        - '6.5'
     os:
         - 'rhel6'
         - 'rhel7'
@@ -1401,6 +1393,8 @@
         - satellite_version: '6.3'
           os: 'rhel6'
         - satellite_version: '6.4'
+          os: 'rhel6'
+        - satellite_version: '6.5'
           os: 'rhel6'
     jobs:
         - 'upgrade-to-{satellite_version}-{os}'
@@ -1418,10 +1412,10 @@
 - project:
     name: satellite6-triggers
     satellite_version:
-        - '6.1'
         - '6.2'
         - '6.3'
         - '6.4'
+        - '6.5'
         - 'downstream-nightly'
     jobs:
         - 'trigger-satellite-{satellite_version}'

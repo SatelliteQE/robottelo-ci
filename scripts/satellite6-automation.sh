@@ -46,10 +46,10 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     # Temporary change to test Selenium and Firefox changes.
     if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         SELENIUM_VERSION=2.48.0
-    elif [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
-        SELENIUM_VERSION=3.8.1
-    else
+    elif [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
         SELENIUM_VERSION=2.53.1
+    else
+        SELENIUM_VERSION=3.8.1
     fi
     sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},tags=[${JOB_NAME}]/" robottelo.properties
     RP_LAUNCH_TAGS="${RP_LAUNCH_TAGS} \'${SAUCE_BROWSER}_${BROWSER_VERSION}\'"
@@ -104,12 +104,12 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     sed -i "s|capsule_repo=.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
-if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
+if [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
+    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
 elif [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
     TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun})"
 else
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
+    TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
 fi
 
 if [ "${ENDPOINT}" == "destructive" ]; then

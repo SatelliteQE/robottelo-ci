@@ -31,7 +31,7 @@
                   regex: (rhel7)
                   label: ${ENV,var="DISTRO"}
                 - condition-kind: regex-match
-                  regex: (6\.[34])
+                  regex: (6\.[345])
                   label: ${ENV,var="SATELLITE_VERSION"}
             steps:
                 - shining-panda:
