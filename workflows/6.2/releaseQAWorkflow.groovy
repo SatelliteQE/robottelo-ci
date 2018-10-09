@@ -13,7 +13,7 @@ node('sat6-build') {
         // Remove old package report
         sh 'rm -rf package_report.yaml'
 
-        createLifecycleEnvironment (
+        createLifecycleEnvironment(
             name: previousSnapVersion,
             prior: 'Library',
             organization: 'Sat6-CI'
@@ -23,14 +23,14 @@ node('sat6-build') {
 
     stage("Archive Satellite") {
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Satellite 6.2 RHEL7',
           from_lifecycle_environment: 'QA',
           to_lifecycle_environment: previousSnapVersion
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Satellite 6.2 RHEL6',
           from_lifecycle_environment: 'QA',
@@ -40,14 +40,14 @@ node('sat6-build') {
 
     stage("Archive Capsule") {
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Capsule 6.2 RHEL7',
           from_lifecycle_environment: 'QA',
           to_lifecycle_environment: previousSnapVersion
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Capsule 6.2 RHEL6',
           from_lifecycle_environment: 'QA',
@@ -57,21 +57,21 @@ node('sat6-build') {
 
     stage("Archive Tools") {
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Tools 6.2 RHEL7',
           from_lifecycle_environment: 'QA',
           to_lifecycle_environment: previousSnapVersion
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Tools 6.2 RHEL6',
           from_lifecycle_environment: 'QA',
           to_lifecycle_environment: previousSnapVersion
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Tools 6.2 RHEL5',
           from_lifecycle_environment: 'QA',
@@ -80,28 +80,28 @@ node('sat6-build') {
     }
 
     stage("Promote Satellite to QA") {
-        compareContentViews (
+        compareContentViews(
           organization: 'Sat6-CI',
           content_view: 'Satellite 6.2 RHEL7',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Satellite 6.2 RHEL7',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        compareContentViews (
+        compareContentViews(
           organization: 'Sat6-CI',
           content_view: 'Satellite 6.2 RHEL6',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Satellite 6.2 RHEL6',
           from_lifecycle_environment: 'Library',
@@ -110,28 +110,28 @@ node('sat6-build') {
     }
 
     stage("Promote Capsule to QA") {
-        compareContentViews (
+        compareContentViews(
           organization: 'Sat6-CI',
           content_view: 'Capsule 6.2 RHEL7',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Capsule 6.2 RHEL7',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        compareContentViews (
+        compareContentViews(
           organization: 'Sat6-CI',
           content_view: 'Capsule 6.2 RHEL6',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Capsule 6.2 RHEL6',
           from_lifecycle_environment: 'Library',
@@ -140,42 +140,42 @@ node('sat6-build') {
     }
 
     stage("Promote Tools to QA") {
-        compareContentViews (
+        compareContentViews(
           organization: 'Sat6-CI',
           content_view: 'Tools 6.2 RHEL7',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Tools 6.2 RHEL7',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        compareContentViews (
+        compareContentViews(
           organization: 'Sat6-CI',
           content_view: 'Tools 6.2 RHEL6',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Tools 6.2 RHEL6',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        compareContentViews (
+        compareContentViews(
           organization: 'Sat6-CI',
           content_view: 'Tools 6.2 RHEL5',
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
-        promoteContentView (
+        promoteContentView(
           organization: 'Sat6-CI',
           content_view: 'Tools 6.2 RHEL5',
           from_lifecycle_environment: 'Library',
