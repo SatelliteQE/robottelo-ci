@@ -11,14 +11,14 @@ def configure_foreman_environment() {
 cat <<EOT >> config/database.yml
 development:
   adapter: postgresql
-  database: ${gemset()}-development
+  database: ${gemset()}-test
   username: foreman
   password: foreman
   host: localhost
   template: template0
 production:
   adapter: postgresql
-  database: ${gemset()}-development
+  database: ${gemset()}-test
   username: foreman
   password: foreman
   host: localhost
