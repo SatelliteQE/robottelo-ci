@@ -138,12 +138,12 @@ node('sat6-build') {
     stage("Compare Packages") {
 
         composite_content_views.each { cv ->
-          compareContentViews {
-            organization = 'Sat6-CI'
-            content_view = cv
-            from_lifecycle_environment = 'Library'
-            to_lifecycle_environment = 'QA'
-          }
+          compareContentViews(
+            organization: 'Sat6-CI',
+            content_view: cv,
+            from_lifecycle_environment: 'Library',
+            to_lifecycle_environment: 'QA'
+          )
         }
 
     }
