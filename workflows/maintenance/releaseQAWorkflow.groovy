@@ -1,11 +1,4 @@
-def snap_version
-if (snapVersion) {
-  snap_version = "${satellite_version}-${snapVersion}"
-} else {
-  def response = httpRequest url: "${OHSNAP_URL}/api/releases/${satellite_version}/snaps/new"
-  def snap_data = readJSON text: response.content
-  snap_version = "${satellite_version}-${snap_data['version']}"
-}
+def snap_version = generateSnapVersion(release_name: satellite_version, snap_version: snapVersion)
 
 node('sat6-build') {
     stage("Setup Workspace") {
