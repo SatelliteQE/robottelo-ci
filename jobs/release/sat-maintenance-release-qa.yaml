@@ -4,7 +4,7 @@
     parameters:
       - string:
           name: snapVersion
-          description: "Snap release version"
+          description: "snap version in X.Y format (optional)"
     dsl:
       !include-raw:
         - workflows/maintenance/releasePipelineAttributes.groovy

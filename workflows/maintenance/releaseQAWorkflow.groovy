@@ -1,3 +1,12 @@
+def snap_version
+if (snapVersion) {
+  snap_version = "${satellite_version}-${snapVersion}"
+} else {
+  def response = httpRequest url: "${OHSNAP_URL}/api/releases/${satellite_version}/snaps/new"
+  def snap_data = readJSON text: response.content
+  snap_version = "${satellite_version}-${snap_data['version']}"
+}
+
 node('sat6-build') {
     stage("Setup Workspace") {
 
@@ -37,7 +46,7 @@ node('sat6-build') {
     stage("Create Archive Environment") {
 
       createLifecycleEnvironment(
-          name: snapVersion,
+          name: snap_version,
           prior: 'Library',
           organization: 'Sat6-CI'
       )
@@ -51,7 +60,7 @@ node('sat6-build') {
           organization: 'Sat6-CI',
           content_view: cv,
           from_lifecycle_environment: 'QA',
-          to_lifecycle_environment: snapVersion
+          to_lifecycle_environment: snap_version
         )
       }
 
