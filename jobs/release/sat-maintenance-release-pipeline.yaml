@@ -5,6 +5,7 @@
       - timed: 'H 06 * * *'
     dsl:
       !include-raw:
+        - workflows/maintenance/releasePipelineAttributes.groovy
         - workflows/maintenance/releasePipeline.groovy
         - workflows/lib/runPlaybook.groovy
     notifications:

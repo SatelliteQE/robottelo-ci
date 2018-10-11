@@ -5,7 +5,8 @@
       - timed: 'H 06 * * *'
     dsl:
       !include-raw:
-        - workflows/maintenance-next/releasePipeline.groovy
+        - workflows/maintenance-next/releasePipelineAttributes.groovy
+        - workflows/maintenance/releasePipeline.groovy
         - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications
