@@ -11,7 +11,3 @@ def content_views = [
 def composite_content_views = [
     'Satellite Maintenance Next with RHEL7 Server'
 ]
-
-def release_content_view = 'Satellite Maintenance Next RHEL7'
-
-def release_composite_content_view = 'Satellite Maintenance Next with RHEL7 Server'
