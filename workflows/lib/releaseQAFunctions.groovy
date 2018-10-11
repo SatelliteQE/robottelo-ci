@@ -57,12 +57,16 @@ def compareContentViews(args) {
 
 def generateSnapVersion(args) {
 
+    def full_snap_version
+
     if (args.snap_version) {
-        return "${args.release_name}-${args.snap_version}"
+        full_snap_version = "${args.release_name}-${args.snap_version}"
     } else {
         def response = httpRequest url: "${OHSNAP_URL}/api/releases/${args.release_name}/snaps/new"
         def snap_data = readJSON text: response.content
-        return "${args.release_name}-${snap_data['version']}"
+        full_snap_version = "${args.release_name}-${snap_data['version']}"
     }
+
+    return full_snap_version
 
 }
