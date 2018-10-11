@@ -1,3 +1,5 @@
+def snap_version = generateSnapVersion(release_name: releaseVersion, snap_version: snapVersion)
+
 node('sat6-build') {
     stage("Setup Workspace") {
 
@@ -67,7 +69,7 @@ node('sat6-build') {
     stage("Create Archive Environment") {
 
       createLifecycleEnvironment(
-          name: snapVersion,
+          name: snap_version,
           prior: 'Library',
           organization: 'Sat6-CI'
       )
@@ -81,7 +83,7 @@ node('sat6-build') {
           organization: 'Sat6-CI',
           content_view: cv,
           from_lifecycle_environment: 'QA',
-          to_lifecycle_environment: snapVersion
+          to_lifecycle_environment: snap_version
         )
       }
 
@@ -94,7 +96,7 @@ node('sat6-build') {
           organization: 'Sat6-CI',
           content_view: cv,
           from_lifecycle_environment: 'QA',
-          to_lifecycle_environment: snapVersion
+          to_lifecycle_environment: snap_version
         )
       }
 
@@ -107,7 +109,7 @@ node('sat6-build') {
           organization: 'Sat6-CI',
           content_view: cv,
           from_lifecycle_environment: 'QA',
-          to_lifecycle_environment: snapVersion
+          to_lifecycle_environment: snap_version
         )
       }
 
@@ -119,7 +121,7 @@ node {
     stage("Run Automation") {
         build job: "trigger-satellite-${satellite_main_version}", parameters: [
           [$class: 'StringParameterValue', name: 'SATELLITE_DISTRIBUTION', value: 'INTERNAL'],
-          [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${snapVersion}"],
+          [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${snap_version}"],
         ]
     }
 }

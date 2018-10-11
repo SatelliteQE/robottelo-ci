@@ -1,3 +1,5 @@
+def snap_version = generateSnapVersion(release_name: satellite_version, snap_version: snapVersion)
+
 node('sat6-build') {
     stage("Setup Workspace") {
 
@@ -37,7 +39,7 @@ node('sat6-build') {
     stage("Create Archive Environment") {
 
       createLifecycleEnvironment(
-          name: snapVersion,
+          name: snap_version,
           prior: 'Library',
           organization: 'Sat6-CI'
       )
@@ -51,7 +53,7 @@ node('sat6-build') {
           organization: 'Sat6-CI',
           content_view: cv,
           from_lifecycle_environment: 'QA',
-          to_lifecycle_environment: snapVersion
+          to_lifecycle_environment: snap_version
         )
       }
 
