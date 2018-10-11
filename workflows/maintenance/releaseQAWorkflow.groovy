@@ -7,26 +7,30 @@ node('sat6-build') {
 
     stage("Promote Satellite Maintenance to QA") {
 
+      content_views.each { cv ->
         compareContentViews(
           organization: 'Sat6-CI',
-          content_view: release_content_view,
+          content_view: cv,
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
 
         promoteContentView(
           organization: 'Sat6-CI',
-          content_view: release_content_view,
+          content_view: cv,
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
+      }
 
+      composite_content_views.each { cv ->
         promoteContentView(
           organization: 'Sat6-CI',
-          content_view: release_composite_content_view,
+          content_view: cv,
           from_lifecycle_environment: 'Library',
           to_lifecycle_environment: 'QA'
         )
+      }
 
     }
 
@@ -42,12 +46,14 @@ node('sat6-build') {
 
     stage("Archive Satellite Maintenance") {
 
-      promoteContentView(
-        organization: 'Sat6-CI',
-        content_view: release_composite_content_view,
-        from_lifecycle_environment: 'QA',
-        to_lifecycle_environment: snapVersion
-      )
+      composite_content_views.each { cv ->
+        promoteContentView(
+          organization: 'Sat6-CI',
+          content_view: cv,
+          from_lifecycle_environment: 'QA',
+          to_lifecycle_environment: snapVersion
+        )
+      }
 
     }
 }
