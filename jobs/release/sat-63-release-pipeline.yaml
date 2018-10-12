@@ -7,6 +7,7 @@
       !include-raw:
         - workflows/6.3/releasePipelineAttributes.groovy
         - workflows/releaseSatellitePipeline.groovy
+        - workflows/lib/libvirt.groovy
         - workflows/lib/runPlaybook.groovy
         - workflows/lib/releaseQAFunctions.groovy
         - workflows/lib/toolbelt.groovy

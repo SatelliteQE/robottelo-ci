@@ -73,7 +73,3 @@ node('sat6-build') {
         }
     }
 }
-
-def runOnLibvirtHost(action) {
-    sh "ssh jenkins@${env.LIBVIRT_HOST} \"${action}\""
-}
