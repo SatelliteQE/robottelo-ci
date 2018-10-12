@@ -5,6 +5,7 @@
       !include-raw:
         - workflows/6.2/releasePipelineAttributes.groovy
         - workflows/6.2/releaseSatellitePipeline.groovy
+        - workflows/lib/libvirt.groovy
         - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications
