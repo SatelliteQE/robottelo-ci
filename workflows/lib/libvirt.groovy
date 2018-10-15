@@ -7,7 +7,7 @@ def runOnLibvirtHost(action) {
 def test_forklift(args) {
 
     def os_versions = args.os_versions ?: ['7']
-    def sattellite_version = args.sattellite_version
+    def satellite_version = args.satellite_version
 
     runOnLibvirtHost "cd sat-deploy && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
     runOnLibvirtHost "cd sat-deploy/forklift && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
