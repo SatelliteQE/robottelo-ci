@@ -9,7 +9,7 @@ def gitlab_clone_and_merge(repo_name, pipeline_name='jenkins') {
                 branches: [[name: "pr/${env.gitlabSourceBranch}"]],
                 doGenerateSubmoduleConfigurations: false,
                 extensions: [
-                    [$class: 'PreBuildMerge', options: [fastForwardMode: 'FF', mergeRemote: 'origin', mergeStrategy: 'default', mergeTarget: "${env.gitlabTargetBranch}"]],
+                    [$class: 'PreBuildMerge', options: [fastForwardMode: 'FF', mergeRemote: 'origin', mergeStrategy: 'DEFAULT', mergeTarget: "${env.gitlabTargetBranch}"]],
                     [$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: false, timeout: 20]
                 ],
                 submoduleCfg: [],
