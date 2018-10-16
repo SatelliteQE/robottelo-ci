@@ -1,0 +1,35 @@
+- job:
+    name: 'satellite6-environment-toggle'
+    concurrent: False
+    display-name: 'Satellite6-QE-environment-toggle'
+    description: |
+        <p> Job will put the QE jobs in TEST environment. To Test Job changes</p>
+        <hr>
+        <p> This will stop all the publishers from sending out mails and disable all polarion related Jobs(WIP)</p>
+    node: sat6-rhel7
+    parameters:
+        - choice:
+            name: ENVIRONMENT
+            choices:
+                - 'TEST'
+                - 'PROD'
+            description: |
+                <p>Select the Environment to put the jenkins.(Test/Production)</p>
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo-ci.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - inject-passwords:
+            global: true
+            mask-password-params: true
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-3.6
+            clear: true
+            nature: shell
+            command:
+                !include-raw: scripts/sat6-qe-env-toggle.sh
