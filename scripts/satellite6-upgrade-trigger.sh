@@ -29,6 +29,7 @@ echo "GATEWAY=${GATEWAY}" >> properties.txt
 echo "BRIDGE=${BRIDGE}" >> properties.txt
 echo "DISCOVERY_ISO=${DISCOVERY_ISO}" >> properties.txt
 
+
 # Setting Prerequisites
 pip install -r requirements.txt
 if [ ${ENDPOINT} == 'setup' ]; then
@@ -36,11 +37,16 @@ if [ ${ENDPOINT} == 'setup' ]; then
     fab -u root setup_products_for_upgrade:'longrun',"${OS}"
 
 elif [ ${ENDPOINT} == 'upgrade' ]; then
+    # Creates the pre-upgrade data-store required for existence tests
+    echo "Setting up pre-upgrade data-store for existence tests before upgrade"
+    fab -u root set_datastore:"preupgrade","cli"
+    fab -u root set_datastore:"preupgrade","api"
+
     # Longrun to run upgrade on Satellite, capsule and clients
     fab -u root product_upgrade:'longrun'
 
     # Creates the post-upgrade data-store required for existence tests
-    echo "Setting up post-upgrade data-store for existence tests"
+    echo "Setting up post-upgrade data-store for existence tests post upgrade"
     fab -u root set_datastore:"postupgrade","cli"
     fab -u root set_datastore:"postupgrade","api"
 fi

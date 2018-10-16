@@ -113,6 +113,10 @@ else
     TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
 fi
 
+# Delete the Default Organization Manifest before running the tests
+MANIFEST_ORG="Default Organization"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" "hammer -u ${SATELLITE_USERNAME} -p ${SATELLITE_PASSWORD} subscription delete-manifest --organization ${MANIFEST_ORG}"
+
 if [ "${ENDPOINT}" != "end-to-end" ]; then
     set +e
     # Run all tiers sequential tests with upgrade mark
@@ -122,6 +126,7 @@ if [ "${ENDPOINT}" != "end-to-end" ]; then
         ${TEST_TYPE}
 
     # Run all tiers parallel tests with upgrade mark
+
     $(which py.test) -v --junit-xml="${ENDPOINT}-upgrade-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -o junit_suite_name="${ENDPOINT}-upgrade-parallel" \
         -m "upgrade and not run_in_one_thread and not stubbed" \
