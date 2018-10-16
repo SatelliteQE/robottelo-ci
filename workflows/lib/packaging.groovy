@@ -124,7 +124,7 @@ node('sat6-build') {
 
             setup_obal()
 
-            gitlabCommitStatus(build_type) {
+            gitlabCommitStatus(name: build_type) {
                 withEnv(["KRB5CCNAME=${krbcc}"]) {
                     obal(
                         action: build_type,
