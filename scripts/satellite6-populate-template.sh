@@ -394,7 +394,7 @@ if [ "${SAT_VERSION}" == "6.2" ]; then
     satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --uuid "${RHEV_DATACENTER_UUID}"
 elif [ "${SAT_VERSION}" == "6.3" ]; then
     satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${RHEV_DATACENTER_UUID}"
-elif [ "${SAT_VERSION}" == "6.4" ]; then
+elif [ "${SAT_VERSION}" == "6.4" ] || [ "${SAT_VERSION}" == "6.5" ]; then
     (satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${RHEV_DATACENTER_UUID}" --use-v4 true) || true
 fi
 
@@ -448,7 +448,7 @@ if [ "${SAT_VERSION}" = "6.3" ]; then
 
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-7'
 
-elif [ "${SAT_VERSION}" = "6.4" ]; then
+elif [ "${SAT_VERSION}" = "6.4" ] || [ "${SAT_VERSION}" == "6.5" ]; then
     RHEL7_KS=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 7/ {print $2}')
     echo "RHEL7 KS is: ${RHEL7_KS}"
 
@@ -486,7 +486,7 @@ else
 fi
 
 # TODO, fix for sat6.4
-if [ "${SAT_VERSION}" = "6.3" ]; then
+if [ "${SAT_VERSION}" = "6.3" ] || [ "${SAT_VERSION}" == "6.5" ]; then
     RHEL7_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel7 default content"' | cut -d ',' -f1 | grep -vi 'id')
     RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel6 default content"' | cut -d ',' -f1 | grep -vi 'id')
 
