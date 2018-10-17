@@ -73,3 +73,8 @@
                 - 'edge'
                 - 'internet explorer'
             description: 'Specify the Sauce Browser to use along with Sauce Platform.'
+        - string:
+            name: START_TIER
+            default: 'false'
+            description: |
+                <p>Running z-stream is by-default paused for Jobs. This variable has no effect on latest Major Downstream Version and Pipeline</p>
