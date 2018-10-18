@@ -77,8 +77,8 @@ node ('sat6-build') {
                 action: 'update',
                 packages: package_name,
                 extraVars: [
-                    'downstream_version': version,
-                    'downstream_changelog': changelog
+                    'version': version,
+                    'changelog': changelog
                 ]
             )
         }
