@@ -87,6 +87,14 @@ node('sat6-build') {
         )
       }
 
+      satellite_activation_keys.each { ak ->
+        copyActivationKey(
+          organization: 'Sat6-CI',
+          activation_key: ak,
+          lifecycle_environment: snap_version
+        )
+      }
+
     }
 
     stage("Archive Capsule") {
@@ -100,6 +108,14 @@ node('sat6-build') {
         )
       }
 
+      capsule_activation_keys.each { ak ->
+        copyActivationKey(
+          organization: 'Sat6-CI',
+          activation_key: ak,
+          lifecycle_environment: snap_version
+        )
+      }
+
     }
 
     stage("Archive Tools") {
@@ -110,6 +126,14 @@ node('sat6-build') {
           content_view: cv,
           from_lifecycle_environment: 'QA',
           to_lifecycle_environment: snap_version
+        )
+      }
+
+      tools_activation_keys.each { ak ->
+        copyActivationKey(
+          organization: 'Sat6-CI',
+          activation_key: ak,
+          lifecycle_environment: snap_version
         )
       }
 
