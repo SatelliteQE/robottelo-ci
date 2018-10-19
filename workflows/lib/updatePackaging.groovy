@@ -91,7 +91,6 @@ node ('sat6-build') {
 
         dir("tool_belt/repos/${tool_belt_repo_folder}/${packaging_repo}") {
             sh "git checkout -b ${branch}"
-            sh "git commit -a -m '${commit_msg}'"
             sh "git push jenkins ${branch} -f"
         }
 
