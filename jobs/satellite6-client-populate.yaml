@@ -154,3 +154,11 @@
                     - 'scripts/satellite6-client-automation.sh'
                     - 'scripts/satellite6-configure.sh'
                     - 'scripts/satellite6-configure-variables.sh'
+    publishers:
+        - email-ext:
+            recipients: $BUILD_USER_EMAIL
+            success: true
+            failure: true
+            subject: 'Your Satellite $SATELLITE_VERSION Client Automation Job finished'
+            body: |
+                Build URL: $BUILD_URL

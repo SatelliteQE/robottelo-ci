@@ -132,6 +132,8 @@ if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
     CAPSULE6_REPO="Red Hat Satellite Capsule ${SAT_VERSION} for RHEL 6 Server RPMs x86_64"
     SAT6C7_PRODUCT="Red Hat Satellite Capsule"
     CAPSULE7_REPO="Red Hat Satellite Capsule ${SAT_VERSION} for RHEL 7 Server RPMs x86_64"
+    SAT6M7_PRODUCT="Red Hat Enterprise Linux Server"
+    MAINTAIN7_REPO="Red Hat Satellite Maintenance 6 for RHEL 7 Server RPMs x86_64"
 else
     RHEL6_TOOLS_PRD=Sat6Tools6
     RHEL6_TOOLS_REPO=sat6tool6
@@ -302,7 +304,8 @@ satellite_runner  activation-key update --name "ak-capsule-${RHELOS}" --auto-att
 RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
 ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id)
 if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
-    RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Standard (Physical or Virtual Nodes)" |  awk -F "," '{print $1}' | grep -vi id)
+    RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Standard (Physical or Virtual Nodes)" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
+    ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id | head -n 1)
 fi
 
 TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
@@ -343,13 +346,13 @@ if [ "${RHELOS}" = "7" ]; then
     satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${CAPSULE7_SUBS_ID}"
     satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${ANSIBLE_SUBS_ID}"
 
-    satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-server-rhscl-7-rpms" --value=true  --organization-id=${ORG}
-    satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-7-server-ansible-2-rpms" --value=true  --organization-id=${ORG}
+    satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-server-rhscl-7-rpms" --value="1"  --organization-id=${ORG}
+    satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-7-server-ansible-2-rpms" --value="1"  --organization-id=${ORG}
 
     # As we require a specific version of satellite-maintenance, which is available only from INTERNAL
     if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
         # For GA the SUBS_ID would come from RHEL.
-        satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-7-server-satellite-maintenance-6-rpms" --value=true  --organization-id=${ORG}
+        satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-7-server-satellite-maintenance-6-rpms" --value="1"  --organization-id=${ORG}
     else
         # For Internal no need to do content-override as for custom repos it is enabled by default.
         satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${MAINTAIN7_SUBS_ID}"
@@ -399,7 +402,11 @@ elif [ "${SAT_VERSION}" == "6.4" ] || [ "${SAT_VERSION}" == "6.5" ]; then
 fi
 
 # Create VMware CR
-satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_VMWARE}" --provider VMware --server "${VMWARE_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${VMWARE_DATACENTER}" --user "${VMWARE_USERNAME}" --password "${VMWARE_PASSWORD}"
+if [ "${SAT_VERSION}" == "6.2" ]; then
+    satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_VMWARE}" --provider VMware --url "${VMWARE_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --uuid "${VMWARE_DATACENTER}" --user "${VMWARE_USERNAME}" --password "${VMWARE_PASSWORD}"
+else
+    satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_VMWARE}" --provider VMware --server "${VMWARE_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${VMWARE_DATACENTER}" --user "${VMWARE_USERNAME}" --password "${VMWARE_PASSWORD}"
+fi
 
 # Create OpenStack CR
 # satellite_runner compute-resource create --name openstack_provider --provider Openstack --url "${OS_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --user "${OS_USERNAME}" --password "${OS_PASSWORD}"
@@ -501,7 +508,3 @@ satellite_runner host-collection create --name="RHEL 7 Host collection" --organi
 echo "RHEL 7 Host collection created"
 satellite_runner host-collection create --name="RHEL 6 Host collection" --organization-id "${ORG}"
 echo "RHEL 6 Host collection created"
-
-if [ "${SAT_VERSION}" = "6.4" ]; then
-    exit 0
-fi
