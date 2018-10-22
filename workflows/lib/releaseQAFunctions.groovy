@@ -68,6 +68,7 @@ def generateSnapVersion(args) {
     }
 
     return full_snap_version
+}
 
 def move_to_on_qa(args) {
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
