@@ -69,4 +69,79 @@ def generateSnapVersion(args) {
 
     return full_snap_version
 
+def move_to_on_qa(args) {
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+
+        toolBelt(
+            command: 'bugzilla move-to-on-qa',
+            options: [
+                "--bz-username ${env.BZ_USERNAME}",
+                "--bz-password ${env.BZ_PASSWORD}",
+                "--version ${args.version}",
+                "--snap ${args.snap_version}",
+                "--commit"
+            ],
+            archive_file: 'bugs.yaml'
+        )
+    }
+}
+
+def send_snap_mail(args) {
+
+    emailext (
+      subject: "Satellite ${args.version} Snap ${args.snap_version} -- HANDOFF TO QE",
+      body: """Hi,
+
+      Satellite ${args.version} snap ${args.snap_version} was released.
+
+      For detailed information including installation instructions, BZs included, and updated package lists please see:
+      ${env.OHSNAP_URL}/releases/${args.version}/snaps/${args.snap_version}/installation
+
+      Thanks,
+      S. Nappy
+      """,
+      to: "${env.QE_EMAIL_LIST}"
+    )
+
+}
+
+def generate_snap_data(args) {
+
+    def packages_file = args.packages_file ?: 'package_report.yaml'
+    def output_file = args.output_file ?: 'snap.yaml'
+
+    withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
+
+        toolBelt(
+            command: 'release snap',
+            options: [
+                "--version ${args.version}",
+                "--gitlab-username jenkins",
+                "--gitlab-token ${env.GITLAB_TOKEN}",
+                "--packages-file ${packages_file}",
+                "--output-file ${output_file}",
+                "--commit"
+            ],
+            archive_file: output_file
+        )
+
+    }
+
+}
+
+def release_snap(args) {
+
+    move_to_on_qa(
+        version: "${args.release_name}/${args.release_version}",
+        snap_version: args.snap_version
+    )
+
+    generate_snap_data(
+        version: "${args.release_name}/${args.release_version}",
+    )
+
+    send_snap_mail(
+        version: args.release_name,
+        snap_version: args.snap_version
+    )
 }

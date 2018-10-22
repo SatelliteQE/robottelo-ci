@@ -141,7 +141,7 @@ node('sat6-build') {
                     "--bz-password ${env.BZ_PASSWORD}",
                     "--version ${satellite_version}",
                     "--packages package_report.yaml",
-                    " --commit"
+                    "--commit"
                 ]
             )
 
