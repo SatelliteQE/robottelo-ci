@@ -45,7 +45,7 @@ node('sat6-build') {
             try {
 
                 gitlabCommitStatus {
-                    withRVM(['bundle exec rake jenkins:unit jenkins:integration'], ruby)
+                    withRVM(["bundle exec rake ${plugin_tests}"], ruby)
                     withRVM(['bundle exec rake db:drop db:create db:migrate'], ruby)
                     withRVM(['bundle exec rake db:seed'], ruby)
                 }
