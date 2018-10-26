@@ -109,7 +109,7 @@ pipeline {
                             dir('plugin/engines/bastion_katello') {
                                 sh "npm install npm"
                                 sh "node_modules/.bin/npm install bastion-${bastion_version}"
-                                sh "grunt ci"
+                                sh "TZ=UTC grunt ci"
                             }
                         }
                     }
