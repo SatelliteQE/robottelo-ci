@@ -12,8 +12,9 @@
     dsl:
       !include-raw:
         - workflows/lib/branch_map.groovy
+        - ./repos/foreman_bootdisk.groovy
         - workflows/lib/gitlabEnv.groovy
-        - workflows/test/foreman-bootdisk.groovy
+        - workflows/test/foreman-plugin.groovy
         - workflows/test/foreman-lib.groovy
         - pipelines/lib/rvm.groovy
         - workflows/lib/gitlab.groovy
