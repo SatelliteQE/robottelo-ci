@@ -492,8 +492,8 @@ else
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-7'
 fi
 
-# TODO, fix for sat6.4
-if [ "${SAT_VERSION}" = "6.3" ] || [ "${SAT_VERSION}" == "6.5" ]; then
+# TODO, fix for sat6.4 ,sat6.5
+if [ "${SAT_VERSION}" = "6.3" ]; then
     RHEL7_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel7 default content"' | cut -d ',' -f1 | grep -vi 'id')
     RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel6 default content"' | cut -d ',' -f1 | grep -vi 'id')
 
