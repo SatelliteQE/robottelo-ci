@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt docker-py pytest-xdist sauceclient git+git://github.com/reportportal/agent-python-pytest@c5789e6
+pip install -U -r requirements.txt docker-py pytest-xdist sauceclient git+git://github.com/reportportal/client-Python git+git://github.com/rplevka/agent-python-pytest
 
 cp config/robottelo.properties ./robottelo.properties
 
@@ -13,7 +13,7 @@ cp config/pytest.ini ./pytest.ini
 
 sed -i "s|rp_project =.*|rp_project = Satellite${SATELLITE_VERSION//[.]/}|" pytest.ini
 sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}|" pytest.ini
-RP_LAUNCH_TAGS="\'${BUILD_LABEL}\' \'${ENDPOINT}\' \'${BRIDGE}\' \'${SAUCE_PLATFORM}\'"
+RP_LAUNCH_TAGS="\'${BUILD_LABEL}\' \'${ENDPOINT}\' \'${BRIDGE}\' \'${SAUCE_PLATFORM}\' \'${SATELLITE_VERSION}\'"
 
 # Sauce Labs Configuration and pytest-env setting.
 if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
