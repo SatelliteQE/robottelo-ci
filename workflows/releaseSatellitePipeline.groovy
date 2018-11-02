@@ -47,18 +47,6 @@ node('sat6-build') {
         }
     }
 
-    stage("Add RPMs to Compose") {
-        runOnLibvirtHost("wget http://koji.katello.org/kojifiles/packages/libsolv/0.6.34/4.el7/x86_64/libsolv-0.6.34-4.el7.x86_64.rpm -P /home/jenkins/composes/latest-Satellite-6.5-RHEL-7/compose/Capsule/x86_64/os/Packages/")
-        runOnLibvirtHost("wget http://koji.katello.org/kojifiles/packages/libsolv/0.6.34/4.el7/x86_64/libsolv-0.6.34-4.el7.x86_64.rpm -P /home/jenkins/composes/latest-Satellite-6.5-RHEL-7/compose/Satellite/x86_64/os/Packages/")
-        runOnLibvirtHost("wget http://koji.katello.org/kojifiles/packages/libsolv/0.6.34/4.el7/x86_64/python2-solv-0.6.34-4.el7.x86_64.rpm -P /home/jenkins/composes/latest-Satellite-6.5-RHEL-7/compose/Capsule/x86_64/os/Packages/")
-        runOnLibvirtHost("wget http://koji.katello.org/kojifiles/packages/libsolv/0.6.34/4.el7/x86_64/python2-solv-0.6.34-4.el7.x86_64.rpm -P /home/jenkins/composes/latest-Satellite-6.5-RHEL-7/compose/Satellite/x86_64/os/Packages/")
-        runOnLibvirtHost("wget https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/l/libmodulemd-1.6.4-1.el7.x86_64.rpm -P /home/jenkins/composes/latest-Satellite-6.5-RHEL-7/compose/Capsule/x86_64/os/Packages/")
-        runOnLibvirtHost("wget https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/l/libmodulemd-1.6.4-1.el7.x86_64.rpm -P /home/jenkins/composes/latest-Satellite-6.5-RHEL-7/compose/Satellite/x86_64/os/Packages/")
-
-        runOnLibvirtHost("createrepo_c /home/jenkins/composes/latest-Satellite-6.5-RHEL-7/compose/Capsule/x86_64/os")
-        runOnLibvirtHost("createrepo_c /home/jenkins/composes/latest-Satellite-6.5-RHEL-7/compose/Satellite/x86_64/os")
-    }
-
     stage("Test Installation") {
 
         test_forklift(
