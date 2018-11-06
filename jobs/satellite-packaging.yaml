@@ -1,0 +1,104 @@
+- job-template:
+    name: sat-{satellite_version}-satellite-packaging-release-build
+    project-type: pipeline
+    concurrent: true
+    build-discarder:
+      days-to-keep: 45
+      num-to-keep: -1
+    properties:
+      - build-discarder:
+          days-to-keep: 45
+          num-to-keep: -1
+      - gitlab:
+          connection: gitlab-conn
+    parameters:
+      - string:
+          name: project
+          description: 'Name of the project to build from satellite-packaging.'
+      - release_branch
+    triggers:
+      - gitlab_build_on_merge
+    dsl:
+      !include-raw-escape:
+        - workflows/lib/gitlabEnv.groovy
+        - workflows/packaging/satellitePackaging.groovy
+        - workflows/packaging/releaseBuildPackaging.groovy
+        - workflows/lib/packaging.groovy
+        - pipelines/lib/obal.groovy
+        - workflows/lib/toolbelt.groovy
+        - workflows/lib/kerberos.groovy
+        - workflows/lib/gitlab.groovy
+    notifications:
+      - snapper_notifications
+
+- job-template:
+    name: sat-{satellite_version}-satellite-packaging-scratch-build
+    project-type: pipeline
+    concurrent: true
+    build-discarder:
+      days-to-keep: 45
+      num-to-keep: -1
+    properties:
+      - build-discarder:
+          days-to-keep: 45
+          num-to-keep: -1
+      - gitlab:
+          connection: gitlab-conn
+    parameters:
+      - string:
+          name: project
+          description: 'Name of the project to build from satellite-packaging.'
+      - merge_request
+    triggers:
+      - gitlab_build_on_change
+    dsl:
+      !include-raw-escape:
+        - workflows/lib/gitlabEnv.groovy
+        - workflows/packaging/satellitePackaging.groovy
+        - workflows/packaging/scratchBuildPackaging.groovy
+        - workflows/lib/packaging.groovy
+        - pipelines/lib/obal.groovy
+        - workflows/lib/toolbelt.groovy
+        - workflows/lib/kerberos.groovy
+        - workflows/lib/gitlab.groovy
+    notifications:
+      - snapper_notifications
+
+- job-template:
+    name: sat-{satellite_version}-satellite-packaging-update
+    project-type: pipeline
+    build-discarder:
+      days-to-keep: 45
+      num-to-keep: -1
+    parameters:
+      - string:
+          name: project
+          description: 'Name of the project to update from satellite-packaging.'
+      - string:
+          name: version
+          description: 'Version of the project to update to.'
+      - merge_request
+    dsl:
+      !include-raw-escape:
+        - workflows/lib/gitlabEnv.groovy
+        - workflows/packaging/satellitePackaging.groovy
+        - workflows/lib/updatePackaging.groovy
+        - workflows/lib/toolbelt.groovy
+        - pipelines/lib/obal.groovy
+        - workflows/lib/kerberos.groovy
+        - workflows/lib/gitlab.groovy
+    notifications:
+      - snapper_notifications
+
+- project:
+    name: satellite-packaging
+    satellite_version:
+      - '63'
+      - '64'
+      - '65'
+      - 'maintenance'
+      - 'maintenance-next'
+    jobs:
+      - sat-{satellite_version}-satellite-packaging-release-build
+      - sat-{satellite_version}-satellite-packaging-scratch-build
+      - sat-{satellite_version}-satellite-packaging-update
