@@ -15,7 +15,7 @@ sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottel
 
 # Sauce Labs Configuration and pytest-env setting.
 
-if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+if [[ "${SATELLITE_VERSION}" == "6.4" || "${SATELLITE_VERSION}" == "6.5" ]]; then
     SAUCE_BROWSER="chrome"
 
     pip install -U pytest-env
@@ -45,7 +45,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     # Temporary change to test Selenium and Firefox changes.
     if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         SELENIUM_VERSION=2.48.0
-    elif [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+    elif [[ "${SATELLITE_VERSION}" == "6.4" || "${SATELLITE_VERSION}" == "6.5" ]]; then
         SELENIUM_VERSION=3.8.1
     else
         SELENIUM_VERSION=2.53.1
