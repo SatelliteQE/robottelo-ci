@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt docker-py pytest-xdist sauceclient git+git://github.com/reportportal/client-Python git+git://github.com/rplevka/agent-python-pytest
+pip install -U -r requirements.txt docker-py pytest-xdist sauceclient git+git://github.com/rplevka/client-Python@env_race_condition_2 git+git://github.com/rplevka/agent-python-pytest
 
 cp config/robottelo.properties ./robottelo.properties
 
