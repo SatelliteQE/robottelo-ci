@@ -16,7 +16,7 @@ sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}|" pytest.ini
 RP_LAUNCH_TAGS="\'${BUILD_LABEL}\' \'${ENDPOINT}\' \'${BRIDGE}\' \'${SAUCE_PLATFORM}\' \'${SATELLITE_VERSION}\'"
 
 # Sauce Labs Configuration and pytest-env setting.
-if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+if [[ "${SATELLITE_VERSION}" == "6.4" || "${SATELLITE_VERSION}" == "6.5" ]]; then
     SAUCE_BROWSER="chrome"
 
     pip install -U pytest-env
