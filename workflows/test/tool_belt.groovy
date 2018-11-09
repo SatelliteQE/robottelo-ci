@@ -34,7 +34,6 @@ pipeline {
             updateGitlabCommitStatus name: 'jenkins', state: 'success'
         }
         always {
-            step([$class: 'CoberturaPublisher', coberturaReportFile: 'coverage/coverage.xml'])
             cleanupRVM(ruby)
             deleteDir()
         }
