@@ -1,0 +1,34 @@
+- job:
+    name: 'satellite6-baseimage-deploy'
+    display-name: 'Satellite 6 Base Image Deployment'
+    description: |
+        Creates and deploys baseimages
+    node: sat6-rhel
+    parameters:
+        - string:
+            name: OS_URL
+            description: "URL of OS media to create baseimage from"
+        - string:
+            name: HYPERVISORS
+            description: "Space separated list of hypervisor FQDNs/IPs to deploy image to (empty: use default set)"
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-3.6
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'satellite6-baseimage-deploy.sh'
