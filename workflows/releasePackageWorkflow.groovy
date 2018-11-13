@@ -3,6 +3,7 @@ def repo_name = gitRepository.split('/')[1]
 def version_map = branch_map[release_branch]
 def tool_belt_config = version_map['tool_belt_config']
 def packaging_job = version_map['packaging_job']
+def ruby = branch_map[release_branch]['ruby']
 
 pipeline {
 
@@ -134,17 +135,17 @@ pipeline {
                         dir(repo_name) {
                             try {
 
-                                configureRVM('2.2')
+                                configureRVM(ruby)
 
-                                withRVM(['bundle install'], 2.2)
-                                withRVM(["FOREMAN_BRANCH=${version_map['foreman_branch']} rake pkg:generate_source"], 2.2)
+                                withRVM(['bundle install'], ruby)
+                                withRVM(["FOREMAN_BRANCH=${version_map['foreman_branch']} rake pkg:generate_source"], ruby)
 
                                 sources = sh(returnStdout: true, script: "ls pkg/*.tar.*").trim().split()
                                 writeYaml(file: '../tool_belt/artifacts', data: sources.toList())
 
                             } finally {
 
-                                cleanupRVM('2.2')
+                                cleanupRVM(ruby)
 
                             }
                         }
