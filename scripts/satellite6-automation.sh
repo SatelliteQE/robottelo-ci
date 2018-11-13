@@ -11,8 +11,13 @@ sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 # for rp_logger configuration
 cp config/pytest.ini ./pytest.ini
 
-sed -i "s|rp_project =.*|rp_project = Satellite${SATELLITE_VERSION//[.]/}|" pytest.ini
-sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}|" pytest.ini
+if [ "${SATELLITE_VERSION,,}" = "upstream-nightly" ]; then
+    RP_PROJECT="katello-nightly"
+else
+    RP_PROJECT="Satellite6"
+fi
+sed -i "s|rp_project =.*|rp_project = ${RP_PROJECT}|" pytest.ini
+sed -i "s|rp_launch =.*|rp_launch = Satellite6|" pytest.ini
 RP_LAUNCH_TAGS="\'${BUILD_LABEL}\' \'${ENDPOINT}\' \'${BRIDGE}\' \'${SAUCE_PLATFORM}\' \'${SATELLITE_VERSION}\'"
 
 # Sauce Labs Configuration and pytest-env setting.
