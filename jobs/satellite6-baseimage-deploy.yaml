@@ -11,6 +11,13 @@
         - string:
             name: HYPERVISORS
             description: "Space separated list of hypervisor FQDNs/IPs to deploy image to (empty: use default set)"
+        - string:
+            name: DNS_SERVER
+            description: "Custom DNS server to be set in baseimage (empty: do not set)"
+        - bool:
+            name: DISABLE_IPV6
+            default: false
+            description: "Flag to have IPv6 networking disabled (=True) or enabled (=False)"
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
