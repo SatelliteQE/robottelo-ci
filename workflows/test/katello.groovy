@@ -26,7 +26,6 @@ pipeline {
                     gitlab_clone_and_merge(plugin_name)
                 }
             }
-
         }
 
         stage('Configure Environment') {
@@ -35,7 +34,6 @@ pipeline {
                     configure_foreman_environment()
                 }
             }
-
         }
 
         stage('Configure Database') {
@@ -44,7 +42,6 @@ pipeline {
                     setup_foreman(ruby)
                 }
             }
-
         }
 
         stage('Setup plugin') {
@@ -53,7 +50,6 @@ pipeline {
                     setup_plugin(plugin_name, ruby)
                 }
             }
-
         }
 
         stage('Run Tests') {
@@ -161,7 +157,9 @@ pipeline {
             updateGitlabCommitStatus name: 'jenkins', state: 'success'
         }
         always {
-            cleanup(ruby)
+            dir('foreman') {
+                cleanup(ruby)
+            }
         }
     }
 }

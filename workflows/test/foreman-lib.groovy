@@ -9,16 +9,23 @@ def configure_foreman_environment() {
         sh "sed -i 's/database:.*/database: ${gemset()}-test/' config/database.yml"
         sh """
 cat <<EOT >> config/database.yml
-development:
+test:
   adapter: postgresql
   database: ${gemset()}-test
   username: foreman
   password: foreman
   host: localhost
   template: template0
+development:
+  adapter: postgresql
+  database: ${gemset()}-development
+  username: foreman
+  password: foreman
+  host: localhost
+  template: template0
 production:
   adapter: postgresql
-  database: ${gemset()}-test
+  database: ${gemset()}-development
   username: foreman
   password: foreman
   host: localhost
@@ -48,7 +55,9 @@ def setup_foreman(ruby = '2.2') {
         withRVM(['bundle install --jobs=5 --retry=2 --without mysql:mysql2'], ruby)
 
         // Create DB first in development as migrate behaviour can change
-        withRVM(['bundle exec rake db:drop db:create db:migrate DISABLE_DATABASE_ENVIRONMENT_CHECK=true'], ruby)
+        withRVM(['bundle exec rake db:drop -q || true'], ruby)
+        withRVM(['bundle exec rake db:create -q'], ruby)
+        withRVM(['bundle exec rake db:migrate -q'], ruby)
     }
 
     if (fileExists('package.json')) {
@@ -89,7 +98,7 @@ def setup_plugin(plugin_name, ruby = '2.2') {
 
         withRVM(['bundle update'], ruby)
 
-        withRVM(['bundle exec rake db:migrate RAILS_ENV=development'], ruby)
+        withRVM(['bundle exec rake db:migrate'], ruby)
 
     } catch (all) {
 
