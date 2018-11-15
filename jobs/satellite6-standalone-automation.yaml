@@ -89,6 +89,10 @@
                 <p><strong>If this parameter is not blank then SERVER_HOSTNAME,
                 SSH_USER, FOREMAN_ADMIN_USER and FOREMAN_ADMIN_PASSWORD
                 will be ignored</strong></p>
+        - text:
+              name:  ROBOTTELO_YAML
+              description: |
+                   <p>You can provide robottelo.yaml file content here</p>
         - choice:
             name: SAUCE_PLATFORM
             choices:
