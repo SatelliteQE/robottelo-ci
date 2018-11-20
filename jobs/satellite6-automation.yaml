@@ -857,9 +857,9 @@
     node: sat6-{satellite_version}
     scm:
         - git:
-            url: https://github.com/SatelliteQE/satellite6-upgrade.git
+            url: https://github.com/SatelliteQE/robottelo.git
             branches:
-                - origin/master
+                - '{scm-branch}'
             skip-tag: true
     wrappers:
         - default-wrappers
@@ -887,7 +887,7 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - archive:
-            artifacts: 'preupgrade_*,scenario_entities,product_setup'
+            artifacts: 'scenario_entities,product_setup'
 
 
 - job-template:
@@ -943,7 +943,7 @@
     builders:
         - copyartifact:
             project: 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
-            filter: 'preupgrade_*,scenario_entities,product_setup'
+            filter: 'scenario_entities,product_setup'
             which-build: last-successful
         - satellite6-upgrade-builders
         - inject:
@@ -953,7 +953,7 @@
               current-parameters: true
     publishers:
         - archive:
-            artifacts: '*.tar.xz,postupgrade_*,preupgrade_*,scenario_entities,product_setup'
+            artifacts: '*.tar.xz,preupgrade_*,postupgrade_*,scenario_entities,product_setup'
         - email-ext:
             recipients: ${{QE_EMAIL_LIST}}
             success: true
@@ -998,9 +998,8 @@
     builders:
         - copyartifact:
             project: 'upgrade-phase-{satellite_version}-{os}'
-            filter: 'postupgrade_*,preupgrade_*,scenario_entities,product_setup'
+            filter: 'preupgrade_*,postupgrade_*,scenario_entities,product_setup'
             which-build: last-successful
-
         - satellite6-upgrade-existence-builders
         - trigger-builds:
             - project: 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
@@ -1021,9 +1020,9 @@
     node: sat6-{satellite_version}
     scm:
         - git:
-            url: https://github.com/SatelliteQE/satellite6-upgrade.git
+            url: https://github.com/SatelliteQE/robottelo.git
             branches:
-                - origin/master
+                - '{scm-branch}'
             skip-tag: true
     wrappers:
         - default-wrappers
