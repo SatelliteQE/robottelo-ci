@@ -26,6 +26,8 @@ function setupPrerequisites () {
 set +e
 # Run pre-upgarde scenarios tests
 if [ ${ENDPOINT} == 'pre-upgrade' ]; then
+    # Installing nailgun according to FROM_VERSION
+    pip install "git+https://github.com/SatelliteQE/nailgun.git@${FROM_VERSION}.z#egg=nailgun"
     setupRequirement
     setupPrerequisites
     $(which py.test)  -v --continue-on-collection-errors -s -m pre_upgrade --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre tests/upgrades
