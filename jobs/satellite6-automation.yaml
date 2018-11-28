@@ -41,7 +41,7 @@
         - string:
             name: IMAGE
             description: |
-                Specify custom RHEL source image to be used for automation.
+                Specify custom RHEL source image to be used for automation. Do not use the full path, use the image name without the .img suffix
         - bool:
             name: RUBY_CODE_COVERAGE
             default: false
