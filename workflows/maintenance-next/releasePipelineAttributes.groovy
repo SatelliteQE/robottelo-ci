@@ -1,5 +1,6 @@
 def compose_versions = ['7']
 def compose_tag = 'next'
+def compose_label = 'SatMaintenanceNext-6'
 def os_versions = ['7']
 def satellite_version = 'maintenance-next'
 def products = [
