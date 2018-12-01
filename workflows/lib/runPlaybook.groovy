@@ -18,7 +18,11 @@ def setupAnsibleEnvironment(body) {
         }
 
         dir('foreman-ansible-modules') {
-            git url: "https://github.com/theforeman/foreman-ansible-modules.git"
+            checkout([
+              $class: 'GitSCM',
+              branches: [[name: 'bd456f150c00ab782b38f663af9cd6e3880c9a7e' ]],
+              userRemoteConfigs: [[url: "https://github.com/theforeman/foreman-ansible-modules.git"]],
+            ])
         }
     }
 
