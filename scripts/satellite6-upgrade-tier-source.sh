@@ -105,17 +105,17 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     sed -i "s|capsule_repo=.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
-if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
+if [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
+    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
 elif [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
     TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun})"
 else
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
+    TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
 fi
 
 # Delete the Default Organization Manifest before running the tests
 MANIFEST_ORG="Default Organization"
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" "hammer -u ${SATELLITE_USERNAME} -p ${SATELLITE_PASSWORD} subscription delete-manifest --organization ${MANIFEST_ORG}"
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" 'hammer -u ${SATELLITE_USERNAME} -p ${SATELLITE_PASSWORD} subscription delete-manifest --organization "${MANIFEST_ORG}"'
 
 if [ "${ENDPOINT}" != "end-to-end" ]; then
     set +e
