@@ -74,25 +74,55 @@
             properties-file: build_env.properties
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
-        - trigger-builds:
-            - project: 'automation-{satellite_version}-trigger-tiers-{os}'
-              predefined-parameters: |
-                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
-                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
-                RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
-                RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
-                CAPSULE_REPO=${{CAPSULE_REPO}}
-                SUBNET=${{SUBNET}}
-                NETMASK=${{NETMASK}}
-                GATEWAY=${{GATEWAY}}
-                BRIDGE=${{BRIDGE}}
-                BUILD_LABEL=${{BUILD_LABEL}}
-                DISCOVERY_ISO=${{DISCOVERY_ISO}}
-                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
-                IMAGE=${{IMAGE}}
-                SAUCE_BROWSER=${{SAUCE_BROWSER}}
-                SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
-                RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
+        - conditional-step:
+                    condition-kind: strings-match
+                    condition-string1: 'true'
+                    condition-string2: ${{ENV,var="START_TIER"}}
+                    condition-case-insensitive: true
+                    steps:
+                    - trigger-builds:
+                      - project: 'automation-{satellite_version}-trigger-tiers-{os}'
+                        predefined-parameters: |
+                          SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                          SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                          RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                          RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                          CAPSULE_REPO=${{CAPSULE_REPO}}
+                          SUBNET=${{SUBNET}}
+                          NETMASK=${{NETMASK}}
+                          GATEWAY=${{GATEWAY}}
+                          BRIDGE=${{BRIDGE}}
+                          BUILD_LABEL=${{BUILD_LABEL}}
+                          DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                          ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                          IMAGE=${{IMAGE}}
+                          SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                          SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                          RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
+        - conditional-step:
+                    condition-kind: regex-match
+                    regex: (6\.[5])
+                    label: ${{ENV,var="SATELLITE_VERSION"}}
+                    steps:
+                    - trigger-builds:
+                      - project: 'automation-{satellite_version}-trigger-tiers-{os}'
+                        predefined-parameters: |
+                          SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                          SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                          RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                          RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                          CAPSULE_REPO=${{CAPSULE_REPO}}
+                          SUBNET=${{SUBNET}}
+                          NETMASK=${{NETMASK}}
+                          GATEWAY=${{GATEWAY}}
+                          BRIDGE=${{BRIDGE}}
+                          BUILD_LABEL=${{BUILD_LABEL}}
+                          DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                          ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                          IMAGE=${{IMAGE}}
+                          SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                          SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                          RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-archiver
@@ -1233,6 +1263,7 @@
                         IMAGE=${{RHEL6_IMAGE}}
                         SAUCE_BROWSER=${{SAUCE_BROWSER}}
                         SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                        START_TIER=${{START_TIER}}
         - trigger-builds:
             - project: provisioning-{satellite_version}-rhel7
               predefined-parameters: |
@@ -1250,6 +1281,7 @@
                 IMAGE=${{RHEL7_IMAGE}}
                 SAUCE_BROWSER=${{SAUCE_BROWSER}}
                 SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                START_TIER=${{START_TIER}}
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[2345])
