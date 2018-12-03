@@ -25,7 +25,7 @@ node('sat6-build') {
             extraVars = [
                 'compose_git_repo': compose_git_repo,
                 'compose_version': 'sat-maintenance-6',
-                'compose_label': 'SatMaintenance-6',
+                'compose_label': compose_label,
                 'compose_name': 'satellite-maintenance-6',
                 'compose_tag': compose_tag
             ]
