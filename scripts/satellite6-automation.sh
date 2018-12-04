@@ -127,7 +127,6 @@ elif [ "${ENDPOINT}" != "rhai" ]; then
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -o junit_suite_name="${ENDPOINT}-sequential" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
-        --reportportal \
         ${TEST_TYPE}
 
     # Run parallel tests
@@ -136,7 +135,6 @@ elif [ "${ENDPOINT}" != "rhai" ]; then
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -o junit_suite_name="${ENDPOINT}-parallel" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
-        --reportportal \
         ${TEST_TYPE}
     set -e
 else
