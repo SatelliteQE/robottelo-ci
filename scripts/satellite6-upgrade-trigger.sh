@@ -30,6 +30,8 @@ echo "BRIDGE=${BRIDGE}" >> properties.txt
 echo "DISCOVERY_ISO=${DISCOVERY_ISO}" >> properties.txt
 
 
+# Fix nailgun version for preupgrade tests as satellite will be on older version
+sed -i "s/nailgun.git.*/nailgun.git@${FROM_VERSION}.z#egg=nailgun/" requirements.txt
 # Setting Prerequisites
 pip install -r requirements.txt
 if [ ${ENDPOINT} == 'setup' ]; then
