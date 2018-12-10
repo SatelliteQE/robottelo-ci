@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt docker-py pytest-xdist sauceclient git+git://github.com/rplevka/client-Python@master git+git://github.com/rplevka/agent-python-pytest@master
+pip install -U -r requirements.txt docker-py pytest-xdist sauceclient
 
 cp config/robottelo.properties ./robottelo.properties
 
@@ -8,17 +8,6 @@ sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottel
 
 # Robottelo logging configuration
 sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
-# for rp_logger configuration
-cp config/pytest.ini ./pytest.ini
-
-if [ "${SATELLITE_VERSION,,}" = "upstream-nightly" ]; then
-    RP_PROJECT="katello-nightly"
-else
-    RP_PROJECT="Satellite6"
-fi
-sed -i "s|rp_project =.*|rp_project = ${RP_PROJECT}|" pytest.ini
-sed -i "s|rp_launch =.*|rp_launch = Satellite6|" pytest.ini
-RP_LAUNCH_TAGS="\'${BUILD_LABEL}\' \'${ENDPOINT}\' \'${BRIDGE}\' \'${SAUCE_PLATFORM}\' \'${SATELLITE_VERSION}\'"
 
 # Sauce Labs Configuration and pytest-env setting.
 if [[ "${SATELLITE_VERSION}" == "6.4" || "${SATELLITE_VERSION}" == "6.5" ]]; then
@@ -57,7 +46,6 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
         SELENIUM_VERSION=3.8.1
     fi
     sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},tags=[${JOB_NAME}]/" robottelo.properties
-    RP_LAUNCH_TAGS="${RP_LAUNCH_TAGS} \'${SAUCE_BROWSER}_${BROWSER_VERSION}\'"
 fi
 
 # Bugzilla Login Details
@@ -122,16 +110,12 @@ if [ "${ENDPOINT}" == "destructive" ]; then
 elif [ "${ENDPOINT}" != "rhai" ]; then
     set +e
     # Run sequential tests
-    sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}-sequential|" pytest.ini
-    sed -i "s|rp_launch_tags =.*|rp_launch_tags = ${RP_LAUNCH_TAGS} \'sequential\'|" pytest.ini
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -o junit_suite_name="${ENDPOINT}-sequential" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
         ${TEST_TYPE}
 
     # Run parallel tests
-    sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}-parallel|" pytest.ini
-    sed -i "s|rp_launch_tags =.*|rp_launch_tags = ${RP_LAUNCH_TAGS} \'parallel\' \'gw${ROBOTTELO_WORKERS}\'|" pytest.ini
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -o junit_suite_name="${ENDPOINT}-parallel" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
