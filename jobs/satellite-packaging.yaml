@@ -24,6 +24,7 @@
         - workflows/packaging/satellitePackaging.groovy
         - workflows/packaging/releaseBuildPackaging.groovy
         - workflows/lib/packaging.groovy
+        - pipelines/lib/ansible.groovy
         - pipelines/lib/obal.groovy
         - workflows/lib/toolbelt.groovy
         - workflows/lib/kerberos.groovy
@@ -85,6 +86,7 @@
         - workflows/packaging/satellitePackaging.groovy
         - workflows/lib/updatePackaging.groovy
         - workflows/lib/toolbelt.groovy
+        - pipelines/lib/ansible.groovy
         - pipelines/lib/obal.groovy
         - workflows/lib/kerberos.groovy
         - workflows/lib/gitlab.groovy
