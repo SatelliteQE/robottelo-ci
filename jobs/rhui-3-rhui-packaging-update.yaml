@@ -18,6 +18,7 @@
         - workflows/packaging/rhuiPackaging.groovy
         - workflows/lib/updatePackaging.groovy
         - workflows/lib/toolbelt.groovy
+        - pipelines/lib/ansible.groovy
         - pipelines/lib/obal.groovy
         - workflows/lib/kerberos.groovy
         - workflows/lib/gitlab.groovy
