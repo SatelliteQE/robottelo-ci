@@ -92,8 +92,6 @@ def runDownstreamPlaybook(body) {
                 password: env.PASSWORD
             ]
             def inventory = config.inventory ?: 'sat-infra/inventory'
-            def tags = config.tags ?: null
-            def limit = config.limit ?: null
             def ansibledir = config.ansibledir ?: 'ansible'
 
             if (config.extraVars) {
@@ -103,12 +101,9 @@ def runDownstreamPlaybook(body) {
             }
 
             dir(ansibledir) {
-                ansiblePlaybook(
+                runPlaybook(
                     playbook: config.playbook,
                     inventory: inventory,
-                    colorized: true,
-                    limit: limit,
-                    tags: tags,
                     extraVars: extraVars
                 )
             }
