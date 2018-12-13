@@ -39,7 +39,7 @@ def runPlaybookSequentially(body) {
 
     for (int i = 0; i < config.items.size(); i++) {
 
-        runPlaybook {
+        runDownstreamPlaybook {
             playbook = config.playbook
             extraVars = extra_vars + [(config.item_name): config.items.get(i)]
         }
@@ -63,7 +63,7 @@ def runPlaybookInParallel(body) {
         def index = i // fresh variable per iteration; i will be mutated
         branches["${name}-${config.items.get(i)}"] = {
 
-            runPlaybook {
+            runDownstreamPlaybook {
                 playbook = config.playbook
                 extraVars = extra_vars + [(config.item_name): config.items.get(index)]
             }
@@ -75,7 +75,7 @@ def runPlaybookInParallel(body) {
 
 }
 
-def runPlaybook(body) {
+def runDownstreamPlaybook(body) {
 
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST

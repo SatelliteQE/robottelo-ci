@@ -10,7 +10,7 @@ node('sat6-build') {
 
         def compose_git_repo = env.COMPOSE_GIT_REPOSITORY ?: ''
 
-        runPlaybook {
+        runDownstreamPlaybook {
             playbook = 'playbooks/update_packaging_repo.yml'
             extraVars = [
                 'git_server': git_hostname,
