@@ -6,6 +6,7 @@
     dsl:
       !include-raw:
         - workflows/ansiblePipeline.groovy
+        - foreman-infra/pipelines/lib/ansible.groovy
         - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications

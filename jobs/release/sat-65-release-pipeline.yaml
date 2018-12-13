@@ -8,6 +8,7 @@
         - workflows/6.5/releasePipelineAttributes.groovy
         - workflows/releaseSatellitePipeline.groovy
         - workflows/lib/libvirt.groovy
+        - foreman-infra/pipelines/lib/ansible.groovy
         - workflows/lib/runPlaybook.groovy
         - workflows/lib/releaseQAFunctions.groovy
         - workflows/lib/toolbelt.groovy

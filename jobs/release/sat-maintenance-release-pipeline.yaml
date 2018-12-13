@@ -8,6 +8,7 @@
         - workflows/maintenance/releasePipelineAttributes.groovy
         - workflows/maintenance/releasePipeline.groovy
         - workflows/lib/libvirt.groovy
+        - foreman-infra/pipelines/lib/ansible.groovy
         - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications
