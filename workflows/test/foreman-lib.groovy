@@ -47,9 +47,8 @@ def get_ruby_version(branches) {
 }
 
 def setup_foreman(ruby = '2.2') {
-    def steps = [:]
+    try {
 
-    steps['ruby'] = {
         configureRVM(ruby)
 
         withRVM(['bundle install --jobs=5 --retry=2 --without mysql:mysql2'], ruby)
@@ -58,22 +57,11 @@ def setup_foreman(ruby = '2.2') {
         withRVM(['bundle exec rake db:drop -q || true'], ruby)
         withRVM(['bundle exec rake db:create -q'], ruby)
         withRVM(['bundle exec rake db:migrate -q'], ruby)
-    }
-
-    if (fileExists('package.json')) {
-        steps['node'] = {
-            sh 'npm install npm@\\<"5.0.0"'
-            sh './node_modules/.bin/npm install --no-optional --global-style true || true'
-            sh 'npm install phantomjs'
-        }
-    }
-
-    try {
-
-        parallel steps
 
         if (fileExists('package.json')) {
-            withRVM(['./node_modules/.bin/npm install --no-optional --global-style true'], ruby)
+              sh 'npm install npm'
+              sh 'npm install phantomjs'
+              withRVM(['./node_modules/.bin/npm install'], ruby)
         }
 
     } catch (all) {
