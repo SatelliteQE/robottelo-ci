@@ -80,8 +80,6 @@ pipeline {
                         dir('foreman') {
                             gitlabCommitStatus(name: "tests") {
                                 withRVM(["bundle exec rake ${plugin_tests}"], ruby)
-                                withRVM(['bundle exec rake db:drop db:create db:migrate'], ruby)
-                                withRVM(['bundle exec rake db:seed'], ruby)
                             }
                         }
                     }
@@ -97,6 +95,22 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+        stage('Test db:seed') {
+            steps {
+
+                dir('foreman') {
+
+                    gitlabCommitStatus(name: "db:seed") {
+                        withRVM(['bundle exec rake db:drop || true'], ruby)
+                        withRVM(['bundle exec rake db:create'], ruby)
+                        withRVM(['bundle exec rake db:migrate'], ruby)
+                        withRVM(['bundle exec rake db:seed'], ruby)
+                    }
+
+                }
+
             }
         }
     }
