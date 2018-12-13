@@ -1,4 +1,4 @@
-def branch_map = [
+branch_map = [
     'SATELLITE-6.2.0': [
         'repo': 'Satellite 6.2 Source Files',
         'version': '6.2.0',
