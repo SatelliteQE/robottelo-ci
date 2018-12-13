@@ -4,11 +4,8 @@ def configure_foreman_environment() {
         sh "sed -i 's/:locations_enabled: false/:locations_enabled: true/' config/settings.yaml"
         sh "sed -i 's/:organizations_enabled: false/:organizations_enabled: true/' config/settings.yaml"
 
-        sh "cp $HOME/postgresql.db.yaml config/database.yml"
-
-        sh "sed -i 's/database:.*/database: ${gemset()}-test/' config/database.yml"
         sh """
-cat <<EOT >> config/database.yml
+cat <<EOT > config/database.yml
 test:
   adapter: postgresql
   database: ${gemset()}-test
