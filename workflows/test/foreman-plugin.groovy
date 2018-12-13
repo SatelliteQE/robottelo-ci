@@ -12,11 +12,8 @@ pipeline {
     agent { label 'sat6-build' }
 
     stages {
-
         stage('Setup Git Repos') {
-
             steps {
-
                 deleteDir()
 
                 dir('foreman') {
@@ -32,45 +29,31 @@ pipeline {
                 dir('plugin') {
                     gitlab_clone_and_merge(plugin_name)
                 }
-
             }
-
         }
 
         stage('Configure Environment') {
-
             steps {
-
                 dir('foreman') {
                     configure_foreman_environment()
                 }
-
             }
-
         }
 
         stage('Configure Database') {
-
             steps {
-
                 dir('foreman') {
                     setup_foreman(ruby)
                 }
-
             }
-
         }
 
         stage('Setup plugin') {
-
             steps {
-
                 dir('foreman') {
                     setup_plugin(plugin_name, ruby)
                 }
-
             }
-
         }
 
         stage('Run Tests') {

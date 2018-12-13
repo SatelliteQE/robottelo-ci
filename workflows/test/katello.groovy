@@ -116,7 +116,7 @@ pipeline {
                             gitlabCommitStatus(name: "assets-precompile") {
                                 sh "npm install npm"
                                 withRVM(["bundle exec node_modules/.bin/npm install"], ruby)
-                                withRVM(['bundle exec rake plugin:assets:precompile[katello] RAILS_ENV=production --trace'], ruby)
+                                withRVM(["bundle exec rake plugin:assets:precompile[${plugin_name}] RAILS_ENV=production --trace"], ruby)
                             }
                         }
                     }
@@ -147,8 +147,8 @@ pipeline {
 
             }
         }
-
     }
+
     post {
         failure {
             updateGitlabCommitStatus name: 'jenkins', state: 'failed'
