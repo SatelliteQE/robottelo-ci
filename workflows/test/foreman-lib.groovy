@@ -85,8 +85,7 @@ def setup_foreman(ruby = '2.2') {
     }
 }
 
-def setup_plugin(plugin_name, ruby = '2.2') {
-    try {
+def setup_plugin(plugin_name) {
         // Ensure we don't mention the gem twice in the Gemfile in case it's already mentioned there
         sh "find Gemfile bundler.d -type f -exec sed -i \"/gem ['\\\"]${plugin_name}['\\\"]/d\" {} \\;"
         // Now let's introduce the plugin
@@ -95,18 +94,6 @@ def setup_plugin(plugin_name, ruby = '2.2') {
         if(fileExists("../plugin/gemfile.d/${plugin_name}.rb")) {
             sh "cat ../plugin/gemfile.d/${plugin_name}.rb >> bundler.d/Gemfile.local.rb"
         }
-
-        withRVM(['bundle update'], ruby)
-
-        withRVM(['bundle exec rake db:migrate'], ruby)
-
-    } catch (all) {
-
-        updateGitlabCommitStatus state: 'failed'
-        cleanup(get_ruby_version(branch_map))
-        throw(all)
-
-    }
 }
 
 def cleanup(ruby = '2.2') {

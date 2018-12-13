@@ -28,10 +28,18 @@ pipeline {
             }
         }
 
-        stage('Configure Environment') {
+        stage('Configure Foreman') {
             steps {
                 dir('foreman') {
                     configure_foreman_environment()
+                }
+            }
+        }
+
+        stage('Configure Plugin') {
+            steps {
+                dir('foreman') {
+                    setup_plugin(plugin_name)
                 }
             }
         }
@@ -40,14 +48,6 @@ pipeline {
             steps {
                 dir('foreman') {
                     setup_foreman(ruby)
-                }
-            }
-        }
-
-        stage('Setup plugin') {
-            steps {
-                dir('foreman') {
-                    setup_plugin(plugin_name, ruby)
                 }
             }
         }
