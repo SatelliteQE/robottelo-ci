@@ -1,6 +1,7 @@
 - job:
     name: 'sat-release-satellite-installer'
     project-type: pipeline
+    sandbox: true
     parameters:
       - release_branch
     auth-token: ""
