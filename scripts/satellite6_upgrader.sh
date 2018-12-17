@@ -72,15 +72,13 @@ if [ -n "${CUSTOM_SCRIPT_URL}" ]; then
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SAT_HOST}" /root/${custom_file}
 fi
 
-# Run satellite upgrade only when PERFORM_FOREMAN_MAINTAIN_UPGRADE flag is set
 if [ "${PERFORM_FOREMAN_MAINTAIN_UPGRADE}" == "true" ]; then
     # setup foreman-maintain
     fab -H root@"${SATELLITE_HOSTNAME}" setup_foreman_maintain
-    # perform upgrade using foreman-maintain
-    fab -H root@"${SATELLITE_HOSTNAME}" upgrade_using_foreman_maintain
-else
-    fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
 fi
+
+# Run satellite upgrade
+fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
 
 # Creates Templates after upgrading the instances
 if [ "${CREATE_TEMPLATES}" == 'true' ]; then
