@@ -1,6 +1,7 @@
 - job:
     name: 'sat-release-smart-proxy-dynflow'
     project-type: pipeline
+    sandbox: true
     parameters:
       - release_branch
     auth-token: ""

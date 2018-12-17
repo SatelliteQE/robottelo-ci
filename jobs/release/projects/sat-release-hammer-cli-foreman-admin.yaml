@@ -1,6 +1,7 @@
 - job:
     name: 'sat-release-hammer-cli-foreman-admin'
     project-type: pipeline
+    sandbox: true
     parameters:
       - release_branch
     auth-token: ""

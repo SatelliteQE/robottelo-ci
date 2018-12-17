@@ -1,6 +1,7 @@
 - job:
     name: 'sat-release-foreman-bootdisk'
     project-type: pipeline
+    sandbox: true
     parameters:
       - release_branch
     dsl:

@@ -1,6 +1,7 @@
 - job:
     name: 'sat-release-foreman'
     project-type: pipeline
+    sandbox: true
     parameters:
       - release_branch
     auth-token: ""
