@@ -2,6 +2,7 @@
     name: 'sat6-unit-test-ohsnap'
     project-type: pipeline
     concurrent: true
+    sandbox: true
     build-discarder:
       days-to-keep: 21
       num-to-keep: -1
