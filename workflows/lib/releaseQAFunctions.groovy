@@ -2,7 +2,7 @@
 
 def copyActivationKey(args) {
 
-    runPlaybook {
+    runDownstreamPlaybook {
       playbook = 'playbooks/copy_activation_key.yml'
       extraVars = [
           'activation_key_name': args.activation_key,
@@ -15,7 +15,7 @@ def copyActivationKey(args) {
 
 def promoteContentView(args) {
 
-    runPlaybook {
+    runDownstreamPlaybook {
       playbook = 'playbooks/promote_content_view.yml'
       extraVars = [
           'content_view_name': args.content_view,
@@ -28,7 +28,7 @@ def promoteContentView(args) {
 
 def createLifecycleEnvironment(args) {
 
-    runPlaybook {
+    runDownstreamPlaybook {
       playbook = 'playbooks/create_lifecycle_environment.yml'
       extraVars = [
           'lifecycle_environment_name': args.name,

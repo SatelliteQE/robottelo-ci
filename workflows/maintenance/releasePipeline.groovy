@@ -10,7 +10,7 @@ node('sat6-build') {
 
         def compose_git_repo = env.COMPOSE_GIT_REPOSITORY ?: ''
 
-        runPlaybook {
+        runDownstreamPlaybook {
             playbook = 'playbooks/clone_compose_repo.yml'
             extraVars = [
                 'compose_git_repo': compose_git_repo

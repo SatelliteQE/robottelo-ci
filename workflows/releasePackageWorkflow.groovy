@@ -181,7 +181,7 @@ pipeline {
                     for (i = 0; i < artifacts.size(); i += 1) {
                         artifact_path = artifact_base_path + '/' + artifacts[i]
 
-                        runPlaybook {
+                        runDownstreamPlaybook {
                             playbook = 'playbooks/upload_package.yml'
                             extraVars = [
                                 'artifact': artifact_path,
