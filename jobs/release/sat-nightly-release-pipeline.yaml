@@ -1,6 +1,7 @@
 - job:
     name: sat-nightly-release-pipeline
     project-type: pipeline
+    sandbox: true
     dsl:
       !include-raw:
         - workflows/nightly/releasePipelineAttributes.groovy

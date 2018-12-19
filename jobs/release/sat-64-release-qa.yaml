@@ -1,6 +1,7 @@
 - job:
     name: sat-64-release-qa
     project-type: pipeline
+    sandbox: true
     parameters:
       - string:
           name: releaseVersion

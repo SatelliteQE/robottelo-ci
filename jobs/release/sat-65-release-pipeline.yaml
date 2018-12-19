@@ -1,6 +1,7 @@
 - job:
     name: sat-65-release-pipeline
     project-type: pipeline
+    sandbox: true
     triggers:
       - timed: 'H 2 * * *'
     dsl:
