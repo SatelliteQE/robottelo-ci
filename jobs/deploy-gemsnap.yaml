@@ -1,6 +1,7 @@
 - job:
     name: deploy-gemsnap
     project-type: pipeline
+    sandbox: true
     auth-token: ""
     dsl:
       !include-raw:

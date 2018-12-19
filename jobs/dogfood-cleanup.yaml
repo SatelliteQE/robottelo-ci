@@ -1,6 +1,7 @@
 - job:
     name: dogfood-cleanup
     project-type: pipeline
+    sandbox: true
     auth-token: ""
     triggers:
       - timed: "@midnight"
