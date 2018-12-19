@@ -1,6 +1,7 @@
 - job-template:
     name: sat-{satellite_version}-satellite-packaging-release-build
     project-type: pipeline
+    sandbox: true
     concurrent: true
     build-discarder:
       days-to-keep: 45
@@ -35,6 +36,7 @@
 - job-template:
     name: sat-{satellite_version}-satellite-packaging-scratch-build
     project-type: pipeline
+    sandbox: true
     concurrent: true
     build-discarder:
       days-to-keep: 45
@@ -69,6 +71,7 @@
 - job-template:
     name: sat-{satellite_version}-satellite-packaging-update
     project-type: pipeline
+    sandbox: true
     build-discarder:
       days-to-keep: 45
       num-to-keep: -1
