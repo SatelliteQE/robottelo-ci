@@ -1,6 +1,7 @@
 - job:
     name: sat-test-pipeline
     project-type: pipeline
+    sandbox: true
     dsl:
       !include-raw:
         - workflows/testPipeline.groovy

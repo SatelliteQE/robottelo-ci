@@ -1,6 +1,7 @@
 - job:
     name: ansible-release-pipeline
     project-type: pipeline
+    sandbox: true
     triggers:
       - timed: '0 21 * * 0'
     dsl:

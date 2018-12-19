@@ -1,6 +1,7 @@
 - job:
     name: rhel-release-pipeline
     project-type: pipeline
+    sandbox: true
     triggers:
       - timed: '0 22 * * 0'
     dsl:

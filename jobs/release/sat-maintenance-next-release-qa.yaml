@@ -1,6 +1,7 @@
 - job:
     name: sat-maintenance-next-release-qa
     project-type: pipeline
+    sandbox: true
     parameters:
       - string:
           name: snapVersion

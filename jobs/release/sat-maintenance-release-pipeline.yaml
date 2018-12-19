@@ -1,6 +1,7 @@
 - job:
     name: sat-maintenance-release-pipeline
     project-type: pipeline
+    sandbox: true
     triggers:
       - timed: 'H 06 * * *'
     dsl:
