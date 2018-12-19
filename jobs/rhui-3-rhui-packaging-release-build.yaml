@@ -1,6 +1,7 @@
 - job:
     name: rhui-3-rhui-packaging-release-build
     project-type: pipeline
+    sandbox: true
     concurrent: true
     build-discarder:
       days-to-keep: 45

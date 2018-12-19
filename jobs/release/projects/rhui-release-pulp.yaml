@@ -1,6 +1,7 @@
 - job:
     name: 'rhui-release-pulp'
     project-type: pipeline
+    sandbox: true
     parameters:
       - release_branch
     dsl:
