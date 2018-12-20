@@ -806,7 +806,7 @@
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
             branches:
-                - origin/master
+                - '{scm-branch}'
             skip-tag: true
     wrappers:
         - default-wrappers
@@ -925,7 +925,7 @@
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
             branches:
-                - origin/master
+                - '{scm-branch}'
             skip-tag: true
     wrappers:
         - default-wrappers
@@ -980,7 +980,7 @@
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
             branches:
-                - origin/master
+                - '{scm-branch}'
             skip-tag: true
     wrappers:
         - default-wrappers
