@@ -86,7 +86,7 @@ def runDownstreamPlaybook(body) {
         wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
 
             def extraVars = []
-            def defaultVars = [
+            def sensitiveVars = [
                 server: env.SATELLITE_SERVER,
                 username: env.USERNAME,
                 password: env.PASSWORD
@@ -94,17 +94,12 @@ def runDownstreamPlaybook(body) {
             def inventory = config.inventory ?: 'sat-infra/inventory'
             def ansibledir = config.ansibledir ?: 'ansible'
 
-            if (config.extraVars) {
-                extraVars = defaultVars + config.extraVars
-            } else {
-                extraVars = defaultVars
-            }
-
             dir(ansibledir) {
                 runPlaybook(
                     playbook: config.playbook,
                     inventory: inventory,
-                    extraVars: extraVars
+                    extraVars: config.extraVars,
+                    sensitiveExtraVars: sensitiveVars
                 )
             }
 
