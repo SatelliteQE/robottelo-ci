@@ -133,15 +133,34 @@
                   variable: CONFIG_FILES
         - default-wrappers
     builders:
-          - shining-panda:
-              build-environment: virtualenv
-              python-version: System-CPython-2.7
-              clear: true
-              nature: shell
-              command:
-                !include-raw:
-                    - 'pip-install-pycurl.sh'
-                    - 'satellite6_upgrader.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[12])
+            label: ${ENV,var="TO_VERSION"}
+            steps:
+                - shining-panda:
+                    build-environment: virtualenv
+                    python-version: System-CPython-2.7
+                    clear: true
+                    nature: shell
+                    command:
+                      !include-raw:
+                        - 'pip-install-pycurl.sh'
+                        - 'satellite6_upgrader.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[345])
+            label: ${ENV,var="TO_VERSION"}
+            steps:
+                - shining-panda:
+                    build-environment: virtualenv
+                    python-version: System-CPython-3.6
+                    clear: true
+                    nature: shell
+                    command:
+                      !include-raw:
+                        - 'pip-install-pycurl.sh'
+                        - 'satellite6_upgrader.sh'
     publishers:
         - satellite6-automation-publishers
         - archive:
