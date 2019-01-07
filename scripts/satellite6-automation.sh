@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt docker-py pytest-xdist sauceclient
+pip install -U -r requirements.txt docker-py pytest-xdist sauceclient pytest-timeout
 
 cp config/robottelo.properties ./robottelo.properties
 
@@ -97,12 +97,20 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     sed -i "s|capsule_repo=.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
+
 if [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
     TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
 elif [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
     TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun})"
 else
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
+    TIMEOUT="$(echo --timeout 7000 --timeout-method=thread)"
+    if [[ "${ENDPOINT}" == "tier2" ]]; then
+        TEST_TYPE="$(echo tests/foreman/{ui_airgun,api,cli,longrun,sys,installer})"
+    elif [[ "${ENDPOINT}" == "tier3" ]]; then
+        TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
+    else
+        TEST_TYPE="$(echo tests/foreman/{api,cli,longrun,sys,installer,ui_airgun})"
+    fi
 fi
 
 if [ "${ENDPOINT}" == "destructive" ]; then
@@ -113,13 +121,13 @@ elif [ "${ENDPOINT}" != "rhai" ]; then
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -o junit_suite_name="${ENDPOINT}-sequential" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
-        ${TEST_TYPE}
+        ${TEST_TYPE} ${TIMEOUT}
 
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -o junit_suite_name="${ENDPOINT}-parallel" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
-        ${TEST_TYPE}
+        ${TEST_TYPE} ${TIMEOUT}
     set -e
 else
     make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=${ROBOTTELO_WORKERS}
