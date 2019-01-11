@@ -23,7 +23,7 @@ node('rvm') {
                         gitlab_clone_and_merge('smart-proxy')
                         configureRVM(combo['ruby_version'], name)
 
-                        gitlabCommitStatus(name) {
+                        gitlabCommitStatus(name: name) {
                             sh "cp config/settings.yml.example config/settings.yml"
                             sh "sed -i \"/^\\s*gem.*puppet/ s/\\\$/, '~> ${combo['puppet_version']}'/\" bundler.d/puppet.rb"
                             withRVM(["bundle install --without development"], combo['ruby_version'], name)
