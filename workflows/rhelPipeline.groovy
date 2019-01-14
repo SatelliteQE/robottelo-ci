@@ -10,7 +10,7 @@ node('sat6-build') {
     stage("Sync Repositories") {
         def products = [
             'Red Hat Enterprise Linux Server',
-            'Red Hat Software Collections for RHEL Server'
+            'Red Hat Software Collections (for RHEL Server)'
         ]
 
         runPlaybookInParallel {
