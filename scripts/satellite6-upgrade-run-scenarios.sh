@@ -36,7 +36,7 @@ else
     setupPrerequisites
     $(which py.test) -v --continue-on-collection-errors -s -m post_upgrade --junit-xml=test_scenarios-post-results.xml -o junit_suite_name=test_scenarios-post tests/upgrades
     # Delete the Original Manifest from the box to run robottelo tests
-    fab -u root -H $SERVER_HOSTNAME delete_manifest:"Default Organization"
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" "hammer -u admin -p changeme subscription delete-manifest --organization 'Default Organization'"
 fi
 set -e
 
