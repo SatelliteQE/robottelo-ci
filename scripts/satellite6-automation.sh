@@ -114,7 +114,11 @@ else
 fi
 
 if [ "${ENDPOINT}" == "destructive" ]; then
-    make test-foreman-sys
+    $(which py.test) -v --junit-xml="${ENDPOINT}-results.xml" \
+        -o junit_suite_name="${ENDPOINT}" \
+        -m 'not stubbed and destructive'
+        tests/foreman/
+
 elif [ "${ENDPOINT}" != "rhai" ]; then
     set +e
     # Run sequential tests
