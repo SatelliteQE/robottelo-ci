@@ -1,75 +1,91 @@
 def snap_version = generateSnapVersion(release_name: satellite_version, snap_version: snapVersion)
 
-node('sat6-build') {
-    stage("Setup Workspace") {
+pipeline {
 
-        deleteDir()
-        setupAnsibleEnvironment {}
+    agent { label 'sat6-build' }
+
+    options {
+      ansiColor('xterm')
+      disableConcurrentBuilds()
+      timestamps()
     }
 
-    stage("Promote Satellite Maintenance to QA") {
-
-      content_views.each { cv ->
-        compareContentViews(
-          organization: 'Sat6-CI',
-          content_view: cv,
-          from_lifecycle_environment: 'Library',
-          to_lifecycle_environment: 'QA'
-        )
-
-        promoteContentView(
-          organization: 'Sat6-CI',
-          content_view: cv,
-          from_lifecycle_environment: 'Library',
-          to_lifecycle_environment: 'QA'
-        )
+    stages {
+      stage("Setup Workspace") {
+        steps {
+          deleteDir()
+          setupAnsibleEnvironment {}
+        }
       }
 
-      composite_content_views.each { cv ->
-        promoteContentView(
-          organization: 'Sat6-CI',
-          content_view: cv,
-          from_lifecycle_environment: 'Library',
-          to_lifecycle_environment: 'QA'
-        )
+      stage("Promote Satellite Maintenance to QA") {
+        steps {
+          script {
+            content_views.each { cv ->
+              compareContentViews(
+                organization: 'Sat6-CI',
+                content_view: cv,
+                from_lifecycle_environment: 'Library',
+                to_lifecycle_environment: 'QA'
+              )
+
+              promoteContentView(
+                organization: 'Sat6-CI',
+                content_view: cv,
+                from_lifecycle_environment: 'Library',
+                to_lifecycle_environment: 'QA'
+              )
+            }
+
+            composite_content_views.each { cv ->
+              promoteContentView(
+                organization: 'Sat6-CI',
+                content_view: cv,
+                from_lifecycle_environment: 'Library',
+                to_lifecycle_environment: 'QA'
+              )
+            }
+          }
+        }
       }
 
-    }
-
-    stage("Create Archive Environment") {
-
-      createLifecycleEnvironment(
-          name: snap_version,
-          prior: 'Library',
-          organization: 'Sat6-CI'
-      )
-
-    }
-
-    stage("Archive Satellite Maintenance") {
-
-      composite_content_views.each { cv ->
-        promoteContentView(
-          organization: 'Sat6-CI',
-          content_view: cv,
-          from_lifecycle_environment: 'QA',
-          to_lifecycle_environment: snap_version
-        )
+      stage("Create Archive Environment") {
+        steps {
+          createLifecycleEnvironment(
+              name: snap_version,
+              prior: 'Library',
+              organization: 'Sat6-CI'
+          )
+        }
       }
 
-    }
+      stage("Archive Satellite Maintenance") {
+        steps {
+          script {
+            composite_content_views.each { cv ->
+              promoteContentView(
+                organization: 'Sat6-CI',
+                content_view: cv,
+                from_lifecycle_environment: 'QA',
+                to_lifecycle_environment: snap_version
+              )
+            }
+          }
+        }
+      }
 
-    stage("Release SNAP") {
+      stage("Release SNAP") {
         when {
-            expression { autorelease_enabled }
+          expression { autorelease_enabled }
         }
 
         steps {
-            release_snap(
-                release_name: release_name,
-                release_version: release_version,
-                snap_version: snap_version
-            )
+          release_snap(
+            release_name: release_name,
+            release_version: release_version,
+            snap_version: snap_version
+          )
         }
+      }
     }
 }
