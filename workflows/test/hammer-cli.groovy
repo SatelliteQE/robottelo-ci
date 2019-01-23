@@ -1,43 +1,56 @@
 def version_map = branch_map[env.gitlabTargetBranch]
 def ruby = version_map['ruby']
 
-node('sat6-build') {
+pipeline {
 
-    stage('Setup Git Repos') {
+    agent { label 'sat6-build' }
 
-        deleteDir()
-        gitlab_clone_and_merge(plugin_name)
-
+    options {
+      ansiColor('xterm')
+      disableConcurrentBuilds()
+      timestamps()
     }
 
-    stage('Setup RVM') {
+    stages {
 
-        configureRVM(ruby)
-
-    }
-
-    stage('Run Tests') {
-
-        if (plugin_name == 'hammer_cli_katello') {
-            test_command = 'rake'
-        } else {
-            test_command = 'rake ci:setup:minitest test'
+      stage('Setup Git Repos') {
+        steps {
+          deleteDir()
+          gitlab_clone_and_merge(plugin_name)
         }
+      }
 
-        try {
+      stage('Setup RVM') {
+        steps {
+          configureRVM(ruby)
+        }
+      }
 
-            gitlabCommitStatus {
-                withRVM(['bundle install'], ruby)
-                withRVM(["bundle exec ${test_command} TESTOPTS='-v'"], ruby)
+      stage('Run Tests') {
+        steps {
+          script {
+            if (plugin_name == 'hammer_cli_katello') {
+                test_command = 'rake'
+            } else {
+                test_command = 'rake ci:setup:minitest test'
             }
 
-        } finally {
+            try {
 
-            archive "Gemfile.lock"
+                gitlabCommitStatus {
+                    withRVM(['bundle install'], ruby)
+                    withRVM(["bundle exec ${test_command} TESTOPTS='-v'"], ruby)
+                }
 
-            cleanupRVM(ruby)
+            } finally {
 
+                archive "Gemfile.lock"
+
+                cleanupRVM(ruby)
+
+            }
+          }
         }
+      }
     }
-
 }
