@@ -20,6 +20,7 @@ function setupPrerequisites () {
     # Bugzilla Login Details
     sed -i "s/# bz_password=.*/bz_password=${BUGZILLA_PASSWORD}/" robottelo.properties
     sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" -C "wget -O /etc/candlepin/certs/upstream/fake_manifest.crt $FAKE_MANIFEST_CERT_URL;systemctl restart tomcat"
 }
 
 
