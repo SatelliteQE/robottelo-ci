@@ -131,6 +131,7 @@ elif [ "${ENDPOINT}" != "rhai" ]; then
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -o junit_suite_name="${ENDPOINT}-parallel" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
+        --dist=loadscope \
         ${TEST_TYPE} ${TIMEOUT}
     set -e
 else
