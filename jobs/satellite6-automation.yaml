@@ -101,7 +101,7 @@
                           RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
         - conditional-step:
                     condition-kind: regex-match
-                    regex: (6\.[5])
+                    regex: (6\.[5]|upstream-nightly)
                     label: ${{ENV,var="SATELLITE_VERSION"}}
                     steps:
                     - trigger-builds:
