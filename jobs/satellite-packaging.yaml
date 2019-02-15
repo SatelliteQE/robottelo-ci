@@ -102,6 +102,7 @@
       - '63'
       - '64'
       - '65'
+      - '66'
       - 'maintenance'
       - 'maintenance-next'
     jobs:
