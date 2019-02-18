@@ -1,24 +1,18 @@
-def python = 'python3'
+@Library("github.com/SatelliteQE/robottelo-ci") _
 
 pipeline {
     agent { label 'sat6-rhel' }
     stages {
         stage('Virtualenv') {
             steps {
-                sh """
-                    rm -rf .env
-                    $python -m virtualenv .env
-                    source .env/bin/activate
-                    pip install -U pip
-                """
+                make_venv python: 'python' // run with python2
             }
         }
 
         stage('Pip Install') {
             steps {
-                git 'https://github.com/SatelliteQE/automation-tools'
-                sh """
-                    source .env/bin/activate
+                git defaults.automation_tools
+                sh_venv """
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
                     pip install -r requirements.txt
                 """
@@ -30,8 +24,7 @@ pipeline {
                 configFileProvider(
                     [configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
                     sshagent (credentials: ['id_hudson_rsa']) {
-                        sh '''
-                            source .env/bin/activate
+                        sh_venv '''
                             source ${CONFIG_FILES}
                             source config/provisioning_environment.conf
                             source config/installation_environment.conf
