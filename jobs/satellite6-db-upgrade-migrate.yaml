@@ -105,7 +105,7 @@
             name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
             default: false
             description: |
-                <p>Check if you want to perform upgrade using Foreman-Maintain Tool. This needs PERFORM_UPGRADE parameter unchecked.</p>
+                <p>Check if you want to perform upgrade using Foreman-Maintain Tool.</p>
         - bool:
             name: USE_CLONE_RPM
             default: false
