@@ -3,10 +3,8 @@
     properties:
       - build-blocker:
           blocking-jobs:
-            - "upgrade-to-{satellite_version}-{os}"
-            - "automation-preupgrade-{satellite_version}-scenario-tests-{os}"
-            - "upgrade-phase-{satellite_version}-{os}"
-            - "automation-upgraded-{satellite_version}-existence-tests-{os}"
-            - "automation-postupgrade-{satellite_version}-scenario-tests-{os}"
-            - "automation-upgraded-{satellite_version}-all-tiers-{os}"
-            - "automation-upgraded-{satellite_version}-end-to-end-{os}"
+            - "^upgrade-to.*"
+            - "^automation-preupgrade.*"
+            - "^upgrade-phase.*"
+            - "^automation-postupgrade.*"
+            - "^automation-upgraded.*"
