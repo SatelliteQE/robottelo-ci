@@ -49,7 +49,7 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
         RHEL6_TOOLS_PPC64_REPO=sat6tool6ppc64
         RHEL6_TOOLS_PPC64_URL="ppc64rhel6_tools_url"
         RHEL7_TOOLS_PPC64_PRD=Sat6Tools7ppc64
-        RHEL7_TOOLS_PPC64_REPO=sat6tool7ppc4
+        RHEL7_TOOLS_PPC64_REPO=sat6tool7ppc64
         RHEL7_TOOLS_PPC64_URL="ppc64rhel7_tools_url"
 
         RHEL6_TOOLS_S390X_PRD=Sat6Tools6s390x
@@ -117,7 +117,7 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     #Create content views
     satellite_runner content-view create --name 'RHEL 7 CV ppc64' --organization-id="${ORG}"
     satellite_runner content-view create --name 'RHEL 7 CV s390x' --organization-id="${ORG}"
-    satellite_runner --csv content-view list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "RHEL 7" | while read -r line ; do
+    satellite --csv content-view list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "RHEL 7" | while read -r line ; do
         satellite_runner  content-view add-repository --name="${line}" --organization-id="${ORG}" --product="Errata-product" --repository="Errata-repo"
     done
     satellite_runner  content-view add-repository --name='RHEL 7 CV ppc64' --organization-id="${ORG}" --product="${RHEL7_TOOLS_PPC64_PRD}" --repository="${RHEL7_TOOLS_PPC64_REPO}"
@@ -137,13 +137,15 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     RHEL_SUBS_ID_ppc64=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux for Power, BE" |  awk -F "," '{print $1}' | grep -vi id)
     RHEL_SUBS_ID_s390x=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux for IBM System z, Standard" |  awk -F "," '{print $1}' | grep -vi id)
 
-    satellite_runner  activation-key add-subscription --name='ak-rhel-7-ppc64' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_ppc64}"
-    satellite_runner  activation-key add-subscription --name='ak-rhel-7-s390x' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_s390x}"
+    if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
+        satellite_runner  activation-key add-subscription --name='ak-rhel-7-ppc64' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_ppc64}"
+        satellite_runner  activation-key add-subscription --name='ak-rhel-7-s390x' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_s390x}"
 
-    satellite_runner activation-key content-override --name 'ak-rhel-7' --content-label "rhel-7-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
-    satellite_runner activation-key content-override --name 'ak-rhel-7-ppc64' --content-label "rhel-7-for-power-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
-    satellite_runner activation-key content-override --name 'ak-rhel-7-s390x' --content-label "rhel-7-for-system-z-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+        satellite_runner activation-key content-override --name 'ak-rhel-7' --content-label "rhel-7-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+        satellite_runner activation-key content-override --name 'ak-rhel-7-ppc64' --content-label "rhel-7-for-power-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+        satellite_runner activation-key content-override --name 'ak-rhel-7-s390x' --content-label "rhel-7-for-system-z-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
 
+    fi
     if [[ "${POPULATE_RHEL6}" = 'true' ]]; then
         # RHEL 6
         for cv in 'RHEL 6 CV ppc64' 'RHEL 6 CV s390x' 'RHEL 6 CV i386'; do satellite_runner content-view create --name="${cv}" --organization-id="${ORG}"; done
@@ -161,13 +163,16 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
         satellite_runner  activation-key create --name 'ak-rhel-6-s390x' --content-view='RHEL 6 CV s390x' --lifecycle-environment='DEV' --organization-id="${ORG}"
         satellite_runner  activation-key create --name 'ak-rhel-6-i386' --content-view='RHEL 6 CV i386' --lifecycle-environment='DEV' --organization-id="${ORG}"
         for ak in 'ak-rhel-6-ppc64' 'ak-rhel-6-s390x' 'ak-rhel-6-i386'; do satellite_runner  activation-key update --name ${ak} --auto-attach no --organization-id="${ORG}"; done
-        satellite_runner  activation-key add-subscription --name='ak-rhel-6-ppc64' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_ppc64}"
-        satellite_runner  activation-key add-subscription --name='ak-rhel-6-s390x' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_s390x}"
-        satellite_runner  activation-key add-subscription --name='ak-rhel-6-i386' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
-        satellite_runner activation-key content-override --name 'ak-rhel-6' --content-label "rhel-6-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
-        satellite_runner activation-key content-override --name 'ak-rhel-6-ppc64' --content-label "rhel-6-for-power-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
-        satellite_runner activation-key content-override --name 'ak-rhel-6-s390x' --content-label "rhel-6-for-system-z-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
-        satellite_runner activation-key content-override --name 'ak-rhel-6-i386' --content-label "rhel-6-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+        if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
+            satellite_runner  activation-key add-subscription --name='ak-rhel-6-ppc64' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_ppc64}"
+            satellite_runner  activation-key add-subscription --name='ak-rhel-6-s390x' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_s390x}"
+            satellite_runner  activation-key add-subscription --name='ak-rhel-6-i386' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
+
+            satellite_runner activation-key content-override --name 'ak-rhel-6' --content-label "rhel-6-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+            satellite_runner activation-key content-override --name 'ak-rhel-6-ppc64' --content-label "rhel-6-for-power-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+            satellite_runner activation-key content-override --name 'ak-rhel-6-s390x' --content-label "rhel-6-for-system-z-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+            satellite_runner activation-key content-override --name 'ak-rhel-6-i386' --content-label "rhel-6-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+        fi
     fi
     if [[ "${POPULATE_RHEL5}" = 'true' ]]; then
         # RHEL 5
@@ -197,12 +202,14 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
         satellite_runner  activation-key create --name 'ak-rhel-5' --content-view='RHEL 5 CV x86_64' --lifecycle-environment='DEV' --organization-id="${ORG}"
         satellite_runner  activation-key create --name 'ak-rhel-5-s390x' --content-view='RHEL 5 CV s390x' --lifecycle-environment='DEV' --organization-id="${ORG}"
         satellite_runner  activation-key create --name 'ak-rhel-5-i386' --content-view='RHEL 5 CV i386' --lifecycle-environment='DEV' --organization-id="${ORG}"
-        satellite_runner  activation-key add-subscription --name='ak-rhel-5' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
-        satellite_runner  activation-key add-subscription --name='ak-rhel-5-s390x' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_s390x}"
-        satellite_runner  activation-key add-subscription --name='ak-rhel-5-i386' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
-        satellite_runner activation-key content-override --name 'ak-rhel-5' --content-label "rhel-5-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
-        satellite_runner activation-key content-override --name 'ak-rhel-5-s390x' --content-label "rhel-5-for-system-z-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
-        satellite_runner activation-key content-override --name 'ak-rhel-5-i386' --content-label "rhel-5-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+        if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
+            satellite_runner  activation-key add-subscription --name='ak-rhel-5' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
+            satellite_runner  activation-key add-subscription --name='ak-rhel-5-s390x' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_s390x}"
+            satellite_runner  activation-key add-subscription --name='ak-rhel-5-i386' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
+            satellite_runner activation-key content-override --name 'ak-rhel-5' --content-label "rhel-5-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+            satellite_runner activation-key content-override --name 'ak-rhel-5-s390x' --content-label "rhel-5-for-system-z-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+            satellite_runner activation-key content-override --name 'ak-rhel-5-i386' --content-label "rhel-5-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
+        fi
         satellite_runner --csv activation-key list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "ak-rhel-5" | while read -r line ; do
             satellite_runner  activation-key update --name ${line} --auto-attach no --organization-id="${ORG}";
         done
