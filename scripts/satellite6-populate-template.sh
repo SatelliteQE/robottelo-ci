@@ -495,8 +495,8 @@ fi
 RHEL7_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel7 default content"' | cut -d ',' -f1 | grep -vi 'id')
 RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel6 default content"' | cut -d ',' -f1 | grep -vi 'id')
 
-RHEL7_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL7_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1') | head -n 1
-RHEL6_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL6_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1') | head -n 1
+RHEL7_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL7_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1' | head -n 1)
+RHEL6_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL6_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1' | head -n 1)
 
 satellite_runner policy create --name='RHEL 7 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL7_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL7_SCAP_CONTENT_PROFILE_ID}"
 satellite_runner policy create --name='RHEL 6 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL6_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL6_SCAP_CONTENT_PROFILE_ID}"
