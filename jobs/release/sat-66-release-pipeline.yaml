@@ -1,0 +1,17 @@
+- job:
+    name: sat-66-release-pipeline-rhel7
+    project-type: pipeline
+    sandbox: true
+    triggers:
+      - timed: 'H 4 * * *'
+    dsl:
+      !include-raw:
+        - workflows/6.6/releasePipelineAttributes.groovy
+        - workflows/releaseSatellitePipeline.groovy
+        - workflows/lib/libvirt.groovy
+        - foreman-infra/pipelines/lib/ansible.groovy
+        - workflows/lib/runPlaybook.groovy
+        - workflows/lib/releaseQAFunctions.groovy
+        - workflows/lib/toolbelt.groovy
+    notifications:
+      - snapper_notifications
