@@ -3,7 +3,7 @@ set -o nounset
 source ${CONFIG_FILES}
 source config/sat6_repos_urls.conf
 
-pip install -U -r requirements.txt docker-py pytest-xdist sauceclient
+pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
 
 if [ -n "${ROBOTTELO_PROPERTIES:-}" ]; then
     echo "${ROBOTTELO_PROPERTIES}" > ./robottelo.properties
@@ -56,9 +56,9 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     elif [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
         SELENIUM_VERSION=2.53.1
     else
-        SELENIUM_VERSION=3.8.1
+        SELENIUM_VERSION=3.14.0
     fi
-    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${SATELLITE_VERSION}-$(date +%Y-%m-%d-%S),screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER}/" robottelo.properties
+    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${SATELLITE_VERSION}-$(date +%Y-%m-%d-%S),screenResolution=1600x1200,extendedDebugging=true,tunnelIdentifier=${TUNNEL_IDENTIFIER}/" robottelo.properties
 fi
 
 pytest() {

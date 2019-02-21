@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt docker-py pytest-xdist sauceclient
+pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
 pip install -r requirements-optional.txt
  # Sourcing and exporting required env vars for tier jobs
 source ${CONFIG_FILES}
@@ -46,11 +46,11 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         SELENIUM_VERSION=2.48.0
     elif [[ "${SATELLITE_VERSION}" == "6.4" || "${SATELLITE_VERSION}" == "6.5" ]]; then
-        SELENIUM_VERSION=3.8.1
+        SELENIUM_VERSION=3.14.0
     else
         SELENIUM_VERSION=2.53.1
     fi
-    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},tags=[${JOB_NAME}]/" robottelo.properties
+    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},extendedDebugging=true,tags=[${JOB_NAME}]/" robottelo.properties
 fi
 
 # Bugzilla Login Details
