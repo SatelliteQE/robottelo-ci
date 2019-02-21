@@ -43,6 +43,7 @@ elif [ ${ENDPOINT} == 'upgrade' ]; then
     echo "Setting up pre-upgrade data-store for existence tests before upgrade"
     fab -u root set_datastore:"preupgrade","cli"
     fab -u root set_datastore:"preupgrade","api"
+    fab -u root set_templatestore:"preupgrade"
 
     # Longrun to run upgrade on Satellite, capsule and clients
     fab -u root product_upgrade:'longrun'
@@ -51,4 +52,5 @@ elif [ ${ENDPOINT} == 'upgrade' ]; then
     echo "Setting up post-upgrade data-store for existence tests post upgrade"
     fab -u root set_datastore:"postupgrade","cli"
     fab -u root set_datastore:"postupgrade","api"
+    fab -u root set_templatestore:"postupgrade"
 fi
