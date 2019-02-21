@@ -50,11 +50,16 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
         BROWSER_VERSION=14.14393
     elif [[ "${SAUCE_BROWSER}" == "chrome" ]]; then
         BROWSER_VERSION=63.0
+    # Only chrome version testing support
+    elif [[ -n "${BROWSER_VERSION}" ]]; then
+        BROWSER_VERSION=${BROWSER_VERSION}
     fi
     if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         SELENIUM_VERSION=2.48.0
     elif [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
         SELENIUM_VERSION=2.53.1
+    elif [[ -n "${SELENIUM_VERSION}" ]]; then
+        SELENIUM_VERSION=${SELENIUM_VERSION}
     else
         SELENIUM_VERSION=3.14.0
     fi

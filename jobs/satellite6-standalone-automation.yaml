@@ -89,6 +89,17 @@
                 <p><strong>If this parameter is not blank then SERVER_HOSTNAME,
                 SSH_USER, FOREMAN_ADMIN_USER and FOREMAN_ADMIN_PASSWORD
                 will be ignored</strong></p>
+        - string:
+            name: SELENIUM_VERSION
+            description: |
+              <p>This is just for testing new Selenium Version.Eg: 3.14.0 </p>
+              <p><strong>If left blank latest stable tested version will be used</strong></p>
+        - string:
+            name: BROWSER_VERSION
+            description: |
+              <p>This is for testing chrome browser only. Specify only version.Eg: 63.0 </p>
+              <p><strong>If left blank latest stable will be used.</strong></p>
+
         - choice:
             name: SAUCE_PLATFORM
             choices:
