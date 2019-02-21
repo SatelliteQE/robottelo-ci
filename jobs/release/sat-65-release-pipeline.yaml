@@ -15,3 +15,6 @@
         - workflows/lib/toolbelt.groovy
     notifications:
       - snapper_notifications
+    properties:
+      - default-properties
+      - satellite6-release-pipeline-throttle
