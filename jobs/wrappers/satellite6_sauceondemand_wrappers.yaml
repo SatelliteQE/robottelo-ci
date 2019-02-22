@@ -13,7 +13,7 @@
                   <seleniumPort></seleniumPort>
                   <webDriverBrowsers/>
                   <appiumBrowsers/>
-                  <useLatestVersion>false</useLatestVersion>
+                  <useLatestVersion>true</useLatestVersion>
                   <launchSauceConnectOnSlave>true</launchSauceConnectOnSlave>
                   <verboseLogging>false</verboseLogging>
                   <condition class="org.jenkins_ci.plugins.run_condition.core.AlwaysRun"/>
