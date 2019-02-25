@@ -152,7 +152,7 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
         satellite_runner  content-view add-repository --name='RHEL 6 CV ppc64' --organization-id="${ORG}" --product="${RHEL6_TOOLS_PPC64_PRD}" --repository="${RHEL6_TOOLS_PPC64_REPO}"
         satellite_runner  content-view add-repository --name='RHEL 6 CV s390x' --organization-id="${ORG}" --product="${RHEL6_TOOLS_S390X_PRD}" --repository="${RHEL6_TOOLS_S390X_REPO}"
         satellite_runner  content-view add-repository --name='RHEL 6 CV i386' --organization-id="${ORG}" --product="${RHEL6_TOOLS_I386_PRD}" --repository="${RHEL6_TOOLS_I386_REPO}"
-        satellite_runner --csv content-view list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "RHEL 6" | while read -r line ; do
+        satellite --csv content-view list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "RHEL 6" | while read -r line ; do
             satellite_runner  content-view add-repository --name="${line}" --organization-id="${ORG}" --product="Errata-product" --repository="Errata-repo"
         done
         for cv in 'RHEL 6 CV ppc64' 'RHEL 6 CV s390x' 'RHEL 6 CV i386'; do
@@ -180,13 +180,13 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
             for cv in 'RHEL 5 CV x86_64' 'RHEL 5 CV s390x' 'RHEL 5 CV i386'; do satellite_runner content-view create --name="${cv}" --organization-id="${ORG}"; done
             satellite_runner  content-view add-repository --name='RHEL 5 CV ppc64' --organization-id="${ORG}" --product="${RHEL5_TOOLS_PPC64_PRD}" --repository="${RHEL5_TOOLS_PPC64_REPO}"
             satellite_runner  content-view add-repository --name='RHEL 5 CV ia64' --organization-id="${ORG}" --product="${RHEL5_TOOLS_IA64_PRD}" --repository="${RHEL5_TOOLS_IA64_REPO}"
-        else:
+        else
             for cv in 'RHEL 5 CV x86_64' 'RHEL 5 CV ppc64' 'RHEL 5 CV s390x' 'RHEL 5 CV i386' 'RHEL 5 CV ia64'; do satellite_runner content-view create --name="${cv}" --organization-id="${ORG}"; done
         fi
         satellite_runner  content-view add-repository --name='RHEL 5 CV x86_64' --organization-id="${ORG}" --product="${RHEL5_TOOLS_PRD}" --repository="${RHEL5_TOOLS_REPO}"
         satellite_runner  content-view add-repository --name='RHEL 5 CV s390x' --organization-id="${ORG}" --product="${RHEL5_TOOLS_S390X_PRD}" --repository="${RHEL5_TOOLS_S390X_REPO}"
         satellite_runner  content-view add-repository --name='RHEL 5 CV i386' --organization-id="${ORG}" --product="${RHEL5_TOOLS_I386_PRD}" --repository="${RHEL5_TOOLS_I386_REPO}"
-        satellite_runner --csv content-view list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "RHEL 5" | while read -r line ; do
+        satellite --csv content-view list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "RHEL 5" | while read -r line ; do
             satellite_runner  content-view add-repository --name="${line}" --organization-id="${ORG}" --product="Errata-product" --repository="Errata-repo";
             satellite_runner  content-view publish --name="${line}" --organization-id="${ORG}";
             satellite_runner  content-view version promote --content-view="${line}" --organization-id="${ORG}" --to-lifecycle-environment=DEV --from-lifecycle-environment="Library";
@@ -210,7 +210,7 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
             satellite_runner activation-key content-override --name 'ak-rhel-5-s390x' --content-label "rhel-5-for-system-z-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
             satellite_runner activation-key content-override --name 'ak-rhel-5-i386' --content-label "rhel-5-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
         fi
-        satellite_runner --csv activation-key list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "ak-rhel-5" | while read -r line ; do
+        satellite --csv activation-key list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "ak-rhel-5" | while read -r line ; do
             satellite_runner  activation-key update --name ${line} --auto-attach no --organization-id="${ORG}";
         done
     fi
@@ -246,4 +246,9 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
         satellite_runner  activation-key add-subscription --name='ak-rhel-7-s390x' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID_s390x}"
         satellite_runner  activation-key add-subscription --name='ak-rhel-7-ppc64' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID_ppc64}"
     fi
+    # Add subscription Errata-product to activation keys
+    ERRATA_PRODUCT_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Errata-product" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
+    satellite --csv activation-key list --organization-id=1 | cut -d ',' -f2 | grep -vi 'Name' | while read -r line ; do
+            satellite_runner  activation-key add-subscription --name="${line}" --organization-id=1 --subscription-id="${ERRATA_PRODUCT_SUBS_ID}";
+        done
 fi
