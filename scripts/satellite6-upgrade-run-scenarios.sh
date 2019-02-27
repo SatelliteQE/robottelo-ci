@@ -23,12 +23,18 @@ function setupPrerequisites () {
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SERVER_HOSTNAME}" -C "wget -O /etc/candlepin/certs/upstream/fake_manifest.crt $FAKE_MANIFEST_CERT_URL;systemctl restart tomcat"
 }
 
+# Pre-Upgrade specific required updates to environment
+function setupPreUpgrade () {
+    # Installing nailgun according to FROM_VERSION
+    sed -i "s/nailgun.git.*/nailgun.git@${FROM_VERSION}.z#egg=nailgun/" requirements.txt
+    # Setting the SATELLITE_VERSION to FROM_VERSION for sourcing correct environment variables
+    export SATELLITE_VERSION="${FROM_VERSION}"
+}
 
 set +e
 # Run pre-upgarde scenarios tests
 if [ ${ENDPOINT} == 'pre-upgrade' ]; then
-    # Installing nailgun according to FROM_VERSION
-    sed -i "s/nailgun.git.*/nailgun.git@${FROM_VERSION}.z#egg=nailgun/" requirements.txt
+    setupPreUpgrade
     setupRequirement
     setupPrerequisites
     $(which py.test)  -v --continue-on-collection-errors -s -m pre_upgrade --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre tests/upgrades
