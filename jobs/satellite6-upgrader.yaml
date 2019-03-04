@@ -51,6 +51,13 @@
                 - '6.1'
             description: |
                 <p>Select the Satellite <b>TO_VERSION</b> to upgrade.</p>
+        - string:
+            name: UPGRADE_BRANCH
+            default: master
+            description: |
+                <p>The Upgrade Git branch as per TO_VERSION, if not TO_VERSION is latest</p>
+                <p>like if TO_VERSION is 6.4, then branch should be 6.4.z</p>
+                <p>But in case of latest TO_VERSION, branch will be always master</p>
         - choice:
             name: DISTRIBUTION
             choices:
@@ -121,7 +128,7 @@
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
             branches:
-                - origin/master
+                - origin/${UPGRADE_BRANCH}
             skip-tag: true
     wrappers:
         - build-name:
