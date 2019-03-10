@@ -2,6 +2,7 @@
 
 POPULATE_RHEL5=""
 POPULATE_RHEL6=""
+POPULATE_RHEL8=""
 
 if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
@@ -62,6 +63,19 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
         RHEL6_TOOLS_I386_PRD=Sat6Tools6i386
         RHEL6_TOOLS_I386_REPO=sat6tool6i386
         RHEL6_TOOLS_I386_URL="i386rhel6_tools_url"
+
+        RHEL8_TOOLS_PRD=Sat6Tools8
+        RHEL8_TOOLS_REPO=sat6tool8
+        RHEL8_TOOLS_URL="rhel8_tools_url"
+        RHEL8_TOOLS_PPC64LE_PRD=Sat6Tools8ppc64le
+        RHEL8_TOOLS_PPC64LE_REPO=sat6tool8ppc64le
+        RHEL8_TOOLS_PPC64_URL="ppc64lerhel8_tools_url"
+        RHEL8_TOOLS_S390X_PRD=Sat6Tools8s390x
+        RHEL8_TOOLS_S390X_REPO=sat6tool8s390x
+        RHEL8_TOOLS_S390X_URL="s390xrhel8_tools_url"
+        RHEL8_TOOLS_AARCH64_PRD=Sat6Tools8aarch64
+        RHEL8_TOOLS_AARCH64_REPO=sat6tool8aarch64
+        RHEL8_TOOLS_AARCH64_URL="aarch64rhel8_tools_url"
     fi
 
     if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
@@ -246,4 +260,52 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
         satellite_runner  activation-key add-subscription --name='ak-rhel-7-s390x' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID_s390x}"
         satellite_runner  activation-key add-subscription --name='ak-rhel-7-ppc64' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID_ppc64}"
     fi
+fi
+#RHEL8
+if [[ "${POPULATE_RHEL8}" = 'true' ]]; then
+    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+        create-repo "${RHEL8_TOOLS_PRD}" "${RHEL8_TOOLS_REPO}" "${RHEL8_TOOLS_URL}"
+        create-repo "${RHEL8_TOOLS_S390X_PRD}" "${RHEL8_TOOLS_S390X_REPO}" "${RHEL8_TOOLS_S390X_URL}"
+        create-repo "${RHEL8_TOOLS_PPC64LE_PRD}" "${RHEL8_TOOLS_PPC64LE_REPO}" "${RHEL5_TOOLS_PPC64LE_URL}"
+        create-repo "${RHEL8_TOOLS_AARCH64_PRD}" "${RHEL8_TOOLS_AARCH64_REPO}" "${RHEL5_TOOLS_AARCH64_URL}"
+    fi
+    # Synchronize all repositories except for Puppet repositories which don't have URLs
+    for repo in $(satellite --csv repository list --organization-id="${ORG}" --per-page=1000 | grep -vi 'puppet' | cut -d ',' -f 1 | grep -vi '^ID'); do
+        satellite_runner repository synchronize --id "${repo}" --organization-id="${ORG}" --async
+    done
+
+    # Check the async tasks for completion.
+    for id in `satellite --csv task list | grep -i synchronize | awk -F "," '{print $1}'`; do satellite_runner task progress --id $id; done
+
+    #create content view
+    for cv in 'RHEL 8 CV x86_64' 'RHEL 8 CV ppc64le' 'RHEL 8 CV s390x' 'RHEL 8 CV aarch64'; do satellite_runner content-view create --name="${cv}" --organization-id="${ORG}"; done
+
+    satellite_runner  content-view add-repository --name='RHEL 8 CV' --organization-id="${ORG}" --product="${RHEL8_TOOLS_PRD}" --repository="${RHEL8_TOOLS_REPO}"
+    satellite_runner  content-view add-repository --name='RHEL 8 CV ppc64le' --organization-id="${ORG}" --product="${RHEL8_TOOLS_PPC64LE_PRD}" --repository="${RHEL8_TOOLS_PPC64LE_REPO}"
+    satellite_runner  content-view add-repository --name='RHEL 8 CV s390x' --organization-id="${ORG}" --product="${RHEL8_TOOLS_S390X_PRD}" --repository="${RHEL8_TOOLS_S390X_REPO}"
+    satellite_runner  content-view add-repository --name='RHEL 8 CV aarch64' --organization-id="${ORG}" --product="${RHEL8_TOOLS_AARCH64_PRD}" --repository="${RHEL8_TOOLS_AARCH64_REPO}"
+
+    satellite --csv content-view list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "RHEL 8" | while read -r line ; do
+        satellite_runner  content-view add-repository --name="${line}" --organization-id="${ORG}" --product="Errata-product" --repository="Errata-repo"
+        satellite_runner  content-view publish --name="${line}" --organization-id="${ORG}";
+        satellite_runner  content-view version promote --content-view="${line}" --organization-id="${ORG}" --to-lifecycle-environment=DEV --from-lifecycle-environment="Library";
+    done
+
+    satellite_runner  activation-key create --name 'ak-rhel-8' --content-view='RHEL 8 CV' --lifecycle-environment='DEV' --organization-id="${ORG}"
+    satellite_runner  activation-key create --name 'ak-rhel-8-s390x' --content-view='RHEL 8 CV s390x' --lifecycle-environment='DEV' --organization-id="${ORG}"
+    satellite_runner  activation-key create --name 'ak-rhel-8-aarch64' --content-view='RHEL 8 CV aarch64' --lifecycle-environment='DEV' --organization-id="${ORG}"
+    satellite_runner  activation-key create --name 'ak-rhel-8-ppc64le' --content-view='RHEL 8 CV ppc64le' --lifecycle-environment='DEV' --organization-id="${ORG}"
+
+    TOOLS8_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL8_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+    TOOLS8_SUBS_ID_ppc64le=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL8_TOOLS_PPC64LE_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+    TOOLS8_SUBS_ID_s390x=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL8_TOOLS_S390X_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+    TOOLS8_SUBS_ID_aarch64=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL8_TOOLS_AARCH64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+    satellite_runner  activation-key add-subscription --name='ak-rhel-8' --organization-id="${ORG}" --subscription-id="${TOOLS8_SUBS_ID}"
+    satellite_runner  activation-key add-subscription --name='ak-rhel-8-ppc64le' --organization-id="${ORG}" --subscription-id="${TOOLS8_SUBS_ID_ppc64le}"
+    satellite_runner  activation-key add-subscription --name='ak-rhel-8-s390x' --organization-id="${ORG}" --subscription-id="${TOOLS8_SUBS_ID_s390x}"
+    satellite_runner  activation-key add-subscription --name='ak-rhel-8-aarch64' --organization-id="${ORG}" --subscription-id="${TOOLS8_SUBS_ID_aarch64}"
+
+    satellite_runner --csv activation-key list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "ak-rhel-8" | while read -r line ; do
+            satellite_runner  activation-key update --name ${line} --auto-attach no --organization-id="${ORG}";
+    done
 fi
