@@ -22,6 +22,8 @@
         scm:
           - git:
                 url: https://github.com/SatelliteQE/robottelo-ci.git
+                branches:
+                  - origin/master
                 clean: true
         script-path: workflows/qe/satellite6-baseimage-deploy.groovy
         lightweight-checkout: true
