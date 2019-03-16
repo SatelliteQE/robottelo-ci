@@ -69,7 +69,7 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
         RHEL8_TOOLS_URL="rhel8_tools_url"
         RHEL8_TOOLS_PPC64LE_PRD=Sat6Tools8ppc64le
         RHEL8_TOOLS_PPC64LE_REPO=sat6tool8ppc64le
-        RHEL8_TOOLS_PPC64_URL="ppc64lerhel8_tools_url"
+        RHEL8_TOOLS_PPC64LE_URL="ppc64lerhel8_tools_url"
         RHEL8_TOOLS_S390X_PRD=Sat6Tools8s390x
         RHEL8_TOOLS_S390X_REPO=sat6tool8s390x
         RHEL8_TOOLS_S390X_URL="s390xrhel8_tools_url"
@@ -271,8 +271,8 @@ if [[ "${POPULATE_RHEL8}" = 'true' ]]; then
     if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
         create-repo "${RHEL8_TOOLS_PRD}" "${RHEL8_TOOLS_REPO}" "${RHEL8_TOOLS_URL}"
         create-repo "${RHEL8_TOOLS_S390X_PRD}" "${RHEL8_TOOLS_S390X_REPO}" "${RHEL8_TOOLS_S390X_URL}"
-        create-repo "${RHEL8_TOOLS_PPC64LE_PRD}" "${RHEL8_TOOLS_PPC64LE_REPO}" "${RHEL5_TOOLS_PPC64LE_URL}"
-        create-repo "${RHEL8_TOOLS_AARCH64_PRD}" "${RHEL8_TOOLS_AARCH64_REPO}" "${RHEL5_TOOLS_AARCH64_URL}"
+        create-repo "${RHEL8_TOOLS_PPC64LE_PRD}" "${RHEL8_TOOLS_PPC64LE_REPO}" "${RHEL8_TOOLS_PPC64LE_URL}"
+        create-repo "${RHEL8_TOOLS_AARCH64_PRD}" "${RHEL8_TOOLS_AARCH64_REPO}" "${RHEL8_TOOLS_AARCH64_URL}"
     fi
     # Synchronize all repositories except for Puppet repositories which don't have URLs
     for repo in $(satellite --csv repository list --organization-id="${ORG}" --per-page=1000 | grep -vi 'puppet' | cut -d ',' -f 1 | grep -vi '^ID'); do
@@ -283,7 +283,7 @@ if [[ "${POPULATE_RHEL8}" = 'true' ]]; then
     for id in `satellite --csv task list | grep -i synchronize | awk -F "," '{print $1}'`; do satellite_runner task progress --id $id; done
 
     #create content view
-    for cv in 'RHEL 8 CV x86_64' 'RHEL 8 CV ppc64le' 'RHEL 8 CV s390x' 'RHEL 8 CV aarch64'; do satellite_runner content-view create --name="${cv}" --organization-id="${ORG}"; done
+    for cv in 'RHEL 8 CV' 'RHEL 8 CV ppc64le' 'RHEL 8 CV s390x' 'RHEL 8 CV aarch64'; do satellite_runner content-view create --name="${cv}" --organization-id="${ORG}"; done
 
     satellite_runner  content-view add-repository --name='RHEL 8 CV' --organization-id="${ORG}" --product="${RHEL8_TOOLS_PRD}" --repository="${RHEL8_TOOLS_REPO}"
     satellite_runner  content-view add-repository --name='RHEL 8 CV ppc64le' --organization-id="${ORG}" --product="${RHEL8_TOOLS_PPC64LE_PRD}" --repository="${RHEL8_TOOLS_PPC64LE_REPO}"
@@ -310,7 +310,7 @@ if [[ "${POPULATE_RHEL8}" = 'true' ]]; then
     satellite_runner  activation-key add-subscription --name='ak-rhel-8-s390x' --organization-id="${ORG}" --subscription-id="${TOOLS8_SUBS_ID_s390x}"
     satellite_runner  activation-key add-subscription --name='ak-rhel-8-aarch64' --organization-id="${ORG}" --subscription-id="${TOOLS8_SUBS_ID_aarch64}"
 
-    satellite_runner --csv activation-key list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "ak-rhel-8" | while read -r line ; do
+    satellite --csv activation-key list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' |  grep "ak-rhel-8" | while read -r line ; do
             satellite_runner  activation-key update --name ${line} --auto-attach no --organization-id="${ORG}";
     done
 fi
