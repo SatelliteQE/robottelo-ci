@@ -786,6 +786,7 @@
                         COMPONENT=satellite
                         SERVER_HOSTNAME=${{SATELLITE_SERVER_HOSTNAME}}
                         BUILD_LABEL=${{BUILD_LABEL}}
+                        SATELLITE_VERSION=${{SATELLITE_VERSION}}
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[45])
@@ -798,6 +799,7 @@
                         COMPONENT=capsule
                         SERVER_HOSTNAME=${{CAPSULE_SERVER_HOSTNAME}}
                         BUILD_LABEL=${{BUILD_LABEL}}
+                        SATELLITE_VERSION=${{SATELLITE_VERSION}}
     publishers:
         - satellite6-automation-mails
 
