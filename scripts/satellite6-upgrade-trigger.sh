@@ -44,6 +44,7 @@ elif [ ${ENDPOINT} == 'upgrade' ]; then
     fab -u root set_datastore:"preupgrade","cli"
     fab -u root set_datastore:"preupgrade","api"
     fab -u root set_templatestore:"preupgrade"
+    tar -cf preupgrade_templates.tar.xz preupgrade_templates
 
     # Longrun to run upgrade on Satellite, capsule and clients
     fab -u root product_upgrade:'longrun'
@@ -53,4 +54,5 @@ elif [ ${ENDPOINT} == 'upgrade' ]; then
     fab -u root set_datastore:"postupgrade","cli"
     fab -u root set_datastore:"postupgrade","api"
     fab -u root set_templatestore:"postupgrade"
+    tar -cf postupgrade_templates.tar.xz postupgrade_templates
 fi
