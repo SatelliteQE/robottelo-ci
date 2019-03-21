@@ -12,6 +12,7 @@
       - gitlab_build_on_change
     dsl:
       !include-raw:
+        - workflows/lib/branch_map.groovy
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/katelloInstaller.groovy
         - pipelines/lib/rvm.groovy

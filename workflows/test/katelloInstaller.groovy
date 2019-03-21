@@ -1,3 +1,6 @@
+def version_map = branch_map[env.gitlabTargetBranch]
+def ruby = version_map['ruby']
+
 node('rvm') {
 
     stage("Setup Environment") {
@@ -9,7 +12,7 @@ node('rvm') {
 
     stage('Setup RVM') {
 
-        configureRVM()
+        configureRVM(ruby)
 
     }
 
@@ -18,14 +21,14 @@ node('rvm') {
         try {
 
             gitlabCommitStatus {
-                withRVM(["bundle install"])
-                withRVM(["bundle exec rake"])
+                withRVM(["bundle install"], ruby)
+                withRVM(["bundle exec rake"], ruby)
             }
 
         } finally {
 
             archive "Gemfile.lock pkg/*"
-            cleanupRVM()
+            cleanupRVM(ruby)
 
         }
 
