@@ -1345,6 +1345,8 @@
                       predefined-parameters: |
                         BUILD_LABEL=${{BUILD_LABEL}}
                         ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                - trigger-builds:
+                    - project: satellite6-upgrade-cleanup 
 
 #==============================================================================
 # Project
