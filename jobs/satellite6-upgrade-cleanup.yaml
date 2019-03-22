@@ -13,7 +13,7 @@
             skip-tag: true
             wipe-workspace: true
     triggers:
-        - timed: 'H 17 * * 0,2,4'
+        - timed: 'H 19 * * 4'
     wrappers:
         - config-file-provider:
             files:
