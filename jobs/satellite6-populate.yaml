@@ -51,6 +51,7 @@
                 - 'GA'
                 - 'INTERNAL AK'
                 - 'INTERNAL REPOFILE'
+                - 'BETA'
             description: |
                 Depending upon Distribution, INTERNAL and/or GA is decided and either DOGFOOD or CDN content is synced.
         - string:
