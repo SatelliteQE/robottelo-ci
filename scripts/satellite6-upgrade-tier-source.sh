@@ -45,10 +45,12 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     # Temporary change to test Selenium and Firefox changes.
     if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         SELENIUM_VERSION=2.48.0
-    elif [[ "${SATELLITE_VERSION}" == "6.4" || "${SATELLITE_VERSION}" == "6.5" ]]; then
+    elif [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
+        SELENIUM_VERSION=2.53.1
+    elif [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
         SELENIUM_VERSION=3.14.0
     else
-        SELENIUM_VERSION=2.53.1
+        SELENIUM_VERSION=3.141.0
     fi
     sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},extendedDebugging=true,tags=[${JOB_NAME}]/" robottelo.properties
 fi

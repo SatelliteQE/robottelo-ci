@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient pytest-timeout
+pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
 
 cp config/robottelo.properties ./robottelo.properties
 
@@ -105,7 +105,6 @@ if [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; the
 elif [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
     TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun})"
 else
-    TIMEOUT="$(echo --timeout 7000 --timeout-method=thread)"
     if [[ "${ENDPOINT}" == "tier2" ]]; then
         TEST_TYPE="$(echo tests/foreman/{ui_airgun,api,cli,longrun,sys,installer})"
     elif [[ "${ENDPOINT}" == "tier3" ]]; then
@@ -123,13 +122,13 @@ elif [ "${ENDPOINT}" != "rhai" ]; then
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -o junit_suite_name="${ENDPOINT}-sequential" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
-        ${TEST_TYPE} ${TIMEOUT}
+        ${TEST_TYPE}
 
     # Run parallel tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -o junit_suite_name="${ENDPOINT}-parallel" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
-        ${TEST_TYPE} ${TIMEOUT}
+        ${TEST_TYPE}
     set -e
 else
     make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=${ROBOTTELO_WORKERS}
