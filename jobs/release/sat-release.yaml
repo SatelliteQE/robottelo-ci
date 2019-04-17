@@ -1,0 +1,63 @@
+- job-template:
+    name: sat-{satellite_version}-release-qa
+    project-type: pipeline
+    sandbox: true
+    parameters:
+      - string:
+          name: releaseVersion
+          description: "release version in X.Y.Z format"
+          default: "{satellite_dotted_version}.0"
+      - string:
+          name: snapVersion
+          description: "snap version in X.Y format (optional)"
+    dsl:
+      !include-raw:
+        - workflows/{satellite_dotted_version}/releasePipelineAttributes.groovy
+        - workflows/releaseQAWorkflow.groovy{empty}
+        - workflows/lib/releaseQAFunctions.groovy{empty}
+        - workflows/lib/toolbelt.groovy{empty}
+        - foreman-infra/pipelines/lib/ansible.groovy{empty}
+        - workflows/lib/runPlaybook.groovy{empty}
+    notifications:
+      - snapper_notifications
+
+- job-template:
+    name: sat-{satellite_version}-release-pipeline
+    project-type: pipeline
+    sandbox: true
+    triggers:
+      - timed: '{satellite_cron}'
+    dsl:
+      !include-raw:
+        - workflows/{satellite_dotted_version}/releasePipelineAttributes.groovy
+        - workflows/releaseSatellitePipeline.groovy{empty}
+        - workflows/lib/libvirt.groovy{empty}
+        - foreman-infra/pipelines/lib/ansible.groovy{empty}
+        - workflows/lib/runPlaybook.groovy{empty}
+        - workflows/lib/releaseQAFunctions.groovy{empty}
+        - workflows/lib/toolbelt.groovy{empty}
+    notifications:
+      - snapper_notifications
+    properties:
+      - default-properties
+      - satellite6-release-pipeline-throttle
+
+- project:
+    name: sat-release
+    empty: ''
+    satellite_version:
+      - '63':
+          satellite_dotted_version: '6.3'
+          satellite_cron: ''
+      - '64':
+          satellite_dotted_version: '6.4'
+          satellite_cron: 'H 18 * * *'
+      - '65':
+          satellite_dotted_version: '6.5'
+          satellite_cron: 'H 2 * * *'
+      - '66':
+          satellite_dotted_version: '6.6'
+          satellite_cron: 'H 10 * * *'
+    jobs:
+      - sat-{satellite_version}-release-pipeline
+      - sat-{satellite_version}-release-qa
