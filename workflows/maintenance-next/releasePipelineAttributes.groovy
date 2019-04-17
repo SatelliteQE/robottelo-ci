@@ -3,8 +3,9 @@ def compose_tag = 'next'
 def compose_label = 'SatMaintenanceNext-6'
 def os_versions = ['7']
 def satellite_version = 'maintenance-next'
-def products = [
-    'Satellite Maintenance Next Composes'
+def maintenance_product = 'Satellite Maintenance Next Composes'
+def maintenance_repositories = [
+    'Satellite Maintenance Next RHEL7'
 ]
 def content_views = [
     'Satellite Maintenance Next RHEL7'
