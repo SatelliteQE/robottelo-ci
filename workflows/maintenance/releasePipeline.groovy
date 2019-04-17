@@ -46,9 +46,10 @@ node('sat6-build') {
 
         runPlaybookInParallel {
             name = "sync"
-            items = products
-            item_name = 'product'
-            playbook = 'playbooks/sync_products.yml'
+            items = maintenance_repositories
+            item_name = 'repository'
+            extraVars = ["product": maintenance_product]
+            playbook = 'playbooks/sync_repositories.yml'
         }
 
     }
