@@ -149,6 +149,15 @@ pipeline {
 
                             }
                         }
+                    } else if (repo_name == 'satellite-node-modules-meta') {
+
+                        runPlaybook(
+                            playbook: 'generate-source.yml'
+                        )
+
+                        sources = sh(returnStdout: true, script: "ls pkg/*.tar.*").trim().split()
+                        writeYaml(file: '../tool_belt/artifacts', data: sources.toList())
+
                     } else {
 
                         toolBelt(
