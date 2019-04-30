@@ -19,12 +19,12 @@ else
     sed -i "s/# bz_password=.*/bz_password=${BUGZILLA_PASSWORD}/" robottelo.properties
     sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
 
-    sed -i "s|sattools_repo.*|sattools_repo=rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
+    sed -i "s|sattools_repo.*|sattools_repo=rhel8=${RHEL8_TOOLS_REPO:-${TOOLS_RHEL8}},rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
     sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
 # Sauce Labs Configuration and pytest-env setting
-if [[ "${SATELLITE_VERSION}" == "6.4" || "${SATELLITE_VERSION}" == "6.5" ]]; then
+if [[ "${SATELLITE_VERSION}" != "6.2" || "${SATELLITE_VERSION}" != "6.3" ]]; then
     SAUCE_BROWSER="chrome"
 
     pip install -U pytest-env

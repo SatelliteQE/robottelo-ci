@@ -1,11 +1,7 @@
 # Populate token-prefix and betelgeuse depending upon Satellite6 Version.
-if [[ "${SATELLITE_VERSION}" = "6.1" ]] || [[ "${SATELLITE_VERSION}" = "6.2" ]] ; then
-    pip install "betelgeuse<0.8"
-    TOKEN_PREFIX="--token-prefix=@"
-else
-    pip install betelgeuse
-    TOKEN_PREFIX=""
-fi
+
+pip install betelgeuse
+TOKEN_PREFIX=""
 
 # Create a new release with POLARION_RELEASE as the parent-plan.
 

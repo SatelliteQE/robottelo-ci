@@ -39,6 +39,11 @@
                 Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
                 Leaving this blank picks the latest SATTOOLS repo. Override if required.
         - string:
+            name: RHEL8_TOOLS_URL
+            description: Required when Satellite distribution is INTERNAL and we require latest SatTools Client packages. |
+                Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
+                Leaving this blank picks the latest SATTOOLS repo. Override if required.
+        - string:
             name: IMAGE
             description: |
                 Specify custom RHEL source image to be used for automation. Do not use the full path, use the image name without the .img suffix
@@ -101,7 +106,7 @@
                           RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
         - conditional-step:
                     condition-kind: regex-match
-                    regex: (6\.[5]|upstream-nightly)
+                    regex: (6\.[6]|upstream-nightly)
                     label: ${{ENV,var="SATELLITE_VERSION"}}
                     steps:
                     - trigger-builds:
@@ -200,7 +205,7 @@
             os: "{os}"
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[12345])
+            regex: (6\.[3456])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -250,7 +255,7 @@
             os: "{os}"
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[12345])
+            regex: (6\.[3456])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -394,7 +399,7 @@
             os: "{os}"
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[12345])
+            regex: (6\.[3456])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -776,7 +781,7 @@
             properties-file: build_env.properties
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[45])
+            regex: (6\.[456])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -789,7 +794,7 @@
                         SATELLITE_VERSION=${{SATELLITE_VERSION}}
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[45])
+            regex: (6\.[456])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -1193,21 +1198,25 @@
                  - 'BETA'
             description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
         - string:
-            name: RHEL6_IMAGE
+            name: RHEL8_IMAGE
             description: |
-                Specify RHEL6 source image to be used for automation.
+                Specify RHEL8 source image to be used for automation.
         - string:
-            name: RHEL6_SATELLITE_URL
+            name: RHEL8_SATELLITE_URL
             description: |
                 Leave it blank to install the latest stable.
         - string:
-            name: RHEL6_CAPSULE_URL
+            name: RHEL8_CAPSULE_URL
             description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/Capsule/x86_64/os
+                Leave it blank to install the latest stable from dogfood
+        - string:
+            name: RHEL8_TOOLS_URL
+            description: |
+                Leave it blank to install the latest stable from dogfood
         - string:
             name: RHEL6_TOOLS_URL
             description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-6-20150311.1/compose/sattools/x86_64/os
+                Leave it blank to install the latest stable from dogfood
         - string:
             name: RHEL7_IMAGE
             description: |
@@ -1219,11 +1228,11 @@
         - string:
             name: RHEL7_CAPSULE_URL
             description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/Capsule/x86_64/os
+                Leave it blank to install the latest stable from dogfood
         - string:
             name: RHEL7_TOOLS_URL
             description: |
-                Leave it blank to install the latest stable. Example: http://example.com/path/to/Satellite/Satellite-6.1.0-RHEL-7-20150311.1/compose/sattools/x86_64/os
+                Leave it blank to install the latest stable from dogfood
         - satellite6-provisioning-parameters
         - satellite6-authentication-parameters
     wrappers:
@@ -1240,8 +1249,9 @@
         - shell: |
             source ${{CONFIG_FILES}}
             source config/sat6_repos_urls.conf
-            echo "RHEL6_SATELLITE_URL=${{RHEL6_SATELLITE_URL:-${{SATELLITE6_RHEL6}}}}" >> properties.txt
-            echo "RHEL6_CAPSULE_URL=${{RHEL6_CAPSULE_URL:-${{CAPSULE_RHEL6}}}}" >> properties.txt
+            echo "RHEL8_SATELLITE_URL=${{RHEL8_SATELLITE_URL:-${{SATELLITE6_RHEL8}}}}" >> properties.txt
+            echo "RHEL8_CAPSULE_URL=${{RHEL8_CAPSULE_URL:-${{CAPSULE_RHEL8}}}}" >> properties.txt
+            echo "RHEL8_TOOLS_URL=${{RHEL8_TOOLS_URL:-${{TOOLS_RHEL8}}}}" >> properties.txt
             echo "RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL:-${{TOOLS_RHEL6}}}}" >> properties.txt
             echo "RHEL7_SATELLITE_URL=${{RHEL7_SATELLITE_URL:-${{SATELLITE6_RHEL7}}}}" >> properties.txt
             echo "RHEL7_CAPSULE_URL=${{RHEL7_CAPSULE_URL:-${{CAPSULE_RHEL7}}}}" >> properties.txt
@@ -1250,48 +1260,7 @@
             properties-file: properties.txt
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[12])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: provisioning-{satellite_version}-rhel6
-                      predefined-parameters: |
-                        BASE_URL=${{RHEL6_SATELLITE_URL}}
-                        CAPSULE_URL=${{RHEL6_CAPSULE_URL}}
-                        RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL}}
-                        RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL}}
-                        SELINUX_MODE=${{SELINUX_MODE}}
-                        SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
-                        ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
-                        PROXY_MODE=${{PROXY_MODE}}
-                        BUILD_LABEL=${{BUILD_LABEL}}
-                        EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
-                        IDM_REALM=false
-                        IMAGE=${{RHEL6_IMAGE}}
-                        SAUCE_BROWSER=${{SAUCE_BROWSER}}
-                        SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
-                        START_TIER=${{START_TIER}}
-        - trigger-builds:
-            - project: provisioning-{satellite_version}-rhel7
-              predefined-parameters: |
-                BASE_URL=${{RHEL7_SATELLITE_URL}}
-                CAPSULE_URL=${{RHEL7_CAPSULE_URL}}
-                RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL}}
-                RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL}}
-                SELINUX_MODE=${{SELINUX_MODE}}
-                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
-                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
-                PROXY_MODE=${{PROXY_MODE}}
-                BUILD_LABEL=${{BUILD_LABEL}}
-                EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
-                IDM_REALM=${{IDM_REALM}}
-                IMAGE=${{RHEL7_IMAGE}}
-                SAUCE_BROWSER=${{SAUCE_BROWSER}}
-                SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
-                START_TIER=${{START_TIER}}
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[2345])
+            regex: (6\.[3456])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -1306,13 +1275,13 @@
                         IDM_REALM=${{IDM_REALM}}
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[2])
+            regex: (6\.[6])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
-                    - project: satellite6-sanity-check-{satellite_version}-rhel6
+                    - project: satellite6-sanity-check-{satellite_version}-rhel8
                       predefined-parameters: |
-                        BASE_URL=${{RHEL6_SATELLITE_URL}}
+                        BASE_URL=${{RHEL8_SATELLITE_URL}}
                         SELINUX_MODE=${{SELINUX_MODE}}
                         SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
                         PROXY_MODE=${{PROXY_MODE}}
@@ -1327,17 +1296,7 @@
             - project: polarion-upgrade-test-case
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.2)
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: upgrade-to-{satellite_version}-rhel6
-                      predefined-parameters: |
-                        BUILD_LABEL=${{BUILD_LABEL}}
-                        ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[2345])
+            regex: (6\.[3456])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -1355,29 +1314,25 @@
     name: satellite6-automation
     scm-branch: origin/master
     satellite_version:
-        - '6.2':
-            scm-branch: origin/6.2.z
         - '6.3':
             scm-branch: origin/6.3.z
         - '6.4':
             scm-branch: origin/6.4.z
-        - '6.5'
+        - '6.5':
+            scm-branch: origin/6.5.z
+        - '6.6'
         - 'upstream-nightly'
         - 'downstream-nightly'
     os:
-        - 'rhel6'
         - 'rhel7'
+        - 'rhel8'
     exclude:
         - satellite_version: '6.3'
-          os: 'rhel6'
+          os: 'rhel8'
         - satellite_version: '6.4'
-          os: 'rhel6'
+          os: 'rhel8'
         - satellite_version: '6.5'
-          os: 'rhel6'
-        - satellite_version: 'upstream-nightly'
-          os: 'rhel6'
-        - satellite_version: 'downstream-nightly'
-          os: 'rhel6'
+          os: 'rhel8'
     jobs:
         - 'provisioning-{satellite_version}-{os}'
         - 'automation-{satellite_version}-tier1-{os}'
@@ -1397,20 +1352,20 @@
     name: satellite6-sanitycheck
     scm-branch: origin/master
     satellite_version:
-        - '6.2'
         - '6.3'
         - '6.4'
         - '6.5'
+        - '6.6'
     os:
-        - 'rhel6'
         - 'rhel7'
+        - 'rhel8'
     exclude:
         - satellite_version: '6.3'
-          os: 'rhel6'
+          os: 'rhel8'
         - satellite_version: '6.4'
-          os: 'rhel6'
+          os: 'rhel8'
         - satellite_version: '6.5'
-          os: 'rhel6'
+          os: 'rhel8'
     jobs:
         - 'satellite6-sanity-check-{satellite_version}-{os}'
         - 'capsule-sanity-check-{satellite_version}-{os}'
@@ -1421,23 +1376,15 @@
     name: satellite6-upgrade
     scm-branch: origin/master
     satellite_version:
-        - '6.2':
-            scm-branch: origin/6.2.z
         - '6.3':
             scm-branch: origin/6.3.z
         - '6.4':
             scm-branch: origin/6.4.z
-        - '6.5'
+        - '6.5':
+            scm-branch: origin/6.5.z
+        - '6.6'
     os:
-        - 'rhel6'
         - 'rhel7'
-    exclude:
-        - satellite_version: '6.3'
-          os: 'rhel6'
-        - satellite_version: '6.4'
-          os: 'rhel6'
-        - satellite_version: '6.5'
-          os: 'rhel6'
     jobs:
         - 'upgrade-to-{satellite_version}-{os}'
         - 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
@@ -1454,10 +1401,10 @@
 - project:
     name: satellite6-triggers
     satellite_version:
-        - '6.2'
         - '6.3'
         - '6.4'
         - '6.5'
+        - '6.6'
         - 'downstream-nightly'
     jobs:
         - 'trigger-satellite-{satellite_version}'
