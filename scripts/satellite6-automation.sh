@@ -10,7 +10,7 @@ sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottel
 sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
 
 # Sauce Labs Configuration and pytest-env setting.
-if [[ "${SATELLITE_VERSION}" == "6.4" || "${SATELLITE_VERSION}" == "6.5" ]]; then
+if [[ "${SATELLITE_VERSION}" != "6.3" ]]; then
     SAUCE_BROWSER="chrome"
 
     pip install -U pytest-env
@@ -25,22 +25,12 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     sed -i "s/^# saucelabs_user=.*/saucelabs_user=${SAUCELABS_USER}/" robottelo.properties
     sed -i "s/^# saucelabs_key=.*/saucelabs_key=${SAUCELABS_KEY}/" robottelo.properties
     sed -i "s/^# webdriver=.*/webdriver=${SAUCE_BROWSER}/" robottelo.properties
-    if [[ "${SAUCE_BROWSER}" == "firefox" ]]; then
-        # Temporary change to test Selenium and Firefox changes.
-        if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
-            BROWSER_VERSION=45.0
-        else
-            BROWSER_VERSION=47.0
-        fi
-    elif [[ "${SAUCE_BROWSER}" == "edge" ]]; then
+    if [[ "${SAUCE_BROWSER}" == "edge" ]]; then
         BROWSER_VERSION=14.14393
     elif [[ "${SAUCE_BROWSER}" == "chrome" ]]; then
         BROWSER_VERSION=63.0
     fi
-    # Temporary change to test Selenium and Firefox changes.
-    if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
-        SELENIUM_VERSION=2.48.0
-    elif [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
+    if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
         SELENIUM_VERSION=2.53.1
     elif [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
         SELENIUM_VERSION=3.14.0
@@ -72,6 +62,7 @@ if [ -n "${IMAGE}" ]; then
     sed -i "s/^# \[distro\].*/[distro]/" robottelo.properties
     sed -i "s/^# image_el6=.*/image_el6=${IMAGE}/" robottelo.properties
     sed -i "s/^# image_el7=.*/image_el7=${IMAGE}/" robottelo.properties
+    sed -i "s/^# image_el8=.*/image_el8=${IMAGE}/" robottelo.properties
 fi
 
 # upstream = 1 for Distributions: UPSTREAM (default in robottelo.properties)
@@ -95,15 +86,13 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     # The below cdn flag is required by automation to flip between RH & custom syncs.
     sed -i "s/^cdn=.*/cdn=false/" robottelo.properties
     # Usage of '|' is intentional as TOOLS_REPO can bring in http url which has '/'
-    sed -i "s|sattools_repo=.*|sattools_repo=rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}|" robottelo.properties
+    sed -i "s|sattools_repo=.*|sattools_repo=rhel8=${RHEL8_TOOLS_REPO},rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}|" robottelo.properties
     sed -i "s|capsule_repo=.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
 
-if [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
+if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
     TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
-elif [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun})"
 else
     if [[ "${ENDPOINT}" == "tier2" ]]; then
         TEST_TYPE="$(echo tests/foreman/{ui_airgun,api,cli,longrun,sys,installer})"

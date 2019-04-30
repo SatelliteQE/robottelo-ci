@@ -47,6 +47,7 @@ function setupPrerequisites () {
         export CAPSULE_URL
         export TOOLS_URL_RHEL6="${TOOLS_RHEL6}"
         export TOOLS_URL_RHEL7="${TOOLS_RHEL7}"
+        export TOOLS_URL_RHEL8="${TOOLS_RHEL8}"
     fi
 }
 

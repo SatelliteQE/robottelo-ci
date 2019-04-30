@@ -14,6 +14,9 @@
             name: RHEL7_TOOLS_REPO
             description: 'The URL to the latest Satellite Tools RHEL7 repo'
         - string:
+            name: RHEL8_TOOLS_REPO
+            description: 'The URL to the latest Satellite Tools RHEL8 repo'
+        - string:
             name: CAPSULE_REPO
             description: 'The URL to the latest Satellite Capsule repo'
         - string:

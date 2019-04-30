@@ -44,6 +44,7 @@
         - choice:
             name: TO_VERSION
             choices:
+                - '6.6'
                 - '6.5'
                 - '6.4'
                 - '6.3'
@@ -71,10 +72,11 @@
             choices:
                 - rhel7
                 - rhel6
+                - rhel8
         - string:
             name: CLIENTS_COUNT
             description: |
-                <p>The number of RHEL6 and RHEL7 docker clients to Generate.</p>
+                <p>The number of RHEL6,RHEL7 and RHEL8 docker clients to Generate.</p>
                 <p>The number of clients will be devided in equal amount for RHEL6 and RHEL7. e.g if 10 is given then 5 each.</p>
         - bool:
             name: RUN_EXISTANCE_TESTS
