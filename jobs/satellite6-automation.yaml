@@ -58,6 +58,7 @@
             skip-tag: true
     wrappers:
         - default-wrappers
+        - satellite6-maskpassword-wrappers
         - config-file-provider:
             files:
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
@@ -680,6 +681,7 @@
             skip-tag: true
     wrappers:
         - default-wrappers
+        - satellite6-maskpassword-wrappers
         - inject:
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
@@ -842,6 +844,7 @@
             skip-tag: true
     wrappers:
         - default-wrappers
+        - satellite6-maskpassword-wrappers
         - config-file-provider:
             files:
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
@@ -895,6 +898,7 @@
             skip-tag: true
     wrappers:
         - default-wrappers
+        - satellite6-maskpassword-wrappers
         - config-file-provider:
             files:
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
@@ -1058,6 +1062,7 @@
             skip-tag: true
     wrappers:
         - default-wrappers
+        - satellite6-maskpassword-wrappers
         - config-file-provider:
             files:
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
