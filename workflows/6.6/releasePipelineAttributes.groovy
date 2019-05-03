@@ -18,7 +18,6 @@ def capsule_repositories = [
 def tools_repositories = [
     "Satellite Tools 6.6 RHEL8 x86_64",
     "Satellite Tools 6.6 RHEL8 ppc64le",
-    "Satellite Tools 6.6 RHEL8 ppc64",
     "Satellite Tools 6.6 RHEL8 s390x",
     "Satellite Tools 6.6 RHEL8 aarch64",
     "Satellite Tools 6.6 RHEL7 x86_64",
