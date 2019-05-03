@@ -1265,6 +1265,49 @@
             properties-file: properties.txt
         - conditional-step:
             condition-kind: regex-match
+            regex: (6\.[6])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: provisioning-{satellite_version}-rhel8
+                      predefined-parameters: |
+                        BASE_URL=${{RHEL8_SATELLITE_URL}}
+                        CAPSULE_URL=${{RHEL8_CAPSULE_URL}}
+                        RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL}}
+                        RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL}}
+                        RHEL8_TOOLS_URL=${{RHEL8_TOOLS_URL}}
+                        SELINUX_MODE=${{SELINUX_MODE}}
+                        SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                        ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                        PROXY_MODE=${{PROXY_MODE}}
+                        BUILD_LABEL=${{BUILD_LABEL}}
+                        EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
+                        IDM_REALM=false
+                        IMAGE=${{RHEL8_IMAGE}}
+                        SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                        SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                        START_TIER=${{START_TIER}}
+        - trigger-builds:
+            - project: provisioning-{satellite_version}-rhel7
+              predefined-parameters: |
+                BASE_URL=${{RHEL7_SATELLITE_URL}}
+                CAPSULE_URL=${{RHEL7_CAPSULE_URL}}
+                RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL}}
+                RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL}}
+                RHEL8_TOOLS_URL=${{RHEL8_TOOLS_URL}}
+                SELINUX_MODE=${{SELINUX_MODE}}
+                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                PROXY_MODE=${{PROXY_MODE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+                EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
+                IDM_REALM=${{IDM_REALM}}
+                IMAGE=${{RHEL7_IMAGE}}
+                SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                START_TIER=${{START_TIER}}
+        - conditional-step:
+            condition-kind: regex-match
             regex: (6\.[3456])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
