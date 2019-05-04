@@ -1,35 +1,14 @@
 - builder:
     name: satellite6-provisioning-builders
     builders:
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[12])
-            label: ${ENV,var="SATELLITE_VERSION"}
-            steps:
-                - shining-panda:
-                    build-environment: virtualenv
-                    python-version: System-CPython-2.7
-                    clear: true
-                    nature: shell
-                    command:
-                        !include-raw:
-                            - 'pip-install-pycurl.sh'
-                            - 'satellite6-provisioning.sh'
-                            - 'satellite6-foreman-debug.sh'
-                            - 'satellite6-graceful-shutdown.sh'
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[345]|upstream-nightly)
-            label: ${ENV,var="SATELLITE_VERSION"}
-            steps:
-                - shining-panda:
-                    build-environment: virtualenv
-                    python-version: System-CPython-3.6
-                    clear: true
-                    nature: shell
-                    command:
-                        !include-raw:
-                            - 'pip-install-pycurl.sh'
-                            - 'satellite6-provisioning.sh'
-                            - 'satellite6-foreman-debug.sh'
-                            - 'satellite6-graceful-shutdown.sh'
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-3.6
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-provisioning.sh'
+                    - 'satellite6-foreman-debug.sh'
+                    - 'satellite6-graceful-shutdown.sh'
