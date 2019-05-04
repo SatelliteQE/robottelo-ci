@@ -3,7 +3,7 @@
     builders:
          - conditional-step:
              condition-kind: regex-match
-             regex: (6\.[12345])
+             regex: (6\.[123456])
              label: ${{ENV,var="SATELLITE_VERSION"}}
              steps:
                  - trigger-builds:

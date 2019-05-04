@@ -37,6 +37,7 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.6'
                 - '6.5'
                 - '6.4'
                 - '6.3'
@@ -48,7 +49,7 @@
             name: DISTRO
             choices:
                 - 'rhel7'
-                - 'rhel6'
+                - 'rhel8'
         - string:
             name: BASE_URL
             description: Required when Satellite distribution is INTERNAL

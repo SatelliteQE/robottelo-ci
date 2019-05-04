@@ -37,6 +37,8 @@ if [[ -n "${NMINUSONE}" ]]; then
             export SATELLITE_VERSION=6.3
         elif [[ "${SATELLITE_VERSION}" = "6.5" ]]; then
             export SATELLITE_VERSION=6.4
+        elif [[ "${SATELLITE_VERSION}" = "6.6" ]]; then
+            export SATELLITE_VERSION=6.5
         elif [[ "${SATELLITE_VERSION}" = "6.3" ]]; then
             export SATELLITE_VERSION=6.2
         fi

@@ -17,7 +17,7 @@
                             - 'satellite6-foreman-debug.sh'
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[345]|upstream-nightly)
+            regex: (6\.[3456]|upstream-nightly)
             label: ${ENV,var="SATELLITE_VERSION"}
             steps:
                 - shining-panda:

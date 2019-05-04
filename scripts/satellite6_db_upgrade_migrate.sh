@@ -42,12 +42,8 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
         source /tmp/rhev_instance.txt
         INSTANCE_NAME="${SAT_INSTANCE_FQDN}"
     fi
-     # Clone the 'satellite-clone' w/ tag 1.1.1/master that includes the ansible playbook to install sat server along with customer DB.
-    if [[ "${FROM_VERSION}" == '6.1' ]] || [ "${FROM_VERSION}" == "6.2" ]; then
-        git clone -b 1.1.1 --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
-    else
-        git clone -b master --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
-    fi
+    # Clone the 'satellite-clone' w/ tag 1.1.1/master that includes the ansible playbook to install sat server along with customer DB.
+    git clone -b master --single-branch --depth 1 https://github.com/RedHatSatellite/satellite-clone.git
     pushd satellite-clone
     # Copy the satellite-clone-vars.sample.yml to satellite-clone-vars.yml
     cp -a satellite-clone-vars.sample.yml satellite-clone-vars.yml

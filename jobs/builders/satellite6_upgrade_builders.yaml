@@ -1,33 +1,13 @@
 - builder:
     name: satellite6-upgrade-builders
     builders:
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[12])
-            label: ${ENV,var="SATELLITE_VERSION"}
-            steps:
-                - shining-panda:
-                    build-environment: virtualenv
-                    python-version: System-CPython-2.7
-                    clear: true
-                    nature: shell
-                    command:
-                        !include-raw:
-                            - 'pip-install-pycurl.sh'
-                            - 'satellite6-upgrade-source.sh'
-                            - 'satellite6-upgrade-trigger.sh'
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[345])
-            label: ${ENV,var="SATELLITE_VERSION"}
-            steps:
-                - shining-panda:
-                    build-environment: virtualenv
-                    python-version: System-CPython-3.6
-                    clear: true
-                    nature: shell
-                    command:
-                        !include-raw:
-                            - 'pip-install-pycurl.sh'
-                            - 'satellite6-upgrade-source.sh'
-                            - 'satellite6-upgrade-trigger.sh'
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-3.6
+            clear: true
+            nature: shell
+            command:
+                !include-raw:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-upgrade-source.sh'
+                    - 'satellite6-upgrade-trigger.sh'
