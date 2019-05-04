@@ -110,7 +110,7 @@ for id in `satellite --csv task list | grep -i synchronize | awk -F "," '{print 
 
 if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
     if [[ "${POPULATE_RHEL5}" = 'true' ]]; then
-        if [ "${SAT_VERSION}" != "6.5" ]; then
+        if [ "${SAT_VERSION}" == "6.3" ] || [ "${SAT_VERSION}" == "6.4" ]; then
             create-repo "${RHEL5_TOOLS_PPC64_PRD}" "${RHEL5_TOOLS_PPC64_REPO}" "${RHEL5_TOOLS_PPC64_URL}"
             create-repo "${RHEL5_TOOLS_IA64_PRD}" "${RHEL5_TOOLS_IA64_REPO}" "${RHEL5_TOOLS_IA64_URL}"
         fi
@@ -148,8 +148,8 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     satellite_runner  activation-key update --name 'ak-rhel-7-s390x' --auto-attach no --organization-id="${ORG}"
     satellite_runner  activation-key update --name 'ak-rhel-7-ppc64' --auto-attach no --organization-id="${ORG}"
 
-    RHEL_SUBS_ID_ppc64=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux for Power, BE" |  awk -F "," '{print $1}' | grep -vi id)
-    RHEL_SUBS_ID_s390x=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux for IBM System z, Standard" |  awk -F "," '{print $1}' | grep -vi id)
+    RHEL_SUBS_ID_ppc64=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Enterprise Linux for Power, BE" |  awk -F "," '{print $1}' | grep -vi id)
+    RHEL_SUBS_ID_s390x=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Enterprise Linux for IBM System z, Standard" |  awk -F "," '{print $1}' | grep -vi id)
 
     if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
         satellite_runner  activation-key add-subscription --name='ak-rhel-7-ppc64' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_ppc64}"
@@ -190,7 +190,7 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     fi
     if [[ "${POPULATE_RHEL5}" = 'true' ]]; then
         # RHEL 5
-        if [ "${SAT_VERSION}" != "6.5" ]; then
+        if [ "${SAT_VERSION}" == "6.3" ] || [ "${SAT_VERSION}" == "6.4" ]; then
             for cv in 'RHEL 5 CV x86_64' 'RHEL 5 CV s390x' 'RHEL 5 CV i386'; do satellite_runner content-view create --name="${cv}" --organization-id="${ORG}"; done
             satellite_runner  content-view add-repository --name='RHEL 5 CV ppc64' --organization-id="${ORG}" --product="${RHEL5_TOOLS_PPC64_PRD}" --repository="${RHEL5_TOOLS_PPC64_REPO}"
             satellite_runner  content-view add-repository --name='RHEL 5 CV ia64' --organization-id="${ORG}" --product="${RHEL5_TOOLS_IA64_PRD}" --repository="${RHEL5_TOOLS_IA64_REPO}"
@@ -205,7 +205,7 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
             satellite_runner  content-view publish --name="${line}" --organization-id="${ORG}";
             satellite_runner  content-view version promote --content-view="${line}" --organization-id="${ORG}" --to-lifecycle-environment=DEV --from-lifecycle-environment="Library";
         done
-        if [ "${SAT_VERSION}" != "6.5" ]; then
+        if [ "${SAT_VERSION}" == "6.3" ] || [ "${SAT_VERSION}" == "6.4" ]; then
             satellite_runner  activation-key create --name 'ak-rhel-5-ppc64' --content-view='RHEL 5 CV ppc64' --lifecycle-environment='DEV' --organization-id="${ORG}"
             satellite_runner  activation-key create --name 'ak-rhel-5-ia64' --content-view='RHEL 5 CV ia64' --lifecycle-environment='DEV' --organization-id="${ORG}"
             satellite_runner  activation-key add-subscription --name='ak-rhel-5-ppc64' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_ppc64}"
@@ -233,37 +233,37 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
         if [[ "${POPULATE_RHEL5}" = 'true' ]]; then
             # RHEL 5
-            TOOLS5_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL5_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-            TOOLS5_SUBS_ID_s390x=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL5_TOOLS_S390X_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-            TOOLS5_SUBS_ID_i386=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL5_TOOLS_I386_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+            TOOLS5_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL5_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+            TOOLS5_SUBS_ID_s390x=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL5_TOOLS_S390X_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+            TOOLS5_SUBS_ID_i386=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL5_TOOLS_I386_PRD}" | awk -F "," '{print $1}' | grep -vi id)
             satellite_runner  activation-key add-subscription --name='ak-rhel-5' --organization-id="${ORG}" --subscription-id="${TOOLS5_SUBS_ID}"
             satellite_runner  activation-key add-subscription --name='ak-rhel-5-s390x' --organization-id="${ORG}" --subscription-id="${TOOLS5_SUBS_ID_s390x}"
             satellite_runner  activation-key add-subscription --name='ak-rhel-5-i386' --organization-id="${ORG}" --subscription-id="${TOOLS5_SUBS_ID_i386}"
-            if [ "${SAT_VERSION}" != "6.5" ]; then
-                TOOLS5_SUBS_ID_ppc64=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL5_TOOLS_PPC64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-                TOOLS5_SUBS_ID_ia64=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL5_TOOLS_IA64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+            if [ "${SAT_VERSION}" == "6.3" ] || [ "${SAT_VERSION}" == "6.4" ]; then
+                TOOLS5_SUBS_ID_ppc64=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL5_TOOLS_PPC64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+                TOOLS5_SUBS_ID_ia64=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL5_TOOLS_IA64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
                 satellite_runner  activation-key add-subscription --name='ak-rhel-5-ppc64' --organization-id="${ORG}" --subscription-id="${TOOLS5_SUBS_ID_ppc64}"
                 satellite_runner  activation-key add-subscription --name='ak-rhel-5-ia64' --organization-id="${ORG}" --subscription-id="${TOOLS5_SUBS_ID_ia64}"
             fi
         fi
         if [[ "${POPULATE_RHEL6}" = 'true' ]]; then
             # RHEL 6
-            TOOLS6_SUBS_ID_ppc64=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL6_TOOLS_PPC64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-            TOOLS6_SUBS_ID_s390x=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL6_TOOLS_S390X_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-            TOOLS6_SUBS_ID_i386=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL6_TOOLS_I386_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+            TOOLS6_SUBS_ID_ppc64=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL6_TOOLS_PPC64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+            TOOLS6_SUBS_ID_s390x=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL6_TOOLS_S390X_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+            TOOLS6_SUBS_ID_i386=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL6_TOOLS_I386_PRD}" | awk -F "," '{print $1}' | grep -vi id)
             satellite_runner  activation-key add-subscription --name='ak-rhel-6-ppc64' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID_ppc64}"
             satellite_runner  activation-key add-subscription --name='ak-rhel-6-s390x' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID_s390x}"
             satellite_runner  activation-key add-subscription --name='ak-rhel-6-i386' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID_i386}"
         fi
-        TOOLS7_SUBS_ID_ppc64=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_PPC64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-        TOOLS7_SUBS_ID_s390x=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_S390X_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+        TOOLS7_SUBS_ID_ppc64=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL7_TOOLS_PPC64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+        TOOLS7_SUBS_ID_s390x=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL7_TOOLS_S390X_PRD}" | awk -F "," '{print $1}' | grep -vi id)
         satellite_runner  activation-key add-subscription --name='ak-rhel-7-s390x' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID_s390x}"
         satellite_runner  activation-key add-subscription --name='ak-rhel-7-ppc64' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID_ppc64}"
     fi
     # Add subscription Errata-product to activation keys
-    ERRATA_PRODUCT_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Errata-product" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
-    satellite --csv activation-key list --organization-id=1 | cut -d ',' -f2 | grep -vi 'Name' | while read -r line ; do
-            satellite_runner  activation-key add-subscription --name="${line}" --organization-id=1 --subscription-id="${ERRATA_PRODUCT_SUBS_ID}";
+    ERRATA_PRODUCT_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Errata-product" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
+    satellite --csv activation-key list --organization-id="${ORG}" | cut -d ',' -f2 | grep -vi 'Name' | while read -r line ; do
+            satellite_runner  activation-key add-subscription --name="${line}" --organization-id="${ORG}" --subscription-id="${ERRATA_PRODUCT_SUBS_ID}";
         done
 fi
 #RHEL8
@@ -301,10 +301,10 @@ if [[ "${POPULATE_RHEL8}" = 'true' ]]; then
     satellite_runner  activation-key create --name 'ak-rhel-8-aarch64' --content-view='RHEL 8 CV aarch64' --lifecycle-environment='DEV' --organization-id="${ORG}"
     satellite_runner  activation-key create --name 'ak-rhel-8-ppc64le' --content-view='RHEL 8 CV ppc64le' --lifecycle-environment='DEV' --organization-id="${ORG}"
 
-    TOOLS8_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL8_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-    TOOLS8_SUBS_ID_ppc64le=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL8_TOOLS_PPC64LE_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-    TOOLS8_SUBS_ID_s390x=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL8_TOOLS_S390X_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-    TOOLS8_SUBS_ID_aarch64=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL8_TOOLS_AARCH64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+    TOOLS8_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL8_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+    TOOLS8_SUBS_ID_ppc64le=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL8_TOOLS_PPC64LE_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+    TOOLS8_SUBS_ID_s390x=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL8_TOOLS_S390X_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+    TOOLS8_SUBS_ID_aarch64=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL8_TOOLS_AARCH64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
     satellite_runner  activation-key add-subscription --name='ak-rhel-8' --organization-id="${ORG}" --subscription-id="${TOOLS8_SUBS_ID}"
     satellite_runner  activation-key add-subscription --name='ak-rhel-8-ppc64le' --organization-id="${ORG}" --subscription-id="${TOOLS8_SUBS_ID_ppc64le}"
     satellite_runner  activation-key add-subscription --name='ak-rhel-8-s390x' --organization-id="${ORG}" --subscription-id="${TOOLS8_SUBS_ID_s390x}"

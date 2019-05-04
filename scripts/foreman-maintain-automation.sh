@@ -26,7 +26,7 @@ if [[ "$TEST_UPSTREAM" = "true" ]]; then
         ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@${SERVER_HOSTNAME} 'cd foreman_maintain; git fetch origin pull/'${PR_NUMBER}'/head:'${BRANCH_NAME}'; git checkout '${BRANCH_NAME}
     fi
 fi
-if [[ "$SATELLITE_VERSION" == "6.5" ]]; then
+if [[ "$SATELLITE_VERSION" != "6.3" ]] || [[ "$SATELLITE_VERSION" != "6.4" ]]; then
     sed -i "s/foreman-maintain {0} {1} {2}/satellite-maintain {0} {1} {2}/g" testfm/base.py
 fi
 export ANSIBLE_HOST_KEY_CHECKING=False

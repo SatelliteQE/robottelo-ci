@@ -101,10 +101,18 @@ fi
 
 # Below are the default ID's of various Satellite6 entities.
 # Basic Variables.
-# ORG of ID 1 refers to 'Default Organization'
-ORG=1
-# LOC of ID 2 refers to 'Default Location'
-LOC=2
+# ORG of ID 1 refers to 'Default Organization' if satellite is not 6.6
+if [ "${SAT_VERSION}" == "6.6" ]; then
+    ORG=2
+else
+    ORG=1
+fi
+# LOC of ID 2 refers to 'Default Location' if satellite is not 6.6
+if [ "${SAT_VERSION}" == "6.6" ]; then
+    LOC=1
+else
+    LOC=2
+fi
 
 # The ID of the Default/Internal capsule, which is Satellite6 itself.
 CAPSULE_ID=1
@@ -325,14 +333,14 @@ satellite_runner  activation-key update --name "ak-capsule-${RHELOS}" --auto-att
 # Add Subscriptions to both RHEL6 and RHEL7 Activation keys.
 # RHEL7 Section
 # Add Subscriptions to RHEL 7 activation key
-RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
-ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id | head -n 1)
+RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
+ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id | head -n 1)
 if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
-    RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Standard (Physical or Virtual Nodes)" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
-    ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id | head -n 1)
+    RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Enterprise Linux Server, Standard (Physical or Virtual Nodes)" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
+    ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id | head -n 1)
 fi
 
-TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL7_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
 satellite_runner  activation-key add-subscription --name='ak-rhel-7' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
 
 # As SATELLITE TOOLS REPO is already part of RHEL subscription.
@@ -342,7 +350,7 @@ fi
 
 # RHEL6 Section
 # Add Subscriptions to RHEL 6 activation key
-TOOLS6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL6_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+TOOLS6_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL6_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
 satellite_runner  activation-key add-subscription --name='ak-rhel-6' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
 
 # As SATELLITE TOOLS REPO is already part of RHEL subscription.
@@ -352,16 +360,16 @@ fi
 
 # Add Subscriptions to both RHEL6 and RHEL7 Capsule Activation keys.
 
-SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
+SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
 if [ "${POPULATE_CLIENTS_ARCH}" = "true" ]; then
-    SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Capsule Server (Capsule Server only, RHEL not included)" |  awk -F "," '{print $1}' | grep -vi id)
+    SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Capsule Server (Capsule Server only, RHEL not included)" |  awk -F "," '{print $1}' | grep -vi id)
 fi
 
 if [ "${RHELOS}" = "7" ]; then
     # Capsule 7 activation key
     if [ "${SATELLITE_DISTRIBUTION}" != "GA" ] && [ "${SATELLITE_DISTRIBUTION}" != "BETA" ]; then
-        CAPSULE7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
-        MAINTAIN7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6M7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+        CAPSULE7_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${SAT6C7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+        MAINTAIN7_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${SAT6M7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
     else
         CAPSULE7_SUBS_ID="${SATELLITE_SUBS_ID}"
     fi
@@ -391,7 +399,7 @@ if [ "${RHELOS}" = "7" ]; then
 else
     # Capsule 6 activation key
     if [ "${SATELLITE_DISTRIBUTION}" != "GA" ] && [ "${SATELLITE_DISTRIBUTION}" != "BETA" ]; then
-        CAPSULE6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C6_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+        CAPSULE6_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${SAT6C6_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
     else
         CAPSULE6_SUBS_ID="${SATELLITE_SUBS_ID}"
     fi
@@ -524,8 +532,13 @@ RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red H
 RHEL7_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL7_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1' | head -n 1)
 RHEL6_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL6_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1' | head -n 1)
 
-satellite_runner policy create --name='RHEL 7 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL7_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL7_SCAP_CONTENT_PROFILE_ID}"
-satellite_runner policy create --name='RHEL 6 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL6_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL6_SCAP_CONTENT_PROFILE_ID}"
+if [ "${SAT_VERSION}" == "6.6" ]; then
+    satellite_runner policy create --name='RHEL 7 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL7_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL7_SCAP_CONTENT_PROFILE_ID}" --deploy-by puppet
+    satellite_runner policy create --name='RHEL 6 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL6_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL6_SCAP_CONTENT_PROFILE_ID}" --deploy-by puppet
+else
+    satellite_runner policy create --name='RHEL 7 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL7_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL7_SCAP_CONTENT_PROFILE_ID}"
+    satellite_runner policy create --name='RHEL 6 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL6_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL6_SCAP_CONTENT_PROFILE_ID}"
+fi
 
 satellite_runner host-collection create --name="RHEL 7 Host collection" --organization-id "${ORG}"
 echo "RHEL 7 Host collection created"

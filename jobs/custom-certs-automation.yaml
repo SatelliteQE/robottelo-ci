@@ -30,6 +30,7 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.6'
                 - '6.5'
                 - '6.4'
                 - '6.3'
@@ -48,6 +49,7 @@
         - choice:
             name: UPGRADE_TO_VERSION
             choices:
+                - '6.6'
                 - '6.5'
                 - '6.4'
                 - '6.3'
@@ -98,7 +100,7 @@
     builders:
           - shining-panda:
               build-environment: virtualenv
-              python-version: System-CPython-2.7
+              python-version: System-CPython-3.6
               clear: true
               nature: shell
               command:
