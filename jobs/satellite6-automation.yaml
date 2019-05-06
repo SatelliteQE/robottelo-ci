@@ -330,6 +330,7 @@
         - build-blocker:
               blocking-jobs:
                   - "automation-{satellite_version}-tier4-{os}"
+                  - "automation-{satellite_version}-tier1-{os}"
     parameters:
         - satellite6-automation-parameters
     scm:
