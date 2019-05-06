@@ -1186,7 +1186,9 @@
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
-        - satellite6-automation-archiver
+        - archive:
+            artifacts: 'robottelo*.log,*-results.xml,robottelo.properties'
+            allow-empty: true
 
 - job-template:
     name: trigger-satellite-{satellite_version}
