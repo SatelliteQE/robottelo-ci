@@ -101,6 +101,18 @@ fi
 
 # Below are the default ID's of various Satellite6 entities.
 # Basic Variables.
+
+# The ID of the Default/Internal capsule, which is Satellite6 itself.
+CAPSULE_ID=1
+
+# The default puppet environment which is "production"
+PUPPET_ENV=1
+
+# Depending upon the below values only certain commands get excuted in this script.
+RHELOS=$(awk '{print $7}' /etc/redhat-release | cut -d . -f1)
+
+SAT_VERSION=6.3
+
 # ORG of ID 1 refers to 'Default Organization' if satellite is not 6.6
 if [ "${SAT_VERSION}" == "6.6" ]; then
     ORG=2
@@ -113,17 +125,6 @@ if [ "${SAT_VERSION}" == "6.6" ]; then
 else
     LOC=2
 fi
-
-# The ID of the Default/Internal capsule, which is Satellite6 itself.
-CAPSULE_ID=1
-
-# The default puppet environment which is "production"
-PUPPET_ENV=1
-
-# Depending upon the below values only certain commands get excuted in this script.
-RHELOS=$(awk '{print $7}' /etc/redhat-release | cut -d . -f1)
-
-SAT_VERSION=6.3
 
 # Plan is to install satellite6 with only RHEL6-x86_4 and RHEL7-x86_64 content
 # TODO: If more content is planned to be synced, set it under MINIMAL_INSTALL="false".
