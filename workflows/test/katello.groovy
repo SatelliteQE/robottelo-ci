@@ -89,23 +89,36 @@ pipeline {
                 }
                 stage('angular-ui') {
                     steps {
-                        gitlabCommitStatus(name: "angular-ui") {
-                            dir('foreman') {
-                                withRVM(['bundle show bastion > bastion-version'], ruby)
+                        script {
+                            gitlabCommitStatus(name: "angular-ui") {
+                                if (!fileExists('engines/bastion')) {
+                                    dir('foreman') {
+                                        withRVM(['bundle show bastion > bastion-version'], ruby)
 
-                                script {
-                                    bastion_install = readFile('bastion-version')
-                                    bastion_version = bastion_install.split('bastion-')[1]
-                                    echo bastion_install
-                                    echo bastion_version
+                                        script {
+                                            bastion_install = readFile('bastion-version')
+                                            bastion_version = bastion_install.split('bastion-')[1]
+                                            echo bastion_install
+                                            echo bastion_version
+                                        }
+                                    }
+
+                                    sh "cp -rf \$(cat foreman/bastion-version) plugin/engines/bastion_katello/bastion-${bastion_version}"
+                                    dir('plugin/engines/bastion_katello') {
+                                        sh "npm install npm"
+                                        sh "node_modules/.bin/npm install bastion-${bastion_version}"
+                                        sh "TZ=UTC grunt ci"
+                                    }
+                                } else {
+                                    dir('plugin/engines/bastion') {
+                                        sh "npm install"
+                                        sh "TZ=UTC grunt ci"
+                                    }
+                                    dir('plugin/engines/bastion_katello') {
+                                        sh "npm install"
+                                        sh "TZ=UTC grunt ci"
+                                    }
                                 }
-                            }
-
-                            sh "cp -rf \$(cat foreman/bastion-version) plugin/engines/bastion_katello/bastion-${bastion_version}"
-                            dir('plugin/engines/bastion_katello') {
-                                sh "npm install npm"
-                                sh "node_modules/.bin/npm install bastion-${bastion_version}"
-                                sh "TZ=UTC grunt ci"
                             }
                         }
                     }
