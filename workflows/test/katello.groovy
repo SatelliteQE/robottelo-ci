@@ -91,7 +91,7 @@ pipeline {
                     steps {
                         script {
                             gitlabCommitStatus(name: "angular-ui") {
-                                if (!fileExists('engines/bastion')) {
+                                if (!fileExists('plugin/engines/bastion')) {
                                     dir('foreman') {
                                         withRVM(['bundle show bastion > bastion-version'], ruby)
 
