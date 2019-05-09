@@ -5,6 +5,7 @@ function setupRequirement () {
 }
 
 # Sourcing and exporting required env vars and setting up robottelo properties
+
 function setupPrerequisites () {
     source "${CONFIG_FILES}"
     source config/compute_resources.conf
@@ -15,6 +16,16 @@ function setupPrerequisites () {
     source config/installation_environment.conf
     cp config/robottelo.properties ./robottelo.properties
     sed -i "s/{server_hostname}/${RHEV_SAT_HOST}/" robottelo.properties
+    sed -i "s/# rhev_cap_host=.*/rhev_cap_host=${RHEV_CAP_HOST}/" robottelo.properties
+    sed -i "s/# rhev_capsule_ak=.*/rhev_capsule_ak=${RHEV_CAPSULE_AK}/" robottelo.properties
+    sed -i "s/# from_version=.*/from_version=${FROM_VERSION}/" robottelo.properties
+    sed -i "s/# to_version=.*/to_version=${TO_VERSION}/" robottelo.properties
+    sed -i "s/^# \[vlan_networking\].*/[vlan_networking]/" robottelo.properties
+    sed -i "s/# bridge=.*/bridge=${BRIDGE}/" robottelo.properties
+    sed -i "s/# subnet=.*/subnet=${SUBNET}/" robottelo.properties
+    sed -i "s/# gateway=.*/gateway=${GATEWAY}/" robottelo.properties
+    sed -i "s/# netmask=.*/netmask=${NETMASK}/" robottelo.properties
+
     # Robottelo logging configuration
     sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
     # Bugzilla Login Details
