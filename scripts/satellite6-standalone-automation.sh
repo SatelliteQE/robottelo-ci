@@ -19,7 +19,11 @@ else
     sed -i "s/# bz_password=.*/bz_password=${BUGZILLA_PASSWORD}/" robottelo.properties
     sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
 
-    sed -i "s|sattools_repo.*|sattools_repo=rhel8=${RHEL8_TOOLS_REPO:-${TOOLS_RHEL8}},rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
+    if [[ ${SATELLITE_VERSION} =~ ^6\.[234] ]]; then
+        sed -i "s|sattools_repo.*|sattools_repo=rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
+    else
+        sed -i "s|sattools_repo.*|sattools_repo=rhel8=${RHEL8_TOOLS_REPO:-${TOOLS_RHEL8}},rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
+    fi
     sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
