@@ -1,6 +1,7 @@
 - job:
     name: rhui-3-rhui-packaging-scratch-build
     project-type: pipeline
+    sandbox: true
     concurrent: true
     build-discarder:
       days-to-keep: 45
@@ -24,6 +25,7 @@
         - workflows/packaging/rhuiPackaging.groovy
         - workflows/packaging/scratchBuildPackaging.groovy
         - workflows/lib/packaging.groovy
+        - pipelines/lib/ansible.groovy
         - pipelines/lib/obal.groovy
         - workflows/lib/toolbelt.groovy
         - workflows/lib/kerberos.groovy

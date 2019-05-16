@@ -1,6 +1,15 @@
 # Install the latest version of betelgeuse.
 pip install betelgeuse
 
+
+if [[ ${BETELGEUSE_AUTOMATION_PROJECT} = "satellite6-upgrade" ]]; then
+    export BETELGEUSE_TC_PATH='upgrade_tests/test_existance_relations'
+elif [[ "${SATELLITE_VERSION}" = "6.3" ]] ; then
+    export BETELGEUSE_TC_PATH='tests/foreman/api tests/foreman/cli tests/foreman/ui tests/foreman/longrun tests/foreman/sys tests/foreman/installer tests/foreman/rhai'
+else
+    export BETELGEUSE_TC_PATH='tests/foreman/api tests/foreman/cli tests/foreman/ui_airgun tests/foreman/longrun tests/foreman/sys tests/foreman/installer tests/foreman/rhai'
+fi
+
 for TC_PATH in $(echo ${BETELGEUSE_TC_PATH}) ; do \
 betelgeuse requirement \
     ${TC_PATH} \

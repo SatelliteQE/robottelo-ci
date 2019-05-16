@@ -3,7 +3,7 @@
     wrappers:
         - raw:
             xml: |
-                <hudson.plugins.sauce__ondemand.SauceOnDemandBuildWrapper>
+                <hudson.plugins.sauce__ondemand.SauceOnDemandBuildWrapper plugin="sauce-ondemand@1.176">
                   <useGeneratedTunnelIdentifier>true</useGeneratedTunnelIdentifier>
                   <nativeAppPackage></nativeAppPackage>
                   <useChromeForAndroid>false</useChromeForAndroid>
@@ -14,8 +14,10 @@
                   <webDriverBrowsers/>
                   <appiumBrowsers/>
                   <useLatestVersion>false</useLatestVersion>
+                  <useLatestSauceConnect>true</useLatestSauceConnect>
+                  <forceCleanup>true</forceCleanup>
                   <launchSauceConnectOnSlave>true</launchSauceConnectOnSlave>
-                  <verboseLogging>false</verboseLogging>
-                  <condition class="org.jenkins_ci.plugins.run_condition.core.AlwaysRun"/>
+                  <verboseLogging>true</verboseLogging>
+                  <condition class="org.jenkins_ci.plugins.run_condition.core.AlwaysRun" plugin="run-condition@1.0"/>
                   <credentialId>e20b4b28-acfd-44e2-811d-5c43902593a7</credentialId>
                 </hudson.plugins.sauce__ondemand.SauceOnDemandBuildWrapper>

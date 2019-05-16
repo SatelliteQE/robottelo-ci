@@ -10,7 +10,7 @@ node('sat6-build') {
 
         def compose_git_repo = env.COMPOSE_GIT_REPOSITORY ?: ''
 
-        runPlaybook {
+        runDownstreamPlaybook {
             playbook = 'playbooks/clone_compose_repo.yml'
             extraVars = [
                 'compose_git_repo': compose_git_repo
@@ -25,7 +25,7 @@ node('sat6-build') {
             extraVars = [
                 'compose_git_repo': compose_git_repo,
                 'compose_version': 'sat-maintenance-6',
-                'compose_label': 'SatMaintenance-6',
+                'compose_label': compose_label,
                 'compose_name': 'satellite-maintenance-6',
                 'compose_tag': compose_tag
             ]
@@ -46,9 +46,10 @@ node('sat6-build') {
 
         runPlaybookInParallel {
             name = "sync"
-            items = products
-            item_name = 'product'
-            playbook = 'playbooks/sync_products.yml'
+            items = maintenance_repositories
+            item_name = 'repository'
+            extraVars = ["product": maintenance_product]
+            playbook = 'playbooks/sync_repositories.yml'
         }
 
     }

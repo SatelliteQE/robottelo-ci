@@ -10,7 +10,8 @@ node('sat6-build') {
     stage("Sync Repositories") {
         def products = [
             'Red Hat Enterprise Linux Server',
-            'Red Hat Software Collections for RHEL Server'
+            'Red Hat Enterprise Linux for x86_64',
+            'Red Hat Software Collections (for RHEL Server)'
         ]
 
         runPlaybookInParallel {
@@ -24,7 +25,8 @@ node('sat6-build') {
     stage("Publish Content Views") {
         def content_views = [
             'RHEL6',
-            'RHEL7'
+            'RHEL7',
+            'RHEL8'
         ]
 
         runPlaybookInParallel {

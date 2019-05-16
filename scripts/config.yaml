@@ -1,7 +1,0 @@
-'organization': 'Sat6-CI'
-'username': 'admin'
-'password': 'changeme'
-'server': 'https://sat-r220-02.lab.eng.rdu2.redhat.com'
-'content_view': 'Satellite 6.3 RHEL7'
-'lifecycle_environment': 'QA'
-'from_lifecycle_environment': 'Library'

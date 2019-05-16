@@ -1,6 +1,7 @@
 - job:
     name: 'sat-release-pulp-docker'
     project-type: pipeline
+    sandbox: true
     parameters:
       - release_branch
     dsl:
@@ -10,6 +11,7 @@
           - ./source_types/sourceTypeTar.groovy
           - workflows/releasePackageWorkflow.groovy
           - workflows/lib/toolbelt.groovy
+          - foreman-infra/pipelines/lib/ansible.groovy
           - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications

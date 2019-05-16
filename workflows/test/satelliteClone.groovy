@@ -1,11 +1,11 @@
 node('sat6-build') {
 
-   // ssh into bread.usersys.redhat.com
+   // ssh into machine
    // cd ~/dolly
    // run ./jenkins/run_dolly.rb <pr_number>
    // check exit code
     stage("Run Clones") {
-        runOnBread("cd ~/dolly; ./jenkins/run_dolly.rb ${pr_number}")
+        runOnBread("~/dolly/jenkins/run_dolly.rb ${pr_number}")
     }
 }
 

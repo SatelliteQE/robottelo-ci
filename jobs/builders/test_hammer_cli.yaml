@@ -1,4 +1,0 @@
-- builder:
-    name: test_hammer_cli
-    builders:
-        - shell: !include-raw: scripts/test_hammer_cli.sh

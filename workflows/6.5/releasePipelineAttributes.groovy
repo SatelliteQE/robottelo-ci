@@ -1,5 +1,5 @@
 def compose_versions = ['7']
-def tools_compose_versions = ['7', '6', '5']
+def tools_compose_versions = ['8', '7', '6', '5']
 
 def os_versions = ['7']
 
@@ -16,6 +16,10 @@ def capsule_repositories = [
 ]
 
 def tools_repositories = [
+    "Satellite Tools 6.5 RHEL8 x86_64",
+    "Satellite Tools 6.5 RHEL8 ppc64le",
+    "Satellite Tools 6.5 RHEL8 s390x",
+    "Satellite Tools 6.5 RHEL8 aarch64",
     "Satellite Tools 6.5 RHEL7 x86_64",
     "Satellite Tools 6.5 RHEL7 ppc64le",
     "Satellite Tools 6.5 RHEL7 ppc64",
@@ -39,6 +43,7 @@ def capsule_content_views = [
 ]
 
 def tools_content_views = [
+    'Tools 6.5 RHEL8',
     'Tools 6.5 RHEL7',
     'Tools 6.5 RHEL6',
     'Tools 6.5 RHEL5'
@@ -53,6 +58,7 @@ def capsule_composite_content_views = [
     'Capsule 6.5 with RHEL7 Server'
 ]
 def tools_composite_content_views = [
+    'Tools 6.5 with RHEL8 Server',
     'Tools 6.5 with RHEL7 Server',
     'Tools 6.5 with RHEL6 Server',
     'Tools 6.5 with RHEL5 Server'
@@ -66,6 +72,7 @@ def capsule_activation_keys = [
     'capsule-6.5.0-qa-rhel7'
 ]
 def tools_activation_keys = [
+    'satellite-tools-6.5.0-qa-rhel8',
     'satellite-tools-6.5.0-qa-rhel7',
     'satellite-tools-6.5.0-qa-rhel6',
     'satellite-tools-6.5.0-qa-rhel5'

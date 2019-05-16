@@ -1,0 +1,9 @@
+- property:
+    name: satellite6-release-pipeline-throttle
+    properties:
+      - throttle:
+          max-per-node: 2
+          max-total: 2
+          categories:
+            - release_pipelines
+          option: category

@@ -101,10 +101,6 @@ fi
 
 # Below are the default ID's of various Satellite6 entities.
 # Basic Variables.
-# ORG of ID 1 refers to 'Default Organization'
-ORG=1
-# LOC of ID 2 refers to 'Default Location'
-LOC=2
 
 # The ID of the Default/Internal capsule, which is Satellite6 itself.
 CAPSULE_ID=1
@@ -116,6 +112,19 @@ PUPPET_ENV=1
 RHELOS=$(awk '{print $7}' /etc/redhat-release | cut -d . -f1)
 
 SAT_VERSION=6.3
+
+# ORG of ID 1 refers to 'Default Organization' if satellite is not 6.6
+if [ "${SAT_VERSION}" == "6.6" ]; then
+    ORG=2
+else
+    ORG=1
+fi
+# LOC of ID 2 refers to 'Default Location' if satellite is not 6.6
+if [ "${SAT_VERSION}" == "6.6" ]; then
+    LOC=1
+else
+    LOC=2
+fi
 
 # Plan is to install satellite6 with only RHEL6-x86_4 and RHEL7-x86_64 content
 # TODO: If more content is planned to be synced, set it under MINIMAL_INSTALL="false".
@@ -134,6 +143,17 @@ if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
     CAPSULE7_REPO="Red Hat Satellite Capsule ${SAT_VERSION} for RHEL 7 Server RPMs x86_64"
     SAT6M7_PRODUCT="Red Hat Enterprise Linux Server"
     MAINTAIN7_REPO="Red Hat Satellite Maintenance 6 for RHEL 7 Server RPMs x86_64"
+elif [ "${SATELLITE_DISTRIBUTION}" = "BETA" ]; then
+    RHEL6_TOOLS_PRD="Red Hat Enterprise Linux Server"
+    RHEL6_TOOLS_REPO="Red Hat Satellite Tools 6 Beta for RHEL 6 Server RPMs x86_64"
+    RHEL7_TOOLS_PRD="Red Hat Enterprise Linux Server"
+    RHEL7_TOOLS_REPO="Red Hat Satellite Tools 6 Beta for RHEL 7 Server RPMs x86_64"
+    SAT6C6_PRODUCT="Red Hat Satellite Capsule Beta"
+    CAPSULE6_REPO="Red Hat Satellite Capsule 6 Beta for RHEL 6 Server RPMs x86_64"
+    SAT6C7_PRODUCT="Red Hat Satellite Capsule Beta"
+    CAPSULE7_REPO="Red Hat Satellite Capsule 6 Beta for RHEL 7 Server RPMs x86_64"
+    SAT6M7_PRODUCT="Red Hat Enterprise Linux Server"
+    MAINTAIN7_REPO="Red Hat Satellite Maintenance 6 Beta for RHEL 7 Server RPMs x86_64"
 else
     RHEL6_TOOLS_PRD=Sat6Tools6
     RHEL6_TOOLS_REPO=sat6tool6
@@ -200,8 +220,8 @@ satellite_runner subscription upload --organization-id "${ORG}" --file "${HOME}"
 
 # Enable Red Hat repositories
 # Kickstart trees
-satellite_runner repository-set enable --name="Red Hat Enterprise Linux 7 Server (Kickstart)" --basearch="x86_64" --releasever="7.5" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
-satellite_runner repository-set enable --name="Red Hat Enterprise Linux 6 Server (Kickstart)" --basearch="x86_64" --releasever="6.9" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+satellite_runner repository-set enable --name="Red Hat Enterprise Linux 7 Server (Kickstart)" --basearch="x86_64" --releasever="7.6" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+satellite_runner repository-set enable --name="Red Hat Enterprise Linux 6 Server (Kickstart)" --basearch="x86_64" --releasever="6.10" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
 
 # 'Base' OS RPMs
 satellite_runner repository-set enable --name="Red Hat Enterprise Linux 7 Server (RPMs)" --basearch="x86_64" --releasever="7Server" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
@@ -211,7 +231,11 @@ satellite_runner repository-set enable --name="Red Hat Enterprise Linux 6 Server
 satellite_runner repository-set enable --name="Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server" --basearch="x86_64" --releasever="7Server" --product "Red Hat Software Collections for RHEL Server" --organization-id="${ORG}"
 
 # Foreman-Maintain repos
-satellite_runner repository-set enable --name="Red Hat Satellite Maintenance 6 (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+if [ "${SATELLITE_DISTRIBUTION}" = "BETA" ]; then
+    satellite_runner repository-set enable --name="Red Hat Satellite Maintenance 6 Beta (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+else
+    satellite_runner repository-set enable --name="Red Hat Satellite Maintenance 6 (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+fi
 
 # Ansible repos
 satellite_runner repository-set enable --name="Red Hat Ansible Engine 2 RPMs for Red Hat Enterprise Linux 7 Server" --basearch="x86_64" --product "Red Hat Ansible Engine" --organization-id="${ORG}"
@@ -226,6 +250,16 @@ if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
     satellite_runner repository-set enable --name="Red Hat Satellite Capsule ${SAT_VERSION} (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Satellite Capsule" --organization-id="${ORG}"
 fi
 
+# Satellite6 CDN BETA RPMS
+if [ "${SATELLITE_DISTRIBUTION}" = "BETA" ]; then
+   # Satellite6 Tools RPMS
+    satellite_runner repository-set enable --name="Red Hat Satellite Tools 6 Beta (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+    satellite_runner repository-set enable --name="Red Hat Satellite Tools 6 Beta (for RHEL 6 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+    # Satellite6 Capsule RPMS
+    satellite_runner repository-set enable --name="Red Hat Satellite Capsule 6 Beta (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Satellite Capsule Beta" --organization-id="${ORG}"
+    satellite_runner repository-set enable --name="Red Hat Satellite Capsule 6 Beta (for RHEL 6 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Satellite Capsule Beta" --organization-id="${ORG}"
+fi
+
 # Synchronize all repositories except for Puppet repositories which don't have URLs
 for repo in $(satellite --csv repository list --organization-id="${ORG}" --per-page=1000 | grep -vi 'puppet' | cut -d ',' -f 1 | grep -vi '^ID'); do
     satellite_runner repository synchronize --id "${repo}" --organization-id="${ORG}" --async
@@ -237,7 +271,7 @@ for id in `satellite --csv task list | grep -i synchronize | awk -F "," '{print 
 # Create Repos and Sync Repositories.
 # Create both Tools for RHEL6 and RHEL7 and Capsule for RHEL6 and RHEL7
 
-if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+if [ "${SATELLITE_DISTRIBUTION}" != "GA" ] && [ "${SATELLITE_DISTRIBUTION}" != "BETA" ]; then
     create-repo "${RHEL6_TOOLS_PRD}" "${RHEL6_TOOLS_REPO}" "${RHEL6_TOOLS_URL}"
     create-repo "${RHEL7_TOOLS_PRD}" "${RHEL7_TOOLS_REPO}" "${RHEL7_TOOLS_URL}"
     create-repo "${SAT6C7_PRODUCT}" "${CAPSULE7_REPO}" "${CAPSULE7_URL}"
@@ -254,14 +288,14 @@ satellite_runner content-view create --name 'Capsule RHEL 7 CV' --organization-i
 
 # Add content to content views
 # RHEL 7
-satellite_runner  content-view add-repository --name='RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.5'
+satellite_runner  content-view add-repository --name='RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.6'
 satellite_runner  content-view add-repository --name='RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server'
 satellite_runner  content-view add-repository --name='RHEL 7 CV' --organization-id="${ORG}" --product="${RHEL7_TOOLS_PRD}" --repository="${RHEL7_TOOLS_REPO}"
 satellite_runner  content-view publish --name='RHEL 7 CV' --organization-id="${ORG}"
 satellite_runner  content-view version promote --content-view='RHEL 7 CV' --organization-id="${ORG}" --to-lifecycle-environment=DEV --from-lifecycle-environment="Library"
 
 # RHEL 6
-satellite_runner  content-view add-repository --name='RHEL 6 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 6 Server Kickstart x86_64 6.9'
+satellite_runner  content-view add-repository --name='RHEL 6 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 6 Server Kickstart x86_64 6.10'
 satellite_runner  content-view add-repository --name='RHEL 6 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 6 Server RPMs x86_64 6Server'
 satellite_runner  content-view add-repository --name='RHEL 6 CV' --organization-id="${ORG}" --product="${RHEL6_TOOLS_PRD}" --repository="${RHEL6_TOOLS_REPO}"
 satellite_runner  content-view publish --name='RHEL 6 CV' --organization-id="${ORG}"
@@ -270,7 +304,6 @@ satellite_runner  content-view version promote --content-view='RHEL 6 CV' --orga
 if [ "${RHELOS}" = "7" ]; then
     # Capsule RHEL7
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server'
-    satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Satellite Maintenance 6 for RHEL 7 Server RPMs x86_64'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Software Collections for RHEL Server' --repository='Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server x86_64 7Server'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Ansible Engine' --repository='Red Hat Ansible Engine 2 RPMs for Red Hat Enterprise Linux 7 Server x86_64'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product="${RHEL7_TOOLS_PRD}" --repository="${RHEL7_TOOLS_REPO}"
@@ -301,43 +334,43 @@ satellite_runner  activation-key update --name "ak-capsule-${RHELOS}" --auto-att
 # Add Subscriptions to both RHEL6 and RHEL7 Activation keys.
 # RHEL7 Section
 # Add Subscriptions to RHEL 7 activation key
-RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
-ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id | head -n 1)
+RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
+ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id | head -n 1)
 if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
-    RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Standard (Physical or Virtual Nodes)" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
-    ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id | head -n 1)
+    RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Enterprise Linux Server, Standard (Physical or Virtual Nodes)" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
+    ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id | head -n 1)
 fi
 
-TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL7_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+TOOLS7_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL7_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
 satellite_runner  activation-key add-subscription --name='ak-rhel-7' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
 
 # As SATELLITE TOOLS REPO is already part of RHEL subscription.
-if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+if [ "${SATELLITE_DISTRIBUTION}" != "GA" ] && [ "${SATELLITE_DISTRIBUTION}" != "BETA" ]; then
     satellite_runner  activation-key add-subscription --name='ak-rhel-7' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID}"
 fi
 
 # RHEL6 Section
 # Add Subscriptions to RHEL 6 activation key
-TOOLS6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${RHEL6_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
+TOOLS6_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL6_TOOLS_PRD}" | awk -F "," '{print $1}' | grep -vi id)
 satellite_runner  activation-key add-subscription --name='ak-rhel-6' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
 
 # As SATELLITE TOOLS REPO is already part of RHEL subscription.
-if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+if [ "${SATELLITE_DISTRIBUTION}" != "GA" ] && [ "${SATELLITE_DISTRIBUTION}" != "BETA" ]; then
     satellite_runner  activation-key add-subscription --name='ak-rhel-6' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID}"
 fi
 
 # Add Subscriptions to both RHEL6 and RHEL7 Capsule Activation keys.
 
-SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
+SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
 if [ "${POPULATE_CLIENTS_ARCH}" = "true" ]; then
-    SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=1 | grep -i "Red Hat Satellite Capsule Server (Capsule Server only, RHEL not included)" |  awk -F "," '{print $1}' | grep -vi id)
+    SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Capsule Server (Capsule Server only, RHEL not included)" |  awk -F "," '{print $1}' | grep -vi id)
 fi
 
 if [ "${RHELOS}" = "7" ]; then
     # Capsule 7 activation key
-    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
-        CAPSULE7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
-        MAINTAIN7_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6M7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ] && [ "${SATELLITE_DISTRIBUTION}" != "BETA" ]; then
+        CAPSULE7_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${SAT6C7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+        MAINTAIN7_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${SAT6M7_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
     else
         CAPSULE7_SUBS_ID="${SATELLITE_SUBS_ID}"
     fi
@@ -353,19 +386,21 @@ if [ "${RHELOS}" = "7" ]; then
     if [ "${SATELLITE_DISTRIBUTION}" = "GA" ]; then
         # For GA the SUBS_ID would come from RHEL.
         satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-7-server-satellite-maintenance-6-rpms" --value="1"  --organization-id=${ORG}
+    elif [ "${SATELLITE_DISTRIBUTION}" = "BETA" ]; then
+        satellite_runner  activation-key content-override --name='ak-capsule-7' --content-label="rhel-7-server-satellite-maintenance-6-beta-rpms" --value="1"  --organization-id=${ORG}
     else
         # For Internal no need to do content-override as for custom repos it is enabled by default.
         satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${MAINTAIN7_SUBS_ID}"
     fi
 
     # As SATELLITE TOOLS REPO is already part of RHEL subscription.
-    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ] && [ "${SATELLITE_DISTRIBUTION}" != "BETA" ]; then
         satellite_runner  activation-key add-subscription --name='ak-capsule-7' --organization-id="${ORG}" --subscription-id="${TOOLS7_SUBS_ID}"
     fi
 else
     # Capsule 6 activation key
-    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
-        CAPSULE6_SUBS_ID=$(satellite  --csv subscription list --organization-id=1 --search="name=${SAT6C6_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
+    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ] && [ "${SATELLITE_DISTRIBUTION}" != "BETA" ]; then
+        CAPSULE6_SUBS_ID=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${SAT6C6_PRODUCT}" | awk -F "," '{print $1}' | grep -vi id)
     else
         CAPSULE6_SUBS_ID="${SATELLITE_SUBS_ID}"
     fi
@@ -374,7 +409,7 @@ else
     satellite_runner  activation-key add-subscription --name='ak-capsule-6' --organization-id="${ORG}" --subscription-id="${CAPSULE6_SUBS_ID}"
 
     # As SATELLITE TOOLS REPO is already part of RHEL subscription.
-    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
+    if [ "${SATELLITE_DISTRIBUTION}" != "GA" ] && [ "${SATELLITE_DISTRIBUTION}" != "BETA" ]; then
         satellite_runner  activation-key add-subscription --name='ak-capsule-6' --organization-id="${ORG}" --subscription-id="${TOOLS6_SUBS_ID}"
     fi
 fi
@@ -431,10 +466,10 @@ satellite_runner capsule import-classes --id 1 --environment-id 1
 
 # Populate the RHEL6 and RHEL7 OS ID
 
-RHEL7_OS_ID=$(satellite --csv os list | grep "7.5" | cut -d ',' -f1 | grep -vi "^id")
+RHEL7_OS_ID=$(satellite --csv os list | grep "7.6" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL7 OS ID is: ${RHEL7_OS_ID}"
 
-RHEL6_OS_ID=$(satellite --csv os list | grep "6.9" | cut -d ',' -f1 | grep -vi "^id")
+RHEL6_OS_ID=$(satellite --csv os list | grep "6.10" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL6 OS ID is: ${RHEL6_OS_ID}"
 
 if [ "${SAT_VERSION}" = "6.3" ]; then
@@ -492,14 +527,16 @@ else
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-7'
 fi
 
-# TODO, fix for sat6.4 ,sat6.5
-if [ "${SAT_VERSION}" = "6.3" ]; then
-    RHEL7_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel7 default content"' | cut -d ',' -f1 | grep -vi 'id')
-    RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel6 default content"' | cut -d ',' -f1 | grep -vi 'id')
+RHEL7_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel7 default content"' | cut -d ',' -f1 | grep -vi 'id')
+RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red Hat rhel6 default content"' | cut -d ',' -f1 | grep -vi 'id')
 
-    RHEL7_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL7_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1')
-    RHEL6_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL6_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1')
+RHEL7_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL7_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1' | head -n 1)
+RHEL6_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL6_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1' | head -n 1)
 
+if [ "${SAT_VERSION}" == "6.6" ]; then
+    satellite_runner policy create --name='RHEL 7 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL7_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL7_SCAP_CONTENT_PROFILE_ID}" --deploy-by puppet
+    satellite_runner policy create --name='RHEL 6 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL6_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL6_SCAP_CONTENT_PROFILE_ID}" --deploy-by puppet
+else
     satellite_runner policy create --name='RHEL 7 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL7_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL7_SCAP_CONTENT_PROFILE_ID}"
     satellite_runner policy create --name='RHEL 6 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL6_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL6_SCAP_CONTENT_PROFILE_ID}"
 fi

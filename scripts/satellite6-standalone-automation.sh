@@ -3,7 +3,7 @@ set -o nounset
 source ${CONFIG_FILES}
 source config/sat6_repos_urls.conf
 
-pip install -U -r requirements.txt docker-py pytest-xdist sauceclient
+pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
 
 if [ -n "${ROBOTTELO_PROPERTIES:-}" ]; then
     echo "${ROBOTTELO_PROPERTIES}" > ./robottelo.properties
@@ -19,7 +19,7 @@ else
     sed -i "s/# bz_password=.*/bz_password=${BUGZILLA_PASSWORD}/" robottelo.properties
     sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
 
-    sed -i "s|sattools_repo.*|sattools_repo=rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
+    sed -i "s|sattools_repo.*|sattools_repo=rhel8=${RHEL8_TOOLS_REPO:-${TOOLS_RHEL8}},rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
     sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
@@ -30,7 +30,7 @@ else
 fi
 
 # Sauce Labs Configuration and pytest-env setting
-if [[ "${SATELLITE_VERSION}" == "6.4" || "${SATELLITE_VERSION}" == "6.5" ]]; then
+if [[ "${SATELLITE_VERSION}" != "6.2" || "${SATELLITE_VERSION}" != "6.3" ]]; then
     SAUCE_BROWSER="chrome"
 
     pip install -U pytest-env
@@ -56,15 +56,22 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
         BROWSER_VERSION=14.14393
     elif [[ "${SAUCE_BROWSER}" == "chrome" ]]; then
         BROWSER_VERSION=63.0
+    # Only chrome version testing support
+    elif [[ -n "${BROWSER_VERSION}" ]]; then
+        BROWSER_VERSION=${BROWSER_VERSION}
     fi
     if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
         SELENIUM_VERSION=2.48.0
     elif [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
         SELENIUM_VERSION=2.53.1
+    elif [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+        SELENIUM_VERSION=3.14.0
+    elif [[ -n "${SELENIUM_VERSION}" ]]; then
+        SELENIUM_VERSION=${SELENIUM_VERSION}
     else
-        SELENIUM_VERSION=3.8.1
+        SELENIUM_VERSION=3.141.0
     fi
-    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${SATELLITE_VERSION}-$(date +%Y-%m-%d-%S),screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER}/" robottelo.properties
+    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${SATELLITE_VERSION}-$(date +%Y-%m-%d-%S),screenResolution=1600x1200,extendedDebugging=true,tunnelIdentifier=${TUNNEL_IDENTIFIER}/" robottelo.properties
 fi
 
 pytest() {

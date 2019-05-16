@@ -33,24 +33,30 @@
         - choice:
             name: FROM_VERSION
             choices:
-                - '6.4'
                 - '6.5'
+                - '6.6'
+                - '6.4'
                 - '6.3'
                 - '6.2'
-                - '6.1'
-                - '6.0'
             description: |
                 <p>Select the currently installed Satellite version.</p>
         - choice:
             name: TO_VERSION
             choices:
+                - '6.6'
                 - '6.5'
                 - '6.4'
                 - '6.3'
                 - '6.2'
-                - '6.1'
             description: |
                 <p>Select the Satellite <b>TO_VERSION</b> to upgrade.</p>
+        - string:
+            name: UPGRADE_BRANCH
+            default: master
+            description: |
+                <p>The Upgrade Git branch as per TO_VERSION, if not TO_VERSION is latest</p>
+                <p>like if TO_VERSION is 6.4, then branch should be 6.4.z</p>
+                <p>But in case of latest TO_VERSION, branch will be always master</p>
         - choice:
             name: DISTRIBUTION
             choices:
@@ -64,10 +70,11 @@
             choices:
                 - rhel7
                 - rhel6
+                - rhel8
         - string:
             name: CLIENTS_COUNT
             description: |
-                <p>The number of RHEL6 and RHEL7 docker clients to Generate.</p>
+                <p>The number of RHEL6,RHEL7 and RHEL8 docker clients to Generate.</p>
                 <p>The number of clients will be devided in equal amount for RHEL6 and RHEL7. e.g if 10 is given then 5 each.</p>
         - bool:
             name: RUN_EXISTANCE_TESTS
@@ -121,7 +128,7 @@
         - git:
             url: https://github.com/SatelliteQE/satellite6-upgrade.git
             branches:
-                - origin/master
+                - origin/${UPGRADE_BRANCH}
             skip-tag: true
     wrappers:
         - build-name:
@@ -132,16 +139,36 @@
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
                   variable: CONFIG_FILES
         - default-wrappers
+        - satellite6-maskpassword-wrappers
     builders:
-          - shining-panda:
-              build-environment: virtualenv
-              python-version: System-CPython-2.7
-              clear: true
-              nature: shell
-              command:
-                !include-raw:
-                    - 'pip-install-pycurl.sh'
-                    - 'satellite6_upgrader.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[12])
+            label: ${ENV,var="TO_VERSION"}
+            steps:
+                - shining-panda:
+                    build-environment: virtualenv
+                    python-version: System-CPython-2.7
+                    clear: true
+                    nature: shell
+                    command:
+                      !include-raw:
+                        - 'pip-install-pycurl.sh'
+                        - 'satellite6_upgrader.sh'
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[3456])
+            label: ${ENV,var="TO_VERSION"}
+            steps:
+                - shining-panda:
+                    build-environment: virtualenv
+                    python-version: System-CPython-3.6
+                    clear: true
+                    nature: shell
+                    command:
+                      !include-raw:
+                        - 'pip-install-pycurl.sh'
+                        - 'satellite6_upgrader.sh'
     publishers:
         - satellite6-automation-publishers
         - archive:

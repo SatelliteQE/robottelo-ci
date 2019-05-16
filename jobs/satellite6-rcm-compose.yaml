@@ -17,6 +17,18 @@
             name: RCM_SATELLITE_URL
             description: "This is Mandatory, RCM compose url of Satellite 6 packages."
         - string:
+            name: RCM_SAT6TOOLS8_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools x86_64 for rhel 8 packages."
+        - string:
+            name: RCM_SAT6TOOLS8_S390X_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools s390x for rhel 8 packages."
+        - string:
+            name: RCM_SAT6TOOLS8_PPC64LE_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools ppc64le for rhel 8 packages."
+        - string:
+            name: RCM_SAT6TOOLS8_AARCH64_URL
+            description: "This is Mandatory, RCM compose url of Satellite 6 tools aarch64 for rhel 8 packages."
+        - string:
             name: RCM_SAT6TOOLS7_URL
             description: "This is Mandatory, RCM compose url of Satellite 6 tools x86_64 for rhel 7 packages."
         - string:
@@ -51,7 +63,10 @@
             description: "This is Mandatory, RCM compose url of Satellite 6 capsule for rhel 7 packages."
         - string:
             name: RCM_CAPSULE6_URL
-            description: "This is Mandatory, RCM compose url of Satellite 6 capsule for rhel 6 packages."
+            description: "This is Optional, RCM compose url of Satellite 6 capsule for rhel 6 packages."
+        - string:
+            name: RCM_MAINTAIN_URL
+            description: "This is Optional, RCM compose url of Satellite Maintenance packages."
         - bool:
             name: DEFAULT_SAT6_URLS
             default: true
@@ -59,14 +74,26 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.6'
                 - '6.5'
                 - '6.4'
                 - '6.3'
                 - '6.2'
-                - '6.1'
             description: "This is Mandatory, if DEFAULT_SAT6_URLS is checked."
         - string:
             name: SATELLITE_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS8_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS8_S390X_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS8_PPC64LE_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
+            name: SAT6TOOLS8_AARCH64_URL
             description: "This is required if DEFAULT_SAT6_URLS is unchecked."
         - string:
             name: SAT6TOOLS7_URL
@@ -105,6 +132,9 @@
             name: CAPSULE6_URL
             description: "This is required if DEFAULT_SAT6_URLS is unchecked."
         - string:
+            name: MAINTAIN_URL
+            description: "This is required if DEFAULT_SAT6_URLS is unchecked."
+        - string:
             name: CI_REPO
             default: https://github.com/SatelliteQE/automation-tools.git
             description: "You can override this to your automation-tools repo, if needed."
@@ -132,7 +162,7 @@
     builders:
         - shining-panda:
             build-environment: virtualenv
-            python-version: System-CPython-2.7
+            python-version: System-CPython-3.6
             clear: true
             nature: shell
             command:

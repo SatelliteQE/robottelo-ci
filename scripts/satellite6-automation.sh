@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt docker-py pytest-xdist sauceclient git+git://github.com/rplevka/client-Python@env_race_condition_2 git+git://github.com/rplevka/agent-python-pytest
+pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
 
 cp config/robottelo.properties ./robottelo.properties
 cp config/robottelo.yaml ./robottelo.yaml
@@ -9,20 +9,9 @@ sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottel
 
 # Robottelo logging configuration
 sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
-# for rp_logger configuration
-cp config/pytest.ini ./pytest.ini
-
-if [ "${SATELLITE_VERSION,,}" = "upstream-nightly" ]; then
-    RP_PROJECT="katello-nightly"
-else
-    RP_PROJECT="Satellite6"
-fi
-sed -i "s|rp_project =.*|rp_project = ${RP_PROJECT}|" pytest.ini
-sed -i "s|rp_launch =.*|rp_launch = Satellite6|" pytest.ini
-RP_LAUNCH_TAGS="\'${BUILD_LABEL}\' \'${ENDPOINT}\' \'${BRIDGE}\' \'${SAUCE_PLATFORM}\' \'${SATELLITE_VERSION}\'"
 
 # Sauce Labs Configuration and pytest-env setting.
-if [[ "${SATELLITE_VERSION}" == "6.4" || "${SATELLITE_VERSION}" == "6.5" ]]; then
+if [[ "${SATELLITE_VERSION}" != "6.3" ]]; then
     SAUCE_BROWSER="chrome"
 
     pip install -U pytest-env
@@ -37,28 +26,19 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     sed -i "s/^# saucelabs_user=.*/saucelabs_user=${SAUCELABS_USER}/" robottelo.properties
     sed -i "s/^# saucelabs_key=.*/saucelabs_key=${SAUCELABS_KEY}/" robottelo.properties
     sed -i "s/^# webdriver=.*/webdriver=${SAUCE_BROWSER}/" robottelo.properties
-    if [[ "${SAUCE_BROWSER}" == "firefox" ]]; then
-        # Temporary change to test Selenium and Firefox changes.
-        if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
-            BROWSER_VERSION=45.0
-        else
-            BROWSER_VERSION=47.0
-        fi
-    elif [[ "${SAUCE_BROWSER}" == "edge" ]]; then
+    if [[ "${SAUCE_BROWSER}" == "edge" ]]; then
         BROWSER_VERSION=14.14393
     elif [[ "${SAUCE_BROWSER}" == "chrome" ]]; then
         BROWSER_VERSION=63.0
     fi
-    # Temporary change to test Selenium and Firefox changes.
-    if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
-        SELENIUM_VERSION=2.48.0
-    elif [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
+    if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
         SELENIUM_VERSION=2.53.1
+    elif [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+        SELENIUM_VERSION=3.14.0
     else
-        SELENIUM_VERSION=3.8.1
+        SELENIUM_VERSION=3.141.0
     fi
-    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},tags=[${JOB_NAME}]/" robottelo.properties
-    RP_LAUNCH_TAGS="${RP_LAUNCH_TAGS} \'${SAUCE_BROWSER}_${BROWSER_VERSION}\'"
+    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},extendedDebugging=true,tags=[${JOB_NAME}]/" robottelo.properties
 fi
 
 # Bugzilla Login Details
@@ -83,6 +63,7 @@ if [ -n "${IMAGE}" ]; then
     sed -i "s/^# \[distro\].*/[distro]/" robottelo.properties
     sed -i "s/^# image_el6=.*/image_el6=${IMAGE}/" robottelo.properties
     sed -i "s/^# image_el7=.*/image_el7=${IMAGE}/" robottelo.properties
+    sed -i "s/^# image_el8=.*/image_el8=${IMAGE}/" robottelo.properties
 fi
 
 # upstream = 1 for Distributions: UPSTREAM (default in robottelo.properties)
@@ -106,16 +87,21 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     # The below cdn flag is required by automation to flip between RH & custom syncs.
     sed -i "s/^cdn=.*/cdn=false/" robottelo.properties
     # Usage of '|' is intentional as TOOLS_REPO can bring in http url which has '/'
-    sed -i "s|sattools_repo=.*|sattools_repo=rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}|" robottelo.properties
+    sed -i "s|sattools_repo=.*|sattools_repo=rhel8=${RHEL8_TOOLS_REPO},rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}|" robottelo.properties
     sed -i "s|capsule_repo=.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
-if [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
+
+if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
     TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
-elif [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun})"
 else
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
+    if [[ "${ENDPOINT}" == "tier2" ]]; then
+        TEST_TYPE="$(echo tests/foreman/{ui_airgun,api,cli,longrun,sys,installer})"
+    elif [[ "${ENDPOINT}" == "tier3" ]]; then
+        TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
+    else
+        TEST_TYPE="$(echo tests/foreman/{api,cli,longrun,sys,installer,ui_airgun})"
+    fi
 fi
 
 if [ "${ENDPOINT}" == "destructive" ]; then
@@ -123,21 +109,15 @@ if [ "${ENDPOINT}" == "destructive" ]; then
 elif [ "${ENDPOINT}" != "rhai" ]; then
     set +e
     # Run sequential tests
-    sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}-sequential|" pytest.ini
-    sed -i "s|rp_launch_tags =.*|rp_launch_tags = ${RP_LAUNCH_TAGS} \'sequential\'|" pytest.ini
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
         -o junit_suite_name="${ENDPOINT}-sequential" \
         -m "${ENDPOINT} and run_in_one_thread and not stubbed" \
-        --reportportal \
         ${TEST_TYPE}
 
     # Run parallel tests
-    sed -i "s|rp_launch =.*|rp_launch = ${ENDPOINT}-parallel|" pytest.ini
-    sed -i "s|rp_launch_tags =.*|rp_launch_tags = ${RP_LAUNCH_TAGS} \'parallel\' \'gw${ROBOTTELO_WORKERS}\'|" pytest.ini
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -o junit_suite_name="${ENDPOINT}-parallel" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed" \
-        --reportportal \
         ${TEST_TYPE}
     set -e
 else

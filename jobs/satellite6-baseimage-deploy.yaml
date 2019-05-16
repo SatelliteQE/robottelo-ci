@@ -3,39 +3,29 @@
     display-name: 'Satellite 6 Base Image Deployment'
     description: |
         Creates and deploys baseimages
-    node: sat6-rhel
+    project-type: pipeline
     parameters:
-        - string:
-            name: OS_URL
-            description: "URL of OS media to create baseimage from"
-        - string:
-            name: HYPERVISORS
-            description: "Space separated list of hypervisor FQDNs/IPs to deploy image to (empty: use default set)"
-        - string:
-            name: DNS_SERVER
-            description: "Custom DNS server to be set in baseimage (empty: do not set)"
-        - bool:
-            name: DISABLE_IPV6
-            default: false
-            description: "Flag to have IPv6 networking disabled (=True) or enabled (=False)"
-    scm:
-        - git:
-            url: https://github.com/SatelliteQE/automation-tools.git
-            branches:
-                - origin/master
-            skip-tag: true
+      - string:
+          name: OS_URL
+          description: "URL of OS media to create baseimage from"
+      - string:
+          name: HYPERVISORS
+          description: "Space separated list of hypervisor FQDNs/IPs to deploy image to (empty: use default set)"
+      - string:
+          name: DNS_SERVER
+          description: "Custom DNS server to be set in baseimage (empty: do not set)"
+      - bool:
+          name: DISABLE_IPV6
+          default: false
+          description: "Flag to have IPv6 networking disabled (=True) or enabled (=False)"
+    pipeline-scm:
+        scm:
+          - git:
+                url: https://github.com/SatelliteQE/robottelo-ci.git
+                branches:
+                  - origin/master
+                clean: true
+        script-path: workflows/qe/satellite6-baseimage-deploy.groovy
+        lightweight-checkout: true
     wrappers:
-        - default-wrappers
-        - config-file-provider:
-            files:
-                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
-                  variable: CONFIG_FILES
-    builders:
-        - shining-panda:
-            build-environment: virtualenv
-            python-version: System-CPython-3.6
-            clear: true
-            nature: shell
-            command:
-                !include-raw:
-                    - 'satellite6-baseimage-deploy.sh'
+      - default-wrappers

@@ -9,7 +9,7 @@ node('sat6-build') {
 
         def git_hostname = env.GIT_HOSTNAME
 
-        runPlaybook {
+        runDownstreamPlaybook {
             playbook = 'playbooks/update_packaging_repo.yml'
             extraVars = [
                 'git_server': git_hostname,

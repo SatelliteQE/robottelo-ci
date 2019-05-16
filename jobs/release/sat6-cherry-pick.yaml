@@ -1,6 +1,7 @@
 - job:
     name: sat6-cherry-pick
     project-type: pipeline
+    sandbox: true
     dsl:
       !include-raw:
         - workflows/identifyCherryPicksWorkflow.groovy

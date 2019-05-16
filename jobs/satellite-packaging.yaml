@@ -1,6 +1,7 @@
 - job-template:
     name: sat-{satellite_version}-satellite-packaging-release-build
     project-type: pipeline
+    sandbox: true
     concurrent: true
     build-discarder:
       days-to-keep: 45
@@ -24,6 +25,7 @@
         - workflows/packaging/satellitePackaging.groovy
         - workflows/packaging/releaseBuildPackaging.groovy
         - workflows/lib/packaging.groovy
+        - pipelines/lib/ansible.groovy
         - pipelines/lib/obal.groovy
         - workflows/lib/toolbelt.groovy
         - workflows/lib/kerberos.groovy
@@ -34,6 +36,7 @@
 - job-template:
     name: sat-{satellite_version}-satellite-packaging-scratch-build
     project-type: pipeline
+    sandbox: true
     concurrent: true
     build-discarder:
       days-to-keep: 45
@@ -57,6 +60,7 @@
         - workflows/packaging/satellitePackaging.groovy
         - workflows/packaging/scratchBuildPackaging.groovy
         - workflows/lib/packaging.groovy
+        - pipelines/lib/ansible.groovy
         - pipelines/lib/obal.groovy
         - workflows/lib/toolbelt.groovy
         - workflows/lib/kerberos.groovy
@@ -67,6 +71,7 @@
 - job-template:
     name: sat-{satellite_version}-satellite-packaging-update
     project-type: pipeline
+    sandbox: true
     build-discarder:
       days-to-keep: 45
       num-to-keep: -1
@@ -84,6 +89,7 @@
         - workflows/packaging/satellitePackaging.groovy
         - workflows/lib/updatePackaging.groovy
         - workflows/lib/toolbelt.groovy
+        - pipelines/lib/ansible.groovy
         - pipelines/lib/obal.groovy
         - workflows/lib/kerberos.groovy
         - workflows/lib/gitlab.groovy
@@ -96,6 +102,7 @@
       - '63'
       - '64'
       - '65'
+      - '66'
       - 'maintenance'
       - 'maintenance-next'
     jobs:

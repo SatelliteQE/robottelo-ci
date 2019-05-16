@@ -1,6 +1,7 @@
 - job:
     name: gitlab-clean
     project-type: pipeline
+    sandbox: true
     triggers:
       - timed: "@midnight"
     dsl:

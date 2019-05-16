@@ -4,11 +4,8 @@ def configure_foreman_environment() {
         sh "sed -i 's/:locations_enabled: false/:locations_enabled: true/' config/settings.yaml"
         sh "sed -i 's/:organizations_enabled: false/:organizations_enabled: true/' config/settings.yaml"
 
-        sh "cp $HOME/postgresql.db.yaml config/database.yml"
-
-        sh "sed -i 's/database:.*/database: ${gemset()}-test/' config/database.yml"
         sh """
-cat <<EOT >> config/database.yml
+cat <<EOT > config/database.yml
 test:
   adapter: postgresql
   database: ${gemset()}-test
@@ -47,9 +44,8 @@ def get_ruby_version(branches) {
 }
 
 def setup_foreman(ruby = '2.2') {
-    def steps = [:]
+    try {
 
-    steps['ruby'] = {
         configureRVM(ruby)
 
         withRVM(['bundle install --jobs=5 --retry=2 --without mysql:mysql2'], ruby)
@@ -58,22 +54,14 @@ def setup_foreman(ruby = '2.2') {
         withRVM(['bundle exec rake db:drop -q || true'], ruby)
         withRVM(['bundle exec rake db:create -q'], ruby)
         withRVM(['bundle exec rake db:migrate -q'], ruby)
-    }
-
-    if (fileExists('package.json')) {
-        steps['node'] = {
-            sh 'npm install npm@\\<"5.0.0"'
-            sh './node_modules/.bin/npm install --no-optional --global-style true || true'
-            sh 'npm install phantomjs'
-        }
-    }
-
-    try {
-
-        parallel steps
+        withRVM(['bundle exec rake db:drop -q RAILS_ENV=test || true'], ruby)
+        withRVM(['bundle exec rake db:create -q RAILS_ENV=test'], ruby)
+        withRVM(['bundle exec rake db:migrate -q RAILS_ENV=test'], ruby)
 
         if (fileExists('package.json')) {
-            withRVM(['./node_modules/.bin/npm install --no-optional --global-style true'], ruby)
+              sh 'npm install npm'
+              sh 'npm install phantomjs'
+              withRVM(['./node_modules/.bin/npm install'], ruby)
         }
 
     } catch (all) {
@@ -85,8 +73,7 @@ def setup_foreman(ruby = '2.2') {
     }
 }
 
-def setup_plugin(plugin_name, ruby = '2.2') {
-    try {
+def setup_plugin(plugin_name) {
         // Ensure we don't mention the gem twice in the Gemfile in case it's already mentioned there
         sh "find Gemfile bundler.d -type f -exec sed -i \"/gem ['\\\"]${plugin_name}['\\\"]/d\" {} \\;"
         // Now let's introduce the plugin
@@ -95,18 +82,6 @@ def setup_plugin(plugin_name, ruby = '2.2') {
         if(fileExists("../plugin/gemfile.d/${plugin_name}.rb")) {
             sh "cat ../plugin/gemfile.d/${plugin_name}.rb >> bundler.d/Gemfile.local.rb"
         }
-
-        withRVM(['bundle update'], ruby)
-
-        withRVM(['bundle exec rake db:migrate'], ruby)
-
-    } catch (all) {
-
-        updateGitlabCommitStatus state: 'failed'
-        cleanup(get_ruby_version(branch_map))
-        throw(all)
-
-    }
 }
 
 def cleanup(ruby = '2.2') {

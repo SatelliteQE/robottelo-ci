@@ -1,13 +1,22 @@
+export DISTRO="rhel7"
 source ${CONFIG_FILES}
 source config/sat6_repos_urls.conf
+source config/subscription_config.conf
 
 pip install -U -r requirements.txt
+cp testfm.properties.sample testfm.properties
 cp testfm/inventory.sample testfm/inventory
 
 if [ "${COMPONENT}" == "capsule" ]; then
     sed -i "s/<capsule_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
 else
     sed -i "s/<server_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
+    sed -i "s/<RHN_USERNAME>/${RHN_USERNAME}/g" testfm.properties
+    sed -i "s/<RHN_PASSWORD>/${RHN_PASSWORD}/g" testfm.properties
+    sed -i "s/<RHN_POOLID>/${RHN_POOLID}/g" testfm.properties
+    sed -i "s/<DOGFOOD_ORG>/${DOGFOOD_ORG}/g" testfm.properties
+    sed -i "s/<DOGFOOD_ACTIVATIONKEY>/${DOGFOOD_ACTIVATIONKEY}/g" testfm.properties
+    sed -i "s|<DOGFOOD_URL>|${DOGFOOD_URL}|g" testfm.properties
 fi
 if [[ "$TEST_UPSTREAM" = "true" ]]; then
     sed -i "s/foreman-maintain {0} {1} {2}/.\/foreman_maintain\/bin\/foreman-maintain {0} {1} {2}/g" testfm/base.py
@@ -16,6 +25,9 @@ if [[ "$TEST_UPSTREAM" = "true" ]]; then
     if [[ "$TEST_OPEN_PR" = 'true' ]]; then
         ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@${SERVER_HOSTNAME} 'cd foreman_maintain; git fetch origin pull/'${PR_NUMBER}'/head:'${BRANCH_NAME}'; git checkout '${BRANCH_NAME}
     fi
+fi
+if [[ "$SATELLITE_VERSION" != "6.3" ]] || [[ "$SATELLITE_VERSION" != "6.4" ]]; then
+    sed -i "s/foreman-maintain {0} {1} {2}/satellite-maintain {0} {1} {2}/g" testfm/base.py
 fi
 export ANSIBLE_HOST_KEY_CHECKING=False
 if [ "${COMPONENT}" == "capsule" ]; then

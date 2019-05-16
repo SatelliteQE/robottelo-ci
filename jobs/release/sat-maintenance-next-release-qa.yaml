@@ -1,6 +1,7 @@
 - job:
     name: sat-maintenance-next-release-qa
     project-type: pipeline
+    sandbox: true
     parameters:
       - string:
           name: snapVersion
@@ -11,6 +12,7 @@
         - workflows/maintenance/releaseQAWorkflow.groovy
         - workflows/lib/releaseQAFunctions.groovy
         - workflows/lib/toolbelt.groovy
+        - foreman-infra/pipelines/lib/ansible.groovy
         - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications

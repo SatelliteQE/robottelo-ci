@@ -12,6 +12,7 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.6'
                 - '6.5'
                 - '6.4'
                 - '6.3'
@@ -93,6 +94,16 @@
               name:  ROBOTTELO_YAML
               description: |
                    <p>You can provide robottelo.yaml file content here</p>
+        - string:
+            name: SELENIUM_VERSION
+            description: |
+              <p>This is just for testing new Selenium Version.Eg: 3.14.0 </p>
+              <p><strong>If left blank latest stable tested version will be used</strong></p>
+        - string:
+            name: BROWSER_VERSION
+            description: |
+              <p>This is for testing chrome browser only. Specify only version.Eg: 63.0 </p>
+              <p><strong>If left blank latest stable will be used.</strong></p>
         - choice:
             name: SAUCE_PLATFORM
             choices:

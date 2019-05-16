@@ -28,10 +28,18 @@ pipeline {
             }
         }
 
-        stage('Configure Environment') {
+        stage('Configure Foreman') {
             steps {
                 dir('foreman') {
                     configure_foreman_environment()
+                }
+            }
+        }
+
+        stage('Configure Plugin') {
+            steps {
+                dir('foreman') {
+                    setup_plugin(plugin_name)
                 }
             }
         }
@@ -40,14 +48,6 @@ pipeline {
             steps {
                 dir('foreman') {
                     setup_foreman(ruby)
-                }
-            }
-        }
-
-        stage('Setup plugin') {
-            steps {
-                dir('foreman') {
-                    setup_plugin(plugin_name, ruby)
                 }
             }
         }
@@ -89,23 +89,36 @@ pipeline {
                 }
                 stage('angular-ui') {
                     steps {
-                        gitlabCommitStatus(name: "angular-ui") {
-                            dir('foreman') {
-                                withRVM(['bundle show bastion > bastion-version'], ruby)
+                        script {
+                            gitlabCommitStatus(name: "angular-ui") {
+                                if (!fileExists('plugin/engines/bastion')) {
+                                    dir('foreman') {
+                                        withRVM(['bundle show bastion > bastion-version'], ruby)
 
-                                script {
-                                    bastion_install = readFile('bastion-version')
-                                    bastion_version = bastion_install.split('bastion-')[1]
-                                    echo bastion_install
-                                    echo bastion_version
+                                        script {
+                                            bastion_install = readFile('bastion-version')
+                                            bastion_version = bastion_install.split('bastion-')[1]
+                                            echo bastion_install
+                                            echo bastion_version
+                                        }
+                                    }
+
+                                    sh "cp -rf \$(cat foreman/bastion-version) plugin/engines/bastion_katello/bastion-${bastion_version}"
+                                    dir('plugin/engines/bastion_katello') {
+                                        sh "npm install npm"
+                                        sh "node_modules/.bin/npm install bastion-${bastion_version}"
+                                        sh "TZ=UTC grunt ci"
+                                    }
+                                } else {
+                                    dir('plugin/engines/bastion') {
+                                        sh "npm install"
+                                        sh "TZ=UTC grunt ci"
+                                    }
+                                    dir('plugin/engines/bastion_katello') {
+                                        sh "npm install"
+                                        sh "TZ=UTC grunt ci"
+                                    }
                                 }
-                            }
-
-                            sh "cp -rf \$(cat foreman/bastion-version) plugin/engines/bastion_katello/bastion-${bastion_version}"
-                            dir('plugin/engines/bastion_katello') {
-                                sh "npm install npm"
-                                sh "node_modules/.bin/npm install bastion-${bastion_version}"
-                                sh "TZ=UTC grunt ci"
                             }
                         }
                     }
@@ -116,7 +129,7 @@ pipeline {
                             gitlabCommitStatus(name: "assets-precompile") {
                                 sh "npm install npm"
                                 withRVM(["bundle exec node_modules/.bin/npm install"], ruby)
-                                withRVM(['bundle exec rake plugin:assets:precompile[katello] RAILS_ENV=production --trace'], ruby)
+                                withRVM(["bundle exec rake plugin:assets:precompile[${plugin_name}] RAILS_ENV=production --trace"], ruby)
                             }
                         }
                     }
@@ -137,18 +150,18 @@ pipeline {
                 dir('foreman') {
 
                     gitlabCommitStatus(name: "db:seed") {
-                        withRVM(['bundle exec rake db:drop || true'], ruby)
-                        withRVM(['bundle exec rake db:create'], ruby)
-                        withRVM(['bundle exec rake db:migrate'], ruby)
-                        withRVM(['bundle exec rake db:seed'], ruby)
+                        withRVM(['bundle exec rake db:drop RAILS_ENV=test || true'], ruby)
+                        withRVM(['bundle exec rake db:create RAILS_ENV=test'], ruby)
+                        withRVM(['bundle exec rake db:migrate RAILS_ENV=test'], ruby)
+                        withRVM(['bundle exec rake db:seed RAILS_ENV=test'], ruby)
                     }
 
                 }
 
             }
         }
-
     }
+
     post {
         failure {
             updateGitlabCommitStatus name: 'jenkins', state: 'failed'

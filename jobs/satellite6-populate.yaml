@@ -28,6 +28,7 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.6'
                 - '6.5'
                 - '6.4'
                 - '6.3'
@@ -51,6 +52,7 @@
                 - 'GA'
                 - 'INTERNAL AK'
                 - 'INTERNAL REPOFILE'
+                - 'BETA'
             description: |
                 Depending upon Distribution, INTERNAL and/or GA is decided and either DOGFOOD or CDN content is synced.
         - string:

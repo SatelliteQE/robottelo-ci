@@ -12,11 +12,8 @@ pipeline {
     agent { label 'sat6-build' }
 
     stages {
-
         stage('Setup Git Repos') {
-
             steps {
-
                 deleteDir()
 
                 dir('foreman') {
@@ -32,45 +29,31 @@ pipeline {
                 dir('plugin') {
                     gitlab_clone_and_merge(plugin_name)
                 }
-
             }
-
         }
 
-        stage('Configure Environment') {
-
+        stage('Configure Foreman') {
             steps {
-
                 dir('foreman') {
                     configure_foreman_environment()
                 }
-
             }
+        }
 
+        stage('Configure Plugin') {
+            steps {
+                dir('foreman') {
+                    setup_plugin(plugin_name)
+                }
+            }
         }
 
         stage('Configure Database') {
-
             steps {
-
                 dir('foreman') {
                     setup_foreman(ruby)
                 }
-
             }
-
-        }
-
-        stage('Setup plugin') {
-
-            steps {
-
-                dir('foreman') {
-                    setup_plugin(plugin_name, ruby)
-                }
-
-            }
-
         }
 
         stage('Run Tests') {
@@ -80,8 +63,6 @@ pipeline {
                         dir('foreman') {
                             gitlabCommitStatus(name: "tests") {
                                 withRVM(["bundle exec rake ${plugin_tests}"], ruby)
-                                withRVM(['bundle exec rake db:drop db:create db:migrate'], ruby)
-                                withRVM(['bundle exec rake db:seed'], ruby)
                             }
                         }
                     }
@@ -97,6 +78,22 @@ pipeline {
                         }
                     }
                 }
+            }
+        }
+        stage('Test db:seed') {
+            steps {
+
+                dir('foreman') {
+
+                    gitlabCommitStatus(name: "db:seed") {
+                        withRVM(['bundle exec rake db:drop || true'], ruby)
+                        withRVM(['bundle exec rake db:create'], ruby)
+                        withRVM(['bundle exec rake db:migrate'], ruby)
+                        withRVM(['bundle exec rake db:seed'], ruby)
+                    }
+
+                }
+
             }
         }
     }

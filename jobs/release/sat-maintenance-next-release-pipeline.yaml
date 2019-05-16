@@ -1,6 +1,7 @@
 - job:
     name: sat-maintenance-next-release-pipeline
     project-type: pipeline
+    sandbox: true
     triggers:
       - timed: 'H 06 * * *'
     dsl:
@@ -8,6 +9,7 @@
         - workflows/maintenance-next/releasePipelineAttributes.groovy
         - workflows/maintenance/releasePipeline.groovy
         - workflows/lib/libvirt.groovy
+        - foreman-infra/pipelines/lib/ansible.groovy
         - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications

@@ -105,7 +105,7 @@
             name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
             default: false
             description: |
-                <p>Check if you want to perform upgrade using Foreman-Maintain Tool. This needs PERFORM_UPGRADE parameter unchecked.</p>
+                <p>Check if you want to perform upgrade using Foreman-Maintain Tool.</p>
         - bool:
             name: USE_CLONE_RPM
             default: false
@@ -140,10 +140,11 @@
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
                   variable: CONFIG_FILES
         - default-wrappers
+        - satellite6-maskpassword-wrappers
     builders:
           - shining-panda:
               build-environment: virtualenv
-              python-version: System-CPython-2.7
+              python-version: System-CPython-3.6
               clear: true
               nature: shell
               command:

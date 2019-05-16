@@ -1,6 +1,7 @@
 - job:
     name: 'sat-release-hammer-cli-foreman'
     project-type: pipeline
+    sandbox: true
     parameters:
       - release_branch
     auth-token: ""
@@ -11,6 +12,7 @@
           - ./source_types/sourceTypeGem.groovy
           - workflows/releasePackageWorkflow.groovy
           - workflows/lib/toolbelt.groovy
+          - foreman-infra/pipelines/lib/ansible.groovy
           - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications

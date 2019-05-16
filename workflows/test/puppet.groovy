@@ -23,7 +23,7 @@ node('rvm') {
                         gitlab_clone_and_merge(puppet_repo)
                         configureRVM(combo['ruby_version'], name)
 
-                        gitlabCommitStatus(name) {
+                        gitlabCommitStatus(name: name) {
                             withRVM(["PUPPET_VERSION=${combo['puppet_version']} bundle install --without system_tests development"], combo['ruby_version'], name)
                             withRVM(["PUPPET_VERSION=${combo['puppet_version']} ONLY_OS=redhat-6-x86_64,redhat-7-x86_64 bundle exec rake"], combo['ruby_version'], name)
                         }

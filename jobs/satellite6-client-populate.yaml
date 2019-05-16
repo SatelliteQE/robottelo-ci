@@ -28,6 +28,7 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.6'
                 - '6.5'
                 - '6.4'
                 - '6.3'
@@ -37,7 +38,7 @@
             name: DISTRO
             choices:
                 - 'rhel7'
-                - 'rhel6'
+                - 'rhel8'
         - choice:
             name: DOWNLOAD_POLICY
             choices:
@@ -119,6 +120,11 @@
             description: |
                 If set to true, will populate the RHEL 6 different client architecture repos to the Satellite6 Server.
         - bool:
+            name: POPULATE_RHEL8
+            default: true
+            description: |
+                If set to true, will populate the RHEL 8 different client architecture repos to the Satellite6 Server.
+        - bool:
             name: POPULATE_CLIENTS_ARCH
             default: true
             description: |
@@ -136,6 +142,7 @@
             skip-tag: true
     wrappers:
         - default-wrappers
+        - satellite6-maskpassword-wrappers
         - config-file-provider:
             files:
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf

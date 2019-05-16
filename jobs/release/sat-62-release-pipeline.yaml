@@ -1,11 +1,16 @@
 - job:
     name: sat-62-release-pipeline
     project-type: pipeline
+    sandbox: true
     dsl:
       !include-raw:
         - workflows/6.2/releasePipelineAttributes.groovy
         - workflows/6.2/releaseSatellitePipeline.groovy
         - workflows/lib/libvirt.groovy
+        - foreman-infra/pipelines/lib/ansible.groovy
         - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications
+    properties:
+      - default-properties
+      - satellite6-release-pipeline-throttle

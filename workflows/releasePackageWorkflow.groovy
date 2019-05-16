@@ -149,6 +149,17 @@ pipeline {
 
                             }
                         }
+                    } else if (repo_name == 'satellite-node-modules-meta') {
+
+                        dir(repo_name) {
+                            runPlaybook(
+                                playbook: 'generate-source.yml'
+                            )
+
+                            sources = sh(returnStdout: true, script: "ls pkg/*.tar.*").trim().split()
+                            writeYaml(file: '../tool_belt/artifacts', data: sources.toList())
+                         }
+
                     } else {
 
                         toolBelt(
@@ -181,7 +192,7 @@ pipeline {
                     for (i = 0; i < artifacts.size(); i += 1) {
                         artifact_path = artifact_base_path + '/' + artifacts[i]
 
-                        runPlaybook {
+                        runDownstreamPlaybook {
                             playbook = 'playbooks/upload_package.yml'
                             extraVars = [
                                 'artifact': artifact_path,

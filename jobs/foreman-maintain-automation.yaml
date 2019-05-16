@@ -20,6 +20,15 @@
         - string:
             name: SERVER_HOSTNAME
             description: "FQDN for your satellite/Capsule server where you want to test foreman-maintain. Mandatory."
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.6'
+                - '6.5'
+                - '6.4'
+                - '6.3'
+                - '6.2'
+            description: Make sure to specify the right Satellite version you want to run testfm on, otherwise some tests may fail.
         - string:
             name: BUILD_LABEL
             description: "Label you want to set for job."

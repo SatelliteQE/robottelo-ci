@@ -18,7 +18,11 @@ def setupAnsibleEnvironment(body) {
         }
 
         dir('foreman-ansible-modules') {
-            git url: "https://github.com/theforeman/foreman-ansible-modules.git"
+            checkout([
+              $class: 'GitSCM',
+              branches: [[name: 'bd456f150c00ab782b38f663af9cd6e3880c9a7e' ]],
+              userRemoteConfigs: [[url: "https://github.com/theforeman/foreman-ansible-modules.git"]],
+            ])
         }
     }
 
@@ -35,7 +39,7 @@ def runPlaybookSequentially(body) {
 
     for (int i = 0; i < config.items.size(); i++) {
 
-        runPlaybook {
+        runDownstreamPlaybook {
             playbook = config.playbook
             extraVars = extra_vars + [(config.item_name): config.items.get(i)]
         }
@@ -59,7 +63,7 @@ def runPlaybookInParallel(body) {
         def index = i // fresh variable per iteration; i will be mutated
         branches["${name}-${config.items.get(i)}"] = {
 
-            runPlaybook {
+            runDownstreamPlaybook {
                 playbook = config.playbook
                 extraVars = extra_vars + [(config.item_name): config.items.get(index)]
             }
@@ -71,7 +75,7 @@ def runPlaybookInParallel(body) {
 
 }
 
-def runPlaybook(body) {
+def runDownstreamPlaybook(body) {
 
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST
@@ -82,30 +86,20 @@ def runPlaybook(body) {
         wrap([$class: 'AnsiColorBuildWrapper', colorMapName: "xterm"]) {
 
             def extraVars = []
-            def defaultVars = [
+            def sensitiveVars = [
                 server: env.SATELLITE_SERVER,
                 username: env.USERNAME,
                 password: env.PASSWORD
             ]
             def inventory = config.inventory ?: 'sat-infra/inventory'
-            def tags = config.tags ?: null
-            def limit = config.limit ?: null
             def ansibledir = config.ansibledir ?: 'ansible'
 
-            if (config.extraVars) {
-                extraVars = defaultVars + config.extraVars
-            } else {
-                extraVars = defaultVars
-            }
-
             dir(ansibledir) {
-                ansiblePlaybook(
+                runPlaybook(
                     playbook: config.playbook,
                     inventory: inventory,
-                    colorized: true,
-                    limit: limit,
-                    tags: tags,
-                    extraVars: extraVars
+                    extraVars: config.extraVars,
+                    sensitiveExtraVars: sensitiveVars
                 )
             }
 

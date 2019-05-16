@@ -1,6 +1,7 @@
 - job:
     name: rhui-3-rhui-packaging-update
     project-type: pipeline
+    sandbox: true
     build-discarder:
       days-to-keep: 45
       num-to-keep: -1
@@ -18,6 +19,7 @@
         - workflows/packaging/rhuiPackaging.groovy
         - workflows/lib/updatePackaging.groovy
         - workflows/lib/toolbelt.groovy
+        - pipelines/lib/ansible.groovy
         - pipelines/lib/obal.groovy
         - workflows/lib/kerberos.groovy
         - workflows/lib/gitlab.groovy

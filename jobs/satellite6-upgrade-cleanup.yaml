@@ -13,7 +13,7 @@
             skip-tag: true
             wipe-workspace: true
     triggers:
-        - timed: 'H 17 * * 0,2,4'
+        - timed: 'H 19 * * 4'
     wrappers:
         - config-file-provider:
             files:
@@ -22,7 +22,7 @@
     builders:
           - shining-panda:
               build-environment: virtualenv
-              python-version: System-CPython-2.7
+              python-version: System-CPython-3.6
               clear: true
               nature: shell
               command:

@@ -119,10 +119,10 @@ satellite_runner subnet create --name "${SUBNET_NAME}" --network "${SUBNET_RANGE
 
 # Populate the RHEL6 and RHEL7 OS ID
 
-RHEL7_OS_ID=$(satellite --csv os list | grep "7.5" | cut -d ',' -f1 | grep -vi "^id")
+RHEL7_OS_ID=$(satellite --csv os list | grep "7.6" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL7 OS ID is: ${RHEL7_OS_ID}"
 
-RHEL6_OS_ID=$(satellite --csv os list | grep "6.9" | cut -d ',' -f1 | grep -vi "^id")
+RHEL6_OS_ID=$(satellite --csv os list | grep "6.10" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL6 OS ID is: ${RHEL6_OS_ID}"
 
 if [ "${SAT_VERSION}" = "6.3" ]; then
@@ -142,7 +142,7 @@ if [ "${SAT_VERSION}" = "6.3" ]; then
     satellite_runner hostgroup create --name='RHEL 7 Server 64-bit Capsule HG' --content-view='RHEL 7 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${SMARTPROXYID}" --puppet-proxy="${CAPSULE_HOSTNAME}" --puppet-ca-proxy="${CAPSULE_HOSTNAME}" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id=${DOMAIN_ID} --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id=${RHEL7_OS_ID} --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS' --kickstart-repository-id=${RHEL7_KS_ID}
 
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit Capsule HG' --name='kt_activation_keys' --value='ak-rhel-7'
-elif [ "${SAT_VERSION}" = "6.4" ] || [ "${SAT_VERSION}" == "6.5" ]; then
+else
     RHEL7_KS_ID=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 7/ {print $1}')
     echo "RHEL7 KS ID is: ${RHEL7_KS_ID}"
 
@@ -155,24 +155,6 @@ elif [ "${SAT_VERSION}" = "6.4" ] || [ "${SAT_VERSION}" == "6.5" ]; then
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 6 Server 64-bit Capsule HG' --name='kt_activation_keys' --value='ak-rhel-6'
 
     satellite_runner hostgroup create --name='RHEL 7 Server 64-bit Capsule HG' --content-view='RHEL 7 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${SMARTPROXYID}" --puppet-proxy="${CAPSULE_HOSTNAME}" --puppet-ca-proxy="${CAPSULE_HOSTNAME}" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id=${DOMAIN_ID} --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id=${RHEL7_OS_ID} --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS'
-
-    satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit Capsule HG' --name='kt_activation_keys' --value='ak-rhel-7'
-else
-    # Assign Default Location to RHEL6 and RHEL7 medium.
-    # NOTE: Medium does not appear to exist for Satellite6.3
-
-    echo Assign Default Location to RHEL6 and RHEL7 medium.
-    RHEL7_MEDIUM_ID=$(satellite --csv medium list --search='name~"Linux_7_Server_Kickstart_x86_64"' | cut -d ',' -f1 | grep -vi 'id')
-    satellite_runner medium update --location-ids "${LOC}" --id "${RHEL7_MEDIUM_ID}"
-    RHEL6_MEDIUM_ID=$(satellite --csv medium list --search='name~"Linux_6_Server_Kickstart_x86_64"' | cut -d ',' -f1 | grep -vi 'id')
-    satellite_runner medium update --location-ids "${LOC}" --id "${RHEL6_MEDIUM_ID}"
-
-    # Create Host-Groups and associate activation key as a parameter.
-    satellite_runner hostgroup create --name='RHEL 6 Server 64-bit Capsule HG' --content-view='RHEL 6 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${SMARTPROXYID}" --puppet-proxy="${CAPSULE_HOSTNAME}" --puppet-ca-proxy="${CAPSULE_HOSTNAME}" --organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id=${DOMAIN_ID} --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id=${RHEL6_OS_ID} --partition-table='Kickstart default' --location-ids="${LOC}" --medium-id=${RHEL6_MEDIUM_ID}
-
-    satellite_runner hostgroup set-parameter --hostgroup='RHEL 6 Server 64-bit Capsule HG' --name='kt_activation_keys' --value='ak-rhel-6'
-
-    satellite_runner hostgroup create --name='RHEL 7 Server 64-bit Capsule HG' --content-view='RHEL 7 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${SMARTPROXYID}" --puppet-proxy="${CAPSULE_HOSTNAME}" --puppet-ca-proxy="${CAPSULE_HOSTNAME}" --organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id=${DOMAIN_ID} --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id=${RHEL7_OS_ID} --partition-table='Kickstart default' --location-ids="${LOC}" --medium-id=${RHEL7_MEDIUM_ID}
 
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit Capsule HG' --name='kt_activation_keys' --value='ak-rhel-7'
 fi

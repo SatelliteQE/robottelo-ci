@@ -1,11 +1,13 @@
 - job:
     name: rhel-release-pipeline
     project-type: pipeline
+    sandbox: true
     triggers:
       - timed: '0 22 * * 0'
     dsl:
       !include-raw:
         - workflows/rhelPipeline.groovy
+        - foreman-infra/pipelines/lib/ansible.groovy
         - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications

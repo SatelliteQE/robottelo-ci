@@ -1,0 +1,17 @@
+- job:
+    name: 'sat-release-satellite-node-modules-meta'
+    project-type: pipeline
+    sandbox: true
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - workflows/lib/branch_map.groovy
+          - ./repos/satellite_node_modules_meta_repo.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/toolbelt.groovy
+          - foreman-infra/pipelines/lib/ansible.groovy
+          - workflows/lib/runPlaybook.groovy
+    notifications:
+      - snapper_notifications
