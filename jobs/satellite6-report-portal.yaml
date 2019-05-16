@@ -1,0 +1,43 @@
+- job:
+    name: 'satellite6-report-portal'
+    concurrent: true
+    display-name: 'Satellite 6 Report Portal'
+    description: |
+        Job that takes build url of satellite6-trigger-all-tiers job and parses, uploads and set ownerships of test case results in Report Portal
+        It also accepts BUILD_LABEL and BUILD_TAGS (for specifying a space-separated list of tags for the launch) parameters.
+    parameters:
+        - string:
+            name: AUTOMATION_BUILD_URL
+        - string:
+            name: BUILD_TAGS
+        - string:
+            name: RP_PROJECT
+            default: 'satellite6'
+        - string:
+            name: RP_TOOLS_FORK
+            default: 'satelliteqe'
+        - string:
+            name: RP_TOOLS_BRANCH
+            default: 'master'
+        - string:
+            name: WORKERS
+            default: '8'
+    project-type: pipeline
+    pipeline-scm:
+        scm:
+          - git:
+                url: https://github.com/SatelliteQE/robottelo-ci.git
+                branches:
+                  - origin/master
+                clean: true
+        script-path: workflows/qe/satellite6-report-portal.groovy
+        lightweight-checkout: true
+    wrappers:
+        - build-name:
+            name: '#${BUILD_NUMBER}'
+        - build-user-vars
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - default-wrappers

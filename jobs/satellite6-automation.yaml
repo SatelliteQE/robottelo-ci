@@ -175,6 +175,14 @@
                   BUILD_LABEL=${{BUILD_LABEL}}
               - name: 'report-consolidated-coverage-{satellite_version}-{os}'
                 current-parameters: true
+    publishers:
+        - trigger-parameterized-builds:
+          - project:
+              - satellite6-report-portal
+            predefined-parameters: |
+              AUTOMATION_BUILD_URL=${{BUILD_URL}}
+              BUILD_TAGS="${{SATELLITE_VERSION}} {os} ${{BUILD_LABEL}}"
+            node-parameters: true
 
 
 - job-template:
@@ -1166,6 +1174,13 @@
         - satellite6-automation-mails
         - satellite6-automation-publishers
         - satellite6-automation-archiver
+        - trigger-parameterized-builds:
+          - project:
+              - satellite6-report-portal
+            predefined-parameters: |
+              AUTOMATION_BUILD_URL=${{BUILD_URL}}
+              BUILD_TAGS="${{SATELLITE_VERSION}} {os} ${{BUILD_LABEL}}"
+            node-parameters: true
 
 - job-template:
     name: 'automation-upgraded-{satellite_version}-end-to-end-{os}'

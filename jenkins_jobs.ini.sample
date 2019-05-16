@@ -6,6 +6,6 @@ allow_duplicates=False
 exclude=foreman-infra/yaml/defaults:foreman-infra/yaml/jobs
 
 #[jenkins]
-#user=<jenkin-user>
+#user=<jenkins-user>
 #password=<jenkins-api-key>
 #url=<jenkins-url>
