@@ -5,6 +5,7 @@ export OS_VERSION=$(fab -D -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [
 DISTRO="rhel${OS_VERSION}"
 
 source ${CONFIG_FILES}
+source config/fake_manifest.conf
 source config/auth_servers.conf
 source config/installation_environment.conf
 source config/proxy_config_environment.conf
@@ -21,10 +22,6 @@ fi
 
 export EXTERNAL_AUTH
 export IDM_REALM
-
-if [ ${FIX_HOSTNAME} = "true" ]; then
-    fab -D -H root@${SERVER_HOSTNAME} fix_hostname
-fi
 
 if [ ${PARTITION_DISK} = "true" ]; then
     fab -D -H root@${SERVER_HOSTNAME} partition_disk
@@ -71,7 +68,3 @@ fi
 
 fab -D -H root@${SERVER_HOSTNAME} product_install:${DISTRIBUTION},sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST},puppet4=${PUPPET4}
 
-if [ ${SETUP_FAKE_MANIFEST_CERTIFICATE} = "true" ]; then
-    source config/fake_manifest.conf
-    fab -D -H root@${SERVER_HOSTNAME} setup_fake_manifest_certificate
-fi

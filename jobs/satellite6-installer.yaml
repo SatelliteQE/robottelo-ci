@@ -60,11 +60,6 @@
                 - 'non-authenticated'
                 - 'no-proxy'
         - bool:
-            name: FIX_HOSTNAME
-            default: true
-            description: |
-                Run a task to updates /etc/hosts with FQDN and IP
-        - bool:
             name: PARTITION_DISK
             default: true
             description: |
@@ -80,12 +75,6 @@
             default: master
             description: |
                 You can override this to any branch.
-        - bool:
-            name: SETUP_FAKE_MANIFEST_CERTIFICATE
-            default: false
-            description: |
-                Run a task to install a fake manifest certificate. Run this if
-                you are planning to run Robottelo tests.
         - bool:
             name: STAGE_TEST
             default: false
