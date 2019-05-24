@@ -183,6 +183,7 @@
               AUTOMATION_BUILD_URL=${{BUILD_URL}}
               BUILD_TAGS="${{SATELLITE_VERSION}} {os} ${{BUILD_LABEL}}"
             node-parameters: true
+            condition: 'UNSTABLE_OR_BETTER'
 
 
 - job-template:
@@ -1181,6 +1182,7 @@
               AUTOMATION_BUILD_URL=${{BUILD_URL}}
               BUILD_TAGS="${{SATELLITE_VERSION}} {os} ${{BUILD_LABEL}}"
             node-parameters: true
+            condition: 'UNSTABLE_OR_BETTER'
 
 - job-template:
     name: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
