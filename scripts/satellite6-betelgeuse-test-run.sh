@@ -1,6 +1,6 @@
 # Populate token-prefix and betelgeuse depending upon Satellite6 Version.
 
-pip install betelgeuse
+pip install Betelgeuse==0.15.0
 TOKEN_PREFIX=""
 
 # Create a new release with POLARION_RELEASE as the parent-plan.

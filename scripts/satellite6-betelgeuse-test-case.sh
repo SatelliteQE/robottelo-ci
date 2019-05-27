@@ -1,5 +1,5 @@
 # Install the latest version of betelgeuse.
-pip install betelgeuse
+pip install Betelgeuse==0.15.0
 
 
 if [[ ${BETELGEUSE_AUTOMATION_PROJECT} = "satellite6-upgrade" ]]; then
