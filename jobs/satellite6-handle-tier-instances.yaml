@@ -1,17 +1,17 @@
 - job:
     name: 'satellite6-handle-tier-instances'
     description: |
-        Quickly launch or destroy the tier instances of various jobs.
+        Quickly launch or shutdown the tier instances of various jobs.
     node: sat6-rhel
     parameters:
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.6'
                 - '6.5'
                 - '6.4'
                 - '6.3'
-                - '6.2'
-                - 'downstream-nightly'
+                - 'upstream-nightly'
         - choice:
             name: DISTRO
             choices:
@@ -32,7 +32,7 @@
             name: ACTION
             choices:
                 - 'start'
-                - 'destroy'
+                - 'shutdown'
     wrappers:
         - default-wrappers
         - config-file-provider:
