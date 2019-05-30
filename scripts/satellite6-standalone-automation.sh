@@ -19,7 +19,7 @@ else
     sed -i "s/# bz_password=.*/bz_password=${BUGZILLA_PASSWORD}/" robottelo.properties
     sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
 
-    if [[ ${SATELLITE_VERSION} =~ ^6\.[234] ]]; then
+    if [[ ${SATELLITE_VERSION} =~ ^6\.[34] ]]; then
         sed -i "s|sattools_repo.*|sattools_repo=rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
     else
         sed -i "s|sattools_repo.*|sattools_repo=rhel8=${RHEL8_TOOLS_REPO:-${TOOLS_RHEL8}},rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
@@ -28,7 +28,7 @@ else
 fi
 
 # Sauce Labs Configuration and pytest-env setting
-if [[ "${SATELLITE_VERSION}" != "6.2" || "${SATELLITE_VERSION}" != "6.3" ]]; then
+if [[ "${SATELLITE_VERSION}" != "6.3" ]]; then
     SAUCE_BROWSER="chrome"
 
     pip install -U pytest-env
@@ -45,11 +45,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     sed -i "s/^# saucelabs_key=.*/saucelabs_key=${SAUCELABS_KEY}/" robottelo.properties
     sed -i "s/^# webdriver=.*/webdriver=${SAUCE_BROWSER}/" robottelo.properties
     if [[ "${SAUCE_BROWSER}" == "firefox" ]]; then
-        if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
-            BROWSER_VERSION=45.0
-        else
-            BROWSER_VERSION=47.0
-        fi
+        BROWSER_VERSION=47.0
     elif [[ "${SAUCE_BROWSER}" == "edge" ]]; then
         BROWSER_VERSION=14.14393
     elif [[ "${SAUCE_BROWSER}" == "chrome" ]]; then
@@ -58,9 +54,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     elif [[ -n "${BROWSER_VERSION}" ]]; then
         BROWSER_VERSION=${BROWSER_VERSION}
     fi
-    if [[ "${SATELLITE_VERSION}" == "6.1" ]]; then
-        SELENIUM_VERSION=2.48.0
-    elif [[ "${SATELLITE_VERSION}" == "6.2" || "${SATELLITE_VERSION}" == "6.3" ]]; then
+    if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
         SELENIUM_VERSION=2.53.1
     elif [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
         SELENIUM_VERSION=3.14.0

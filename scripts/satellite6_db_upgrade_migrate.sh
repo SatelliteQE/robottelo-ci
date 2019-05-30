@@ -83,7 +83,7 @@ if [ "${CUSTOMERDB_NAME}" != 'NoDB' ]; then
     fi
     if [ "${USE_CLONE_RPM}" != 'true' ]; then
         # Configuration updates in vars file
-        if [[ "${FROM_VERSION}" == '6.1' ]] || [ "${FROM_VERSION}" == "6.2" ]; then
+        if [ "${FROM_VERSION}" == "6.2" ]; then
             sed -i -e "s/^satellite_version.*/satellite_version: "${FROM_VERSION}"/" satellite-clone-vars.yml
             sed -i -e "s/^activationkey.*/activationkey: "test_ak"/" satellite-clone-vars.yml
             sed -i -e "s/^org.*/org: "Default\ Organization"/" satellite-clone-vars.yml
@@ -142,7 +142,7 @@ EOF
     if [ "${USE_CLONE_RPM}" != 'true' ]; then
         # Configuration updates in tasks file wrt vars file
         sed -i -e '/subscription-manager register.*/d' roles/satellite-clone/tasks/main.yml
-        if [[ "${FROM_VERSION}" == '6.1' ]] || [ "${FROM_VERSION}" == "6.2" ]; then
+        if [ "${FROM_VERSION}" == "6.2" ]; then
             sed -i -e '/register host.*/a\ \ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/satellite-clone/tasks/main.yml
         else
             sed -i -e '/Register\/Subscribe the system to Red Hat Portal.*/a\ \ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/satellite-clone/tasks/main.yml

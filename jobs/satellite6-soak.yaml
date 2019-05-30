@@ -364,7 +364,6 @@
 - project:
     name: satellite6-soak
     satellite_version:
-        - '6.2'
         - '6.3'
     os:
         - 'rhel7'
