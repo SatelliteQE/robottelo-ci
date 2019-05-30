@@ -2,6 +2,7 @@ export DISTRO="rhel7"
 source ${CONFIG_FILES}
 source config/sat6_repos_urls.conf
 source config/subscription_config.conf
+source config/testfm.conf
 
 pip install -U -r requirements.txt
 cp testfm.properties.sample testfm.properties
@@ -17,6 +18,7 @@ else
     sed -i "s/<DOGFOOD_ORG>/${DOGFOOD_ORG}/g" testfm.properties
     sed -i "s/<DOGFOOD_ACTIVATIONKEY>/${DOGFOOD_ACTIVATIONKEY}/g" testfm.properties
     sed -i "s|<DOGFOOD_URL>|${DOGFOOD_URL}|g" testfm.properties
+    sed -i "s|<HOTFIX_URL>|${HOTFIX_URL}|g" testfm.properties
 fi
 if [[ "$TEST_UPSTREAM" = "true" ]]; then
     sed -i "s/foreman-maintain {0} {1} {2}/.\/foreman_maintain\/bin\/foreman-maintain {0} {1} {2}/g" testfm/base.py
