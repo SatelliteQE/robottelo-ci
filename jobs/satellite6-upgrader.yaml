@@ -47,7 +47,6 @@
                 - '6.5'
                 - '6.4'
                 - '6.3'
-                - '6.2'
             description: |
                 <p>Select the Satellite <b>TO_VERSION</b> to upgrade.</p>
         - string:
@@ -69,7 +68,6 @@
             name: OS
             choices:
                 - rhel7
-                - rhel6
                 - rhel8
         - string:
             name: CLIENTS_COUNT
@@ -141,34 +139,15 @@
         - default-wrappers
         - satellite6-maskpassword-wrappers
     builders:
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[12])
-            label: ${ENV,var="TO_VERSION"}
-            steps:
-                - shining-panda:
-                    build-environment: virtualenv
-                    python-version: System-CPython-2.7
-                    clear: true
-                    nature: shell
-                    command:
-                      !include-raw:
-                        - 'pip-install-pycurl.sh'
-                        - 'satellite6_upgrader.sh'
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[3456])
-            label: ${ENV,var="TO_VERSION"}
-            steps:
-                - shining-panda:
-                    build-environment: virtualenv
-                    python-version: System-CPython-3.6
-                    clear: true
-                    nature: shell
-                    command:
-                      !include-raw:
-                        - 'pip-install-pycurl.sh'
-                        - 'satellite6_upgrader.sh'
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-3.6
+            clear: true
+            nature: shell
+            command:
+              !include-raw:
+                - 'pip-install-pycurl.sh'
+                - 'satellite6_upgrader.sh'
     publishers:
         - satellite6-automation-publishers
         - archive:

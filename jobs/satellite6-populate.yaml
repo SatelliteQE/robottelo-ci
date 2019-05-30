@@ -32,8 +32,7 @@
                 - '6.5'
                 - '6.4'
                 - '6.3'
-                - '6.2'
-            description: "Currently this job populates completely for 6.2 and higher. As a lot of hammer-cli options differ for 6.1."
+            description: "Choose correct Satellite version."
         - choice:
             name: DOWNLOAD_POLICY
             choices:

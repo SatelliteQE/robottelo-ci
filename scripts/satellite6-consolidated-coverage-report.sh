@@ -1,3 +1,5 @@
+ssh_opts='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+
 source config/installation_environment.conf
 # Setup for the Python Code Coverage
 pip install coverage
@@ -33,12 +35,12 @@ EOF
 
 coverage combine
 
-scp -o StrictHostKeyChecking=no "${PWD}"/.coverage "root@${SERVER_HOSTNAME}:/etc/coverage/"
-ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cd /etc/coverage/ ; coverage report > coverage_report.txt"
-ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cd /etc/coverage/ ; coverage xml"
+scp $ssh_opts "${PWD}"/.coverage "root@${SERVER_HOSTNAME}:/etc/coverage/"
+ssh $ssh_opts "root@${SERVER_HOSTNAME}" "cd /etc/coverage/ ; coverage report > coverage_report.txt"
+ssh $ssh_opts "root@${SERVER_HOSTNAME}" "cd /etc/coverage/ ; coverage xml"
 
-scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:/etc/coverage/coverage_report.txt" .
-scp -o StrictHostKeyChecking=no -r "root@${SERVER_HOSTNAME}:/etc/coverage/coverage.xml" .
+scp $ssh_opts -r "root@${SERVER_HOSTNAME}:/etc/coverage/coverage_report.txt" .
+scp $ssh_opts -r "root@${SERVER_HOSTNAME}:/etc/coverage/coverage.xml" .
 popd
 
 # Setup for the Ruby Code Coverage.
@@ -46,18 +48,18 @@ popd
 if [[ "${RUBY_CODE_COVERAGE}" == "true" ]]; then
 
     for i in tier1 tier2 tier3 tier4 rhai destructive; do
-        scp -o StrictHostKeyChecking=no tfm_reports_${i}.tar "root@${SERVER_HOSTNAME}:/root/"
+        scp $ssh_opts tfm_reports_${i}.tar "root@${SERVER_HOSTNAME}:/root/"
     done
 
     for i in tier1 tier2 tier3 tier4 rhai destructive; do
-        ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "mkdir -p /root/coverage_${i} ; tar -xvf /root/tfm_reports_${i}.tar -C /root/coverage_${i}"
+        ssh $ssh_opts "root@${SERVER_HOSTNAME}" "mkdir -p /root/coverage_${i} ; tar -xvf /root/tfm_reports_${i}.tar -C /root/coverage_${i}"
     done
 
     wget -O merger.rb ${HTTP_SERVER_HOSTNAME}/code_coverage/ruby/merger.rb
 
-    scp -o StrictHostKeyChecking=no merger.rb "root@${SERVER_HOSTNAME}:/root/"
+    scp $ssh_opts merger.rb "root@${SERVER_HOSTNAME}:/root/"
 
-    ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cd /root/ ; ruby merger.rb coverage_tier1 coverage_tier2 coverage_tier3 coverage_tier4 coverage_rhai coverage_destructive"
+    ssh $ssh_opts "root@${SERVER_HOSTNAME}" "cd /root/ ; ruby merger.rb coverage_tier1 coverage_tier2 coverage_tier3 coverage_tier4 coverage_rhai coverage_destructive"
 
-    ssh -o StrictHostKeyChecking=no "root@${SERVER_HOSTNAME}" "cp /root/results.json /etc/coverage/ruby/tfm/reports/"
+    ssh $ssh_opts "root@${SERVER_HOSTNAME}" "cp /root/results.json /etc/coverage/ruby/tfm/reports/"
 fi
