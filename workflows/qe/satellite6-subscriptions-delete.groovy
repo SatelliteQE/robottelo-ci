@@ -24,7 +24,6 @@ pipeline {
                     sshagent (credentials: ['id_hudson_rsa']) {
                         sh_venv '''
                             source ${CONFIG_FILES}
-                            source config/subscription_config.conf
                         '''
                     }
                 }
@@ -36,6 +35,8 @@ pipeline {
                     [configFile(fileId: '14cc16d0-7390-4956-898c-a08b93b0e43c', variable: 'TOOLS')]) {
                     sshagent (credentials: ['id_hudson_rsa']) {
                         sh_venv '''
+                            source ${TOOLS}
+                            source config/subscription_config.conf
                             python tools/satellite6_subscriptions_delete.py
                         '''
                     }
