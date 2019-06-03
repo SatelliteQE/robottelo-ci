@@ -26,6 +26,7 @@ function setupPrerequisites () {
     sed -i "s/# gateway=.*/gateway=${GATEWAY}/" robottelo.properties
     sed -i "s/# netmask=.*/netmask=${NETMASK}/" robottelo.properties
 
+    sed -i "s|sattools_repo=.*|sattools_repo=rhel8=${RHEL8_TOOLS_REPO},rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}|" robottelo.properties
     # Robottelo logging configuration
     sed -i "s/'\(robottelo\).log'/'\1-${ENDPOINT}.log'/" logging.conf
     # Bugzilla Login Details
