@@ -800,6 +800,7 @@
             skip-tag: true
     wrappers:
         - default-wrappers
+        - satellite6-maskpassword-wrappers
         - inject:
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
