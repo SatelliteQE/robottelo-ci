@@ -91,17 +91,7 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
 fi
 
 
-if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
-else
-    if [[ "${ENDPOINT}" == "tier2" ]]; then
-        TEST_TYPE="$(echo tests/foreman/{ui_airgun,api,cli,longrun,sys,installer})"
-    elif [[ "${ENDPOINT}" == "tier3" ]]; then
-        TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
-    else
-        TEST_TYPE="$(echo tests/foreman/{api,cli,longrun,sys,installer,ui_airgun})"
-    fi
-fi
+TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
 
 if [ "${ENDPOINT}" == "destructive" ]; then
     make test-foreman-sys

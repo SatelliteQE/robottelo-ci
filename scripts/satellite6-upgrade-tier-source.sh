@@ -98,11 +98,7 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
     sed -i "s|capsule_repo=.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
-if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
-else
-    TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
-fi
+TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
 
 if [ "${ENDPOINT}" != "end-to-end" ]; then
     set +e
