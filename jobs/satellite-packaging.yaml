@@ -88,9 +88,34 @@
         - workflows/lib/gitlabEnv.groovy
         - workflows/packaging/satellitePackaging.groovy
         - workflows/lib/updatePackaging.groovy
+        - workflows/lib/createMergeRequest.groovy
         - workflows/lib/toolbelt.groovy
         - pipelines/lib/ansible.groovy
         - pipelines/lib/obal.groovy
+        - workflows/lib/kerberos.groovy
+        - workflows/lib/gitlab.groovy
+    notifications:
+      - snapper_notifications
+
+- job-template:
+    name: sat-{satellite_version}-satellite-packaging-bump
+    project-type: pipeline
+    sandbox: true
+    build-discarder:
+      days-to-keep: 45
+      num-to-keep: -1
+    parameters:
+      - string:
+          name: project
+          description: 'Name of the project to update from satellite-packaging.'
+    dsl:
+      !include-raw-escape:
+        - workflows/lib/gitlabEnv.groovy
+        - workflows/packaging/satellitePackaging.groovy
+        - workflows/lib/bumpPackaging.groovy
+        - workflows/lib/toolbelt.groovy
+        - pipelines/lib/obal.groovy
+        - pipelines/lib/ansible.groovy
         - workflows/lib/kerberos.groovy
         - workflows/lib/gitlab.groovy
     notifications:
@@ -109,3 +134,4 @@
       - sat-{satellite_version}-satellite-packaging-release-build
       - sat-{satellite_version}-satellite-packaging-scratch-build
       - sat-{satellite_version}-satellite-packaging-update
+      - sat-{satellite_version}-satellite-packaging-bump

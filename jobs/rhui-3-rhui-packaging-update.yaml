@@ -18,6 +18,7 @@
         - workflows/lib/gitlabEnv.groovy
         - workflows/packaging/rhuiPackaging.groovy
         - workflows/lib/updatePackaging.groovy
+        - workflows/lib/createMergeRequest.groovy
         - workflows/lib/toolbelt.groovy
         - pipelines/lib/ansible.groovy
         - pipelines/lib/obal.groovy
