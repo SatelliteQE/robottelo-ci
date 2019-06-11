@@ -1,5 +1,3 @@
-def version = env.version
-def project = env.project
 def changelog = ''
 def package_name = ''
 
@@ -46,27 +44,6 @@ node ('sat6-build') {
 
     }
 
-    stage("Generate changelog entry") {
-
-        withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
-
-            toolBelt(
-                command: 'release changelog',
-                config: tool_belt_config,
-                options: [
-                    "--version ${package_version}",
-                    "--project ${project}",
-                    "--gitlab-username jenkins",
-                    "--gitlab-token ${env.GITLAB_TOKEN}",
-                    "--update-to ${version}",
-                    "--output-file changelog"
-                ]
-            )
-
-        }
-        changelog = readFile 'tool_belt/changelog'
-
-    }
 
     stage("Prepare changes") {
 
@@ -74,12 +51,8 @@ node ('sat6-build') {
             setup_obal()
 
             obal(
-                action: 'update',
-                packages: package_name,
-                extraVars: [
-                    'version': version,
-                    'changelog': changelog
-                ]
+                action: 'bump-release',
+                packages: package_name
             )
         }
 
