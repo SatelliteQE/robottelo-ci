@@ -1,3 +1,4 @@
+def version = env.version
 def changelog = ''
 def package_name = ''
 

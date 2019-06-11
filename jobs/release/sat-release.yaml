@@ -36,6 +36,7 @@
         - workflows/lib/runPlaybook.groovy{empty}
         - workflows/lib/releaseQAFunctions.groovy{empty}
         - workflows/lib/toolbelt.groovy{empty}
+        - workflows/lib/createMergeRequest.groovy{empty}
     notifications:
       - snapper_notifications
     properties:

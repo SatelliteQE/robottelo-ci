@@ -108,6 +108,7 @@
       - string:
           name: project
           description: 'Name of the project to update from satellite-packaging.'
+      - merge_request
     dsl:
       !include-raw-escape:
         - workflows/lib/gitlabEnv.groovy
