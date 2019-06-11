@@ -9,7 +9,7 @@ node('rvm') {
 
     stage('Setup RVM') {
 
-        configureRVM()
+        configureRVM('2.5')
 
     }
 
@@ -18,8 +18,8 @@ node('rvm') {
         try {
 
             gitlabCommitStatus {
-                withRVM(["bundle install"])
-                withRVM(["bundle exec rake"])
+                withRVM(["bundle install"], '2.5')
+                withRVM(["bundle exec rake"], '2.5')
             }
 
         } finally {
