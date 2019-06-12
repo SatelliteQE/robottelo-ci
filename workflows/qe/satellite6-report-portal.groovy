@@ -76,7 +76,7 @@ pipeline {
             steps {
                 sh_venv '''
                     cd rp_tools/scripts/reportportal_cli/
-                    master=$( echo "$BUILD_TAGS" | sed 's/ \\+/\n/g' | grep '^6\\.[0-9]\\+$' | head -n 1 )
+                    master=$( echo "$BUILD_TAGS" | sed 's/ \\+/\\n/g' | grep '^6\\.[0-9]\\+$' | head -n 1 )
                     rules="kb$( echo "$master" | sed 's/\\.//' ).json"
                     if [ -e "$rules" ]; then
                         echo "Looks like we are processing '$master' launch, so will use '$rules' rules file"
