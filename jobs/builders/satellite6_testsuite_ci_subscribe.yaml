@@ -1,0 +1,17 @@
+- builder:
+    name: satellite6-testsuite-ci-subscribe
+    builders:
+        - raw:
+            xml: |
+              <com.redhat.jenkins.plugins.ci.CIMessageSubscriberBuilder plugin="jms-messaging@1.1.1">
+              <providerData class="com.redhat.jenkins.plugins.ci.provider.data.ActiveMQSubscriberProviderData">
+                <name>Red Hat UMB</name>
+                <overrides>
+                 <topic>yet_to_be_decided_by_dev</topic>
+                </overrides>
+                <selector>{selector}</selector>
+              <checks/>
+                <variable>DEV_NOTIFIER_MESSAGE</variable>
+                <timeout>180</timeout>
+              </providerData>
+              </com.redhat.jenkins.plugins.ci.CIMessageSubscriberBuilder>

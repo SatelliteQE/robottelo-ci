@@ -1309,6 +1309,8 @@
             echo "RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL:-${{TOOLS_RHEL7}}}}" >> properties.txt
         - inject:
             properties-file: properties.txt
+        - satellite6-testsuite-ci-subscribe:
+              selector: release_version = '{satellite_version}' AND release_result = 'PASS'
         - conditional-step:
             condition-kind: regex-match
             regex: (6\.[6])
