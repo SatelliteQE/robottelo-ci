@@ -1,0 +1,53 @@
+---
+- hosts: all
+  remote_user: root
+  tasks:
+    - hostname:
+        name: "{{ inventory_hostname }}"
+
+    - name: Install katello-ca-consumer-latest.noarch.rpm
+      yum:
+        name: http://{{ dogfood }}/pub/katello-ca-consumer-latest.noarch.rpm
+        state: present
+
+    - name: Registration
+      redhat_subscription:
+        state: present
+        activationkey: "satellite-{{ satellite_release.split('.')[:-1] | join('.') }}.0-qa-rhel{{ rhel_version }}"
+        org_id: "{{ dogfood_org }}"
+
+    - name: Update system
+      yum:
+        name: '*'
+        state: latest
+
+    - name: Install satellite package
+      yum:
+        name: satellite
+        state: present
+
+    - name: Setup Firewall
+      firewalld:
+        service: RH-Satellite-6
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: Add localhost hosts record
+      lineinfile:
+        path: /etc/hosts
+        regexp: "{{ ansible_default_ipv4.address|e }}"
+        line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }}"
+
+    - name: Install and configure satellite
+      command: satellite-installer --scenario satellite --foreman-initial-admin-password=changeme
+
+    - name: "Clean & prepare snapshoot"
+      shell: |
+        rm -rf /etc/ssh/ssh_host_*
+        subscription-manager clean
+        sed -i '/HWADDR=*/d' /etc/sysconfig/network-scripts/ifcfg-*
+        sed -i -e '/'$(hostname)'/d' /etc/hosts
+        [ -e /etc/redhat-ddns/hosts ] && echo "" > /etc/redhat-ddns/hosts
+        echo "" > ~/.bash_history
+        echo "" > /etc/motd

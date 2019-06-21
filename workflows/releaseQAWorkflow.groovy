@@ -142,10 +142,26 @@ node('sat6-build') {
 }
 
 node {
-    stage("Run Automation") {
-        build job: "trigger-satellite-${satellite_main_version}", parameters: [
-          [$class: 'StringParameterValue', name: 'SATELLITE_DISTRIBUTION', value: 'INTERNAL'],
-          [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${snap_version}"],
-        ]
+    stages {
+        stage("Run Automation") {
+            parallel {
+                stage("Trigger downstream automation") {
+                  build job: "trigger-satellite-${satellite_main_version}", parameters: [
+                    [$class: 'StringParameterValue', name: 'SATELLITE_DISTRIBUTION', value: 'INTERNAL'],
+                    [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${snap_version}"],
+                  ]
+                }
+
+                stage("Trigger OSP snap image build") {
+                  os_versions.each { os_ver ->
+                    build job: "satellite6-osp-snap-image", parameters: [
+        		      [$class: 'StringParameterValue', name: 'IMAGE', value: "5minute-RHEL${os_ver}"],
+        		      [$class: 'StringParameterValue', name: 'RHEL_VERSION', value: "${os_ver}"],
+        		      [$class: 'StringParameterValue', name: 'SAT_RELEASE', value: "${snap_version}"],
+		            ]
+		          }
+                }
+            }
+        }
     }
 }

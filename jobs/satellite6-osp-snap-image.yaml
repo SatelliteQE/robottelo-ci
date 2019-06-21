@@ -1,0 +1,44 @@
+- job:
+    name: 'satellite6-osp-snap-image'
+    concurrent: true
+    display-name: 'Satellite 6 OSP snap image'
+    description: |
+            Job to create image of the recent satellite snap on OSP
+    parameters:
+        - string:
+            name: IMAGE
+            default: "5minute-RHEL7"
+        - string:
+            name: CUSTOM_FLAVOR
+            description: "Custom flavor to build on"
+        - string:
+            name: CUSTOM_CSCRIPTS
+            description: "custom URL to Cscripts"
+        - string:
+            name: CUSTOM_CONTACT
+            description: "custom contact email to be put into image metadata"
+        - string:
+            name: SAT_VERSION
+        - string:
+            name: RHEL_VERSION
+            default: "7"
+
+    project-type: pipeline
+    pipeline-scm:
+        scm:
+          - git:
+                url: https://github.com/SatelliteQE/robottelo-ci.git
+                branches:
+                  - origin/master
+                clean: true
+        script-path: workflows/qe/satellite6-osp-snap-image.groovy
+        lightweight-checkout: true
+    wrappers:
+        - build-name:
+            name: '#${BUILD_NUMBER}'
+        - build-user-vars
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - default-wrappers
