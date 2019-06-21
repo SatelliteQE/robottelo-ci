@@ -68,7 +68,7 @@ pipeline {
             steps {
                 sh_venv '''
                     cd rp_tools/scripts/reportportal_cli/
-                    ./owners_cli.py --insecure
+                    ./owners_cli.py
                 '''
             }
         }
@@ -101,7 +101,7 @@ pipeline {
             steps {
                 sh_venv '''
                     cd rp_tools/scripts/reportportal_cli/
-                    ./todo_cli.py --insecure
+                    ./todo_cli.py
                 '''
             }
         }
