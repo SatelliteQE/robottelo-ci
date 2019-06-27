@@ -326,7 +326,7 @@ satellite_runner  activation-key update --name "ak-capsule-${RHELOS}" --auto-att
 # Add Subscriptions to both RHEL6 and RHEL7 Activation keys.
 # RHEL7 Section
 # Add Subscriptions to RHEL 7 activation key
-RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
+RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Infrastructure Subscription" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
 ANSIBLE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Enterprise Linux Server, Premium (Physical or Virtual Nodes)" | awk -F "," '{print $1}' | grep -vi id | head -n 1)
 if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     RHEL_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Enterprise Linux Server, Standard (Physical or Virtual Nodes)" |  awk -F "," '{print $1}' | grep -vi id | head -n 1)
@@ -353,7 +353,7 @@ fi
 
 # Add Subscriptions to both RHEL6 and RHEL7 Capsule Activation keys.
 
-SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Employee Subscription" |  awk -F "," '{print $1}' | grep -vi id)
+SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Infrastructure Subscription" |  awk -F "," '{print $1}' | grep -vi id)
 if [ "${POPULATE_CLIENTS_ARCH}" = "true" ]; then
     SATELLITE_SUBS_ID=$(satellite --csv subscription list --organization-id=${ORG} | grep -i "Red Hat Satellite Capsule Server (Capsule Server only, RHEL not included)" |  awk -F "," '{print $1}' | grep -vi id)
 fi
