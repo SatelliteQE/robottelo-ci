@@ -1,12 +1,17 @@
 def call(Object param = [:]) {
 
-    if (param in String) param = [body: param]
+    if (param in String) param = [script: param]
 
-    def body = param.get('body', "")
+    def script = param.get('script', "")
     def venv = param.get('venv', ".env")
+    def label = param.get('label', "")
+    def stdo = param.get('returnStdout', false)
+    def rtnc = param.get('returnStatus', false)
 
-    sh """
+
+    def result = sh label: label, returnStatus: rtnc, returnStdout: stdo, script: """
         source ${venv}/bin/activate
-        ${body}
+        ${script}
     """
+    return result
 }
