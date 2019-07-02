@@ -1311,7 +1311,7 @@
             properties-file: properties.txt
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[6])
+            regex: (6\.[7])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -1369,7 +1369,7 @@
                         IDM_REALM=${{IDM_REALM}}
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[6])
+            regex: (6\.[7])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -1427,6 +1427,8 @@
           os: 'rhel8'
         - satellite_version: '6.5'
           os: 'rhel8'
+        - satellite_version: '6.6'
+          os: 'rhel8'
     jobs:
         - 'provisioning-{satellite_version}-{os}'
         - 'automation-{satellite_version}-tier1-{os}'
@@ -1459,6 +1461,8 @@
         - satellite_version: '6.4'
           os: 'rhel8'
         - satellite_version: '6.5'
+          os: 'rhel8'
+        - satellite_version: '6.6'
           os: 'rhel8'
     jobs:
         - 'satellite6-sanity-check-{satellite_version}-{os}'
