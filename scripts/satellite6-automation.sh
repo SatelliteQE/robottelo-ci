@@ -94,7 +94,12 @@ if [[ "${SATELLITE_VERSION}" == *"upstream-nightly"* ]]; then
     ${EXTRA_MARKS} = "and upgrade"
 fi
 
-TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
+if [[ "${SATELLITE_VERSION}" == "6.5" ]] || [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+    TEST_TYPE="$(echo tests/foreman/{api,cli,ui_airgun,longrun,sys,installer})"
+else
+    TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
+fi
+
 
 if [ "${ENDPOINT}" == "destructive" ]; then
     make test-foreman-sys
