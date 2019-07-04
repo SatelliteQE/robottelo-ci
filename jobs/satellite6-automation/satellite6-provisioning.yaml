@@ -1,0 +1,131 @@
+- job-template:
+    name: 'provisioning-{satellite_version}-{os}'
+    properties:
+        - satellite6-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    node: sat6-{satellite_version}
+    parameters:
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                - 'INTERNAL AK'
+                - 'INTERNAL'
+                - 'INTERNAL REPOFILE'
+                - 'GA'
+                - 'BETA'
+                - 'UPSTREAM'
+                - 'ISO'
+            description: Make sure to select the right Satellite release you want to install, otherwise the job can fail.
+        - string:
+            name: BASE_URL
+            description: Required when Satellite distribution is INTERNAL
+        - string:
+            name: CAPSULE_URL
+            description: Required when Satellite distribution is INTERNAL and we require latest External Capsule setups. |
+                Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
+                Leaving this blank picks the latest CAPSULE repo. Override if required.
+        - string:
+            name: RHEL6_TOOLS_URL
+            description: Required when Satellite distribution is INTERNAL and we require latest SatTools Client packages. |
+                Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
+                Leaving this blank picks the latest SATTOOLS repo. Override if required.
+        - string:
+            name: RHEL7_TOOLS_URL
+            description: Required when Satellite distribution is INTERNAL and we require latest SatTools Client packages. |
+                Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
+                Leaving this blank picks the latest SATTOOLS repo. Override if required.
+        - string:
+            name: RHEL8_TOOLS_URL
+            description: Required when Satellite distribution is INTERNAL and we require latest SatTools Client packages. |
+                Not required in CDN distribution, this content should be enabled/synced from cdn.redhat.com using manifests. |
+                Leaving this blank picks the latest SATTOOLS repo. Override if required.
+        - string:
+            name: IMAGE
+            description: |
+                Specify custom RHEL source image to be used for automation. Do not use the full path, use the image name without the .img suffix
+        - bool:
+            name: RUBY_CODE_COVERAGE
+            default: false
+            description: |
+                Configure the Base image of Satellite6 with the needed Ruby code coverage stuff.
+                Ruby Code coverage is currently optional temporarily.
+        - satellite6-provisioning-parameters
+        - satellite6-authentication-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - satellite6-maskpassword-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                DISTRO={os}
+                SATELLITE_VERSION={satellite_version}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - satellite6-provisioning-builders
+        - inject:
+            properties-file: build_env.properties
+        - trigger-builds:
+            - project: 'satellite6-manifest-downloader'
+        - conditional-step:
+                    condition-kind: strings-match
+                    condition-string1: 'true'
+                    condition-string2: ${{ENV,var="START_TIER"}}
+                    condition-case-insensitive: true
+                    steps:
+                    - trigger-builds:
+                      - project: 'automation-{satellite_version}-trigger-tiers-{os}'
+                        predefined-parameters: |
+                          SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                          SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                          RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                          RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                          CAPSULE_REPO=${{CAPSULE_REPO}}
+                          SUBNET=${{SUBNET}}
+                          NETMASK=${{NETMASK}}
+                          GATEWAY=${{GATEWAY}}
+                          BRIDGE=${{BRIDGE}}
+                          BUILD_LABEL=${{BUILD_LABEL}}
+                          DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                          ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                          IMAGE=${{IMAGE}}
+                          SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                          SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                          RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
+        - conditional-step:
+                    condition-kind: regex-match
+                    regex: (6\.[6]|upstream-nightly)
+                    label: ${{ENV,var="SATELLITE_VERSION"}}
+                    steps:
+                    - trigger-builds:
+                      - project: 'automation-{satellite_version}-trigger-tiers-{os}'
+                        predefined-parameters: |
+                          SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                          SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
+                          RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                          RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                          CAPSULE_REPO=${{CAPSULE_REPO}}
+                          SUBNET=${{SUBNET}}
+                          NETMASK=${{NETMASK}}
+                          GATEWAY=${{GATEWAY}}
+                          BRIDGE=${{BRIDGE}}
+                          BUILD_LABEL=${{BUILD_LABEL}}
+                          DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                          ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                          IMAGE=${{IMAGE}}
+                          SAUCE_BROWSER=${{SAUCE_BROWSER}}
+                          SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                          RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-archiver

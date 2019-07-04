@@ -1,0 +1,158 @@
+#==============================================================================
+# Project
+#==============================================================================
+- project:
+    name: satellite6-automation
+    scm-branch: origin/master
+    satellite_version:
+        - '6.3':
+            scm-branch: origin/6.3.z
+        - '6.4':
+            scm-branch: origin/6.4.z
+        - '6.5':
+            scm-branch: origin/6.5.z
+        - '6.6'
+        - 'upstream-nightly'
+        - 'downstream-nightly'
+    os:
+        - 'rhel7'
+        - 'rhel8'
+    exclude:
+        - satellite_version: '6.3'
+          os: 'rhel8'
+        - satellite_version: '6.4'
+          os: 'rhel8'
+        - satellite_version: '6.5'
+          os: 'rhel8'
+        - satellite_version: '6.6'
+          os: 'rhel8'
+    jobs:
+        - 'provisioning-{satellite_version}-{os}'
+        - 'automation-{satellite_version}-tier1-{os}'
+        - 'automation-{satellite_version}-tier2-{os}'
+        - 'automation-{satellite_version}-tier3-{os}'
+        - 'automation-{satellite_version}-tier4-{os}'
+        - 'automation-{satellite_version}-rhai-{os}'
+        - 'automation-{satellite_version}-destructive-{os}'
+        - 'polarion-test-run-{satellite_version}-{os}'
+        - 'polarion-trigger-{satellite_version}-{os}'
+        - 'report-automation-results-{satellite_version}-{os}'
+        - 'report-consolidated-coverage-{satellite_version}-{os}'
+        - 'automation-{satellite_version}-trigger-tiers-{os}'
+
+
+- project:
+    name: satellite6-sanitycheck
+    scm-branch: origin/master
+    satellite_version:
+        - '6.3'
+        - '6.4'
+        - '6.5'
+        - '6.6'
+    os:
+        - 'rhel7'
+        - 'rhel8'
+    exclude:
+        - satellite_version: '6.3'
+          os: 'rhel8'
+        - satellite_version: '6.4'
+          os: 'rhel8'
+        - satellite_version: '6.5'
+          os: 'rhel8'
+        - satellite_version: '6.6'
+          os: 'rhel8'
+    jobs:
+        - 'satellite6-sanity-check-{satellite_version}-{os}'
+        - 'capsule-sanity-check-{satellite_version}-{os}'
+
+
+# Let's have a separate project for Upgrade Jobs.
+- project:
+    name: satellite6-upgrade
+    scm-branch: origin/master
+    satellite_version:
+        - '6.3':
+            scm-branch: origin/6.3.z
+        - '6.4':
+            scm-branch: origin/6.4.z
+        - '6.5':
+            scm-branch: origin/6.5.z
+        - '6.6'
+    os:
+        - 'rhel7'
+    jobs:
+        - 'upgrade-to-{satellite_version}-{os}'
+        - 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
+        - 'upgrade-phase-{satellite_version}-{os}'
+        - 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+        - 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
+        - 'automation-upgraded-{satellite_version}-all-tiers-{os}'
+        - 'automation-upgraded-{satellite_version}-end-to-end-{os}'
+        - 'polarion-upgraded-test-run-{satellite_version}-{os}'
+        - 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
+
+
+# Let's have a separate project for triggers.
+- project:
+    name: satellite6-triggers
+    satellite_version:
+        - '6.3'
+        - '6.4'
+        - '6.5'
+        - '6.6'
+        - 'downstream-nightly'
+    jobs:
+        - 'trigger-satellite-{satellite_version}'
+
+#==============================================================================
+# Jobs
+#==============================================================================
+- job:
+    name: trigger-upstream-nightly
+    description: Triggers automation for Satellite 6 upstream using katello-deploy.
+    node: sat6-rhel
+    parameters:
+        - string:
+            name: ROBOTTELO_WORKERS
+            default: '8'
+            description: Number of workers to use while running robottelo test suite
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                 - 'UPSTREAM'
+                 - 'KOJI'
+            description: UPSTREAM gives you nightly from regular repos, while KOJI gives you staging nightly (from koji repos).
+        - string:
+            name: IDM_REALM
+            default: false
+    wrappers:
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION=upstream-nightly
+        - build-name:
+            name: '#${BUILD_NUMBER} ${ENV,var="BUILD_LABEL"}'
+    triggers:
+        - timed: 'H 19 * * 0,2,4'
+    builders:
+        - shell: |
+            source ${CONFIG_FILES}
+            source config/sat6_repos_urls.conf
+            echo "RHEL6_TOOLS_URL=${RHEL6_TOOLS_URL:-${TOOLS_RHEL6}}" >> properties.txt
+            echo "RHEL7_TOOLS_URL=${RHEL7_TOOLS_URL:-${TOOLS_RHEL7}}" >> properties.txt
+            echo "BUILD_LABEL=Upstream Nightly-$(date +%Y-%m-%d)" >> properties.txt
+        - inject:
+            properties-file: properties.txt
+        - trigger-builds:
+            - project: |
+                provisioning-upstream-nightly-rhel7
+              predefined-parameters: |
+                BUILD_LABEL=${BUILD_LABEL}
+                ROBOTTELO_WORKERS=${ROBOTTELO_WORKERS}
+                SATELLITE_DISTRIBUTION=${SATELLITE_DISTRIBUTION}
+                RHEL6_TOOLS_URL=${RHEL6_TOOLS_URL}
+                RHEL7_TOOLS_URL=${RHEL7_TOOLS_URL}
+                IDM_REALM=${IDM_REALM}
