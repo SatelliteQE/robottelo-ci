@@ -1,0 +1,346 @@
+- job-template:
+    name: 'automation-{satellite_version}-trigger-tiers-{os}'
+    project-type: multijob
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    wrappers:
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                DISTRO={os}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - multijob:
+            name: PhaseOne
+            condition: UNSTABLE
+            projects:
+              - name: 'automation-{satellite_version}-tier1-{os}'
+                current-parameters: true
+              - name: 'automation-{satellite_version}-tier2-{os}'
+                current-parameters: true
+              - name: 'automation-{satellite_version}-tier3-{os}'
+                current-parameters: true
+              - name: 'automation-{satellite_version}-tier4-{os}'
+                current-parameters: true
+              - name: 'automation-{satellite_version}-destructive-{os}'
+                current-parameters: true
+              - name: 'automation-{satellite_version}-rhai-{os}'
+                current-parameters: true
+        - multijob:
+            name: PhaseTwo
+            condition: UNSTABLE
+            projects:
+              - name: 'report-automation-results-{satellite_version}-{os}'
+                predefined-parameters: |
+                  BUILD_LABEL=${{BUILD_LABEL}}
+              - name: 'report-consolidated-coverage-{satellite_version}-{os}'
+                current-parameters: true
+    publishers:
+        - trigger-parameterized-builds:
+          - project:
+              - satellite6-report-portal
+            predefined-parameters: |
+              AUTOMATION_BUILD_URL=${{BUILD_URL}}
+              BUILD_TAGS=${{SATELLITE_VERSION}} {os} ${{BUILD_LABEL}}
+            node-parameters: true
+            condition: 'UNSTABLE_OR_BETTER'
+
+
+- job-template:
+    name: 'automation-{satellite_version}-tier1-{os}'
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    properties:
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier1
+                DISTRO={os}
+        - satellite6-maskpassword-wrappers
+        - satellite6-sauce-ondemand-wrappers
+    builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
+        - satellite6-automation-builders
+        - satellite6-polarion-testrun-builders:
+            parallel_results: "tier1-parallel-results.xml"
+            sequential_results: "tier1-sequential-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[3456])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'automation-{satellite_version}-tier4-{os}'
+                      current-parameters: true
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
+
+- job-template:
+    name: 'automation-{satellite_version}-tier2-{os}'
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    properties:
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier2
+                DISTRO={os}
+        - satellite6-maskpassword-wrappers
+        - satellite6-sauce-ondemand-wrappers
+    builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
+        - satellite6-automation-builders
+        - satellite6-polarion-testrun-builders:
+            parallel_results: "tier2-parallel-results.xml"
+            sequential_results: "tier2-sequential-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
+
+- job-template:
+    name: 'automation-{satellite_version}-tier3-{os}'
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    properties:
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier3
+                DISTRO={os}
+        - satellite6-maskpassword-wrappers
+        - satellite6-sauce-ondemand-wrappers
+    builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
+        - satellite6-automation-builders
+        - satellite6-polarion-testrun-builders:
+            parallel_results: "tier3-parallel-results.xml"
+            sequential_results: "tier3-sequential-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[3456])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'automation-{satellite_version}-destructive-{os}'
+                      current-parameters: true
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
+
+- job-template:
+    name: 'automation-{satellite_version}-rhai-{os}'
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    properties:
+        - build-discarder:
+            num-to-keep: 16
+        - build-blocker:
+              blocking-jobs:
+                  - "automation-{satellite_version}-tier4-{os}"
+                  - "automation-{satellite_version}-tier1-{os}"
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=rhai
+                DISTRO={os}
+        - satellite6-maskpassword-wrappers
+        - satellite6-sauce-ondemand-wrappers
+    builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
+        - satellite6-automation-builders
+        - satellite6-polarion-testcase-run-builders:
+            foreman_results: "foreman-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    publishers:
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
+        - email-ext:
+            recipients: $PROJECT_DEFAULT_RECIPIENTS
+            reply-to: $PROJECT_DEFAULT_REPLYTO
+            content-type: text
+            subject: "$PROJECT_NAME - Build number: $BUILD_NUMBER - $BUILD_STATUS!"
+            body: |
+                "$PROJECT_NAME - Build number: $BUILD_NUMBER - $BUILD_STATUS:
+
+                Check console output at $BUILD_URL to view the results."
+            unstable: true
+            failure: true
+            success: true
+
+- job-template:
+    name: 'automation-{satellite_version}-tier4-{os}'
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    properties:
+        - build-discarder:
+            num-to-keep: 16
+        - build-blocker:
+              blocking-jobs:
+                  - "automation-{satellite_version}-tier1-{os}"
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier4
+                DISTRO={os}
+        - satellite6-maskpassword-wrappers
+        - satellite6-sauce-ondemand-wrappers
+    builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
+        - satellite6-automation-builders
+        - satellite6-polarion-testrun-builders:
+            parallel_results: "tier4-parallel-results.xml"
+            sequential_results: "tier4-sequential-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[3456])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'automation-{satellite_version}-rhai-{os}'
+                      current-parameters: true
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
+
+- job-template:
+    name: 'automation-{satellite_version}-destructive-{os}'
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    properties:
+        - build-discarder:
+            num-to-keep: 16
+        - build-blocker:
+              blocking-jobs:
+                  - "automation-{satellite_version}-tier3-{os}"
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=destructive
+                DISTRO={os}
+        - satellite6-maskpassword-wrappers
+        - satellite6-sauce-ondemand-wrappers
+    builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
+        - satellite6-automation-builders
+        - satellite6-polarion-testcase-run-builders:
+            foreman_results: "foreman-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"

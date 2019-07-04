@@ -1,0 +1,193 @@
+- job-template:
+    name: 'satellite6-sanity-check-{satellite_version}-{os}'
+    description: |
+        Quickly up an instance using VLANs for feature and Bug testing. We could use the two new physical hardware which were
+        recently procured. This would help fully automate sat6 installation to do Libvirt, RHEVM and Openstack CR Testing.
+    node: sat6-{satellite_version}
+    parameters:
+        - choice:
+            name: SATELLITE_DISTRIBUTION
+            choices:
+                - 'INTERNAL'
+                - 'INTERNAL AK'
+                - 'INTERNAL REPOFILE'
+                - 'GA'
+            description: |
+                INTERNAL AK and INTERNAL REPOFILE choices are valid currently only for sat6.3
+        - string:
+            name: BASE_URL
+            description: Required when Satellite distribution is INTERNAL
+        - string:
+            name: BUILD_LABEL
+            description: |
+                'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
+        - choice:
+            name: SELINUX_MODE
+            choices:
+                - 'enforcing'
+                - 'permissive'
+        - choice:
+            name: PROXY_MODE
+            choices:
+                - 'authenticated'
+                - 'non-authenticated'
+                - 'no-proxy'
+        - string:
+            name: ADMIN_PASSWORD
+            default: changeme
+            description: "Specify the admin password if changed from the default set."
+        - string:
+            name: MANIFEST_LOCATION_URL
+            description: This is Mandatory. Host your Manifest file on any server and pass the URL link.
+        - choice:
+            name: DOWNLOAD_POLICY
+            choices:
+                - 'on_demand'
+                - 'immediate'
+                - 'background'
+            description: |
+                For satellite 6.2 - the default installation setup is immediate.
+                For satellite 6.3 - the default installation setup is on_demand
+                The chosen download policy will override the installation download policy on your satellite.
+                Immediate is the default choice for this job as this is more stable option.
+        - bool:
+            name: STAGE_TEST
+            default: false
+            description: |
+                Points to RHSM stage for stage installation test. Used only
+                in CDN provisioning.
+        - satellite6-authentication-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - satellite6-maskpassword-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                PROVISIONING_ID=rosemary
+                SERVER_ID=sat-feature-{os}
+                DISTRO={os}
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="PROVISIONING_ID"}} ${{ENV,var="SERVER_ID"}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - shining-panda:
+            build-environment: virtualenv
+            python-version: System-CPython-3.6
+            clear: true
+            nature: shell
+            command:
+                !include-raw-escape:
+                    - 'pip-install-pycurl.sh'
+                    - 'satellite6-libvirt-install.sh'
+                    - 'satellite6-add-provison-host.sh'
+                    - 'satellite6-libvirt-install-manifest.sh'
+                    - 'satellite6-configure-variables.sh'
+        - trigger-builds:
+            - project: 'capsule-sanity-check-{satellite_version}-{os}'
+              current-parameters: true
+              predefined-parameters: |
+                SATELLITE_SERVER_ID=${{SERVER_ID}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+    publishers:
+        - satellite6-automation-mails
+
+
+- job-template:
+    name: 'capsule-sanity-check-{satellite_version}-{os}'
+    description: |
+        Quickly up an instance using VLANs for Sanity Check of every build, by provisioning a Host on Libvirt Compute Resource.
+    node: sat6-{satellite_version}
+    parameters:
+        - string:
+            name: BUILD_LABEL
+            description: |
+                'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+                Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+                Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
+        - string:
+            name: ADMIN_PASSWORD
+            default: changeme
+            description: "Specify the admin password if changed from the default set."
+        - string:
+            name: SATELLITE_SERVER_ID
+            description: "Specify the Server ID of Satellite6. Example sat-feature-rhel7 or sat-feature-rhel6"
+        - bool:
+            name: PROVISIONING_SETUP
+            default: true
+            description: |
+                'Specify whether to set the provisioning functionality for the Capsule.
+                 By default, it will only configure the stuff generated by capsule-generate-certs command.'
+        - string:
+            name: INTERFACE
+            default: eth0
+            description: |
+                Default value is eth0 if not specified.
+        - bool:
+            name: RERUN
+            default: false
+            description: |
+                'Rerun of this job would not attempt to re-create the capsule certs.'
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - satellite6-maskpassword-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                PROVISIONING_ID=rosemary
+                SERVER_ID=cap-feature-{os}
+                DISTRO={os}
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="PROVISIONING_ID"}} ${{ENV,var="SERVER_ID"}} ${{ENV,var="BUILD_LABEL"}}'
+    builders:
+        - satellite6-capsule-sanity-check-builders
+        - inject:
+            properties-file: build_env.properties
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[456])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'foreman-maintain-automation'
+                      current-parameters: true
+                      predefined-parameters: |
+                        COMPONENT=satellite
+                        SERVER_HOSTNAME=${{SATELLITE_SERVER_HOSTNAME}}
+                        BUILD_LABEL=${{BUILD_LABEL}}
+                        SATELLITE_VERSION=${{SATELLITE_VERSION}}
+        - conditional-step:
+            condition-kind: regex-match
+            regex: (6\.[456])
+            label: ${{ENV,var="SATELLITE_VERSION"}}
+            steps:
+                - trigger-builds:
+                    - project: 'foreman-maintain-automation'
+                      current-parameters: true
+                      predefined-parameters: |
+                        COMPONENT=capsule
+                        SERVER_HOSTNAME=${{CAPSULE_SERVER_HOSTNAME}}
+                        BUILD_LABEL=${{BUILD_LABEL}}
+                        SATELLITE_VERSION=${{SATELLITE_VERSION}}
+    publishers:
+        - satellite6-automation-mails

@@ -1,0 +1,170 @@
+- job-template:
+    name: 'report-automation-results-{satellite_version}-{os}'
+    node: sat6-{satellite_version}
+    parameters:
+      - string:
+          name: BUILD_LABEL
+          description: |
+              'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+              Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+              Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo-ci.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+    builders:
+        - shell: rm -f *.xml
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier1-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier2-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier3-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier4-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-destructive-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-rhai-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - satellite6-automation-reports-builders
+    publishers:
+        - email-ext:
+            recipients: ${{QE_EMAIL_LIST}}
+            content-type: html
+            success: true
+            failure: false
+            subject: 'Satellite {satellite_version} Automation Report for {os}'
+            body: |
+
+                ${{FILE, path="email_report.html"}}
+
+                The build ${{BUILD_URL}} has been completed.
+
+- job-template:
+    name: 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
+    node: sat6-{satellite_version}
+    parameters:
+      - string:
+          name: BUILD_LABEL
+          description: |
+              'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+              Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+              Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo-ci.git
+            branches:
+                - origin/master
+            skip-tag: true
+    wrappers:
+        - build-name:
+            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+    builders:
+        - shell: rm -f *.xml
+        - copyartifact:
+            project: 'automation-upgraded-{satellite_version}-all-tiers-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
+            filter: '*-results.xml'
+            which-build: last-successful
+        - satellite6-automation-reports-builders
+    publishers:
+        - email-ext:
+            recipients: ${{QE_EMAIL_LIST}}
+            content-type: html
+            success: true
+            failure: false
+            subject: 'Satellite {satellite_version} Upgrade Tiers Automation Report for {os}'
+            body: |
+
+                ${{FILE, path="email_report.html"}}
+
+                The build ${{BUILD_URL}} has been completed.
+
+- job-template:
+    name: 'report-consolidated-coverage-{satellite_version}-{os}'
+    node: sat6-{satellite_version}
+    parameters:
+        - satellite6-automation-parameters
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=coverage
+                DISTRO={os}
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/automation-tools.git
+            branches:
+                - origin/master
+            skip-tag: true
+    builders:
+        - shell: rm -f coverage.*.tar
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier1-{os}'
+            filter: 'coverage.tier1.tar,tfm_reports_tier1.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier2-{os}'
+            filter: 'coverage.tier2.tar,tfm_reports_tier2.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier3-{os}'
+            filter: 'coverage.tier3.tar,tfm_reports_tier3.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier4-{os}'
+            filter: 'coverage.tier4.tar,tfm_reports_tier4.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-rhai-{os}'
+            filter: 'coverage.rhai.tar,tfm_reports_rhai.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-destructive-{os}'
+            filter: 'coverage.destructive.tar,tfm_reports_destructive.tar'
+            which-build: last-successful
+        - satellite6-consolidated-reports-builders:
+    publishers:
+        - satellite6-automation-coverage:
+            file_path: "coverage/coverage.xml"
+        - email-ext:
+            recipients: ${{QE_EMAIL_LIST}}
+            success: true
+            failure: false
+            subject: 'Satellite {satellite_version} Consolidated Coverage Report and SonarQube Analysis Report for {os}'
+            body: |
+                The build ${{BUILD_URL}} has been completed.
+
+                Please refer the attachment for the consolidated coverage report from,
+                tier1, tier2, tier3, tier4, rhai and destructive jobs.
+
+                The Pulp Python SonarQube Analysis link, ${{SONAR_SERVER_URL}}/dashboard/index/Satellite{satellite_version}_pulp_python_full_analysis
+                The TFM Ruby SonarQube Analysis link, ${{SONAR_SERVER_URL}}/dashboard/index/Satellite{satellite_version}_tfm_ruby_full_analysis
+            attachments: coverage/coverage_report.txt

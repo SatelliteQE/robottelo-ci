@@ -1,0 +1,387 @@
+- job-template:
+    name: 'upgrade-to-{satellite_version}-{os}'
+    concurrent: true
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    node: sat6-{satellite_version}
+    parameters:
+        - string:
+            name: BUILD_LABEL
+            description: |
+                Specify the build label of the Satellite. Example Sat6.3.0-1.0
+                Which is Sat6.y.z-SNAP.COMPOSE
+        - string:
+            name: ROBOTTELO_WORKERS
+            default: '8'
+            description: |
+                Number of workers to use while running robottelo all tiers test suite
+                after the upgrade.
+        - bool:
+            name: ZSTREAM_UPGRADE
+            default: false
+            description: |
+                This option is helpful in manually triggering this job for zStream upgrade.
+                e.g 6.3.0 to 6.3.1
+        - bool:
+            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            default: true
+            description: |
+                This option allows to use foreman-maintain for satellite-upgrade.
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - satellite6-maskpassword-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=setup
+                OS={os}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
+    builders:
+        - satellite6-upgrade-builders
+        - inject:
+            properties-file: properties.txt
+        - trigger-builds:
+            - project: 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
+              current-parameters: true
+              predefined-parameters: |
+                SERVER_HOSTNAME=${{SERVER_HOSTNAME}}
+                RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
+                RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                CAPSULE_REPO=${{CAPSULE_REPO}}
+                SUBNET=${{SUBNET}}
+                NETMASK=${{NETMASK}}
+                GATEWAY=${{GATEWAY}}
+                BRIDGE=${{BRIDGE}}
+                BUILD_LABEL=${{BUILD_LABEL}}
+                DISCOVERY_ISO=${{DISCOVERY_ISO}}
+                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
+                PERFORM_FOREMAN_MAINTAIN_UPGRADE=${{PERFORM_FOREMAN_MAINTAIN_UPGRADE}}
+    publishers:
+        - satellite6-automation-mails
+        - archive:
+            artifacts: 'product_setup'
+
+
+- job-template:
+    name: 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
+    concurrent: true
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    node: sat6-{satellite_version}
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - satellite6-maskpassword-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=pre-upgrade
+                OS={os}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} preupgrade-scenarios-Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
+    builders:
+        - copyartifact:
+            project: 'upgrade-to-{satellite_version}-{os}'
+            filter: 'product_setup'
+            which-build: last-successful
+        - satellite6-upgrade-scenarios-builders
+        - trigger-builds:
+            - project: 'upgrade-phase-{satellite_version}-{os}'
+              current-parameters: true
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - archive:
+            artifacts: 'scenario_entities,product_setup'
+
+
+- job-template:
+    name: 'upgrade-phase-{satellite_version}-{os}'
+    concurrent: true
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    node: sat6-{satellite_version}
+    parameters:
+        - string:
+            name: BUILD_LABEL
+            description: |
+                Specify the build label of the Satellite. Example Sat6.3.0-1.0
+                Which is Sat6.y.z-SNAP.COMPOSE
+        - string:
+            name: ROBOTTELO_WORKERS
+            default: '8'
+            description: |
+                Number of workers to use while running robottelo all tiers test suite
+                after the upgrade.
+        - bool:
+            name: ZSTREAM_UPGRADE
+            default: false
+            description: |
+                This option is helpful in manually triggering this job for zStream upgrade.
+                e.g 6.3.0 to 6.3.1
+        - bool:
+            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            default: true
+            description: |
+                This option allows to use foreman-maintain for satellite-upgrade.
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=upgrade
+                OS={os}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
+    builders:
+        - copyartifact:
+            project: 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
+            filter: 'scenario_entities,product_setup'
+            which-build: last-successful
+        - satellite6-upgrade-builders
+        - inject:
+            properties-file: properties.txt
+        - trigger-builds:
+            - project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+              current-parameters: true
+    publishers:
+        - archive:
+            artifacts: '*.tar.xz,preupgrade_*,postupgrade_*,scenario_entities,product_setup'
+        - email-ext:
+            recipients: ${{QE_EMAIL_LIST}}
+            success: true
+            subject: 'Upgrade Status to {satellite_version} on {os} ${{BUILD_LABEL}} - $BUILD_STATUS'
+            body: |
+                ${{FILE, path="upgrade_highlights"}}
+                Build URL: ${{BUILD_URL}}
+            attachments: full_upgrade, Log_Analyzer_Logs.tar.xz
+
+- job-template:
+    name: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/satellite6-upgrade.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=upgrade
+                OS={os}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} Existence-tests-{os} ${{BUILD_LABEL}}'
+    builders:
+        - copyartifact:
+            project: 'upgrade-phase-{satellite_version}-{os}'
+            filter: 'preupgrade_*,postupgrade_*,scenario_entities,product_setup'
+            which-build: last-successful
+        - satellite6-upgrade-existence-builders
+        - trigger-builds:
+            - project: 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
+              current-parameters: true
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - archive:
+            artifacts: 'postupgrade_*,preupgrade_*,scenario_entities,product_setup'
+
+- job-template:
+    name: 'automation-postupgrade-{satellite_version}-scenario-tests-{os}'
+    concurrent: true
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    node: sat6-{satellite_version}
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - default-wrappers
+        - satellite6-maskpassword-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=post-upgrade
+                OS={os}
+        - build-name:
+            name: '#${{BUILD_NUMBER}} postupgrade-scenarios-Upgrade_{os}_to_{satellite_version} ${{BUILD_LABEL}}'
+    builders:
+        - copyartifact:
+            project: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
+            filter: 'product_setup,scenario_entities'
+            which-build: last-successful
+        - satellite6-upgrade-scenarios-builders
+        - trigger-builds:
+            - project: 'satellite6-manifest-downloader'
+        - trigger-builds:
+            - project: 'automation-upgraded-{satellite_version}-all-tiers-{os}'
+              current-parameters: true
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - archive:
+            artifacts: 'scenario_entities,product_setup'
+
+- job-template:
+    name: 'automation-upgraded-{satellite_version}-all-tiers-{os}'
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=all-tiers
+                OS={os}
+        - satellite6-maskpassword-wrappers
+        - satellite6-sauce-ondemand-wrappers
+    builders:
+        - satellite6-upgrade-tiers-builders
+        - trigger-builds:
+            - project: 'satellite6-manifest-downloader'
+        - trigger-builds:
+            - project: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
+              current-parameters: true
+        - trigger-builds:
+            - project: 'testblame-email-report'
+              predefined-parameters: |
+                BUILD_LABEL=${{BUILD_LABEL}}
+                JENKINS_JOB_URL=${{BUILD_URL}}/testReport/
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
+        - trigger-parameterized-builds:
+          - project:
+              - satellite6-report-portal
+            predefined-parameters: |
+              AUTOMATION_BUILD_URL=${{BUILD_URL}}
+              BUILD_TAGS=${{SATELLITE_VERSION}} {os} ${{BUILD_LABEL}}
+            node-parameters: true
+            condition: 'UNSTABLE_OR_BETTER'
+
+- job-template:
+    name: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    properties:
+        - satellite6-upgrade-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=end-to-end
+                OS={os}
+        - satellite6-maskpassword-wrappers
+        - satellite6-sauce-ondemand-wrappers
+    builders:
+        - satellite6-upgrade-tiers-builders
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
+        - trigger-builds:
+            - project: 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
+              predefined-parameters: |
+                  BUILD_LABEL=${{BUILD_LABEL}}
+        - trigger-builds:
+            - project: 'polarion-upgraded-test-run-{satellite_version}-{os}'
+              predefined-parameters: |
+                  TEST_RUN_ID=$BUILD_LABEL {os} upgrade
+                  POLARION_RELEASE=$POLARION_RELEASE upgrade
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - archive:
+            artifacts: 'robottelo*.log,*-results.xml,robottelo.properties'
+            allow-empty: true
