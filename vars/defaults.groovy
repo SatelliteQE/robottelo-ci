@@ -10,4 +10,5 @@ class defaults implements Serializable {
     String plinko = 'https://github.com/JacobCallahan/plinko'
     String satellite6_upgrade = 'https://github.com/SatelliteQE/satellite6-upgrade'
     String testfm = 'https://github.com/SatelliteQE/testfm'
+    String robottelo = 'https://github.com/SatelliteQE/robottelo'
 }
