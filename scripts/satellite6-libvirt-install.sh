@@ -15,6 +15,10 @@ source config/subscription_config.conf
 source config/sat6_repos_urls.conf
 source config/compute_resources.conf
 
+if [ "$TEMPORARY_FIXES" = 'true' ]; then
+    source config/temporary_fixes.conf
+fi
+
 if [ "${STAGE_TEST}" = 'true' ]; then
     source config/stage_environment.conf
 fi
