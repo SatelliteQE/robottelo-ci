@@ -22,7 +22,8 @@
             choices:
                 - 'base'
                 - 'tier1'
-                - 'tier2'
+                - 'tier2-sequential'
+                - 'tier2-parallel'
                 - 'tier3'
                 - 'tier4'
                 - 'rhai'

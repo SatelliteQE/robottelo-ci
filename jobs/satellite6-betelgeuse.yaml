@@ -67,7 +67,7 @@
                   TEST_RUN_ID=${{TEST_RUN_ID}}
                   POLARION_RELEASE=${{POLARION_RELEASE}}
                   PULL_ARTIFACTS=true
-                  ENDPOINT=tier2
+                  ENDPOINT=tier2-sequential
         - multijob:
             name: PhaseThree
             condition: ALWAYS
@@ -108,6 +108,16 @@
                   POLARION_RELEASE=${{POLARION_RELEASE}}
                   PULL_ARTIFACTS=true
                   ENDPOINT=destructive
+        - multijob:
+            name: PhaseSeven
+            condition: ALWAYS
+            projects:
+              - name: 'polarion-test-run-{satellite_version}-{os}'
+                predefined-parameters: |
+                  TEST_RUN_ID=${{TEST_RUN_ID}}
+                  POLARION_RELEASE=${{POLARION_RELEASE}}
+                  PULL_ARTIFACTS=true
+                  ENDPOINT=tier2-parallel
 
 - job-template:
     name: polarion-test-run-{satellite_version}-{os}
@@ -135,7 +145,8 @@
             choices:
                  - 'none'
                  - 'tier1'
-                 - 'tier2'
+                 - 'tier2-sequential'
+                 - 'tier2-parallel'
                  - 'tier3'
                  - 'tier4'
                  - 'rhai'

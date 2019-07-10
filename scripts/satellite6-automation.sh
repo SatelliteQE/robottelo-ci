@@ -98,7 +98,7 @@ TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
 
 if [ "${ENDPOINT}" == "destructive" ]; then
     make test-foreman-sys
-elif [ "${ENDPOINT}" != "rhai" ]; then
+elif [ "${ENDPOINT}" != "rhai" ] && [ "${ENDPOINT}" != "tier2"* ]; then
     set +e
     # Run sequential tests
     $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
@@ -110,6 +110,22 @@ elif [ "${ENDPOINT}" != "rhai" ]; then
     $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -o junit_suite_name="${ENDPOINT}-parallel" \
         -m "${ENDPOINT} and not run_in_one_thread and not stubbed ${EXTRA_MARKS}" \
+        ${TEST_TYPE}
+    set -e
+elif [ "${ENDPOINT}" == "tier2-sequential" ]; then
+    set +e
+    # Run sequential tier2 tests
+    $(which py.test) -v --junit-xml="tier2-sequential-results.xml" \
+        -o junit_suite_name="tier2-sequential" \
+        -m "tier2 and run_in_one_thread and not stubbed ${EXTRA_MARKS}" \
+        ${TEST_TYPE}
+    set -e
+elif [ "${ENDPOINT}" == "tier2-parallel" ]; then
+    # Run parallel tier2 tests
+    set +e
+    $(which py.test) -v --junit-xml="tier2-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
+        -o junit_suite_name="tier2-parallel" \
+        -m "tier2 and not run_in_one_thread and not stubbed ${EXTRA_MARKS}" \
         ${TEST_TYPE}
     set -e
 else

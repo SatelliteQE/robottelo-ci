@@ -26,7 +26,7 @@ export TARGET_IMAGE
 export SERVER_HOSTNAME="${TARGET_IMAGE%%-base}.${VM_DOMAIN}"
 set +e
 fab -D -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE},delete_image=true"
-for endpoint in tier1 tier2 tier3 tier4 rhai destructive coverage; do fab -D -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE%%-base}-$endpoint,delete_image=true"; done
+for endpoint in tier1 tier2-sequential tier2-parallel tier3 tier4 rhai destructive coverage; do fab -D -H "root@${PROVISIONING_HOST}" "vm_destroy:target_image=${TARGET_IMAGE%%-base}-$endpoint,delete_image=true"; done
 set -e
 
 # Assign DISTRIBUTION to trigger things appropriately from automation-tools.

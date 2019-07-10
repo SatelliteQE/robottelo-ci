@@ -55,7 +55,7 @@ function setup_instance () {
     fi
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" $rename_cmd "${SERVER_HOSTNAME}" -y -u admin -p changeme
     
-    if [[ ${ENDPOINT} =~ ^(tier1|tier2|rhai|destructive)$ ]]; then
+    if [[ ${ENDPOINT} =~ ^(tier1|tier2-sequential|tier2-parallel|rhai|destructive)$ ]]; then
         ssh $ssh_opts root@"${SERVER_HOSTNAME}" systemctl stop dhcpd
     fi
 }

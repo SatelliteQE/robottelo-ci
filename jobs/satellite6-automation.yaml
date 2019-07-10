@@ -156,7 +156,9 @@
             projects:
               - name: 'automation-{satellite_version}-tier1-{os}'
                 current-parameters: true
-              - name: 'automation-{satellite_version}-tier2-{os}'
+              - name: 'automation-{satellite_version}-tier2-sequential-{os}'
+                current-parameters: true
+              - name: 'automation-{satellite_version}-tier2-parallel-{os}'
                 current-parameters: true
               - name: 'automation-{satellite_version}-tier3-{os}'
                 current-parameters: true
@@ -237,7 +239,7 @@
             file_path: "coverage.xml"
 
 - job-template:
-    name: 'automation-{satellite_version}-tier2-{os}'
+    name: 'automation-{satellite_version}-tier2-sequential-{os}'
     node: sat6-{satellite_version}
     build-discarder:
         num-to-keep: 16
@@ -257,7 +259,7 @@
         - inject:
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
-                ENDPOINT=tier2
+                ENDPOINT=tier2-sequential
                 DISTRO={os}
         - satellite6-maskpassword-wrappers
         - satellite6-sauce-ondemand-wrappers
@@ -266,9 +268,49 @@
         - inject:
             properties-file: build_env.txt
         - satellite6-automation-builders
-        - satellite6-polarion-testrun-builders:
-            parallel_results: "tier2-parallel-results.xml"
+        - satellite6-polarion-testrun-sequential-builders:
             sequential_results: "tier2-sequential-results.xml"
+            satellite_version: "{satellite_version}"
+            os: "{os}"
+    publishers:
+        - satellite6-automation-mails
+        - satellite6-automation-publishers
+        - satellite6-automation-archiver
+        - satellite6-automation-coverage:
+            file_path: "coverage.xml"
+
+- job-template:
+    name: 'automation-{satellite_version}-tier2-parallel-{os}'
+    node: sat6-{satellite_version}
+    build-discarder:
+        num-to-keep: 16
+    properties:
+        - build-discarder:
+            num-to-keep: 16
+    parameters:
+        - satellite6-automation-parameters
+    scm:
+        - git:
+            url: https://github.com/SatelliteQE/robottelo.git
+            branches:
+                - '{scm-branch}'
+            skip-tag: true
+    wrappers:
+        - satellite6-automation-wrappers
+        - inject:
+            properties-content: |
+                SATELLITE_VERSION={satellite_version}
+                ENDPOINT=tier2-parallel
+                DISTRO={os}
+        - satellite6-maskpassword-wrappers
+        - satellite6-sauce-ondemand-wrappers
+    builders:
+        - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
+        - inject:
+            properties-file: build_env.txt
+        - satellite6-automation-builders
+        - satellite6-polarion-testrun-parallel-builders:
+            parallel_results: "tier2-parallel-results.xml"
             satellite_version: "{satellite_version}"
             os: "{os}"
     publishers:
@@ -614,8 +656,12 @@
             filter: 'coverage.tier1.tar,tfm_reports_tier1.tar'
             which-build: last-successful
         - copyartifact:
-            project: 'automation-{satellite_version}-tier2-{os}'
-            filter: 'coverage.tier2.tar,tfm_reports_tier2.tar'
+            project: 'automation-{satellite_version}-tier2-parallel-{os}'
+            filter: 'coverage.tier2-parallel.tar,tfm_reports_tier2-parallel.tar'
+            which-build: last-successful
+        - copyartifact:
+            project: 'automation-{satellite_version}-tier2-sequential-{os}'
+            filter: 'coverage.tier2-sequential.tar,tfm_reports_tier2-sequential.tar'
             which-build: last-successful
         - copyartifact:
             project: 'automation-{satellite_version}-tier3-{os}'
@@ -1432,7 +1478,8 @@
     jobs:
         - 'provisioning-{satellite_version}-{os}'
         - 'automation-{satellite_version}-tier1-{os}'
-        - 'automation-{satellite_version}-tier2-{os}'
+        - 'automation-{satellite_version}-tier2-sequential-{os}'
+        - 'automation-{satellite_version}-tier2-parallel-{os}'
         - 'automation-{satellite_version}-tier3-{os}'
         - 'automation-{satellite_version}-tier4-{os}'
         - 'automation-{satellite_version}-rhai-{os}'

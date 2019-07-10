@@ -22,11 +22,25 @@
                   regex: (true)
                   label: ${{ENV,var="PULL_ARTIFACTS"}}
                 - condition-kind: regex-match
-                  regex: (tier2)
+                  regex: (tier2-sequential)
                   label: ${{ENV,var="ENDPOINT"}}
             steps:
                 - copyartifact:
-                    project: 'automation-{satellite_version}-tier2-{os}'
+                    project: 'automation-{satellite_version}-tier2-sequential-{os}'
+                    filter: '*-results.xml'
+                    which-build: last-successful
+        - conditional-step:
+            condition-kind: and
+            condition-operands:
+                - condition-kind: regex-match
+                  regex: (true)
+                  label: ${{ENV,var="PULL_ARTIFACTS"}}
+                - condition-kind: regex-match
+                  regex: (tier2-parallel)
+                  label: ${{ENV,var="ENDPOINT"}}
+            steps:
+                - copyartifact:
+                    project: 'automation-{satellite_version}-tier2-parallel-{os}'
                     filter: '*-results.xml'
                     which-build: last-successful
         - conditional-step:
