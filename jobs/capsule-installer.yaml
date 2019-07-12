@@ -101,6 +101,7 @@
         - build-name:
             name: '#${BUILD_NUMBER} ${ENV,var="CAPSULE_SERVER_HOSTNAME"}'
         - build-user-vars
+        - satellite6-maskpassword-wrappers
         - config-file-provider:
             files:
                 - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
