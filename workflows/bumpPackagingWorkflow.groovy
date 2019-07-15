@@ -1,6 +1,5 @@
 def changelog = ''
 def package_name = ''
-def version = env.version
 
 node ('sat6-build') {
 

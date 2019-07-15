@@ -1,4 +1,6 @@
 def snap_version = generateSnapVersion(release_name: releaseVersion, snap_version: snapVersion)
+def version_map = branch_map[env.gitlabTargetBranch]
+def bump_job = version_map['bump_job']
 
 node('sat6-build') {
     stage("Setup Workspace") {
@@ -148,4 +150,14 @@ node {
           [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${snap_version}"],
         ]
     }
+    
+    stage("Trigger Satellite Bump") {
+       when {
+           expression { bumpSatellite }
+       }
+       build job: bump_job, parameters: [
+         [$class: 'StringParameterValue', name: 'project', value: 'satellite']
+         [$class: 'StringParameterValue', name: 'targetBranch', value: release_branch]
+       ]
+   }
 }

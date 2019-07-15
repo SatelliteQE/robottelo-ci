@@ -10,6 +10,9 @@
       - string:
           name: snapVersion
           description: "snap version in X.Y format (optional)"
+      - bool:
+          name: bumpSatellite
+          default: true
     dsl:
       !include-raw:
         - workflows/{satellite_dotted_version}/releasePipelineAttributes.groovy
@@ -36,7 +39,6 @@
         - workflows/lib/runPlaybook.groovy{empty}
         - workflows/lib/releaseQAFunctions.groovy{empty}
         - workflows/lib/toolbelt.groovy{empty}
-        - workflows/lib/createMergeRequest.groovy{empty}
     notifications:
       - snapper_notifications
     properties:
