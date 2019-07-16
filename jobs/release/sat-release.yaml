@@ -10,6 +10,9 @@
       - string:
           name: snapVersion
           description: "snap version in X.Y format (optional)"
+      - bool:
+          name: autoreleaseEnabled
+          default: true
     dsl:
       !include-raw:
         - workflows/{satellite_dotted_version}/releasePipelineAttributes.groovy

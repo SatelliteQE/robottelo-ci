@@ -149,3 +149,19 @@ node {
         ]
     }
 }
+
+node('sat6-build') {
+    stage("Finish release") {
+      when {
+        expression { autoreleaseEnabled }
+      }
+
+      steps {
+        release_snap(
+          release_version: releaseVersion,
+          snap_version: snapVersion,
+          release_stream: satellite_main_version
+        )
+      }
+    }
+}
