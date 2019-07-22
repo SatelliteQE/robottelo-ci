@@ -1,0 +1,36 @@
+- job:
+    name: 'api-cli-reports-pipeline'
+    concurrent: true
+    display-name: 'API and CLI Reports'
+    description: |
+        <p>Job that generates reports about API and CLI versions and the tests that apply to them</p>
+    project-type: pipeline
+    parameters:
+        - string:
+            name: SATELLITE_SERVER_HOSTNAME
+            description: "FQDN for your Satellite 6 Server."
+        - string:
+            name: ROOT_PASSWORD
+            default: "dog8code"
+            description: "Satellite Server root user password."
+        - string:
+            name: SATELLITE_VERSION
+            description: Satellite 6 version (6.5.2, 6.6.0-10.1).
+        - string:
+            name: DATA_DIR
+            description: The absolute path to where results should be stored/retrieved.
+    pipeline-scm:
+        scm:
+          - git:
+                url: https://github.com/JacobCallahan/plinko.git
+                branches:
+                  - origin/master
+                clean: true
+        script-path: workflows/qe/api-cli-reports.groovy
+        lightweight-checkout: true
+    wrappers:
+        - default-wrappers
+        - config-file-provider:
+            files:
+                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
+                  variable: CONFIG_FILES
