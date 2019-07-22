@@ -5,5 +5,8 @@ class defaults implements Serializable {
 
     String automation_tools = 'https://github.com/SatelliteQE/automation-tools'
     String robottelo_ci = 'https://github.com/SatelliteQE/robottelo-ci'
-    
+    String apix = 'https://github.com/JacobCallahan/apix'
+    String clix = 'https://github.com/JacobCallahan/clix'
+    String plinko = 'https://github.com/JacobCallahan/plinko'
+
 }
