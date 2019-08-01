@@ -19,6 +19,13 @@
     os:
         - 'rhel7'
         - 'rhel8'
+    endpoint:
+        - 'tier1'
+        - 'tier2'
+        - 'tier3'
+        - 'tier4'
+        - 'rhai'
+        - 'destructive'
     exclude:
         - satellite_version: '6.3'
           os: 'rhel8'
@@ -30,12 +37,7 @@
           os: 'rhel8'
     jobs:
         - 'provisioning-{satellite_version}-{os}'
-        - 'automation-{satellite_version}-tier1-{os}'
-        - 'automation-{satellite_version}-tier2-{os}'
-        - 'automation-{satellite_version}-tier3-{os}'
-        - 'automation-{satellite_version}-tier4-{os}'
-        - 'automation-{satellite_version}-rhai-{os}'
-        - 'automation-{satellite_version}-destructive-{os}'
+        - 'automation-{satellite_version}-{endpoint}-{os}'
         - 'polarion-test-run-{satellite_version}-{os}'
         - 'polarion-trigger-{satellite_version}-{os}'
         - 'report-automation-results-{satellite_version}-{os}'
