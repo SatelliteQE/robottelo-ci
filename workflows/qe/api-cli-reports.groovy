@@ -9,90 +9,61 @@ pipeline {
             }
         }
 
-        stage('Install APIx') {
-            steps {
-                git defaults.apix
-                sh_venv """
-                    git clone https://github.com/JacobCallahan/apix.git
-                """
-            }
-        }
-
         stage('Gather API Information') {
             steps {
-                sh_venv '''
-                    apix explore -n satellite -u https://$(SATELLITE_SERVER_HOSTNAME)/ -v $(SATELLITE_VERSION) --data-dir $(DATA_DIR)
-                    apix explore -n satellite -u https://$(SATELLITE_SERVER_HOSTNAME)/ -v $(SATELLITE_VERSION) --compact --data-dir $(DATA_DIR)
-                    apix diff -n satellite -l $(SATELLITE_VERSION) --data-dir $(DATA_DIR)
-                    apix diff -n satellite -l $(SATELLITE_VERSION) --compact --data-dir $(DATA_DIR)
-                '''
-            }
-        }
-
-        stage('Generate API Library') {
-            steps {
-                sh_venv '''
-                    apix makelib -n satellite -l $(SATELLITE_VERSION) -t advanced --data-dir $(DATA_DIR)
-                    cd ..
-                '''
-            }
-        }
-
-        stage('Install CLIx') {
-            steps {
-                git defaults.clix
-                sh_venv """
-                    pip install .
-                """
+                git defaults.apix
+                dir("apix") {
+                    sh_venv '''
+                        pip install .
+                        apix explore -n satellite -u https://$(SATELLITE_SERVER_HOSTNAME)/ -v $(SATELLITE_VERSION) --data-dir $(DATA_DIR)
+                        apix explore -n satellite -u https://$(SATELLITE_SERVER_HOSTNAME)/ -v $(SATELLITE_VERSION) --compact --data-dir $(DATA_DIR)
+                        apix diff -n satellite -l $(SATELLITE_VERSION) --data-dir $(DATA_DIR)
+                        apix diff -n satellite -l $(SATELLITE_VERSION) --compact --data-dir $(DATA_DIR)
+                        apix makelib -n satellite -l $(SATELLITE_VERSION) -t advanced --data-dir $(DATA_DIR)
+                    '''
+                }
             }
         }
 
         stage('Gather CLI Information') {
             steps {
-                sh_venv '''
-                    clix explore -n hammer -t $(SATELLITE_SERVER_HOSTNAME) -v $(SATELLITE_VERSION) -a root/$(ROOT_PASSWORD) --max-session 100 --data-dir $(DATA_DIR)
-                    clix explore -n hammer -t $(SATELLITE_SERVER_HOSTNAME) -v $(SATELLITE_VERSION) -a root/$(ROOT_PASSWORD) --max-session 100 --compact --data-dir $(DATA_DIR)
-                    clix diff -n hammer -l $(SATELLITE_VERSION) --data-dir $(DATA_DIR)
-                    clix diff -n hammer -l $(SATELLITE_VERSION) --compact --data-dir $(DATA_DIR)
-                '''
-            }
-        }
-
-        stage('Generate CLI Library') {
-            steps {
-                sh_venv '''
-                    clix makelib -n hammer -l $(SATELLITE_VERSION) --data-dir $(DATA_DIR)
-                    cd ..
-                '''
+                git defaults.clix
+                dir("clix"){
+                    sh_venv '''
+                        pip install .
+                        clix explore -n hammer -t $(SATELLITE_SERVER_HOSTNAME) -v $(SATELLITE_VERSION) -a root/$(ROOT_PASSWORD) --max-session 100 --data-dir $(DATA_DIR)
+                        clix explore -n hammer -t $(SATELLITE_SERVER_HOSTNAME) -v $(SATELLITE_VERSION) -a root/$(ROOT_PASSWORD) --max-session 100 --compact --data-dir $(DATA_DIR)
+                        clix diff -n hammer -l $(SATELLITE_VERSION) --data-dir $(DATA_DIR)
+                        clix diff -n hammer -l $(SATELLITE_VERSION) --compact --data-dir $(DATA_DIR)
+                        clix makelib -n hammer -l $(SATELLITE_VERSION) --data-dir $(DATA_DIR)
+                    '''
+                }
             }
         }
 
         stage('Install Robottelo') {
             steps {
                 git defaults.robottelo
-                sh_venv """
-                    export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
-                    pip install -r requirements.txt
-                    pip install .
-                """
-            }
-        }
-
-        stage('Install Plinko') {
-            steps {
-                git defaults.plinko
-                sh_venv """
-                    pip install .
-                """
+                dir("robottelo") {
+                    sh_venv """
+                        export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
+                        pip install -r requirements.txt
+                        pip install .
+                    """
+                }
             }
         }
 
         stage('Generate Plinko Reports') {
             steps {
-                sh_venv '''
-                    plinko deep --apix-diff $(DATA_DIR)/apix/APIs/satellite/$(SATELLITE_VERSION)-comp.yaml --test-directory ../robottelo/tests/foreman/api/ --behavior minimal --depth 5
-                    plinko deep --clix-diff $(DATA_DIR)/clix/CLIs/hammer/$(SATELLITE_VERSION)-comp.yaml --test-directory ../robottelo/tests/foreman/cli/ --behavior minimal --depth 5
-                '''
+                git defaults.plinko
+                dir("plinko") {
+                    sh_venv '''
+                        pip install .
+                        plinko deep --apix-diff $(DATA_DIR)/apix/APIs/satellite/$(SATELLITE_VERSION)-comp.yaml --test-directory ../robottelo/tests/foreman/api/ --behavior minimal --depth 5
+                        plinko deep --clix-diff $(DATA_DIR)/clix/CLIs/hammer/$(SATELLITE_VERSION)-comp.yaml --test-directory ../robottelo/tests/foreman/cli/ --behavior minimal --depth 5
+                    '''
+                }
             }
         }
 
