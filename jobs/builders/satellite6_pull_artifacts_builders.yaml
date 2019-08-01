@@ -14,7 +14,8 @@
                 - copyartifact:
                     project: 'automation-{satellite_version}-tier1-{os}'
                     filter: '*-results.xml'
-                    which-build: last-successful
+                    which-build: upstream-build
+                    fallback-to-last-successful: true
         - conditional-step:
             condition-kind: and
             condition-operands:
@@ -28,7 +29,8 @@
                 - copyartifact:
                     project: 'automation-{satellite_version}-tier2-{os}'
                     filter: '*-results.xml'
-                    which-build: last-successful
+                    which-build: upstream-build
+                    fallback-to-last-successful: true
         - conditional-step:
             condition-kind: and
             condition-operands:
@@ -42,7 +44,8 @@
                 - copyartifact:
                     project: 'automation-{satellite_version}-tier3-{os}'
                     filter: '*-results.xml'
-                    which-build: last-successful
+                    which-build: upstream-build
+                    fallback-to-last-successful: true
         - conditional-step:
             condition-kind: and
             condition-operands:
@@ -56,7 +59,8 @@
                 - copyartifact:
                     project: 'automation-{satellite_version}-tier4-{os}'
                     filter: '*-results.xml'
-                    which-build: last-successful
+                    which-build: upstream-build
+                    fallback-to-last-successful: true
         - conditional-step:
             condition-kind: and
             condition-operands:
@@ -70,7 +74,8 @@
                 - copyartifact:
                     project: 'automation-{satellite_version}-rhai-{os}'
                     filter: '*-results.xml'
-                    which-build: last-successful
+                    which-build: upstream-build
+                    fallback-to-last-successful: true
         - conditional-step:
             condition-kind: and
             condition-operands:
@@ -84,4 +89,5 @@
                 - copyartifact:
                     project: 'automation-{satellite_version}-destructive-{os}'
                     filter: '*-results.xml'
-                    which-build: last-successful
+                    which-build: upstream-build
+                    fallback-to-last-successful: true
