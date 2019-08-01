@@ -4,7 +4,7 @@
     organization: Sat6-CI
   tasks:
     - name: "Publish content views"
-      katello_content_view_publish:
+      katello_content_view_version:
         username: "{{ username }}"
         password: "{{ password }}"
         server_url: "{{ server }}"
