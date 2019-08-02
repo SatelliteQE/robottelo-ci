@@ -91,7 +91,7 @@ if [[ "${SATELLITE_DISTRIBUTION}" != *"GA"* ]]; then
 fi
 
 if [[ "${SATELLITE_VERSION}" == *"upstream-nightly"* ]]; then
-    ${EXTRA_MARKS} = "and upgrade"
+    EXTRA_MARKS="and upgrade"
 fi
 
 TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
