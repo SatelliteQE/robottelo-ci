@@ -46,6 +46,7 @@
             predefined-parameters: |
               AUTOMATION_BUILD_URL=${{BUILD_URL}}
               BUILD_TAGS=${{SATELLITE_VERSION}} {os} ${{BUILD_LABEL}}
+              RP_PROJECT={rp_project}
             node-parameters: true
             condition: 'UNSTABLE_OR_BETTER'
 
