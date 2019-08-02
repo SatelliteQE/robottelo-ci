@@ -4,6 +4,7 @@
 - project:
     name: satellite6-automation
     scm-branch: origin/master
+    rp_project: 'satellite6'
     satellite_version:
         - '6.3':
             scm-branch: origin/6.3.z
@@ -12,7 +13,8 @@
         - '6.5':
             scm-branch: origin/6.5.z
         - '6.6'
-        - 'upstream-nightly'
+        - 'upstream-nightly':
+            rp_project: 'katello-nightly'
         - 'downstream-nightly'
     os:
         - 'rhel7'
