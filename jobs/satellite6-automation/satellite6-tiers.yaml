@@ -30,15 +30,6 @@
                 current-parameters: true
               - name: 'automation-{satellite_version}-rhai-{os}'
                 current-parameters: true
-        - multijob:
-            name: PhaseTwo
-            condition: UNSTABLE
-            projects:
-              - name: 'report-automation-results-{satellite_version}-{os}'
-                predefined-parameters: |
-                  BUILD_LABEL=${{BUILD_LABEL}}
-              - name: 'report-consolidated-coverage-{satellite_version}-{os}'
-                current-parameters: true
     publishers:
         - trigger-parameterized-builds:
           - project:
@@ -48,6 +39,16 @@
               BUILD_TAGS=${{SATELLITE_VERSION}} {os} ${{BUILD_LABEL}}
               RP_PROJECT={rp_project}
             node-parameters: true
+            condition: 'UNSTABLE_OR_BETTER'
+          - project:
+              - report-automation-results-{satellite_version}-{os}
+            predefined-parameters: |
+              BUILD_LABEL=${{BUILD_LABEL}}
+            node-parameters: true
+            condition: 'UNSTABLE_OR_BETTER'
+          - project:
+              report-consolidated-coverage-{satellite_version}-{os}
+            current-parameters: true
             condition: 'UNSTABLE_OR_BETTER'
 
 
