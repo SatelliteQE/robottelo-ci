@@ -91,6 +91,15 @@
                 installation without any validation.  It is the responsibility
                 of the user to provide a valid rhel6/rhel7 URL. For ISO, you
                 can provide the url or the iso.
+        -   string:
+                name: MAINTAIN_CUSTOM_BASEURL
+                description: |
+                    Used in Downstream provisioning only.  Provide baseurl for
+                    satellite-maintaince repo.  Note that this uses the given url for
+                    installation without any validation.  It is the responsibility
+                    of the user to provide a valid rhel7 URL. For ISO, satellite maintaince
+                    content should be included as part of the ISO defined
+                    in SATELLITE6_CUSTOM_BASEURL.
         - string:
             name: CAPSULE_SERVER_HOSTNAME
             description: |
