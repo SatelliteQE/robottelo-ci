@@ -64,10 +64,10 @@ if [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL" ]; then
     else
         export BASE_URL="${SATELLITE6_REPO}"
 
-    if [ ! -z "$MAINTAIN_CUSTOM_BASEURL" ]; then
-        export MAINTAIN_BASE_URL="$MAINTAIN_CUSTOM_BASEURL"
+    if [ ! -z "${MAINTAIN_CUSTOM_BASEURL}" ]; then
+        export MAINTAIN_BASE_URL="${MAINTAIN_CUSTOM_BASEURL}"
     else
-        export MAINTAIN_BASE_URL="$MAINTAIN_REPO"
+        export MAINTAIN_BASE_URL="${MAINTAIN_REPO}"
     fi
 fi
 
