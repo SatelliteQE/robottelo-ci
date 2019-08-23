@@ -8,6 +8,8 @@ pip install -U -r requirements.txt
 cp testfm.properties.sample testfm.properties
 cp testfm/inventory.sample testfm/inventory
 
+export FM_VERSION=$(ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@${SERVER_HOSTNAME} 'rpm --queryformat="%{VERSION}" -q rubygem-foreman_maintain')
+
 if [ "${COMPONENT}" == "capsule" ]; then
     sed -i "s/<capsule_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
 else
