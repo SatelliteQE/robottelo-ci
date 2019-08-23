@@ -11,6 +11,7 @@ def test_forklift(args) {
 
     runOnLibvirtHost "cd sat-deploy && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
     runOnLibvirtHost "cd sat-deploy/forklift && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
+    runOnLibvirtHost "cd sat-deploy/forklift && echo 'libvirt_options: {volume_cache: unsafe}' > vagrant/settings.yaml"
 
     def branches = [:]
 
