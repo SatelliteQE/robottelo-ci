@@ -1,33 +1,11 @@
 - job:
     name: 'satellite6-manifest-downloader'
     display-name: 'Satellite6-Manifest-Downloader'
+    project-type: pipeline
     description: |
         Downloads the Satellite6 Manifest from access.redhat.com
     triggers:
         - timed: 'H 17 * * 0,2,4'
-    node: sat6-rhel7
-    scm:
-        - git:
-            url: https://github.com/SatelliteQE/automation-tools.git
-            branches:
-                - origin/master
-            skip-tag: true
-    wrappers:
-        - default-wrappers
-        - satellite6-maskpassword-wrappers
-        - config-file-provider:
-            files:
-                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
-                  variable: CONFIG_FILES
-    builders:
-        - shining-panda:
-            build-environment: virtualenv
-            python-version: System-CPython-3.6
-            clear: true
-            nature: shell
-            command:
-                !include-raw:
-                    - 'pip-install-pycurl.sh'
-                    - 'satellite6-manifest-downloader.sh'
-    publishers:
-        - satellite6-automation-mails
+    dsl:
+      !include-raw:
+        - workflows/qe/satellite6-manifest-downloader.groovy
