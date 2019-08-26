@@ -212,7 +212,7 @@ satellite_runner subscription upload --organization-id "${ORG}" --file "${HOME}"
 
 # Enable Red Hat repositories
 # Kickstart trees
-satellite_runner repository-set enable --name="Red Hat Enterprise Linux 7 Server (Kickstart)" --basearch="x86_64" --releasever="7.6" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
+satellite_runner repository-set enable --name="Red Hat Enterprise Linux 7 Server (Kickstart)" --basearch="x86_64" --releasever="7.7" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
 satellite_runner repository-set enable --name="Red Hat Enterprise Linux 6 Server (Kickstart)" --basearch="x86_64" --releasever="6.10" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
 
 # 'Base' OS RPMs
@@ -280,7 +280,7 @@ satellite_runner content-view create --name 'Capsule RHEL 7 CV' --organization-i
 
 # Add content to content views
 # RHEL 7
-satellite_runner  content-view add-repository --name='RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.6'
+satellite_runner  content-view add-repository --name='RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.7'
 satellite_runner  content-view add-repository --name='RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server'
 satellite_runner  content-view add-repository --name='RHEL 7 CV' --organization-id="${ORG}" --product="${RHEL7_TOOLS_PRD}" --repository="${RHEL7_TOOLS_REPO}"
 satellite_runner  content-view publish --name='RHEL 7 CV' --organization-id="${ORG}"
@@ -458,7 +458,7 @@ satellite_runner capsule import-classes --id 1 --environment-id 1
 
 # Populate the RHEL6 and RHEL7 OS ID
 
-RHEL7_OS_ID=$(satellite --csv os list | grep "7.6" | cut -d ',' -f1 | grep -vi "^id")
+RHEL7_OS_ID=$(satellite --csv os list | grep "7.7" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL7 OS ID is: ${RHEL7_OS_ID}"
 
 RHEL6_OS_ID=$(satellite --csv os list | grep "6.10" | cut -d ',' -f1 | grep -vi "^id")
