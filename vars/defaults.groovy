@@ -8,5 +8,6 @@ class defaults implements Serializable {
     String apix = 'https://github.com/JacobCallahan/apix'
     String clix = 'https://github.com/JacobCallahan/clix'
     String plinko = 'https://github.com/JacobCallahan/plinko'
-
+    String satellite6_upgrade = 'https://github.com/SatelliteQE/satellite6-upgrade'
+    String testfm = 'https://github.com/SatelliteQE/testfm'
 }

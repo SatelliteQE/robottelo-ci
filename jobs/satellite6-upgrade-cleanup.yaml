@@ -1,31 +1,12 @@
 - job:
     name: satellite6-upgrade-cleanup
-    node: sat6-rhel7
+    project-type: pipeline
     concurrent: false
     description: |
         <p>Job that runs cleanup scripts. currently this only runs container
         cleanup on docker VM</p>
-    scm:
-        - git:
-            url: 'https://github.com/SatelliteQE/satellite6-upgrade.git'
-            branches:
-                - origin/master
-            skip-tag: true
-            wipe-workspace: true
     triggers:
         - timed: 'H 19 * * 4'
-    wrappers:
-        - config-file-provider:
-            files:
-                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
-                  variable: CONFIG_FILES
-    builders:
-          - shining-panda:
-              build-environment: virtualenv
-              python-version: System-CPython-3.6
-              clear: true
-              nature: shell
-              command:
-                !include-raw:
-                    - 'pip-install-pycurl.sh'
-                    - 'satellite6-upgrade-cleanup.sh'
+    dsl:
+        !include-raw:
+          - workflows/qe/satellite6-upgrade-cleanup.groovy
