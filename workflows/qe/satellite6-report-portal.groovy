@@ -88,6 +88,9 @@ pipeline {
             }
         }
         stage('E-Mail owners') {
+	    when {
+                expression { !env.AUTOMATION_BUILD_URL.contains('upstream-nightly') }
+	    }
             steps {
                 sh_venv '''
                     cd rp_tools/scripts/reportportal_cli/
