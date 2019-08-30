@@ -54,8 +54,8 @@
         - choice:
             name: SAUCE_BROWSER
             choices:
-                - 'firefox'
                 - 'chrome'
+                - 'firefox'
                 - 'edge'
                 - 'internet explorer'
             description: 'Specify the Sauce Browser to use along with Sauce Platform.'
