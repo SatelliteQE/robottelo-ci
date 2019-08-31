@@ -1,7 +1,7 @@
 - job-template:
     name: 'automation-{satellite_version}-trigger-tiers-{os}'
     project-type: multijob
-    node: sat6-{satellite_version}
+    node: docker
     build-discarder:
         num-to-keep: 16
     parameters:
@@ -54,7 +54,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-tier1-{os}'
-    node: sat6-{satellite_version}
+    node: docker
     build-discarder:
         num-to-keep: 16
     properties:
@@ -104,7 +104,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-tier2-{os}'
-    node: sat6-{satellite_version}
+    node: docker 
     build-discarder:
         num-to-keep: 16
     properties:
@@ -146,7 +146,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-tier3-{os}'
-    node: sat6-{satellite_version}
+    node: docker
     build-discarder:
         num-to-keep: 16
     properties:
@@ -196,7 +196,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-rhai-{os}'
-    node: sat6-{satellite_version}
+    node: docker
     build-discarder:
         num-to-keep: 16
     properties:
@@ -252,7 +252,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-tier4-{os}'
-    node: sat6-{satellite_version}
+    node: docker
     build-discarder:
         num-to-keep: 16
     properties:
@@ -305,7 +305,7 @@
 
 - job-template:
     name: 'automation-{satellite_version}-destructive-{os}'
-    node: sat6-{satellite_version}
+    node: docker
     build-discarder:
         num-to-keep: 16
     properties:
