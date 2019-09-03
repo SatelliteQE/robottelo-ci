@@ -1,6 +1,7 @@
 pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
 
 cp config/robottelo.properties ./robottelo.properties
+cp config/robottelo.yaml ./robottelo.yaml
 
 sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
 sed -i "s|# screenshots_path=.*|screenshots_path=$(pwd)/screenshots|" robottelo.properties
