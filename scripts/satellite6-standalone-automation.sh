@@ -27,6 +27,12 @@ else
     sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
+if [-n "${ROBOTTELO_YAML:-}" ]; then
+    echo "${ROBOTTELO_YAML}" > ./robottelo.yaml
+else
+    cp config/robottelo.yaml ./robottelo.yaml
+fi
+
 # Sauce Labs Configuration and pytest-env setting
 if [[ "${SATELLITE_VERSION}" != "6.3" ]]; then
     SAUCE_BROWSER="chrome"
