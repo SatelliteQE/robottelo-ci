@@ -65,10 +65,7 @@ if [ "${SATELLITE_DISTRIBUTION}" = "INTERNAL" ]; then
         export BASE_URL="${SATELLITE6_REPO}"
 
     if [ ! -z "${MAINTAIN_CUSTOM_BASEURL}" ]; then
-        export MAINTAIN_BASE_URL="${MAINTAIN_CUSTOM_BASEURL}"
-    else
-        export MAINTAIN_BASE_URL="${MAINTAIN_REPO}"
-    fi
+        export MAINTAIN_REPO="${MAINTAIN_CUSTOM_BASEURL}"
 fi
 
 fab -D -H root@${SERVER_HOSTNAME} product_install:${DISTRIBUTION},sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST},puppet4=${PUPPET4}
