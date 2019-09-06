@@ -81,8 +81,7 @@ def move_to_on_qa(args) {
                 "--version ${args.version}",
                 "--snap ${args.snap_version}",
                 "--commit"
-            ],
-            archive_file: 'bugs.yaml'
+            ]
         )
     }
 }
