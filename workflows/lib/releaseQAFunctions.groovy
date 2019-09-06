@@ -111,25 +111,28 @@ def generate_snap_data(args) {
     def packages_file = args.packages_file ?: 'package_report.yaml'
     def output_file = args.output_file ?: 'snap.yaml'
 
-    withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
+    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
+        withCredentials([string(credentialsId: 'gitlab-jenkins-user-api-token-string', variable: 'GITLAB_TOKEN')]) {
 
-        toolBelt(
-            command: 'release snap',
-            config: "./configs/${args.release_name}/",
-            options: [
-                "--version ${args.release_stream}",
-                "--milestone ${args.release_version}",
-                "--gitlab-username jenkins",
-                "--gitlab-token ${env.GITLAB_TOKEN}",
-                "--packages-file ${packages_file}",
-                "--output-file ${output_file}",
-                "--commit"
-            ],
-            archive_file: output_file
-        )
+            toolBelt(
+                command: 'release snap',
+                config: "./configs/${args.release_name}/",
+                options: [
+                    "--version ${args.release_stream}",
+                    "--milestone ${args.release_version}",
+                    "--gitlab-username jenkins",
+                    "--gitlab-token ${env.GITLAB_TOKEN}",
+                    "--bz-username ${env.BZ_USERNAME}",
+                    "--bz-password ${env.BZ_PASSWORD}",
+                    "--packages-file ${packages_file}",
+                    "--output-file ${output_file}",
+                    "--commit"
+                ],
+                archive_file: output_file
+            )
 
+        }
     }
-
 }
 
 def release_snap(args) {
