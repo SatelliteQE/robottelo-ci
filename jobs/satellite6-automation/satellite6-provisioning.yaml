@@ -77,6 +77,10 @@
             properties-file: build_env.properties
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
+        - trigger-builds:
+            - project: 'satellite6-custom-certs-automation'
+              predefined-parameters: |
+                SATELLITE_VERSION=${{SATELLITE_VERSION}}
         - conditional-step:
                     condition-kind: strings-match
                     condition-string1: 'true'

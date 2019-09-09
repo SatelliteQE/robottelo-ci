@@ -109,10 +109,10 @@
                     - 'custom_certs.sh'
     publishers:
         - email-ext:
-            recipients: $BUILD_USER_EMAIL
-            success: true
+            recipients: ${{QE_EMAIL_LIST}}
+            success: false
             failure: true
-            subject: 'Your custom-certs-automation Job finished!!'
+            subject: 'Custom-certs-automation Job failed!! please check and re-trigger.'
             body: |
 
                 Build URL: $BUILD_URL
