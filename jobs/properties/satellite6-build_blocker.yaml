@@ -4,6 +4,7 @@
       - build-blocker:
           blocking-jobs:
             - "provisioning-{satellite_version}-{os}"
+            - "automation-{satellite_version}-trigger-tiers-{os}"
             - "automation-{satellite_version}-tier1-{os}"
             - "automation-{satellite_version}-tier2-{os}"
             - "automation-{satellite_version}-tier3-{os}"
