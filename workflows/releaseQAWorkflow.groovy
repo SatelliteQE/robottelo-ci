@@ -155,7 +155,7 @@ node('sat6-build') {
       if (autoreleaseEnabled) {
 
         release_snap(
-	  release_name: 'satellite',
+          release_name: 'satellite',
           release_version: releaseVersion,
           snap_version: snap_version,
           release_stream: satellite_main_version

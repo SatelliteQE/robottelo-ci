@@ -83,7 +83,8 @@ pipeline {
           release_snap(
             release_name: release_name,
             release_version: release_version,
-            snap_version: snap_version
+            snap_version: snap_version,
+            release_stream: satellite_main_version
           )
         }
       }
