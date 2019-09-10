@@ -95,7 +95,7 @@ def send_snap_mail(args) {
       Satellite ${args.version} snap ${args.snap_version} was released.
 
       For detailed information including installation instructions, BZs included, and updated package lists please see:
-      ${env.OHSNAP_URL}/releases/${args.version}/snaps/${args.snap_version}/installation
+      ${env.OHSNAP_URL}/streams/${args.release_stream}/releases/${args.release_version}/snaps/${args.snap_version}/installation
 
       Thanks,
       S. Nappy
@@ -149,7 +149,8 @@ def release_snap(args) {
     )
 
     send_snap_mail(
-        version: args.release_name,
+        release_stream: args.release_stream,
+        release_version: args.release_version,
         snap_version: args.snap_version
     )
 }
