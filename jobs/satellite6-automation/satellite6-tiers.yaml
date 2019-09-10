@@ -38,13 +38,13 @@
               AUTOMATION_BUILD_URL=${{BUILD_URL}}
               BUILD_TAGS=${{SATELLITE_VERSION}} {os} ${{BUILD_LABEL}}
               RP_PROJECT={rp_project}
-            node-parameters: true
+            node-parameters: false
             condition: 'UNSTABLE_OR_BETTER'
           - project:
               - report-automation-results-{satellite_version}-{os}
             predefined-parameters: |
               BUILD_LABEL=${{BUILD_LABEL}}
-            node-parameters: true
+            node-parameters: false
             condition: 'UNSTABLE_OR_BETTER'
           - project:
               report-consolidated-coverage-{satellite_version}-{os}
