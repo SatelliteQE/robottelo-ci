@@ -137,7 +137,7 @@ def generate_snap_data(args) {
 def release_snap(args) {
 
     move_to_on_qa(
-        version: "${args.release_name}/${args.release_version}",
+        version: "${args.release_version}",
         snap_version: args.snap_version
     )
 
