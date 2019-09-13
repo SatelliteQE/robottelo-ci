@@ -3,16 +3,11 @@
 pipeline {
     agent { label 'sat6-rhel' }
     stages {
-        stage('Virtualenv') {
-            steps {
-                make_venv python: defaults.python
-            }
-        }
-
         stage('Gather API Information') {
             steps {
                 git defaults.apix
                 dir("apix") {
+                    make_venv python: defaults.python
                     sh_venv '''
                         pip install .
                         apix explore -n satellite -u https://$(SATELLITE_SERVER_HOSTNAME)/ -v $(SATELLITE_VERSION) --data-dir $(DATA_DIR)
@@ -29,6 +24,7 @@ pipeline {
             steps {
                 git defaults.clix
                 dir("clix"){
+                    make_venv python: defaults.python
                     sh_venv '''
                         pip install .
                         clix explore -n hammer -t $(SATELLITE_SERVER_HOSTNAME) -v $(SATELLITE_VERSION) -a root/$(ROOT_PASSWORD) --max-session 100 --data-dir $(DATA_DIR)
@@ -45,6 +41,7 @@ pipeline {
             steps {
                 git defaults.robottelo
                 dir("robottelo") {
+                    make_venv python: defaults.python
                     sh_venv """
                         export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
                         pip install -r requirements.txt
@@ -58,6 +55,7 @@ pipeline {
             steps {
                 git defaults.plinko
                 dir("plinko") {
+                    make_venv python: defaults.python
                     sh_venv '''
                         pip install .
                         plinko deep --apix-diff $(DATA_DIR)/apix/APIs/satellite/$(SATELLITE_VERSION)-comp.yaml --test-directory ../robottelo/tests/foreman/api/ --behavior minimal --depth 5
