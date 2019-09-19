@@ -12,4 +12,4 @@
         lifecycle_environments:
           - "{{ to_lifecycle_environment }}"
         force_promote: true
-        verify_ssl: False
+        validate_certs: False
