@@ -1,7 +1,7 @@
 - job:
     name: 'foreman-maintain-automation'
     concurrent: false
-    display-name: 'Foreman-Maintain automation'
+    display-name: 'Foreman Maintain Automation'
     description: |
         <p> Triggers automation for <strong>Foreman-Maintain</strong> Testing.</p>
         <p> Satellite server should have foreman-maintain Installed unless TEST_UPSTREAM parameter is checked.</p>
@@ -9,7 +9,8 @@
         <pre>
         ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
         </pre>
-    node: sat6-rhel7
+    project-type: pipeline
+    sandbox: true
     parameters:
         - choice:
             name: COMPONENT
@@ -58,41 +59,6 @@
             name: TestFM_BRANCH
             default: master
             description: "You can override this to any branch. Example: fix_test_health."
-    scm:
-        - git:
-            url: ${TestFM_REPO}
-            branches:
-                - origin/${TestFM_BRANCH}
-            skip-tag: true
-    wrappers:
-        - default-wrappers
-        - config-file-provider:
-            files:
-                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
-                  variable: CONFIG_FILES
-        - build-name:
-            name: '#${BUILD_NUMBER}  ${ENV,var="SERVER_HOSTNAME"}  ${ENV,var="BUILD_LABEL"}'
-    builders:
-        - shining-panda:
-            build-environment: virtualenv
-            python-version: System-CPython-3.6
-            clear: true
-            nature: shell
-            command:
-                !include-raw:
-                    - 'scripts/foreman-maintain-automation.sh'
-    publishers:
-        - satellite6-automation-publishers
-        - foreman-maintain-automation-archiver
-        - email-ext:
-            recipients: ${QE_EMAIL_LIST}
-            content-type: html
-            success: true
-            failure: true
-            unstable: true
-            subject: 'Foreman-Maintain Automation Report ${ENV,var="COMPONENT"} for ${ENV,var="BUILD_LABEL"}'
-            body: |
-
-                ${FILE, path="email_report.html"}
-
-                The build ${BUILD_URL} has been completed.
+    dsl:
+      !include-raw:
+        - workflows/qe/satellite6-foreman-maintain-automation.groovy
