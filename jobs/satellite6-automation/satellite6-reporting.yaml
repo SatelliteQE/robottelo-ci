@@ -61,52 +61,6 @@
                 The build ${{BUILD_URL}} has been completed.
 
 - job-template:
-    name: 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
-    node: sat6-{satellite_version}
-    parameters:
-      - string:
-          name: BUILD_LABEL
-          description: |
-              'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
-              Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
-              Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
-    scm:
-        - git:
-            url: https://github.com/SatelliteQE/robottelo-ci.git
-            branches:
-                - origin/master
-            skip-tag: true
-    wrappers:
-        - build-name:
-            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
-        - inject:
-            properties-content: |
-                SATELLITE_VERSION={satellite_version}
-    builders:
-        - shell: rm -f *.xml
-        - copyartifact:
-            project: 'automation-upgraded-{satellite_version}-all-tiers-{os}'
-            filter: '*-results.xml'
-            which-build: last-successful
-        - copyartifact:
-            project: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
-            filter: '*-results.xml'
-            which-build: last-successful
-        - satellite6-automation-reports-builders
-    publishers:
-        - email-ext:
-            recipients: ${{QE_EMAIL_LIST}}
-            content-type: html
-            success: true
-            failure: false
-            subject: 'Satellite {satellite_version} Upgrade Tiers Automation Report for {os}'
-            body: |
-
-                ${{FILE, path="email_report.html"}}
-
-                The build ${{BUILD_URL}} has been completed.
-
-- job-template:
     name: 'report-consolidated-coverage-{satellite_version}-{os}'
     node: sat6-{satellite_version}
     parameters:

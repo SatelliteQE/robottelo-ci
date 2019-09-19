@@ -385,3 +385,25 @@
         - archive:
             artifacts: 'robottelo*.log,*-results.xml,robottelo.properties'
             allow-empty: true
+
+- job-template:
+    name: 'report-upgrade-tier-automation-results-{satellite_version}-{os}'
+    project-type: pipeline
+    sandbox: true
+    parameters:
+      - string:
+          name: BUILD_LABEL
+          description: |
+              'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
+              Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
+              Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
+    properties:
+        - build-discarder:
+            num-to-keep: 16
+        - inject:
+            properties-content: |
+              satellite_version={satellite_version}
+              os={os}
+    dsl:
+      !include-raw-escape:
+        - workflows/qe/satellite6-reporting-upgrade.groovy
