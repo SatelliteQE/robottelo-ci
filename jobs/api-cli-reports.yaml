@@ -19,9 +19,15 @@
             description: Satellite 6 version (6.5.2, 6.6.0-10.1).
         - string:
             name: DATA_DIR
+            default: "../"
             description: The absolute path to where results should be stored/retrieved.
     dsl:
         !include-raw:
             - workflows/qe/api-cli-reports.groovy
     wrappers:
         - default-wrappers
+    builders:
+        - copyartifact:
+            project: 'api-cli-reports-pipeline'
+            filter: '*.yaml'
+            which-build: last-successful
