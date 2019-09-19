@@ -6,7 +6,7 @@
       username: "{{ username }}"
       password: "{{ password }}"
       server_url: "{{ server }}"
-      verify_ssl: False
+      validate_certs: False
       name: "{{ activation_key_name }}"
       new_name: "{{ activation_key_name }}-{{ lifecycle_environment }}"
       organization: "{{ organization }}"
@@ -17,7 +17,7 @@
       username: "{{ username }}"
       password: "{{ password }}"
       server_url: "{{ server }}"
-      verify_ssl: False
+      validate_certs: False
       name: "{{ activation_key_name }}-{{ lifecycle_environment }}"
       organization: "{{ organization }}"
       state: 'present'

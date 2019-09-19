@@ -10,4 +10,4 @@
         repository: "{{ repo }}"
         product: "{{ product }}"
         organization: "{{ organization }}"
-        verify_ssl: False
+        validate_certs: False

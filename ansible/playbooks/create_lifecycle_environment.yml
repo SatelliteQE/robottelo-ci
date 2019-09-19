@@ -6,7 +6,7 @@
       username: "{{ username }}"
       password: "{{ password }}"
       server_url: "{{ server }}"
-      verify_ssl: False
+      validate_certs: False
       name: "{{ lifecycle_environment_name }}"
       organization: "{{ organization }}"
       prior: "{{ prior }}"
