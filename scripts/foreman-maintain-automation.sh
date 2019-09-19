@@ -14,6 +14,7 @@ if [ "${COMPONENT}" == "capsule" ]; then
     sed -i "s/<capsule_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
 else
     sed -i "s/<server_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
+    sed -i "s/<SAT_HOSTNAME>/${SERVER_HOSTNAME}/g" testfm.properties
     sed -i "s/<RHN_USERNAME>/${RHN_USERNAME}/g" testfm.properties
     sed -i "s/<RHN_PASSWORD>/${RHN_PASSWORD}/g" testfm.properties
     sed -i "s/<RHN_POOLID>/${RHN_POOLID}/g" testfm.properties
