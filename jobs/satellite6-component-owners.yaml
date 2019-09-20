@@ -1,0 +1,23 @@
+- job:
+    name: 'satellite6-component-owners'
+    concurrent: false
+    display-name: 'Satellite 6 Component Owners and testimony.json'
+    description: |
+        Job that updates component owners map on Mojo based on data from bugzilla, and creates YAML file with component primary and secondary
+        owners. It also creates testimony.json file from current robottelo master.
+    parameters:
+        - bool:
+            name: UPDATE_MOJO
+            default: True
+        - string:
+            name: MOJO_DOC_ID
+            default: 'DOC-1191673'
+        - bool:
+            name: IGNORE_CACHE
+            default: False
+    project-type: pipeline
+    dsl:
+        !include-raw:
+            - workflows/qe/satellite6-component-owners.groovy
+    triggers:
+      - timed: "@midnight"
