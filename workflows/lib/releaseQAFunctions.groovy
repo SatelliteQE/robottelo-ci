@@ -100,7 +100,7 @@ def send_snap_mail(args) {
       Thanks,
       S. Nappy
       """,
-      to: "${env.QE_EMAIL_LIST}"
+      to: "${env.SNAP_EMAIL_LIST}"
     )
 
 }
