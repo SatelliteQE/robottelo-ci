@@ -158,7 +158,7 @@
                 configure ad-hoc stuff without the need to have each installer
                 option separately. This is not validated in any way, so the
                 user needs to provide valid input.
-                For example: foreman-websockets-encrypt=false,capsule-reverse-proxy=true,disable-system-checks
+                For example: foreman-websockets-encrypt=false,capsule-reverse-proxy=true,no-lock-package-versions,disable-system-checks.
                 Do not specify these installer options related to (Interface, Gateway, DNS, DHCP, TFTP, PUPPET)
                 here, these are already handled.
         - string:
