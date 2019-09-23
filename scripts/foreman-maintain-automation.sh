@@ -31,7 +31,7 @@ if [[ "$TEST_UPSTREAM" = "true" ]]; then
         ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@${SERVER_HOSTNAME} 'cd foreman_maintain; git fetch origin pull/'${PR_NUMBER}'/head:'${BRANCH_NAME}'; git checkout '${BRANCH_NAME}
     fi
 fi
-if [[ "$SATELLITE_VERSION" != "6.3" ]] || [[ "$SATELLITE_VERSION" != "6.4" ]]; then
+if [[ "$SATELLITE_VERSION" != "6.3" ]] || [[ "$SATELLITE_VERSION" != "6.4" ]] || [[ "$TEST_UPSTREAM" = "false" ]]; then
     sed -i "s/foreman-maintain {0} {1} {2}/satellite-maintain {0} {1} {2}/g" testfm/base.py
 fi
 export ANSIBLE_HOST_KEY_CHECKING=False
@@ -40,11 +40,11 @@ if [ "${COMPONENT}" == "capsule" ]; then
 fi
 set +e
 if [ -n "${PYTEST_OPTIONS}" ]; then
-    pytest -v --junit-xml=foreman-results.xml --ansible-host-pattern "${COMPONENT}" --ansible-user root --ansible-inventory testfm/inventory ${PYTEST_OPTIONS}
+    pytest -sv --junit-xml=foreman-results.xml --ansible-host-pattern "${COMPONENT}" --ansible-user root --ansible-inventory testfm/inventory ${PYTEST_OPTIONS}
 elif [ -n "${PYTEST_MARKS}" ]; then
-    pytest -v --junit-xml=foreman-results.xml --ansible-host-pattern "${COMPONENT}" --ansible-user root --ansible-inventory testfm/inventory tests/ -m "${PYTEST_MARKS}"
+    pytest -sv --junit-xml=foreman-results.xml --ansible-host-pattern "${COMPONENT}" --ansible-user root --ansible-inventory testfm/inventory tests/ -m "${PYTEST_MARKS}"
 else
-    pytest -v --junit-xml=foreman-results.xml --ansible-host-pattern "${COMPONENT}" --ansible-user root --ansible-inventory testfm/inventory tests/
+    pytest -sv --junit-xml=foreman-results.xml --ansible-host-pattern "${COMPONENT}" --ansible-user root --ansible-inventory testfm/inventory tests/
 fi
 set -e
 if [[ "$TEST_UPSTREAM" != "true" ]]; then
