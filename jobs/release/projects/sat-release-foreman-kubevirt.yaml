@@ -1,0 +1,18 @@
+- job:
+    name: 'sat-release-foreman-kubevirt'
+    project-type: pipeline
+    sandbox: true
+    parameters:
+      - release_branch
+    auth-token: ""
+    dsl:
+      !include-raw:
+          - workflows/lib/branch_map.groovy
+          - ./repos/foreman_kubevirt_repo.groovy
+          - ./source_types/sourceTypeGem.groovy
+          - workflows/releasePackageWorkflow.groovy
+          - workflows/lib/toolbelt.groovy
+          - foreman-infra/pipelines/lib/ansible.groovy
+          - workflows/lib/runPlaybook.groovy
+    notifications:
+      - snapper_notifications
