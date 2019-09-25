@@ -131,6 +131,14 @@ node('sat6-build') {
 
     }
 
+    stage("Compute Dependencies") {
+        dir("satellite-dependencies") {
+            git 'https://gitlab.sat.engineering.redhat.com/satellite6/satellite-dependencies.git'
+            sh "./satellite-dependencies.py --satellite ${satellite_main_version} --source library > dependencies.json"
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'dependencies.json'
+        }
+    }
+
     stage("Move to ON_DEV") {
         withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'bugzilla-credentials', passwordVariable: 'BZ_PASSWORD', usernameVariable: 'BZ_USERNAME']]) {
 
