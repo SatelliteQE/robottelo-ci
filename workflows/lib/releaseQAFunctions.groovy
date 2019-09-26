@@ -156,3 +156,11 @@ def release_snap(args) {
         snap_version: args.snap_version
     )
 }
+
+def generate_dependencies(args) {
+    dir("satellite-dependencies") {
+        git "https://${env.GIT_HOSTNAME}/${env.GIT_ORGANIZATION}/satellite-dependencies.git"
+        sh "./satellite-dependencies.py --satellite ${args.satellite_version} --source ${args.source} > dependencies.json"
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'dependencies.json'
+    }
+}

@@ -139,6 +139,13 @@ node('sat6-build') {
 
     }
 
+    stage("Compute Dependencies") {
+        generate_dependencies(
+            satellite_version: satellite_main_version,
+            source: "qa"
+        )
+    }
+
 }
 
 node {
