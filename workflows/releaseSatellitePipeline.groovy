@@ -132,11 +132,10 @@ node('sat6-build') {
     }
 
     stage("Compute Dependencies") {
-        dir("satellite-dependencies") {
-            git 'https://gitlab.sat.engineering.redhat.com/satellite6/satellite-dependencies.git'
-            sh "./satellite-dependencies.py --satellite ${satellite_main_version} --source library > dependencies.json"
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'dependencies.json'
-        }
+        generate_dependencies(
+            satellite_version: satellite_main_version,
+            source: "library"
+        )
     }
 
     stage("Move to ON_DEV") {
