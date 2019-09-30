@@ -1,6 +1,6 @@
 - job:
-    name: 'testblame-email-report'
-    concurrent: True
+    name: 'testblame-email-report-pipeline'
+    concurrent: false
     display-name: 'Testblame Report'
     description: |
         <p> Job to generate the email report based on bugzilla component assigned.</p>
@@ -14,50 +14,30 @@
         <pre>
         ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
         </pre>
-    node: sat6-rhel7
     parameters:
+        - string:
+            name: GIT_REPO_URL
+            description: |
+                <p>Mention the git repo clone url for Test Repo e.g. https://github.com/SatelliteQE/robottelo </p>
+            default: 'https://github.com/SatelliteQE/robottelo'
         - string:
             name: JENKINS_JOB_URL
             description: |
-                <p>Add jenkins test results job url.</p>
+                <p>Add jenkins junit test failures results job url/urls</p>
+                <p>e.g. --jenkins-url "jenkins_junit_test_reult_url_1, jenkins_junit_test_reult_url_1"</p>
         - string:
-            name: BUILD_LABEL
+            name: SATELLITE_VERSION
             description: |
-                <p>Label you want to set for job.</p>
-    scm:
-        - git:
-            url: https://github.com/omkarkhatavkar/testblame.git
-            branches:
-                - origin/master
-            skip-tag: true
-    wrappers:
-        - build-name:
-            name: '#${BUILD_NUMBER} ${ENV,var="BUILD_LABEL"}'
-    builders:
-          - shining-panda:
-              build-environment: virtualenv
-              python-version: System-CPython-3.6
-              clear: true
-              nature: shell
-              command:
-                !include-raw:
-                    - 'testblame_report.sh'
-    publishers:
-        - email-ext:
-            recipients: ${{QE_EMAIL_LIST}}
-            content-type: html
-            success: true
-            subject: 'Please investigate your upgrade failures for $BUILD_LABEL'
-            body: |
-
-                Hello <b>component owners,</b>
-                <br><br>
-                    Below are upgrade failures for $BUILD_LABEL . Please investigate: <br>
-                <br>
-                * In case of product issue, file a bugzilla.<br>
-                * In case of automaion issue, file a github issue and please fix it. <br>
-                <br>
-                <br>
-                ${FILE, path="email.html"}
-                <br>
-                Thank you.
+                <p>Provide Satellite Snap Version e.g. 6.6 Satellite 6.6.0-1.0-rhel7</p>
+        - string:
+            name: FROM_EMAIL
+            description: |
+                <p>Provide from_email address to send email from specific email</p>
+        - string:
+            name: TO_EMAIL
+            description: |
+                <p>Provide to_email address to send email to specific email</p>
+    project-type: pipeline
+    dsl:
+        !include-raw:
+            - workflows/qe/testblame.groovy

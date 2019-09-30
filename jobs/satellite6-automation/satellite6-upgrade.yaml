@@ -319,11 +319,6 @@
         - trigger-builds:
             - project: 'automation-upgraded-{satellite_version}-end-to-end-{os}'
               current-parameters: true
-        - trigger-builds:
-            - project: 'testblame-email-report'
-              predefined-parameters: |
-                BUILD_LABEL=${{BUILD_LABEL}}
-                JENKINS_JOB_URL=${{BUILD_URL}}/testReport/
     publishers:
         - satellite6-automation-mails
         - satellite6-automation-publishers
