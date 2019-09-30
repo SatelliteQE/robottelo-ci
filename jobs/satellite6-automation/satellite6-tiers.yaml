@@ -50,6 +50,13 @@
               report-consolidated-coverage-{satellite_version}-{os}
             current-parameters: true
             condition: 'UNSTABLE_OR_BETTER'
+          - project:
+              - testblame-email-report-pipeline
+            predefined-parameters: |
+              SATELLITE_VERSION=${{SATELLITE_VERSION}} ${{BUILD_LABEL}}-{os}
+            node-parameters: false
+            condition: 'UNSTABLE_OR_BETTER'
+
 
 
 - job-template:
