@@ -1,5 +1,5 @@
 - job:
-    name: 'sat6-unit-test-hammer-cli-foreman_discovery'
+    name: 'sat6-unit-test-hammer-cli-foreman-discovery'
     project-type: pipeline
     concurrent: true
     sandbox: true
