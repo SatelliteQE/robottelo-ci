@@ -16,6 +16,11 @@
                 BETELGEUSE_AUTOMATION_PROJECT=robottelo
                 BETELGEUSE_RESPONSE_PROPERTY=satellite6=testcases
     builders:
+        - shell: rm -f *.yaml
+        - copyartifact:
+            project: 'satellite6-component-owners'
+            filter: '**/component-owners-map.yaml'
+            which-build: last-successful
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse
@@ -191,6 +196,11 @@
                 BETELGEUSE_AUTOMATION_PROJECT=satellite6-upgrade
                 BETELGEUSE_RESPONSE_PROPERTY=satellite6=upgrade-testcases
     builders:
+        - shell: rm -f *.yaml
+        - copyartifact:
+            project: 'satellite6-component-owners'
+            filter: '**/component-owners-map.yaml'
+            which-build: last-successful
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse

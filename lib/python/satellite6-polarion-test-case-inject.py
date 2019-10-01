@@ -13,6 +13,7 @@ import os
 import subprocess
 import re
 import xml.etree.ElementTree as ET
+import yaml
 
 
 def get_repo(url, tmp_path):
@@ -88,6 +89,32 @@ def get_product_versions(repo, test_path, tmp_path, xml_file_path):
     tree.write(xml_file_path)
 
 
+def inject_component_owners(component_owners_yaml, xml_file_path):
+    component_owners = yaml.load(open(component_owners_yaml), Loader=yaml.FullLoader)
+    component_owners = {_['slug']: _ for _ in component_owners.values()}
+    # Insert primary and secondary owners in polarion test case file
+    tree = ET.parse(xml_file_path)
+    root = tree.getroot()
+    testcases = root.findall('testcase')
+    for testcase in testcases:
+        custom_fields = testcase.findall('custom-fields')
+        for child in custom_fields[0].getchildren():
+            if child.get('id') == 'casecomponent':
+                component_name = child.get('content').lower()
+                if component_name in component_owners.keys():
+                    attrib1 = {
+                        'id': 'primary',
+                        'content': component_owners[component_name]['primary']
+                    }
+                    attrib2 = {
+                        'id': 'secondary',
+                        'content': component_owners[component_name]['secondary']
+                    }
+                    ET.SubElement(custom_fields[0], 'custom-field', attrib1)
+                    ET.SubElement(custom_fields[0], 'custom-field', attrib2)
+    tree.write(xml_file_path)
+
+
 get_product_versions(
     repo="https://github.com/SatelliteQE/robottelo",
     test_path="tests/foreman/",
@@ -99,5 +126,10 @@ get_product_versions(
     repo="https://github.com/SatelliteQE/satellite6-upgrade",
     test_path="upgrade_tests/test_existance_relations/",
     tmp_path="tmp/satellite6-upgrade/",
+    xml_file_path="polarion-test-cases.xml"
+)
+
+inject_component_owners(
+    component_owners_yaml="satellite6-reporting/component-owners/component-owners-map.yaml",
     xml_file_path="polarion-test-cases.xml"
 )
