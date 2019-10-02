@@ -6,37 +6,44 @@ pipeline {
     }
     stages {
         stage('Virtualenv') {
-  	        steps {
+            steps {
                 make_venv python: defaults.python
             }
         }
         stage('Clone rp_tools repo') {
             steps {
-	        configFileProvider(
-		    [configFile(fileId: 'e8b0ed3c-2ca3-4a0c-a922-60264c11bbc9', variable: 'RP_TOOLS')]) {
-		        sh_venv """
-			    source \${RP_TOOLS}
-			"""
-		    }
+            configFileProvider(
+            [configFile(fileId: 'e8b0ed3c-2ca3-4a0c-a922-60264c11bbc9', variable: 'RP_TOOLS')]) {
+                sh_venv """
+                source \${RP_TOOLS}
+                """
+                }
+            }
+        }
+        stage('Obtain component-owners-map.yaml and testimony.json') {
+            steps {
+                copyArtifacts(projectName: 'satellite6-component-owners',
+                    selector: 'lastSuccessful',
+                    target: 'rp_tools/scripts/reportportal_cli/'
+                )
             }
         }
         stage('Configure rp_tools') {
             steps {
                 sh_venv """
-	            cd rp_tools
+                    cd rp_tools
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
                     pip install -r requirements.txt
                     """
                 configFileProvider(
                     [configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
-                         sh_venv '''
-                             source ${CONFIG_FILES}
-                             cp config/rp_conf.yaml rp_tools/scripts/reportportal_cli/rp_conf.yaml
-                             sed -i "s/^rp_project.\\+$/rp_project: ${RP_PROJECT}/" rp_tools/scripts/reportportal_cli/rp_conf.yaml
-                             mkdir rp_tools/scripts/jenkins_junit/junits
-                            '''
-                         }
-
+                        sh_venv '''
+                            source ${CONFIG_FILES}
+                            cp config/rp_conf.yaml rp_tools/scripts/reportportal_cli/rp_conf.yaml
+                            sed -i "s/^rp_project.\\+$/rp_project: ${RP_PROJECT}/" rp_tools/scripts/reportportal_cli/rp_conf.yaml
+                            mkdir rp_tools/scripts/jenkins_junit/junits
+                        '''
+                    }
             }
         }
         stage('Collect Junit XMLs') {
@@ -64,14 +71,6 @@ pipeline {
                 '''
             }
         }
-        stage('Ownership tags') {
-            steps {
-                sh_venv '''
-                    cd rp_tools/scripts/reportportal_cli/
-                    ./owners_cli.py
-                '''
-            }
-        }
         stage('Claim known issues') {
             steps {
                 sh_venv '''
@@ -88,9 +87,9 @@ pipeline {
             }
         }
         stage('E-Mail owners') {
-	    when {
-                expression { !env.AUTOMATION_BUILD_URL.contains('upstream-nightly') }
-	    }
+            when {
+                    expression { !env.AUTOMATION_BUILD_URL.contains('upstream-nightly') }
+            }
             steps {
                 sh_venv '''
                     cd rp_tools/scripts/reportportal_cli/
