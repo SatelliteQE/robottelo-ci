@@ -23,6 +23,7 @@
             name: WORKERS
             default: '8'
     project-type: pipeline
+    sandbox: true
     pipeline-scm:
         scm:
           - git:

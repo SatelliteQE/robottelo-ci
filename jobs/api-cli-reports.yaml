@@ -5,6 +5,7 @@
     description: |
         <p>Job that generates reports about API and CLI versions and the tests that apply to them</p>
     project-type: pipeline
+    sandbox: true
     parameters:
         - string:
             name: SATELLITE_SERVER_HOSTNAME

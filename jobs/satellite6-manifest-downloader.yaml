@@ -2,6 +2,7 @@
     name: 'satellite6-manifest-downloader'
     display-name: 'Satellite6-Manifest-Downloader'
     project-type: pipeline
+    sandbox: true
     description: |
         Downloads the Satellite6 Manifest from access.redhat.com
     triggers:

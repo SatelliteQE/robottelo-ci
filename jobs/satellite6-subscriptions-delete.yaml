@@ -4,6 +4,7 @@
     description: |
         Job that will run every day and will delete any subscription that its hostname matches the following regex: qe-(sat6|sat6iso|sam|foreman)(-upstream)?-rhel\d\d.usersys domain Or subscription that is older than 29 days for machines that hostname does not match the above regex.
     project-type: pipeline
+    sandbox: true
     pipeline-scm:
         scm:
           - git:
