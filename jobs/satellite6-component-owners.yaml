@@ -16,6 +16,7 @@
             name: IGNORE_CACHE
             default: False
     project-type: pipeline
+    sandbox: true
     dsl:
         !include-raw:
             - workflows/qe/satellite6-component-owners.groovy

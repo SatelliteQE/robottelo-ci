@@ -1,6 +1,7 @@
 - job:
     name: satellite6-upgrade-cleanup
     project-type: pipeline
+    sandbox: true
     concurrent: false
     description: |
         <p>Job that runs cleanup scripts. currently this only runs container
