@@ -1,4 +1,5 @@
 def snap_version = generateSnapVersion(release_name: releaseVersion, snap_version: snapVersion)
+def full_snap_version = "${releaseVersion}-${snap_version}"
 
 node('sat6-build') {
     stage("Setup Workspace") {
@@ -69,7 +70,7 @@ node('sat6-build') {
     stage("Create Archive Environment") {
 
       createLifecycleEnvironment(
-          name: snap_version,
+          name: full_snap_version,
           prior: 'Library',
           organization: 'Sat6-CI'
       )
@@ -83,7 +84,7 @@ node('sat6-build') {
           organization: 'Sat6-CI',
           content_view: cv,
           from_lifecycle_environment: 'QA',
-          to_lifecycle_environment: snap_version
+          to_lifecycle_environment: full_snap_version
         )
       }
 
@@ -91,7 +92,7 @@ node('sat6-build') {
         copyActivationKey(
           organization: 'Sat6-CI',
           activation_key: ak,
-          lifecycle_environment: snap_version
+          lifecycle_environment: full_snap_version
         )
       }
 
@@ -104,7 +105,7 @@ node('sat6-build') {
           organization: 'Sat6-CI',
           content_view: cv,
           from_lifecycle_environment: 'QA',
-          to_lifecycle_environment: snap_version
+          to_lifecycle_environment: full_snap_version
         )
       }
 
@@ -112,7 +113,7 @@ node('sat6-build') {
         copyActivationKey(
           organization: 'Sat6-CI',
           activation_key: ak,
-          lifecycle_environment: snap_version
+          lifecycle_environment: full_snap_version
         )
       }
 
@@ -125,7 +126,7 @@ node('sat6-build') {
           organization: 'Sat6-CI',
           content_view: cv,
           from_lifecycle_environment: 'QA',
-          to_lifecycle_environment: snap_version
+          to_lifecycle_environment: full_snap_version
         )
       }
 
@@ -133,7 +134,7 @@ node('sat6-build') {
         copyActivationKey(
           organization: 'Sat6-CI',
           activation_key: ak,
-          lifecycle_environment: snap_version
+          lifecycle_environment: full_snap_version
         )
       }
 
@@ -152,7 +153,7 @@ node {
     stage("Run Automation") {
         build job: "trigger-satellite-${satellite_main_version}", parameters: [
           [$class: 'StringParameterValue', name: 'SATELLITE_DISTRIBUTION', value: 'INTERNAL'],
-          [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${snap_version}"],
+          [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${full_snap_version}"],
         ]
     }
 }
