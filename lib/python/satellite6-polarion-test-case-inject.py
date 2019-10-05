@@ -130,6 +130,6 @@ get_product_versions(
 )
 
 inject_component_owners(
-    component_owners_yaml="satellite6-reporting/component-owners/component-owners-map.yaml",
+    component_owners_yaml="component-owners-map.yaml",
     xml_file_path="polarion-test-cases.xml"
 )

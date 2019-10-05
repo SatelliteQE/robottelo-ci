@@ -46,7 +46,7 @@ pipeline {
                     dir("satellite6-reporting/component-owners") {
                         sh_venv([
                             venv: "${env.WORKSPACE}/venv",
-                            script: com_cmd(MOJO_USER, MOJO_PASSWORD, 'print -f component-owners-map.yaml')
+                            script: com_cmd(MOJO_USER, MOJO_PASSWORD, 'print -f ../../component-owners-map.yaml')
                         ])
                     }
                 }
@@ -87,7 +87,7 @@ pipeline {
                     sh_venv([
                         venv: "${env.WORKSPACE}/venv",
                         script:"""
-                            testimony -c testimony.yaml --json print tests/foreman/ > testimony.json
+                            testimony -c testimony.yaml --json print tests/foreman/ > ../testimony.json
                             """
                     ])
                 }
