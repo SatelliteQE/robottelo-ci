@@ -29,6 +29,12 @@ pipeline {
         }
         stage('Build') {
             steps {
+               sh_venv '''
+                    cp config/robottelo.properties ./robottelo.properties
+                    sed -i "s|@stable-satellite#egg=nailgun|@refs/pull/${ghprbPullId}/head|g" requirements.txt
+                    export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
+                    pip install -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
+               '''
                script {
                    def DATA="${env.ghprbCommentBody}"
                    def pattern='ok to test :'
@@ -39,26 +45,21 @@ pipeline {
                    } else {
                        PYTEST_OPTIONS=DATA
                    }
-               }
-               sh_venv '''
-                    cp config/robottelo.properties ./robottelo.properties
-                    sed -i "s|@stable-satellite#egg=nailgun|@refs/pull/${ghprbPullId}/head|g" requirements.txt
-                    export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
-                    pip install -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
-               '''
-               all_args = [
-               'hostname': SERVER_HOSTNAME,
-               'ssh_username': SSH_USER,
-               'admin_username': FOREMAN_ADMIN_USER,
-               'admin_password': FOREMAN_ADMIN_PASSWORD,
-               'bz_password': BUGZILLA_PASSWORD,
-               'bz_username': env.BUGZILLA_USER,
-               'sattools_repo': "rhel8=${RHEL8_TOOLS_REPO},rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}",
-               'capsule_repo': CAPSULE_REPO]
-               parse_ini ini_file: "${WORKSPACE}//robottelo.properties" , properties: all_args
+                   all_args = [
+                   'hostname': SERVER_HOSTNAME,
+                   'ssh_username': SSH_USER,
+                   'admin_username': FOREMAN_ADMIN_USER,
+                   'admin_password': FOREMAN_ADMIN_PASSWORD,
+                   'bz_password': BUGZILLA_PASSWORD,
+                   'bz_username': env.BUGZILLA_USER,
+                   'sattools_repo': "rhel8=${RHEL8_TOOLS_REPO},rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}",
+                   'capsule_repo': CAPSULE_REPO]
+                   parse_ini ini_file: "${WORKSPACE}//robottelo.properties" , properties: all_args
+                   }
             }
         }
         stage('Run Tests') {
+            steps {
             sh_venv '''
             set +e
             pytest() {
@@ -67,6 +68,7 @@ pipeline {
             pytest ''' + PYTEST_OPTIONS + '''
             set -e
             '''
+            }
         }
     }
     post {
