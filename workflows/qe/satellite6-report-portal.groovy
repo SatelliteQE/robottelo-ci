@@ -23,7 +23,7 @@ pipeline {
         stage('Obtain component-owners-map.yaml and testimony.json') {
             steps {
                 copyArtifacts(projectName: 'satellite6-component-owners',
-                    selector: 'lastSuccessful',
+                    selector: lastSuccessful(),
                     target: 'rp_tools/scripts/reportportal_cli/'
                 )
             }
