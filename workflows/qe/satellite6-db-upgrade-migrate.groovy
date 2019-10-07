@@ -1,0 +1,449 @@
+@Library("github.com/SatelliteQE/robottelo-ci") _
+
+pipeline {
+    agent { label 'sat6-rhel7' }
+
+    environment {
+        PYTEST_OPTIONS = "tests/foreman/cli/test_activationkey.py tests/foreman/cli/test_contentview.py tests/foreman/cli/test_repository.py tests/foreman/cli/test_product.py"
+        CLONE_DIR = "/usr/share/satellite-clone/satellite-clone-vars.yml"
+   }
+    stages {
+        stage('Setup environment') {
+            steps {
+                workspace_cleanup()
+                make_venv python: defaults.python
+                git defaults.satellite6_upgrade
+                sh_venv '''
+                    export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
+                    pip install -U -r requirements.txt
+                    pip install -r requirements-optional.txt
+                '''
+                }
+            }
+        stage('Install requirements') {
+            steps {
+                    script {
+                        configFileProvider(
+                            [configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
+                        sh_venv '''
+                            source ${CONFIG_FILES}
+                            '''
+                        conditional_param_execution( param: [env.SATELLITE_HOSTNAME])
+                        upgrade_environment_variable()
+                        load('config/sat6_repos_urls.groovy')
+                        load('config/subscription_config.groovy')
+                        environment_variable_for_sat6_repos_url()
+                        environment_variable_for_subscription_config()
+                        currentBuild.displayname = "#"+ env.BUILD_NUMBER + "CustDB_Upgrade for" + env.CUSTOMERDB_NAME  + "_from_" + env.FROM_VERSION + "_to_" + env.TO_VERSION + "_" + env.OS + env.SATELLITE_HOSTNAME
+                    }
+                }
+            }
+        }
+
+        stage("DB Upgrade Setup"){
+            steps {
+                ansiColor('xterm') {
+                    instance_creation_deletion()
+                    customer_db_setup()
+                    inventory_configuration()
+                    satellite_clone_setup()
+                    check_the_flag_incase_of_migration()
+                    setting_CloneRPM()
+                }
+            }
+        }
+
+        stage ("Download Customer DB Backup")
+        {
+            steps{
+                ansiColor('xterm') {
+                    download_customerDB_Backup()
+                }
+            }
+        }
+
+        stage("Upgrade"){
+            steps{
+                ansiColor('xterm') {
+                    puppet_upgrade()
+                    perform_upgrade()
+                    mongodb_upgrade()
+                }
+            }
+        }
+    }
+    post {
+        always{
+            mail_notification()
+        }
+    }
+ }
+
+
+def conditional_param_execution(args){
+    env.DISTRO = env.OS
+    if (args.param.size() == 0){
+        load('config/compute_resources.groovy')
+        load('config/sat6_upgrade.groovy')
+        environment_variable_for_sat6_upgrade()
+        environment_variable_for_compute_resource()
+    }
+    env.SATELLITE_VERSION = env.TO_VERSION
+    env.SATELLITE_HOSTNAME = env.SATELLITE_HOSTNAME == null?'':env.SATELLITE_HOSTNAME
+}
+
+
+def instance_creation_deletion(){
+    if (env.SATELLITE_HOSTNAME.size() == 0 && env.OPENSTACK_DEPLOY == 'true'){
+        load('config/preupgrade_entities.groovy')
+        environment_variable_for_preupgrade()
+        sh_venv '''fab -D -u root delete_openstack_instance:"customerdb_"${CUSTOMERDB_NAME}
+                   fab -D -u root create_openstack_instance:"customerdb_"${CUSTOMERDB_NAME},"${RHEL7_IMAGE}","${VOLUME_SIZE}"'''
+    }
+}
+
+
+def customer_db_setup(){
+    if (env.CUSTOMERDB_NAME != "NoDB"){
+        load('config/preupgrade_entities.groovy')
+        environment_variable_for_preupgrade()
+        if (env.SATELLITE_HOSTNAME){
+            env.INSTANCE_NAME = env.SATELLITE_HOSTNAME
+        }
+        else if (! env.SATELLITE_HOSTNAME && env.OPENSTACK_DEPLOY != 'true') {
+            def RHEV_INSTANCE_NAME = env.CUSTOMERDB_NAME + "_customerdb_instance"
+            env.RHEV_INSTANCE_NAME = RHEV_INSTANCE_NAME
+            sh_venv '''fab -u root delete_rhevm_instance:"${RHEV_INSTANCE_NAME}
+                fab -u root create_rhevm_instance:"${RHEV_INSTANCE_NAME}
+                source /tmp/rhev_instance.txt'''
+            env.INSTANCE_NAME = env.SAT_INSTANCE_FQDN
+        }
+        sh_venv '''if [ -d  satellite-clone ]; then rm -rf satellite-clone ;fi'''
+        git defaults.satellite6_clone
+        dirs('satellite-clone') {
+            make_venv python: defaults.python
+            sh_venv '''
+                    export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
+                    pip install -U -r ../requirements.txt
+                    pip install -r ../requirements-optional.txt
+                    cp -a satellite-clone-vars.sample.yml satellite-clone-vars.yml
+            '''
+        }
+        env.BACKUP_DIR = "\\/var\\/tmp\\/backup"
+        def repo_setup = ! env.SATELLITE_HOSTNAME && env.OPENSTACK_DEPLOY == 'true'?openstack_deploy():''
+        env.SATELLITE_HOSTNAME = env.INSTANCE_NAME
+        if (env.PARTITION_DISK) {
+            sh_venv '''fab -D -H root@${INSTANCE_NAME} partition_disk'''
+        }
+    }
+}
+
+
+def openstack_deploy(){
+    env.BACKUP_DIR = "\\/tmp\\/customer-dbs\\/$CUSTOMERDB_NAME"
+    /// Need to check environment set on ssh_evenv
+    def INSTANCE_NAME = sh(script: 'source /tmp/instance.info; echo ${OSP_HOSTNAME} ',returnStdout: true).trim()
+    env.INSTANCE_NAME = INSTANCE_NAME
+    sh_venv '''
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@${INSTANCE_NAME} "curl -o /etc/yum.repos.d/rhel.repo "${RHEL_REPO}"; yum install -y nfs-utils; mkdir -p /tmp/customer-dbs; mount -o v3 "${DBSERVER}":/root/customer-dbs /tmp/customer-dbs"'''
+}
+
+
+def inventory_configuration(){
+    //cust_db_server variable is loaded as groovy variable
+    dir('satellite-clone') {
+        // make_venv python: defaults.python
+        sh_venv '''sed -i -e 2s/.*/"${INSTANCE_NAME}"/ inventory'''
+    }
+    if (env.CUSTOMERDB_NAME == "CentralCI"){
+        env.DB_URL='http://"${cust_db_server}"/customer-databases/Central-CI/6.2-OCT-13-2017/'
+    }
+    else if (env.CUSTOMERDB_NAME == "ExpressScripts"){
+        env.DB_URL='http://"${cust_db_server}"/customer-databases/express-scripts/6.2-OCT-14-2017'
+    }
+    else if (env.CUSTOMERDB_NAME == "Verizon"){
+        env.DB_URL='http://"${cust_db_server}"/customer-databases/Verizon/OCT-2-2017-62'
+    }
+    else if (env.CUSTOMERDB_NAME == "Walmart"){
+        env.DB_URL='http://"${cust_db_server}"/customer-databases/walmart/6.2-OCT-2017'
+    }
+    else if (env.CUSTOMERDB_NAME == "CreditSuisse"){
+        env.DB_URL='http://"${cust_db_server}"/customer-databases2/credit-suisse/MAY-21-2018-631/'
+    }
+    else if (env.CUSTOMERDB_NAME == "ATPC"){
+        env.DB_URL='http://"${cust_db_server}"/customer-databases2/ATPC/JUN-16-2018-631/'
+    }
+    else if (env.CUSTOMERDB_NAME == "Sat62RHEL6Migrate"){
+        env.DB_URL="http://"${cust_db_server}"/customer-databases/qe-rhel6-db/sat62-rhel6-db"
+    }
+    else if (env.CUSTOMERDB_NAME == "CustomDbURL") {
+        env.DB_URL="${env.CUSTOM_DB_URL}"
+    }
+}
+
+
+def satellite_clone_setup() {
+    if (env.USE_CLONE_RPM == 'true'){
+        use_clone_rpm()
+    }
+    else {
+        satellite_clone_with_upstream()
+    }
+}
+
+
+def satellite_clone_with_upstream(){
+    if (env.FROM_VERSION == "6.2"){
+        dir('satellite-clone') {
+         sh_venv '''sed -i -e "s/^satellite_version.*/satellite_version: "${FROM_VERSION}"/" satellite-clone-vars.yml
+                   sed -i -e "s/^activationkey.*/activationkey: "test_ak"/" satellite-clone-vars.yml
+                   sed -i -e "s/^org.*/org: "Default\\ Organization"/" satellite-clone-vars.yml
+                   sed -i -e "s/^#backup_dir.*/backup_dir: "${BACKUP_DIR}"/" satellite-clone-vars.yml
+                   sed -i -e "s/^#include_pulp_data.*/include_pulp_data: "${INCLUDE_PULP_DATA}"/" satellite-clone-vars.yml
+                   sed -i -e "s/^#restorecon.*/restorecon: "${RESTORECON}"/" satellite-clone-vars.yml
+                   sed -i -e "/org.*/arhn_pool: "${RHN_POOLID}"" satellite-clone-vars.yml
+                   sed -i -e "/org.*/arhn_password: "${RHN_PASSWORD}"" satellite-clone-vars.yml
+                   sed -i -e "/org.*/arhn_user: "${RHN_USERNAME}"" satellite-clone-vars.yml
+                   sed -i -e "/org.*/arhelversion: "${OS_VERSION}"" satellite-clone-vars.yml
+            '''
+        }
+    }
+    else {
+        dir('satellite-clone') {
+            sh_venv '''echo "satellite_version: "${FROM_VERSION}"" >> satellite-clone-vars.yml
+                    echo "activationkey: "test_ak"" >> satellite-clone-vars.yml
+                    echo "org: "Default Organization"" >> satellite-clone-vars.yml
+                    sed -i -e "s/^#backup_dir.*/backup_dir: "${BACKUP_DIR}"/" satellite-clone-vars.yml
+                    echo "include_pulp_data: "${INCLUDE_PULP_DATA}"" >> satellite-clone-vars.yml
+                    echo "restorecon: "${RESTORECON}"" >> satellite-clone-vars.yml
+                    echo "register_to_portal: true" >> satellite-clone-vars.yml
+                    sed -i -e "/#org.*/arhn_pool: "$(echo ${RHN_POOLID} | cut -d' ' -f1)"" satellite-clone-vars.yml
+                    sed -i -e "/#org.*/arhn_password: "${RHN_PASSWORD}"" satellite-clone-vars.yml
+                    sed -i -e "/#org.*/arhn_user: "${RHN_USERNAME}"" satellite-clone-vars.yml
+                    sed -i -e "/#org.*/arhelversion: "${OS_VERSION}"" satellite-clone-vars.yml
+                    '''
+        }
+    }
+}
+
+
+def use_clone_rpm(){
+    dir('satellite-clone') {
+        sh_venv '''fab -H root@"${SATELLITE_HOSTNAME}" setup_satellite_clone'''
+        env.CLONE_DIR = "/usr/share/satellite-clone/satellite-clone-vars.yml"
+        sh_venv '''
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" << EOF
+            echo "satellite_version: "${FROM_VERSION}"" >> "${CLONE_DIR}"
+            echo "activationkey: "test_ak"" >> "${CLONE_DIR}"
+            echo "org: "Default Organization"" >> "${CLONE_DIR}"
+            sed -i -e "/#backup_dir.*/abackup_dir: "${BACKUP_DIR}"/" "${CLONE_DIR}"
+            echo "include_pulp_data: "${INCLUDE_PULP_DATA}"" >> "${CLONE_DIR}"
+            echo "restorecon: "${RESTORECON}"" >> "${CLONE_DIR}"
+            echo "register_to_portal: true" >> "${CLONE_DIR}"
+            sed -i -e "/#org.*/arhn_pool: "$(echo ${RHN_POOLID} | cut -d' ' -f1)"" "${CLONE_DIR}"
+            sed -i -e "/#org.*/arhn_password: "${RHN_PASSWORD}"" "${CLONE_DIR}"
+            sed -i -e "/#org.*/arhn_user: "${RHN_USERNAME}"" "${CLONE_DIR}"
+            sed -i -e "/#org.*/arhelversion: "${OS_VERSION}"" "${CLONE_DIR}"
+    EOF
+        '''
+    }
+}
+
+
+def check_the_flag_incase_of_migration(){
+    if (env.RHEL_MIGRATION == 'true') {
+        //Set the flag true in case of migrating the rhel6 satellite server to rhel7 machine
+        sh_venv ''' ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.dump' "${DB_URL}"" '''
+        if (env.USE_CLONE_RPM != 'true'){
+            dir('satellite-clone') {
+            sh_venv ''' sed -i -e "s/^#rhel_migration.*/rhel_migration: "${RHEL_MIGRATION}"/" satellite-clone-vars.yml
+                sed -i -e "s/^rhelversion.*/rhelversion: 7/" satellite-clone-vars.yml '''
+            }
+        }
+        else {
+            dir('satellite-clone') {
+                sh_venv '''ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" << EOF
+                    sed -i -e "s/^#rhel_migration.*/rhel_migration: "${RHEL_MIGRATION}"/" "${CLONE_DIR}"
+                    sed -i -e "s/^rhelversion.*/rhelversion: 7/" "${CLONE_DIR}"
+                EOF'''
+            }
+        }
+    }
+}
+
+
+def setting_CloneRPM(){
+    if (env.USE_CLONE_RPM != 'true') {
+        dir('satellite-clone') {
+            sh_venv ''' sed -i -e '/subscription-manager register.*/d' roles/satellite-clone/tasks/main.yml'''
+            if (env.FROM_VERSION=="6.2"){
+                sh_venv '''sed -i -e '/register host.*/a\\ \\ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/satellite-clone/tasks/main.yml'''
+            }
+            else {
+                sh_venv '''sed -i -e '/Register\\/Subscribe the system to Red Hat Portal.*/a\\ \\ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' roles/satellite-clone/tasks/main.yml'''
+            }
+            sh_venv ''' sed -i -e '/subscription-manager register.*/a- name: subscribe machine' roles/satellite-clone/tasks/main.yml
+                        sed -i -e '/subscribe machine.*/a\\ \\ command: subscription-manager subscribe --pool={{ rhn_pool }}' roles/satellite-clone/tasks/main.yml '''
+        }
+    }
+    else{
+        dir('satellite-clone') {
+            env.MAIN_YAML = "/usr/share/satellite-clone/roles/satellite-clone/tasks/main.yml"
+            sh_venv '''ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" << EOF
+            sed -i -e '/subscription-manager register.*/d' "${MAIN_YAML}"
+            sed -i -e '/Register\\/Subscribe the system to Red Hat Portal.*/a\\ \\ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' "${MAIN_YAML}"
+            sed -i -e '/subscription-manager register.*/a- name: subscribe machine' "${MAIN_YAML}"
+            sed -i -e '/subscribe machine.*/a\\ \\ command: subscription-manager subscribe --pool={{ rhn_pool }}' "${MAIN_YAML}"
+        EOF '''
+        }
+    }
+}
+
+
+def download_customerDB_Backup(){
+    dir('satellite-clone') {
+        if (env.OPENSTACK_DEPLOY != 'true') {
+            sh_venv '''ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "mkdir -p "${BACKUP_DIR}"; wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*.tar*' "${DB_URL}""
+                ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${INSTANCE_NAME}" "wget -q -P /var/tmp/backup -nd -r -l1 --no-parent -A '*metadata*' "${DB_URL}"" '''
+        }
+        if (USE_CLONE_RPM != 'true'){
+            env.ANSIBLE_HOST_KEY_CHECKING = false
+            sh_venv '''ansible all -i inventory -m ping -u root
+                       ansible-playbook -i inventory satellite-clone-playbook.yml
+                    '''
+        }
+        else {
+                sh_venv '''ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" "satellite-clone -y" '''
+        }
+    }
+}
+
+
+def puppet_upgrade() {
+    if (PUPPET4_UPGRADE == 'true') {
+        sh_venv ''' fab -H root@"${SATELLITE_HOSTNAME}" upgrade_puppet3_to_puppet4 '''
+    }
+}
+
+
+def perform_upgrade() {
+    if (env.PERFORM_UPGRADE == 'true'){
+        sh_venv '''fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
+                   fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
+                '''
+        if (env.RUN_EXISTENCE_TESTS == 'true'){
+            sh_venv '''$(which py.test) -v --junit-xml=test_existance-results.xml -o junit_suite_name=test_existance upgrade_tests/test_existance_relations/ '''
+        }
+        def directory_existence= sh(script: 'if [ -d upgrade-diff-logs ]; then echo "true"; else echo "false";fi',returnStdout: true).trim()
+        if (directory_existence == "true") {
+            sh_venv '''tar -czf Log_Analyzer_Logs.tar.xz upgrade-diff-logs'''
+        }
+    }
+}
+
+def mongodb_upgrade() {
+    if (env.MONGODB_UPGRADE == 'true'){
+        sh_venv ''' fab -H root@"${SATELLITE_HOSTNAME}" mongo_db_engine_upgrade:"SATELLITE" '''
+    }
+}
+def workspace_cleanup(){
+    if (env.WORKSPACE_CLEANUP == 'true'){
+        cleanupWs()
+    }
+}
+
+
+def branch_selection(){
+    branch_name=["6.3": "6.3.z","6.4": "6.4.z", "6.5": "6.5.z"]
+    def branch = env.TO_VERSION in branch_name?branch_name[env.TO_VERSION]:"master"
+    return branch
+}
+
+
+def upgrade_environment_variable(){
+    env.OS_VERSION = sh(script: 'echo ${OS#rhel}',returnStdout: true).trim()
+    withCredentials([usernamePassword(credentialsId: 'osp_creds', passwordVariable: 'passWord', usernameVariable: 'userName')]) {
+        env.OSP_PASSWORD = passWord
+    }
+}
+
+
+def mail_notification(){
+    env.BUILD_STATUS = currentBuild.result
+    sh_venv '''wget -O mail_report.html https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/lib/python/templates/upgrade_report.html
+    sed -i "s/Job_Name/${JOB_NAME}/g" mail_report.html
+    sed -i "s/CUSTOMERDB_NAME/${CUSTOMERDB_NAME}/g" mail_report.html
+    sed -i -- 's#BUILD_URL#'"$BUILD_URL"'#g' mail_report.html
+    sed -i "s/STATUS/${BUILD_STATUS}/g" mail_report.html
+    '''
+
+    emailext (
+        mimeType: 'text/html',
+        subject: "${currentBuild.result}: Job ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        body:'${FILE,path="mail_report.html"}',
+        to: "$QE_EMAIL_LIST"
+        )
+}
+
+
+def environment_variable_for_preupgrade(){
+    env.USERNAME = USERNAME
+    env.AUTH_URL = AUTH_URL
+    env.PROJECT_NAME = PROJECT_NAME
+    env.DOMAIN_NAME = DOMAIN_NAME
+    env.FLAVOR_NAME = FLAVOR_NAME
+    env.NETWORK_NAME = NETWORK_NAME
+    env.OSP_SSHKEY =OSP_SSHKEY
+    env.RHEL7_IMAGE = RHEL7_IMAGE
+    env.RHEL_REPO = RHEL_REPO
+    env.DBSERVER = DBSERVER
+}
+
+
+def environment_variable_for_sat6_upgrade(){
+    env.DOCKER_VM = DOCKER_VM
+    env.RHEV_CLIENT_AK_RHEL7 = RHEV_CLIENT_AK_RHEL7
+    env.RHEV_CLIENT_AK_RHEL6 = RHEV_CLIENT_AK_RHEL6
+    env.RHEV_CAPSULE_AK = RHEV_CAPSULE_AK
+    env.RHEV_CAP_IMAGE = RHEV_CAP_IMAGE
+    env.RHEV_CAP_HOST = RHEV_CAP_HOST
+    env.RHEV_SAT_IMAGE = RHEV_SAT_IMAGE
+    env.RHEV_SAT_HOST = RHEV_SAT_HOST
+    env.RHEL6_CUSTOM_REPO = RHEL6_CUSTOM_REPO
+    env.RHEL7_CUSTOM_REPO = RHEL7_CUSTOM_REPO
+}
+
+
+def environment_variable_for_sat6_repos_url(){
+
+    env.TOOLS_RHEL7 = TOOLS_RHEL7
+    env.FOREMAN_MAINTAIN_USE_BETA = env.SATELLITE_VERSION == '6.6'?FOREMAN_MAINTAIN_USE_BETA:''
+    env.PUPPET4_REPO = PUPPET4_REPO
+    env.MAINTAIN_REPO = MAINTAIN_REPO
+    env.SATELLITE6_REPO = SATELLITE6_REPO
+    BASE_URL = env.DISTRIBUTION == "DOWNSTREAM" ? SATELLITE6_REPO: ''
+    env.BASE_URL = BASE_URL
+}
+
+
+def environment_variable_for_compute_resource(){
+    env.RHEV_USER = RHEV_USER
+    env.RHEV_PASSWD = RHEV_PASSWD
+    env.RHEV_URL = RHEV_URL
+    env.RHEV_CLUSTER = RHEV_CLUSTER
+    env.RHEV_STORAGE = RHEV_STORAGE
+    env.LIBVIRT_HOSTNAME = LIBVIRT_HOSTNAME
+    env.RHEV_DATACENTER = RHEV_DATACENTER
+}
+
+
+def environment_variable_for_subscription_config() {
+    env.RHN_USERNAME = RHN_USERNAME
+    env.RHN_PASSWORD = RHN_PASSWORD
+    env.RHN_POOLID = RHN_POOLID
+    env.DOGFOOD_URL = DOGFOOD_URL
+    env.DOGFOOD_ORG = DOGFOOD_ORG
+    env.distro_path = distro_path
+    env.DOGFOOD_ACTIVATIONKEY = DOGFOOD_ACTIVATIONKEY
+    env.REPO_FILE_URL = REPO_FILE_URL
+}

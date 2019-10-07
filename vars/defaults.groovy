@@ -12,4 +12,5 @@ class defaults implements Serializable {
     String satellite6_upgrade = 'https://github.com/SatelliteQE/satellite6-upgrade'
     String testfm = 'https://github.com/SatelliteQE/testfm'
     String testblame = 'https://github.com/omkarkhatavkar/testblame'
+    String satellite6_clone = 'https://github.com/RedHatSatellite/satellite-clone'
 }
