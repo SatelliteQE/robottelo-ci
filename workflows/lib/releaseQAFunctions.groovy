@@ -87,10 +87,10 @@ def move_to_on_qa(args) {
 def send_snap_mail(args) {
 
     emailext (
-      subject: "Satellite ${args.version} Snap ${args.snap_version} -- HANDOFF TO QE",
+      subject: "Satellite ${args.release_version} Snap ${args.snap_version} -- HANDOFF TO QE",
       body: """Hi,
 
-      Satellite ${args.version} snap ${args.snap_version} was released.
+      Satellite ${args.release_version} snap ${args.snap_version} was released.
 
       For detailed information including installation instructions, BZs included, and updated package lists please see:
       ${env.OHSNAP_URL}/streams/${args.release_stream}/releases/${args.release_version}/snaps/${args.snap_version}/installation
