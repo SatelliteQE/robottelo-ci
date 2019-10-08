@@ -61,6 +61,9 @@
       - '66':
           satellite_dotted_version: '6.6'
           satellite_cron: 'H 10 * * *'
+      - '67':
+          satellite_dotted_version: '6.7'
+          satellite_cron: 'H 8 * * *'
     jobs:
       - sat-{satellite_version}-release-pipeline
       - sat-{satellite_version}-release-qa
