@@ -77,10 +77,15 @@
             properties-file: build_env.properties
         - trigger-builds:
             - project: 'satellite6-manifest-downloader'
-        - trigger-builds:
-            - project: 'satellite6-custom-certs-automation'
-              predefined-parameters: |
-                SATELLITE_VERSION=${{SATELLITE_VERSION}}
+        - conditional-step:
+                    condition-kind: regex-match
+                    regex: (6\.[3456])
+                    label: ${{ENV,var="SATELLITE_VERSION"}}
+                    steps:
+                    - trigger-builds:
+                        - project: 'satellite6-custom-certs-automation'
+                          predefined-parameters: |
+                            SATELLITE_VERSION=${{SATELLITE_VERSION}}
         - conditional-step:
                     condition-kind: strings-match
                     condition-string1: 'true'
