@@ -5,6 +5,9 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr:'32'))
     }
+    environment {
+        EXP_SUBS_FILE='config/robottelo-manifest-content.conf'
+    }
     stages {
         stage('Setup Environment') {
             steps {
@@ -22,13 +25,12 @@ pipeline {
                 configFileProvider(
                     [configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
                     sshagent (credentials: ['id_hudson_rsa']) {
+                        load(config/fake_manifest.groovy)
+                        load(config/subscription_config.groovy)
                         ansiColor('xterm') {
                         sh_venv '''
                             source ${CONFIG_FILES}
-                            source config/fake_manifest.conf
-                            source config/subscription_config.conf
-                            export EXP_SUBS_FILE=config/robottelo-manifest-content.conf
-                            fab -D -H "root@${MANIFEST_SERVER_HOSTNAME}" relink_manifest
+                            fab -D -H "root@${MANIFEST_SERVER_HOSTNAME}" relink_manifest:"url=${SM_URL}","consumer=${CONSUMER}","user=${RHN_USERNAME}","password=${RHN_PASSWORD}","exp_subs_file=${env.EXP_SUBS_FILE}"
                             '''
                          }
                     }
