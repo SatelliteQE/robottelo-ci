@@ -1,6 +1,7 @@
 - job-template:
     name: 'report-automation-results-{satellite_version}-{os}'
-    node: sat6-{satellite_version}
+    project-type: pipeline
+    sandbox: true
     parameters:
       - string:
           name: BUILD_LABEL
@@ -8,57 +9,17 @@
               'Specify the build label of the Satellite. Example Satellite 6.3.0-1.0,
               Which is of the format Satellite 6.y.z-SNAP.COMPOSE.
               Note this BUILD_LABEL is also used to calculate POLARION_RELEASE.'
-    scm:
-        - git:
-            url: https://github.com/SatelliteQE/robottelo-ci.git
-            branches:
-                - origin/master
-            skip-tag: true
-    wrappers:
-        - build-name:
-            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
+    properties:
+        - build-discarder:
+            num-to-keep: 16
         - inject:
             properties-content: |
-                SATELLITE_VERSION={satellite_version}
-    builders:
-        - shell: rm -f *.xml
-        - copyartifact:
-            project: 'automation-{satellite_version}-tier1-{os}'
-            filter: '*-results.xml'
-            which-build: last-successful
-        - copyartifact:
-            project: 'automation-{satellite_version}-tier2-{os}'
-            filter: '*-results.xml'
-            which-build: last-successful
-        - copyartifact:
-            project: 'automation-{satellite_version}-tier3-{os}'
-            filter: '*-results.xml'
-            which-build: last-successful
-        - copyartifact:
-            project: 'automation-{satellite_version}-tier4-{os}'
-            filter: '*-results.xml'
-            which-build: last-successful
-        - copyartifact:
-            project: 'automation-{satellite_version}-destructive-{os}'
-            filter: '*-results.xml'
-            which-build: last-successful
-        - copyartifact:
-            project: 'automation-{satellite_version}-rhai-{os}'
-            filter: '*-results.xml'
-            which-build: last-successful
-        - satellite6-automation-reports-builders
-    publishers:
-        - email-ext:
-            recipients: ${{QE_EMAIL_LIST}}
-            content-type: html
-            success: true
-            failure: false
-            subject: 'Satellite {satellite_version} Automation Report for {os}'
-            body: |
+              satellite_version={satellite_version}
+              os={os}
+    dsl:
+      !include-raw-escape:
+        - workflows/qe/satellite6-reporting-automation.groovy
 
-                ${{FILE, path="email_report.html"}}
-
-                The build ${{BUILD_URL}} has been completed.
 
 - job-template:
     name: 'report-consolidated-coverage-{satellite_version}-{os}'
