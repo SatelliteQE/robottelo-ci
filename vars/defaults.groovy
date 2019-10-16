@@ -4,6 +4,7 @@ class defaults implements Serializable {
     String venvModule = 'virtualenv'
 
     String automation_tools = 'https://github.com/SatelliteQE/automation-tools'
+    String betelgeuse = 'https://github.com/SatelliteQE/betelgeuse'
     String robottelo = 'https://github.com/SatelliteQE/robottelo/'
     String robottelo_ci = 'https://github.com/SatelliteQE/robottelo-ci'
     String apix = 'https://github.com/JacobCallahan/apix'
