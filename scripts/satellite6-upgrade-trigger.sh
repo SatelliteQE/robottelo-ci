@@ -56,4 +56,8 @@ elif [ ${ENDPOINT} == 'upgrade' ]; then
     fab -u root set_datastore:"postupgrade","api"
     fab -u root set_templatestore:"postupgrade"
     tar -cf postupgrade_templates.tar.xz postupgrade_templates
+
+    # Delete old scap_content and use new one.
+    fab -u root update_scap_content
+
 fi
