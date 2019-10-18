@@ -1,6 +1,6 @@
 # Populate token-prefix and betelgeuse depending upon Satellite6 Version.
 
-pip install Betelgeuse==0.15.0
+pip install Betelgeuse==0.16.0
 TOKEN_PREFIX=""
 
 # Create a new release with POLARION_RELEASE as the parent-plan.
@@ -24,6 +24,7 @@ fi
 
 POLARION_SELECTOR="name=Satellite 6"
 SANITIZED_ITERATION_ID="$(echo ${TEST_RUN_ID} | sed 's|\.|_|g' | sed 's| |_|g')"
+TEST_RUN_GROUP_ID="$(echo ${TEST_RUN_ID} | cut -d' ' -f2)"
 
 # Prepare the XML files
 
@@ -37,6 +38,7 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
         --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
         --response-property "${POLARION_SELECTOR}" \
         --test-run-id "${TEST_RUN_ID} - ${run} - Tier all-tiers" \
+        --test-run-group-id "${TEST_RUN_GROUP_ID}" \
         "./all-tiers-upgrade-${run}-results.xml" \
         tests/foreman \
         "${POLARION_USERNAME}" \
@@ -55,6 +57,7 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
     --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
     --response-property "${POLARION_SELECTOR}" \
     --test-run-id "${TEST_RUN_ID} - Tier end-to-end" \
+    --test-run-group-id "${TEST_RUN_GROUP_ID}" \
     "./smoke-tests-results.xml" \
     tests/foreman \
     "${POLARION_USERNAME}" \
@@ -72,6 +75,7 @@ elif [ "${ENDPOINT}" = "rhai" ] || [ "${ENDPOINT}" = "destructive" ]; then
         --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
         --response-property "${POLARION_SELECTOR}" \
         --test-run-id "${TEST_RUN_ID} - ${ENDPOINT##tier}" \
+        --test-run-group-id "${TEST_RUN_GROUP_ID}" \
         "./foreman-results.xml" \
         tests/foreman \
         "${POLARION_USERNAME}" \
@@ -90,6 +94,7 @@ else
             --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
             --response-property "${POLARION_SELECTOR}" \
             --test-run-id "${TEST_RUN_ID} - ${run} - Tier ${ENDPOINT##tier}" \
+            --test-run-group-id "${TEST_RUN_GROUP_ID}" \
             "./tier${ENDPOINT##tier}-${run}-results.xml" \
             tests/foreman \
             "${POLARION_USERNAME}" \

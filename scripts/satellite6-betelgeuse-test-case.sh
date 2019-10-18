@@ -1,5 +1,5 @@
 # Install the latest version of betelgeuse.
-pip install Betelgeuse==0.15.0 pathlib pyyaml
+pip install Betelgeuse==0.16.0 pathlib pyyaml
 
 
 if [[ ${BETELGEUSE_AUTOMATION_PROJECT} = "satellite6-upgrade" ]]; then

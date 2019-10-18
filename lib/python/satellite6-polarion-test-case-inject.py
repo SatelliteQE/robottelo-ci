@@ -102,16 +102,7 @@ def inject_component_owners(component_owners_yaml, xml_file_path):
             if child.get('id') == 'casecomponent':
                 component_name = child.get('content').lower()
                 if component_name in component_owners.keys():
-                    attrib1 = {
-                        'id': 'primary',
-                        'content': component_owners[component_name]['primary']
-                    }
-                    attrib2 = {
-                        'id': 'secondary',
-                        'content': component_owners[component_name]['secondary']
-                    }
-                    ET.SubElement(custom_fields[0], 'custom-field', attrib1)
-                    ET.SubElement(custom_fields[0], 'custom-field', attrib2)
+                    testcase.set('assignee-id', component_owners[component_name]['primary'])
     tree.write(xml_file_path)
 
 
