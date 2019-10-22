@@ -37,7 +37,7 @@ node('sat6-build') {
 
         test_forklift(
             os_versions: os_versions,
-            satellite_version: satellite_version
+            satellite_version: satellite_main_version
         )
 
     }
