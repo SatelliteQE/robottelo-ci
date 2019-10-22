@@ -58,6 +58,8 @@ elif [ ${ENDPOINT} == 'upgrade' ]; then
     tar -cf postupgrade_templates.tar.xz postupgrade_templates
 
     # Delete old scap_content and use new one.
-    fab -u root update_scap_content
+    if [ "${FROM_VERSION}" != "6.3" ] && [ "${FROM_VERSION}" != "6.4" ] ; then
+        fab -u root update_scap_content
+    fi
 
 fi
