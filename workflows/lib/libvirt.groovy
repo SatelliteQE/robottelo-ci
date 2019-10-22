@@ -19,12 +19,14 @@ def test_forklift(args) {
         for (int i = 0; i < os_versions.size(); i++) {
             def index = i // fresh variable per iteration; i will be mutated
             def item = os_versions.get(index)
+            def vars = ['pipeline_version': "${satellite_version}", 'pipeline_os': "rhel${item}"]
+            def extra_vars = buildExtraVars(vars)
 
             branches["install-rhel-${item}"] = {
                 try {
-                    runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/compose_test_${satellite_version}_rhel${item}.yml -e forklift_state=up"
+                    runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/satellite_install_pipeline.yml -e forklift_state=up ${extra_vars}"
                 } finally {
-                    runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/compose_test_${satellite_version}_rhel${item}.yml -e forklift_state=destroy"
+                    runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/satellite_install_pipeline.yml -e forklift_state=destroy ${extra_vars}"
                 }
             }
         }
