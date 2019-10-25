@@ -7,6 +7,7 @@ def runOnLibvirtHost(action) {
 def test_forklift(args) {
 
     def os_versions = args.os_versions ?: ['7']
+    def satellite_product = args.satellite_product
     def satellite_version = args.satellite_version
 
     runOnLibvirtHost "cd sat-deploy && git -c http.sslVerify=false fetch origin && git reset origin/master --hard"
@@ -24,9 +25,9 @@ def test_forklift(args) {
 
             branches["install-rhel-${item}"] = {
                 try {
-                    runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/satellite_install_pipeline.yml -e forklift_state=up ${extra_vars}"
+                    runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/${satellite_product}_install_pipeline.yml -e forklift_state=up ${extra_vars}"
                 } finally {
-                    runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/satellite_install_pipeline.yml -e forklift_state=destroy ${extra_vars}"
+                    runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/${satellite_product}_install_pipeline.yml -e forklift_state=destroy ${extra_vars}"
                 }
             }
         }

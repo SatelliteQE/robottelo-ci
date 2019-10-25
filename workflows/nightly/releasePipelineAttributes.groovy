@@ -18,3 +18,4 @@ def content_views = [
     'Satellite Tools Nightly RHEL6',
     'Satellite Tools Nightly RHEL5'
 ]
+def satellite_product = 'satellite'
