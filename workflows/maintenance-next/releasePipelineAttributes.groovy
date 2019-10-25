@@ -18,3 +18,4 @@ def release_name = 'satellite-maintenance-next'
 def release_version = 'all'
 
 def autorelease_enabled = true
+def satellite_product = 'maintenance'
