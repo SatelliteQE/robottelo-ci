@@ -20,7 +20,7 @@ def test_forklift(args) {
             def index = i // fresh variable per iteration; i will be mutated
             def item = os_versions.get(index)
             def vars = ['pipeline_version': "${satellite_version}", 'pipeline_os': "rhel${item}"]
-            def extra_vars = buildExtraVars(vars)
+            def extra_vars = buildExtraVars(extraVars: vars)
 
             branches["install-rhel-${item}"] = {
                 try {
