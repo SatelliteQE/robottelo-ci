@@ -66,14 +66,14 @@ def tools_composite_content_views = [
 def composite_content_views = satellite_composite_content_views + capsule_composite_content_views + tools_composite_content_views
 
 def satellite_activation_keys = [
-    "satellite-${satellite_version}-qa-rhel7",
+    "satellite-${satellite_main_version}-qa-rhel7",
 ]
 def capsule_activation_keys = [
-    "capsule-${satellite_version}-qa-rhel7",
+    "capsule-${satellite_main_version}-qa-rhel7",
 ]
 def tools_activation_keys = [
-    "satellite-tools-${satellite_version}-qa-rhel8",
-    "satellite-tools-${satellite_version}-qa-rhel7",
-    "satellite-tools-${satellite_version}-qa-rhel6",
-    "satellite-tools-${satellite_version}-qa-rhel5",
+    "satellite-tools-${satellite_main_version}-qa-rhel8",
+    "satellite-tools-${satellite_main_version}-qa-rhel7",
+    "satellite-tools-${satellite_main_version}-qa-rhel6",
+    "satellite-tools-${satellite_main_version}-qa-rhel5",
 ]
