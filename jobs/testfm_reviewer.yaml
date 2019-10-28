@@ -1,0 +1,33 @@
+- job:
+    name: 'testfm-reviewer'
+    concurrent: true
+    display-name: 'TestFM Reviewer'
+    description: |
+        <p>Job that tests <strong>TestFM</strong> Pull requests.</p>
+    project-type: pipeline
+    sandbox: true
+    properties:
+      - github:
+          url: 'https://github.com/SatelliteQE/testfm/'
+    triggers:
+        - github-pull-request:
+            admin-list:
+              - ntkathole
+            cron: '* * * * *'
+            trigger-phrase: 'ok to test'
+            skip-build-phrase: '[skip]'
+            only-trigger-phrase: false
+            auto-close-on-fail: false
+            allow-whitelist-orgs-as-admins: false
+            auth-id: 54bd4d6a-4b32-42bb-a2a1-642830295da1
+            status-add-test-results: "test result with status message"
+            status-context: "Satellite6QE-reviewer"
+            triggered-status: "Build ${BUILD_NUMBER} started for merge commit."
+            started-status: "Build ${BUILD_NUMBER} started for merge commit."
+            status-add-test-results: true
+            success-status: "Build ${BUILD_NUMBER} has"
+            failure-status: "Build ${BUILD_NUMBER} has"
+            cancel-builds-on-update: true
+    dsl:
+      !include-raw:
+        - workflows/qe/testfm-reviewer.groovy
