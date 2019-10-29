@@ -20,30 +20,49 @@ node('sat6-build') {
 
         runPlaybookInParallel {
             name = "compose-rhel"
-            items = compose_versions
-            item_name = 'rhel_version'
+            items = compose_rhel_versions
+            item_name = 'distro_version'
             playbook = 'playbooks/build_compose.yml'
             extraVars = [
                 'compose_git_repo': compose_git_repo,
                 "compose_version": "satellite-${satellite_main_version}",
                 "compose_label": "Satellite-${satellite_main_version}",
                 "compose_name": "satellite-${satellite_main_version}",
-                'compose_tag': 'candidate'
+                'compose_tag': 'candidate',
+                "distro": "rhel"
             ]
         }
 
         runPlaybookInParallel {
             name = "compose-tools-rhel"
-            items = tools_compose_versions
-            item_name = 'rhel_version'
+            items = tools_compose_rhel_versions
+            item_name = 'distro_version'
             playbook = 'playbooks/build_compose.yml'
             extraVars = [
                 'compose_git_repo': compose_git_repo,
                 "compose_version": "satellite-${satellite_main_version}",
                 "compose_label": "SatTools-${satellite_main_version}",
                 "compose_name": "satellite-tools-${satellite_main_version}",
-                'compose_tag': 'candidate'
+                'compose_tag': 'candidate',
+                "distro": "rhel"
             ]
+        }
+
+        if (getBinding().hasVariable('tools_compose_sles_versions')) {
+            runPlaybookInParallel {
+                name = "compose-tools-sles"
+                items = tools_compose_sles_versions
+                item_name = 'distro_version'
+                playbook = 'playbooks/build_compose.yml'
+                extraVars = [
+                    'compose_git_repo': compose_git_repo,
+                    "compose_version": "satellite-${satellite_main_version}",
+                    "compose_label": "SatTools-${satellite_main_version}",
+                    "compose_name": "satellite-tools-${satellite_main_version}",
+                    'compose_tag': 'candidate',
+                    "distro": "sles"
+                ]
+            }
         }
     }
 

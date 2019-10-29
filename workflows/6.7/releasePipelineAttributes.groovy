@@ -1,5 +1,6 @@
-def compose_versions = ['7']
-def tools_compose_versions = ['8', '7', '6', '5']
+def compose_rhel_versions = ['7']
+def tools_compose_rhel_versions = ['8', '7', '6', '5']
+def tools_compose_sles_versions = ['11.4', '12.3', '12.4', '15.1']
 
 def os_versions = ['7']
 
