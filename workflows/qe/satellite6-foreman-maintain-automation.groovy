@@ -41,12 +41,7 @@ pipeline {
                                 source config/testfm.conf
                                 cp testfm.properties.sample testfm.properties
                                 cp testfm/inventory.sample testfm/inventory
-
-                                if [ "${COMPONENT}" == "capsule" ]; then
-                                    sed -i "s/<capsule_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
-                                else
-                                    sed -i "s/<server_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
-                                fi
+                                sed -i "s/<server_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
                             '''
                             if ("${COMPONENT}" != "CAPSULE") {
                                 propargs = [
@@ -102,7 +97,7 @@ pipeline {
         stage("Testing") {
             steps {
                 script {
-                    def command = 'pytest -v --junit-xml=foreman-results.xml --ansible-host-pattern "${COMPONENT}" --ansible-user root --ansible-inventory testfm/inventory '
+                    def command = 'pytest -sv --junit-xml=foreman-results.xml --ansible-host-pattern server --ansible-user root --ansible-inventory testfm/inventory '
                     try {
                         if ("${PYTEST_OPTIONS}") {
                             sh_venv command + '${PYTEST_OPTIONS}'
