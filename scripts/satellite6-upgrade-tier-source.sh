@@ -48,8 +48,7 @@ fi
 
 # Bugzilla Login Details
 
-sed -i "s/# bz_password=.*/bz_password=${BUGZILLA_PASSWORD}/" robottelo.properties
-sed -i "s/# bz_username=.*/bz_username=${BUGZILLA_USER}/" robottelo.properties
+sed -i "/^\[bugzilla\]/,/^\[/s/^#\?api_key=\w*/api_key=${BUGZILLA_KEY}/" robottelo.properties
 
 # AWS Access Keys Configuration
 
