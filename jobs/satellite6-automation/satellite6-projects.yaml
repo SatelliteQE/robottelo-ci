@@ -74,8 +74,6 @@
     name: satellite6-upgrade
     scm-branch: origin/master
     satellite_version:
-        - '6.3':
-            scm-branch: origin/6.3.z
         - '6.4':
             scm-branch: origin/6.4.z
         - '6.5':

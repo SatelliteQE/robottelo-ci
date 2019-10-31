@@ -45,14 +45,16 @@ pipeline {
                    } else {
                        PYTEST_OPTIONS=DATA
                    }
+                   withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY')]) {
                    all_args = [
                    'hostname': SERVER_HOSTNAME,
                    'ssh_username': SSH_USER,
                    'admin_username': FOREMAN_ADMIN_USER,
                    'admin_password': FOREMAN_ADMIN_PASSWORD,
-                   'bz_key': env.BUGZILLA_KEY,
+                   'api_key': BZ_API_KEY,
                    'sattools_repo': "rhel8=${env.RHEL8_TOOLS_REPO},rhel7=${env.RHEL7_TOOLS_REPO},rhel6=${env.RHEL6_TOOLS_REPO}",
                    'capsule_repo': CAPSULE_REPO]
+                   }
                    parse_ini ini_file: "${WORKSPACE}//robottelo.properties" , properties: all_args
                    }
             }
