@@ -25,8 +25,8 @@ pipeline {
                 configFileProvider(
                     [configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
                     sshagent (credentials: ['id_hudson_rsa']) {
-                        load(config/fake_manifest.groovy)
-                        load(config/subscription_config.groovy)
+                        load('config/fake_manifest.groovy')
+                        load('config/subscription_config.groovy')
                         ansiColor('xterm') {
                         sh_venv '''
                             source ${CONFIG_FILES}
