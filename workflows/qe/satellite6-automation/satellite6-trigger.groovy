@@ -1,0 +1,142 @@
+@Library("github.com/SatelliteQE/robottelo-ci") _
+
+pipeline {
+
+ agent {
+  label "sat6-rhel"
+ }
+
+ options {
+  buildDiscarder(logRotator(numToKeepStr: '32'))
+ }
+
+ stages {
+  stage('Create Virtual Environment') {
+   steps {
+    cleanWs()
+    make_venv python: defaults.python
+    script {
+     currentBuild.displayName = "# ${env.BUILD_NUMBER} ${env.BUILD_LABEL}"
+    }
+   }
+  }
+  stage('Source Variables from Config') {
+   steps {
+    configFileProvider([configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
+     sh_venv 'source ${CONFIG_FILES}'
+     load('config/sat6_repos_urls.groovy')
+    }
+   }
+  }
+  stage('Trigger Downstream Builds') {
+   parallel {
+    stage("Trigger Provisioning job for rhel7") {
+     steps {
+      script {
+       build job: "provisioning-${satellite_version}-rhel7",
+        parameters: [
+         string(name: 'BASE_URL', value: "${params.RHEL7_SATELLITE_URL}"),
+         string(name: 'CAPSULE_URL', value: "${params.RHEL7_CAPSULE_URL}"),
+         string(name: 'RHEL6_TOOLS_URL', value: "${params.RHEL6_TOOLS_URL}"),
+         string(name: 'RHEL7_TOOLS_URL', value: "${params.RHEL7_TOOLS_URL}"),
+         string(name: 'RHEL8_TOOLS_URL', value: "${params.RHEL8_TOOLS_URL}"),
+         string(name: 'SELINUX_MODE', value: "${params.SELINUX_MODE}"),
+         string(name: 'SATELLITE_DISTRIBUTION', value: "${params.SATELLITE_DISTRIBUTION}"),
+         string(name: 'ROBOTTELO_WORKERS', value: "${params.ROBOTTELO_WORKERS}"),
+         string(name: 'PROXY_MODE', value: "${params.PROXY_MODE}"),
+         string(name: 'BUILD_LABEL', value: "${params.BUILD_LABEL}"),
+         string(name: 'EXTERNAL_AUTH', value: "${params.EXTERNAL_AUTH}"),
+         booleanParam(name: 'IDM_REALM', defaultValue: true),
+         string(name: 'IMAGE', value: "${params.RHEL7_IMAGE}"),
+         string(name: 'SAUCE_BROWSER', value: "${params.SAUCE_BROWSER}"),
+         string(name: 'SAUCE_PLATFORM', value: "${params.SAUCE_PLATFORM}"),
+         string(name: 'START_TIER', value: "${params.START_TIER}"),
+        ],
+        propagate: false,
+        wait: true
+      }
+     }
+    }
+    stage("Trigger Polarion upgrade test Case job") {
+     steps {
+      script {
+       build job: "polarion-upgrade-test-case",
+        propagate: false,
+        wait: true
+      }
+     }
+    }
+    stage("Trigger Polarion test Case job") {
+     steps {
+      script {
+       build job: "polarion-test-case",
+        parameters: [
+         string(name: 'SATELLITE_VERSION', value: "${satellite_version}"),
+        ],
+        propagate: false,
+        wait: true
+      }
+     }
+    }
+    stage("Trigger Sanity job for rhel7") {
+     when {
+      expression {
+       ( !SATELLITE_VERSION.contains('upstream-nightly'))
+      }
+     }
+     steps {
+      build job: "satellite6-sanity-check-${satellite_version}-rhel7",
+       parameters: [
+        string(name: 'BASE_URL', value: "${params.RHEL8_SATELLITE_URL}"),
+        string(name: 'SELINUX_MODE', value: "${params.SELINUX_MODE}"),
+        string(name: 'SATELLITE_DISTRIBUTION', value: "${params.SATELLITE_DISTRIBUTION}"),
+        string(name: 'PROXY_MODE', value: "${params.PROXY_MODE}"),
+        string(name: 'BUILD_LABEL', value: "${params.BUILD_LABEL}"),
+        string(name: 'EXTERNAL_AUTH', value: "${params.EXTERNAL_AUTH}"),
+        booleanParam(name: 'IDM_REALM', defaultValue: true),
+       ],
+       propagate: false,
+       wait: true
+     }
+    }
+    stage("Trigger upgrade job for rhel7") {
+     when {
+      expression {
+       ( !SATELLITE_VERSION.contains('upstream-nightly'))
+      }
+     }
+     steps {
+      build job: "upgrade-to-${satellite_version}-rhel7",
+       parameters: [
+        string(name: 'BUILD_LABEL', value: "${params.BUILD_LABEL}"),
+        string(name: 'ROBOTTELO_WORKERS', value: "${params.ROBOTTELO_WORKERS}"),
+       ],
+       propagate: false,
+       wait: true
+     }
+    }
+    stage("Trigger upgrade cleanup job for rhel7") {
+     when {
+      expression {
+       ( !SATELLITE_VERSION.contains('upstream-nightly'))
+      }
+     }
+     steps {
+      build job: "satellite6-upgrade-cleanup",
+       propagate: false,
+       wait: true
+     }
+    }
+   }
+  }
+ }
+
+ post {
+    failure {
+        send_automation_email "failure"
+    }
+    fixed {
+        send_automation_email "fixed"
+    }
+}
+}

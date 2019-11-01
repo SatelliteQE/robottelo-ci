@@ -1,7 +1,8 @@
 - job-template:
     name: trigger-satellite-{satellite_version}
     description: Triggers automation for Satellite 6
-    node: sat6-rhel
+    project-type: pipeline
+    sandbox: true
     parameters:
         - choice:
             name: SATELLITE_DISTRIBUTION
@@ -50,117 +51,13 @@
                 Leave it blank to install the latest stable from dogfood
         - satellite6-provisioning-parameters
         - satellite6-authentication-parameters
-    wrappers:
-        - config-file-provider:
-            files:
-                - file-id: bc5f0cbc-616f-46de-bdfe-2e024e84fcbf
-                  variable: CONFIG_FILES
+    properties:
         - inject:
             properties-content: |
                 SATELLITE_VERSION={satellite_version}
-        - build-name:
-            name: '#${{BUILD_NUMBER}} ${{ENV,var="BUILD_LABEL"}}'
-    builders:
-        - shell: |
-            source ${{CONFIG_FILES}}
-            source config/sat6_repos_urls.conf
-            echo "RHEL8_SATELLITE_URL=${{RHEL8_SATELLITE_URL:-${{SATELLITE6_RHEL8}}}}" >> properties.txt
-            echo "RHEL8_CAPSULE_URL=${{RHEL8_CAPSULE_URL:-${{CAPSULE_RHEL8}}}}" >> properties.txt
-            echo "RHEL8_TOOLS_URL=${{RHEL8_TOOLS_URL:-${{TOOLS_RHEL8}}}}" >> properties.txt
-            echo "RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL:-${{TOOLS_RHEL6}}}}" >> properties.txt
-            echo "RHEL7_SATELLITE_URL=${{RHEL7_SATELLITE_URL:-${{SATELLITE6_RHEL7}}}}" >> properties.txt
-            echo "RHEL7_CAPSULE_URL=${{RHEL7_CAPSULE_URL:-${{CAPSULE_RHEL7}}}}" >> properties.txt
-            echo "RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL:-${{TOOLS_RHEL7}}}}" >> properties.txt
-        - inject:
-            properties-file: properties.txt
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[7])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: provisioning-{satellite_version}-rhel8
-                      predefined-parameters: |
-                        BASE_URL=${{RHEL8_SATELLITE_URL}}
-                        CAPSULE_URL=${{RHEL8_CAPSULE_URL}}
-                        RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL}}
-                        RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL}}
-                        RHEL8_TOOLS_URL=${{RHEL8_TOOLS_URL}}
-                        SELINUX_MODE=${{SELINUX_MODE}}
-                        SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
-                        ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
-                        PROXY_MODE=${{PROXY_MODE}}
-                        BUILD_LABEL=${{BUILD_LABEL}}
-                        EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
-                        IDM_REALM=false
-                        IMAGE=${{RHEL8_IMAGE}}
-                        SAUCE_BROWSER=${{SAUCE_BROWSER}}
-                        SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
-                        START_TIER=${{START_TIER}}
-        - trigger-builds:
-            - project: provisioning-{satellite_version}-rhel7
-              predefined-parameters: |
-                BASE_URL=${{RHEL7_SATELLITE_URL}}
-                CAPSULE_URL=${{RHEL7_CAPSULE_URL}}
-                RHEL6_TOOLS_URL=${{RHEL6_TOOLS_URL}}
-                RHEL7_TOOLS_URL=${{RHEL7_TOOLS_URL}}
-                RHEL8_TOOLS_URL=${{RHEL8_TOOLS_URL}}
-                SELINUX_MODE=${{SELINUX_MODE}}
-                SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
-                ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
-                PROXY_MODE=${{PROXY_MODE}}
-                BUILD_LABEL=${{BUILD_LABEL}}
-                EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
-                IDM_REALM=${{IDM_REALM}}
-                IMAGE=${{RHEL7_IMAGE}}
-                SAUCE_BROWSER=${{SAUCE_BROWSER}}
-                SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
-                START_TIER=${{START_TIER}}
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[3456])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: satellite6-sanity-check-{satellite_version}-rhel7
-                      predefined-parameters: |
-                        BASE_URL=${{RHEL7_SATELLITE_URL}}
-                        SELINUX_MODE=${{SELINUX_MODE}}
-                        SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
-                        PROXY_MODE=${{PROXY_MODE}}
-                        BUILD_LABEL=${{BUILD_LABEL}}
-                        EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
-                        IDM_REALM=${{IDM_REALM}}
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[7])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: satellite6-sanity-check-{satellite_version}-rhel8
-                      predefined-parameters: |
-                        BASE_URL=${{RHEL8_SATELLITE_URL}}
-                        SELINUX_MODE=${{SELINUX_MODE}}
-                        SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
-                        PROXY_MODE=${{PROXY_MODE}}
-                        BUILD_LABEL=${{BUILD_LABEL}}
-                        EXTERNAL_AUTH=${{EXTERNAL_AUTH}}
-                        IDM_REALM=${{IDM_REALM}}
-        - trigger-builds:
-            - project: polarion-test-case
-              predefined-parameters: |
-                SATELLITE_VERSION={satellite_version}
-        - trigger-builds:
-            - project: polarion-upgrade-test-case
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[3456])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
-                - trigger-builds:
-                    - project: upgrade-to-{satellite_version}-rhel7
-                      predefined-parameters: |
-                        BUILD_LABEL=${{BUILD_LABEL}}
-                        ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
-                - trigger-builds:
-                    - project: satellite6-upgrade-cleanup
+        - satellite6-build_blocker:
+            satellite_version: "{satellite_version}"
+            os: "*"
+    dsl:
+      !include-raw-escape:
+        - workflows/qe/satellite6-automation/satellite6-trigger.groovy
