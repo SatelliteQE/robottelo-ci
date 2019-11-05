@@ -65,7 +65,9 @@ pipeline {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
                         if ("${TEST_UPSTREAM}" == "true") {
-                            sh_venv 'sed -i "s/foreman-maintain {0} {1} {2}/./foreman_maintain/bin/foreman-maintain {0} {1} {2}/g" testfm/base.py'
+                            sh_venv '''
+                            sed -i "s|foreman-maintain {0} {1} {2}|./foreman_maintain/bin/foreman-maintain {0} {1} {2}|g" testfm/base.py
+                            '''
                             remote = [: ]
                             remote.name = "Satellite Server ${SERVER_HOSTNAME}"
                             remote.allowAnyHosts = true
@@ -75,11 +77,11 @@ pipeline {
                             sshCommand remote: remote, command: "rm foreman_maintain/ -rvf"
                             sshCommand remote: remote, command: "git clone https://github.com/theforeman/foreman_maintain.git"
                             if ("${TEST_OPEN_PR}" == 'true') {
-                                sshCommand remote: remote, command: "cd foreman_maintain; git fetch origin pull ${PR_NUMBER}/head:${BRANCH_NAME}; git checkout ${BRANCH_NAME}"
+                                sshCommand remote: remote, command: "cd foreman_maintain; git fetch origin pull/${PR_NUMBER}/head:${BRANCH_NAME}; git checkout ${BRANCH_NAME}"
                             }
                         }
 
-                        if ("${SATELLITE_VERSION}" != "6.3" || "${SATELLITE_VERSION}" != "6.4" && "${TEST_UPSTREAM}" == "false") {
+                        if (("${SATELLITE_VERSION}" != "6.3" || "${SATELLITE_VERSION}" != "6.4") && "${TEST_UPSTREAM}" == "false") {
                             sh_venv 'sed -i "s/foreman-maintain {0} {1} {2}/satellite-maintain {0} {1} {2}/g" testfm/base.py'
                         }
 
