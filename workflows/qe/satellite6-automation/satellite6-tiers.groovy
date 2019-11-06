@@ -150,10 +150,7 @@ options {
         else if ( "${SAUCE_BROWSER}" == "chrome" ) {
             BROWSER_VERSION='63.0'
         }
-        if ( "${SATELLITE_VERSION}" == "6.3" ) {
-            SELENIUM_VERSION='2.53.1'
-            }
-        else if ( "${SATELLITE_VERSION}" == "6.4" ) {
+        if ( "${SATELLITE_VERSION}" == "6.4" ) {
             SELENIUM_VERSION='3.14.0'
             }
         else {
