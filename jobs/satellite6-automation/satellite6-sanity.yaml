@@ -165,7 +165,7 @@
             properties-file: build_env.properties
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[456])
+            regex: (6\.[4567])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -178,7 +178,7 @@
                         SATELLITE_VERSION=${{SATELLITE_VERSION}}
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[456])
+            regex: (6\.[4567])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:

@@ -37,7 +37,6 @@
                 - '6.6'
                 - '6.4'
                 - '6.3'
-                - '6.2'
             description: |
                 <p>Select the currently installed Satellite version.</p>
         - choice:
@@ -46,7 +45,7 @@
                 - '6.6'
                 - '6.5'
                 - '6.4'
-                - '6.3'
+                - '6.7'
             description: |
                 <p>Select the Satellite <b>TO_VERSION</b> to upgrade.</p>
         - string:
