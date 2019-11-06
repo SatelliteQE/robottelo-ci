@@ -12,7 +12,7 @@ pipeline {
             steps {
                 workspace_cleanup()
                 make_venv python: defaults.python
-                git defaults.satellite6_upgrade
+                git branch: branch_selection(), url: defaults.satellite6_upgrade
                 sh_venv '''
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
                     pip install -U -r requirements.txt
@@ -34,7 +34,7 @@ pipeline {
                         load('config/subscription_config.groovy')
                         environment_variable_for_sat6_repos_url()
                         environment_variable_for_subscription_config()
-                        currentBuild.displayname = "#"+ env.BUILD_NUMBER + "CustDB_Upgrade for" + env.CUSTOMERDB_NAME  + "_from_" + env.FROM_VERSION + "_to_" + env.TO_VERSION + "_" + env.OS + env.SATELLITE_HOSTNAME
+                        currentBuild.displayName = "#"+ env.BUILD_NUMBER + "CustDB_Upgrade for_" + env.CUSTOMERDB_NAME  + "_from_" + env.FROM_VERSION + "_to_" + env.TO_VERSION + "_" + env.OS + env.SATELLITE_HOSTNAME
                     }
                 }
             }
@@ -119,10 +119,11 @@ def customer_db_setup(){
             env.INSTANCE_NAME = env.SAT_INSTANCE_FQDN
         }
         sh_venv '''if [ -d  satellite-clone ]; then rm -rf satellite-clone ;fi'''
-        git defaults.satellite6_clone
-        dirs('satellite-clone') {
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'satellite-clone']], submoduleCfg: [], userRemoteConfigs: [[url: defaults.satellite6_clone]]])
+        dir('satellite-clone') {
             make_venv python: defaults.python
             sh_venv '''
+                    cp -r ../README.md ../setup.py .
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
                     pip install -U -r ../requirements.txt
                     pip install -r ../requirements-optional.txt
@@ -418,7 +419,6 @@ def environment_variable_for_sat6_repos_url(){
 
     env.TOOLS_RHEL7 = TOOLS_RHEL7
     env.FOREMAN_MAINTAIN_USE_BETA = env.SATELLITE_VERSION == '6.6'?FOREMAN_MAINTAIN_USE_BETA:''
-    env.PUPPET4_REPO = PUPPET4_REPO
     env.MAINTAIN_REPO = MAINTAIN_REPO
     env.SATELLITE6_REPO = SATELLITE6_REPO
     BASE_URL = env.DISTRIBUTION == "DOWNSTREAM" ? SATELLITE6_REPO: ''
