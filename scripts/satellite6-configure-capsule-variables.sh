@@ -4,6 +4,8 @@ echo "Populating template to configure Satellite6 "
 echo "============================================="
 echo
 
+# Remove any whitespace present in hostname.
+SATELLITE_SERVER_HOSTNAME=`echo ${SATELLITE_SERVER_HOSTNAME} | xargs`
 
 # Populates the HTTP Server information.
 sed -i "s|^ADMIN_PASSWORD=.*|ADMIN_PASSWORD=\"${ADMIN_PASSWORD}\"|" satellite6-populate-capsule.sh
