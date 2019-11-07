@@ -22,13 +22,13 @@ options {
   stage('Set build name and Virtualenv') {
    steps {
     cleanWs()
-    make_venv python: defaults.python
+    make_venv python: defaults.python, venvModule: 'venv'
    }
   }
   stage('Source Config and Variables') {
    steps {
     configFileProvider(
-     [configFile(fileId: '30c81aed-334b-4e47-93f7-42c5f9d62699', variable: 'CONFIG_FILES')]) {
+     [configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
      sh_venv 'source ${CONFIG_FILES}'
      load('config/provisioning_environment.groovy')
      load('config/provisioning_env_with_endpoints.groovy')
