@@ -1,5 +1,7 @@
 pip install -U -r requirements.txt
 
+# Remove any whitespace present in hostname.
+SERVER_HOSTNAME=`echo ${SERVER_HOSTNAME} | xargs`
 # Figure out what version of RHEL the server uses
 export OS_VERSION=$(fab -D -H root@${SERVER_HOSTNAME} distro_info | grep "rhel [[:digit:]]" | cut -d ' ' -f 2)
 DISTRO="rhel${OS_VERSION}"
