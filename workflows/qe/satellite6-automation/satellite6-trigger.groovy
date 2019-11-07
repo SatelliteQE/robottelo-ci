@@ -25,6 +25,13 @@ pipeline {
     configFileProvider([configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
      sh_venv 'source ${CONFIG_FILES}'
      load('config/sat6_repos_urls.groovy')
+     script{
+        RHEL7_SATELLITE_URL = "${params.RHEL7_SATELLITE_URL}" ?: "${SATELLITE6_RHEL7}"
+        RHEL7_CAPSULE_URL = "${params.RHEL7_CAPSULE_URL}" ?: "${CAPSULE_RHEL7}"
+        RHEL6_TOOLS_URL = "${params.RHEL6_TOOLS_URL}" ?: "${TOOLS_RHEL6}"
+        RHEL7_TOOLS_URL = "${params.RHEL7_TOOLS_URL}" ?: "${TOOLS_RHEL7}"
+        RHEL8_TOOLS_URL = "${params.RHEL8_TOOLS_URL}" ?: "${TOOLS_RHEL8}"
+     }
     }
    }
   }
@@ -35,11 +42,11 @@ pipeline {
       script {
        build job: "provisioning-${satellite_version}-rhel7",
         parameters: [
-         string(name: 'BASE_URL', value: "${params.RHEL7_SATELLITE_URL}"),
-         string(name: 'CAPSULE_URL', value: "${params.RHEL7_CAPSULE_URL}"),
-         string(name: 'RHEL6_TOOLS_URL', value: "${params.RHEL6_TOOLS_URL}"),
-         string(name: 'RHEL7_TOOLS_URL', value: "${params.RHEL7_TOOLS_URL}"),
-         string(name: 'RHEL8_TOOLS_URL', value: "${params.RHEL8_TOOLS_URL}"),
+         string(name: 'BASE_URL', value: "${RHEL7_SATELLITE_URL}"),
+         string(name: 'CAPSULE_URL', value: "${RHEL7_CAPSULE_URL}"),
+         string(name: 'RHEL6_TOOLS_URL', value: "${RHEL6_TOOLS_URL}"),
+         string(name: 'RHEL7_TOOLS_URL', value: "${RHEL7_TOOLS_URL}"),
+         string(name: 'RHEL8_TOOLS_URL', value: "${RHEL8_TOOLS_URL}"),
          string(name: 'SELINUX_MODE', value: "${params.SELINUX_MODE}"),
          string(name: 'SATELLITE_DISTRIBUTION', value: "${params.SATELLITE_DISTRIBUTION}"),
          string(name: 'ROBOTTELO_WORKERS', value: "${params.ROBOTTELO_WORKERS}"),
@@ -87,7 +94,7 @@ pipeline {
      steps {
       build job: "satellite6-sanity-check-${satellite_version}-rhel7",
        parameters: [
-        string(name: 'BASE_URL', value: "${params.RHEL8_SATELLITE_URL}"),
+        string(name: 'BASE_URL', value: "${RHEL8_SATELLITE_URL}"),
         string(name: 'SELINUX_MODE', value: "${params.SELINUX_MODE}"),
         string(name: 'SATELLITE_DISTRIBUTION', value: "${params.SATELLITE_DISTRIBUTION}"),
         string(name: 'PROXY_MODE', value: "${params.PROXY_MODE}"),
