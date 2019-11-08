@@ -413,20 +413,12 @@ satellite_runner subnet create --name "${SUBNET_NAME}" --network "${SUBNET_RANGE
 satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_LIBVIRT}" --provider Libvirt --url "${LIBVIRT_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --set-console-password false
 
 # Create Ovirt CR
-if [ "${SAT_VERSION}" == "6.2" ]; then
-    satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --uuid "${RHEV_DATACENTER_UUID}"
-elif [ "${SAT_VERSION}" == "6.3" ]; then
-    satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${RHEV_DATACENTER_UUID}"
-elif [ "${SAT_VERSION}" == "6.4" ] || [ "${SAT_VERSION}" == "6.5" ]; then
+if [ "${SAT_VERSION}" == "6.4" ] || [ "${SAT_VERSION}" == "6.5" ]; then
     (satellite_runner compute-resource create --provider Ovirt --url "${RHEV_URL}" --name "rhevm1" --user "${RHEV_USERNAME}" --password "${RHEV_PASSWORD}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${RHEV_DATACENTER_UUID}" --use-v4 true) || true
 fi
 
 # Create VMware CR
-if [ "${SAT_VERSION}" == "6.2" ]; then
-    satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_VMWARE}" --provider VMware --url "${VMWARE_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --uuid "${VMWARE_DATACENTER}" --user "${VMWARE_USERNAME}" --password "${VMWARE_PASSWORD}"
-else
-    satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_VMWARE}" --provider VMware --server "${VMWARE_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${VMWARE_DATACENTER}" --user "${VMWARE_USERNAME}" --password "${VMWARE_PASSWORD}"
-fi
+satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_VMWARE}" --provider VMware --server "${VMWARE_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${VMWARE_DATACENTER}" --user "${VMWARE_USERNAME}" --password "${VMWARE_PASSWORD}"
 
 # Create OpenStack CR
 # satellite_runner compute-resource create --name openstack_provider --provider Openstack --url "${OS_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --user "${OS_USERNAME}" --password "${OS_PASSWORD}"
@@ -447,7 +439,11 @@ echo Assign Default Organization and Default Location to Production Puppet Envir
 satellite_runner environment update --organization-ids "${ORG}" --location-ids "${LOC}" --id 1
 
 # Import puppet-classes from default capsule  to environment.
-satellite_runner capsule import-classes --id 1 --puppet-environment-id 1
+if [ "${SAT_VERSION}" = "6.4" ] || [ "${SAT_VERSION}" = "6.5" ]; then
+    satellite_runner capsule import-classes --id 1 --environment-id 1
+else
+    satellite_runner capsule import-classes --id 1 --puppet-environment-id 1
+fi
 
 # Populate the RHEL6 and RHEL7 OS ID
 
@@ -457,21 +453,21 @@ echo "RHEL7 OS ID is: ${RHEL7_OS_ID}"
 RHEL6_OS_ID=$(satellite --csv os list | grep "6.10" | cut -d ',' -f1 | grep -vi "^id")
 echo "RHEL6 OS ID is: ${RHEL6_OS_ID}"
 
-if [ "${SAT_VERSION}" = "6.3" ]; then
+if [ "${SAT_VERSION}" = "6.4" ] || [ "${SAT_VERSION}" = "6.5" ]; then
 
-    RHEL7_KS_ID=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 7/ {print $1}')
-    echo "RHEL7 KS ID is: ${RHEL7_KS_ID}"
+    RHEL7_KS=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 7/ {print $2}')
+    echo "RHEL7 KS is: ${RHEL7_KS}"
 
-    RHEL6_KS_ID=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 6/ {print $1}')
-    echo "RHEL6 KS ID is: ${RHEL6_KS_ID}"
+    RHEL6_KS=$(satellite --csv repository list | awk -F "," '/Server Kickstart x86_64 6/ {print $2}')
+    echo "RHEL6 KS is: ${RHEL6_KS}"
 
     # Create Host-Groups and associate activation key as a parameter.
 
-    satellite_runner hostgroup create --name='RHEL 6 Server 64-bit HG' --content-view='RHEL 6 CV' --puppet-environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL6_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS' --kickstart-repository-id="${RHEL6_KS_ID}"
+    satellite_runner hostgroup create --name='RHEL 6 Server 64-bit HG' --content-view='RHEL 6 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL6_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS' --kickstart-repository="${RHEL6_KS}" --lifecycle-environment="DEV" --query-organization-id="${ORG}" --content-view="RHEL 6 CV"
 
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 6 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-6'
 
-    satellite_runner hostgroup create --name='RHEL 7 Server 64-bit HG' --content-view='RHEL 7 CV' --puppet-environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL7_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS' --kickstart-repository-id="${RHEL7_KS_ID}"
+    satellite_runner hostgroup create --name='RHEL 7 Server 64-bit HG' --content-view='RHEL 7 CV' --environment-id="${PUPPET_ENV}" --lifecycle-environment='DEV' --content-source-id="${CAPSULE_ID}" --puppet-proxy="$(hostname)" --puppet-ca-proxy="$(hostname)" --query-organization-id="${ORG}" --puppet-classes='access_insights_client,foreman_scap_client' --domain-id="${DOMAIN_ID}" --subnet="${SUBNET_NAME}" --architecture='x86_64' --operatingsystem-id="${RHEL7_OS_ID}" --partition-table='Kickstart default' --location-ids="${LOC}" --pxe-loader 'PXELinux BIOS' --kickstart-repository="${RHEL7_KS}" --lifecycle-environment="DEV" --query-organization-id="${ORG}" --content-view="RHEL 7 CV"
 
     satellite_runner hostgroup set-parameter --hostgroup='RHEL 7 Server 64-bit HG' --name='kt_activation_keys' --value='ak-rhel-7'
 else
@@ -498,7 +494,7 @@ RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red H
 RHEL7_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL7_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1' | head -n 1)
 RHEL6_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL6_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1' | head -n 1)
 
-if [ "${SAT_VERSION}" == "6.6" ]; then
+if [ "${SAT_VERSION}" == "6.6" ] || [ "${SAT_VERSION}" == "6.7" ]; then
     satellite_runner policy create --name='RHEL 7 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL7_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL7_SCAP_CONTENT_PROFILE_ID}" --deploy-by puppet
     satellite_runner policy create --name='RHEL 6 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL6_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL6_SCAP_CONTENT_PROFILE_ID}" --deploy-by puppet
 else
