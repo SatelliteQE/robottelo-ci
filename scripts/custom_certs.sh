@@ -44,11 +44,7 @@ if [ -z "${SERVER_HOSTNAME}" ]; then
 fi
 
 # installer options for custom certs install
-if [ "${SATELLITE_VERSION}" != "6.2" ] || [ "${SATELLITE_VERSION}" != "6.3" ] ; then
-    export INSTALLER_OPTIONS="certs-server-cert /root/ownca/${SERVER_HOSTNAME}/${SERVER_HOSTNAME}.crt --certs-server-key /root/ownca/${SERVER_HOSTNAME}/${SERVER_HOSTNAME}.key --certs-server-ca-cert /root/ownca/${SERVER_HOSTNAME}/cacert.crt"
-else
-    export INSTALLER_OPTIONS="certs-server-cert /root/ownca/${SERVER_HOSTNAME}/${SERVER_HOSTNAME}.crt --certs-server-cert-req "/root/ownca/${SERVER_HOSTNAME}/${SERVER_HOSTNAME}.crt.req" --certs-server-key /root/ownca/${SERVER_HOSTNAME}/${SERVER_HOSTNAME}.key --certs-server-ca-cert /root/ownca/${SERVER_HOSTNAME}/cacert.crt"
-fi
+export INSTALLER_OPTIONS="certs-server-cert /root/ownca/${SERVER_HOSTNAME}/${SERVER_HOSTNAME}.crt --certs-server-key /root/ownca/${SERVER_HOSTNAME}/${SERVER_HOSTNAME}.key --certs-server-ca-cert /root/ownca/${SERVER_HOSTNAME}/cacert.crt"
 
 echo
 echo "========================================"
