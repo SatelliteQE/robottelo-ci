@@ -115,7 +115,7 @@ options {
      // Clone the robottelo repo into workspace
      checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'robottelodir']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/SatelliteQE/robottelo']]])
      configFileProvider(
-      [configFile(fileId: '30c81aed-334b-4e47-93f7-42c5f9d62699', variable: 'CONFIG_FILES')]) {
+      [configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
       // Start to populate robottelo.properties file
       sh_venv '''
       source ${CONFIG_FILES}
