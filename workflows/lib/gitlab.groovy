@@ -13,7 +13,7 @@ def gitlab_clone_and_merge(repo_name, pipeline_name='jenkins') {
                     [$class: 'CloneOption', depth: 0, noTags: false, reference: '', shallow: false, timeout: 20]
                 ],
                 submoduleCfg: [],
-                userRemoteConfigs: [[name: 'origin', url: "https://$GIT_HOSTNAME/${repo_name}.git"], [name: 'pr', url: "https://$GIT_HOSTNAME/${env.gitlabSourceNamespace}/${env.gitlabSourceRepoName}.git"]]
+                userRemoteConfigs: [[name: 'origin', url: "https://$GIT_HOSTNAME/${repo_name}.git"], [name: 'pr', url: "${env.gitlabSourceRepoHttpUrl}"]]
               ]
         } else {
             gitlab_clone(repo_name)
