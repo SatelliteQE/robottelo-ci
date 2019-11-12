@@ -38,6 +38,7 @@
             description: |
                 <p>Provide to_email address to send email to specific email</p>
     project-type: pipeline
+    sandbox: true
     dsl:
         !include-raw:
             - workflows/qe/testblame.groovy
