@@ -289,33 +289,20 @@ options {
         ${TEST_TYPE}
         set -e
         '''
-
   }
   }
   }
   stage("Run Rhai and clean ups"){
+    when {
+        expression{"${ENDPOINT}".contains("rhai")}
+  }
   steps{
   script{
       sh_venv '''
       set +e
-      make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=${ROBOTTELO_WORKERS}
+      make test-foreman-rhai PYTEST_XDIST_NUMPROCESSES=${ROBOTTELO_WORKERS}
       set -e
       '''
-      if ("${ROBOTTELO_WORKERS}" > 0) {
-      sh_venv '''
-          set +e
-          make logs-join
-          make logs-clean
-          set -e
-      '''
-     }
-     echo "========================================"
-     echo "Server information"
-     echo "========================================"
-     echo "Hostname: ${SERVER_HOSTNAME}"
-     echo "Credentials: admin/changeme"
-     echo "========================================"
-     echo "========================================"
   }
   }
   }
@@ -339,16 +326,9 @@ post {
     failure {
         withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
         script{
-         remote = [name: "Satellite server", allowAnyHosts: true, host: SERVER_HOSTNAME, user: userName, identityFile: identity]
+         remote = [name: "Satellite server", allowAnyHosts: true, host: PROVISIONING_HOST, user: userName, identityFile: identity]
          // Graceful shutdown for tier box
          echo "Destroy the Tier Instance as the job has failed. Destroying ${SERVER_HOSTNAME} gracefully"
-         // Shutdown the Satellite6 services before shutdown.
-         sshCommand remote: remote, command: 'katello-service stop || true'
-         // Try to shutdown the Satellite6 instance gracefully and sleep for a while.
-         remote.host = PROVISIONING_HOST
-         sshCommand remote: remote, command: "virsh shutdown ${TARGET_IMAGE} || true"
-         sshCommand remote: remote, command: 'sleep 120'
-         // Destroy the sat6 instance anyways if for some reason virsh shutdown couldn't gracefully shut it down.
          sshCommand remote: remote, command: "virsh destroy ${TARGET_IMAGE} || true"
         }
         }
@@ -361,6 +341,15 @@ post {
        archiveArtifacts(artifacts: '*.log,*-results.xml,*.xml', allowEmptyArchive: true)
        withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
         script {
+        // Joins the workers separate logs file into one single log
+            if ("${ROBOTTELO_WORKERS}" > 0) {
+                sh_venv '''
+                    set +e
+                    make logs-join
+                    make logs-clean
+                    set -e
+                '''
+            }
             junit allowEmptyResults: true,
             healthScaleFactor: 0.0,
             testDataPublishers: [[$class: 'ClaimTestDataPublisher'],
@@ -396,6 +385,15 @@ post {
          remote = [name: "Provisioning serverr", allowAnyHosts: true, host: PROVISIONING_HOST, user: userName, identityFile: identity]
          sshCommand remote: remote, command: "virsh shutdown ${TARGET_IMAGE} || true"
          sshCommand remote: remote, command: 'sleep 120'
+
+         echo "========================================"
+         echo "Server information"
+         echo "========================================"
+         echo "Hostname: ${SERVER_HOSTNAME}"
+         echo "Credentials: admin/changeme"
+         echo "========================================"
+         echo "========================================"
+
          }
          }
   }
