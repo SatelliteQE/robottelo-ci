@@ -245,7 +245,6 @@ options {
     }
   }
   }
-  }
   stage("Run Destructive tests"){
   when{
         expression { "${ENDPOINT}".contains("destructive") }
