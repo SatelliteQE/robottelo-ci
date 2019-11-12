@@ -48,22 +48,21 @@ node('sat6-build') {
             ]
         }
 
-        if (getBinding().hasVariable('tools_compose_sles_versions')) {
-            runPlaybookInParallel {
-                name = "compose-tools-sles"
-                items = tools_compose_sles_versions
-                item_name = 'distro_version'
-                playbook = 'playbooks/build_compose.yml'
-                extraVars = [
-                    'compose_git_repo': compose_git_repo,
-                    "compose_version": "satellite-${satellite_main_version}",
-                    "compose_label": "SatTools-${satellite_main_version}",
-                    "compose_name": "satellite-tools-${satellite_main_version}",
-                    'compose_tag': 'candidate',
-                    "distro": "sles"
-                ]
-            }
+        runPlaybookInParallel {
+            name = "compose-tools-sles"
+            items = tools_compose_sles_versions
+            item_name = 'distro_version'
+            playbook = 'playbooks/build_compose.yml'
+            extraVars = [
+                'compose_git_repo': compose_git_repo,
+                "compose_version": "satellite-${satellite_main_version}",
+                "compose_label": "SatTools-${satellite_main_version}",
+                "compose_name": "satellite-tools-${satellite_main_version}",
+                'compose_tag': 'candidate',
+                "distro": "sles"
+            ]
         }
+
     }
 
     stage("Test Installation") {
