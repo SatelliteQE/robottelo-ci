@@ -143,6 +143,8 @@ pipeline {
 
     post {
         always {
+            junit(testResults: '*-results.xml', allowEmptyResults: true)
+            archiveArtifacts(artifacts: '*.log', allowEmptyArchive: true)
             send_report_email "foreman-maintain"
         }
     }
