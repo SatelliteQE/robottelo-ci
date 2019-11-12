@@ -7,10 +7,10 @@
     compose_output_dir: "/home/jenkins/composes"
   tasks:
     - debug:
-        msg: "Generating compose for RHEL{{ rhel_version }}"
+        msg: "Generating compose for {{ distro|upper }}{{ distro_version }}"
 
     - name: 'Find compose symlink'
-      command: "readlink -f {{ compose_output_dir }}/latest-{{ compose_label }}-RHEL-{{ rhel_version }}/"
+      command: "readlink -f {{ compose_output_dir }}/latest-{{ compose_label }}-{{ distro|upper }}-{{ distro_version }}/"
       register: compose_link
 
     - name: 'Remove old compose'
