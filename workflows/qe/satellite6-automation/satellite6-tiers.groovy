@@ -236,10 +236,13 @@ options {
     set -e
     '''
      EXTRA_MARKS = SATELLITE_VERSION.contains("*upstream-nightly*") ? '' : "and upgrade"
-  }
-  withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
-    remote = [name: "Satellite server", allowAnyHosts: true, host: SERVER_HOSTNAME, user: userName, identityFile: identity]
-    sshCommand remote: remote, command: 'cp /root/.hammer/cli.modules.d/foreman.yml{,_orig}'
+    }
+    withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
+      script {
+        remote = [name: "Satellite server", allowAnyHosts: true, host: SERVER_HOSTNAME, user: userName, identityFile: identity]
+        sshCommand remote: remote, command: 'cp /root/.hammer/cli.modules.d/foreman.yml{,_orig}'
+      }
+    }
   }
   }
   }
