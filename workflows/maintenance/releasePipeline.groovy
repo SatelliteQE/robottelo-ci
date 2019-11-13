@@ -20,14 +20,15 @@ node('sat6-build') {
         runPlaybookInParallel {
             name = "compose-rhel"
             items = compose_versions
-            item_name = 'rhel_version'
+            item_name = 'distro_version'
             playbook = 'playbooks/build_compose.yml'
             extraVars = [
                 'compose_git_repo': compose_git_repo,
                 'compose_version': 'sat-maintenance-6',
                 'compose_label': compose_label,
                 'compose_name': 'satellite-maintenance-6',
-                'compose_tag': compose_tag
+                'compose_tag': compose_tag,
+                'distro': "rhel"
             ]
         }
 
