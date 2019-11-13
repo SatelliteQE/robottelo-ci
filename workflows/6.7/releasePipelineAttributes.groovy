@@ -33,6 +33,10 @@ def tools_repositories = [
     "Satellite Tools ${satellite_main_version} RHEL5 x86_64",
     "Satellite Tools ${satellite_main_version} RHEL5 i386",
     "Satellite Tools ${satellite_main_version} RHEL5 s390x",
+    "Satellite Tools ${satellite_main_version} SLES11.4 x86_64",
+    "Satellite Tools ${satellite_main_version} SLES12.3 x86_64",
+    "Satellite Tools ${satellite_main_version} SLES12.4 x86_64",
+    "Satellite Tools ${satellite_main_version} SLES15.1 x86_64",
 ]
 
 def satellite_content_views = [
@@ -48,6 +52,10 @@ def tools_content_views = [
     "Tools ${satellite_main_version} RHEL7",
     "Tools ${satellite_main_version} RHEL6",
     "Tools ${satellite_main_version} RHEL5",
+    "Tools ${satellite_main_version} SLES11.4",
+    "Tools ${satellite_main_version} SLES12.3",
+    "Tools ${satellite_main_version} SLES12.4",
+    "Tools ${satellite_main_version} SLES15.1",
 ]
 
 def content_views = satellite_content_views + capsule_content_views + tools_content_views
@@ -63,6 +71,10 @@ def tools_composite_content_views = [
     "Tools ${satellite_main_version} with RHEL7 Server",
     "Tools ${satellite_main_version} with RHEL6 Server",
     "Tools ${satellite_main_version} with RHEL5 Server",
+    "Tools ${satellite_main_version} with SLES11.4 Server",
+    "Tools ${satellite_main_version} with SLES12.3 Server",
+    "Tools ${satellite_main_version} with SLES12.4 Server",
+    "Tools ${satellite_main_version} with SLES15.1 Server",
 ]
 def composite_content_views = satellite_composite_content_views + capsule_composite_content_views + tools_composite_content_views
 
@@ -77,5 +89,9 @@ def tools_activation_keys = [
     "satellite-tools-${satellite_main_version}-qa-rhel7",
     "satellite-tools-${satellite_main_version}-qa-rhel6",
     "satellite-tools-${satellite_main_version}-qa-rhel5",
+    "satellite-tools-${satellite_main_version}-qa-sles11-4",
+    "satellite-tools-${satellite_main_version}-qa-sles12-3",
+    "satellite-tools-${satellite_main_version}-qa-sles12-4",
+    "satellite-tools-${satellite_main_version}-qa-sles15-1",
 ]
 def satellite_product = 'satellite'
