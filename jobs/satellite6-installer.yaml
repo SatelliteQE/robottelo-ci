@@ -38,10 +38,10 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.7'
                 - '6.6'
                 - '6.5'
                 - '6.4'
-                - '6.7'
                 - 'upstream-nightly'
             description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
         - choice:
