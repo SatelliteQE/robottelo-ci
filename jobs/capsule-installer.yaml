@@ -40,10 +40,10 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - "6.7"
                 - "6.6"
                 - "6.5"
                 - "6.4"
-                - "6.7"
             description: |
                 Satellite 6 version to be configured.
         - bool:
