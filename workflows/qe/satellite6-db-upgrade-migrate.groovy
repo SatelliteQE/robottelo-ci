@@ -355,7 +355,7 @@ def workspace_cleanup(){
 
 
 def branch_selection(){
-    branch_name=["6.3": "6.3.z","6.4": "6.4.z", "6.5": "6.5.z"]
+    branch_name=["6.3": "6.3.z","6.4": "6.4.z", "6.5": "6.5.z", "6.6": "6.6.z"]
     def branch = env.TO_VERSION in branch_name?branch_name[env.TO_VERSION]:"master"
     return branch
 }
