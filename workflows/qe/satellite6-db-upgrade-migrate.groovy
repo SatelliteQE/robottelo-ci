@@ -376,6 +376,9 @@ def mail_notification(){
     sed -i "s/CUSTOMERDB_NAME/${CUSTOMERDB_NAME}/g" mail_report.html
     sed -i -- 's#BUILD_URL#'"$BUILD_URL"'#g' mail_report.html
     sed -i "s/STATUS/${BUILD_STATUS}/g" mail_report.html
+    sed -i "s/FROM_VERSION/${FROM_VERSION}/g" mail_report.html
+    if [ ${FROM_VERSION} == ${TO_VERSION} ]; then TO_VERSION+=".z"; fi
+    sed -i "s/TO_VERSION/${TO_VERSION}/g" mail_report.html
     '''
 
     emailext (
