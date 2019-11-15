@@ -421,7 +421,7 @@ def environment_variable_for_sat6_upgrade(){
 def environment_variable_for_sat6_repos_url(){
 
     env.TOOLS_RHEL7 = TOOLS_RHEL7
-    env.FOREMAN_MAINTAIN_USE_BETA = env.SATELLITE_VERSION == '6.6'?FOREMAN_MAINTAIN_USE_BETA:''
+    env.FOREMAN_MAINTAIN_USE_BETA = binding.hasVariable('FOREMAN_MAINTAIN_USE_BETA')?FOREMAN_MAINTAIN_USE_BETA:0
     env.MAINTAIN_REPO = MAINTAIN_REPO
     env.SATELLITE6_REPO = SATELLITE6_REPO
     BASE_URL = env.DISTRIBUTION == "DOWNSTREAM" ? SATELLITE6_REPO: ''
