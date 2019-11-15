@@ -71,10 +71,6 @@ def tools_composite_content_views = [
     "Tools ${satellite_main_version} with RHEL7 Server",
     "Tools ${satellite_main_version} with RHEL6 Server",
     "Tools ${satellite_main_version} with RHEL5 Server",
-    "Tools ${satellite_main_version} with SLES11.4 Server",
-    "Tools ${satellite_main_version} with SLES12.3 Server",
-    "Tools ${satellite_main_version} with SLES12.4 Server",
-    "Tools ${satellite_main_version} with SLES15.1 Server",
 ]
 def composite_content_views = satellite_composite_content_views + capsule_composite_content_views + tools_composite_content_views
 
