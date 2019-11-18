@@ -188,6 +188,9 @@ def satellite_clone_setup() {
         use_clone_rpm()
     }
     else {
+        if (env.CLONE_WITH_LATEST_FOREMAN_MAINTAIN_PACKAGE == 'true') {
+            sh_venv '''fab -H root@"${SATELLITE_HOSTNAME}" setup_foreman_maintain'''
+        }
         satellite_clone_with_upstream()
     }
 }
