@@ -136,6 +136,11 @@
             default: false
             description: |
                 <p> Check if you want to perform the clean the workspace before start the job <p>
+        - bool:
+            name: CLONE_WITH_LATEST_FOREMAN_MAINTAIN_PACKAGE
+            default: false
+            description: |
+                <p> Perform Satellite clone operation with latest Foreman-maintain packages <p>
 
     dsl:
       !include-raw:
