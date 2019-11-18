@@ -23,6 +23,9 @@ options {
    steps {
     cleanWs()
     make_venv python: defaults.python, venvModule: 'venv'
+    script {
+     currentBuild.displayName = "# ${env.BUILD_NUMBER} ${env.BUILD_LABEL}"
+    }
    }
   }
   stage('Source Config and Variables') {
@@ -344,7 +347,7 @@ post {
             send_automation_email "fixed"
     }
     always {
-       archiveArtifacts(artifacts: '*.log,*-results.xml,*.xml', allowEmptyArchive: true)
+       archiveArtifacts(artifacts: '*.log,*-results.xml,*.xml,foreman-debug.tar.xz,robottelo.properties', allowEmptyArchive: true)
        withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
         script {
         // Joins the workers separate logs file into one single log
