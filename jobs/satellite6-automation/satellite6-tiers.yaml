@@ -20,15 +20,19 @@
             projects:
               - name: 'automation-{satellite_version}-tier1-{os}'
                 current-parameters: true
+              - name: 'automation-{satellite_version}-rhai-{os}'
+                current-parameters: true
+              - name: 'automation-{satellite_version}-destructive-{os}'
+                current-parameters: true
+        - multijob:
+            name: PhaseTwo
+            condition: UNSTABLE
+            projects:
               - name: 'automation-{satellite_version}-tier2-{os}'
                 current-parameters: true
               - name: 'automation-{satellite_version}-tier3-{os}'
                 current-parameters: true
               - name: 'automation-{satellite_version}-tier4-{os}'
-                current-parameters: true
-              - name: 'automation-{satellite_version}-destructive-{os}'
-                current-parameters: true
-              - name: 'automation-{satellite_version}-rhai-{os}'
                 current-parameters: true
     publishers:
         - trigger-parameterized-builds:
