@@ -5,7 +5,7 @@ pip install Betelgeuse==0.16.0 pathlib pyyaml
 if [[ ${BETELGEUSE_AUTOMATION_PROJECT} = "satellite6-upgrade" ]]; then
     export BETELGEUSE_TC_PATH='upgrade_tests/test_existance_relations'
 else
-    export BETELGEUSE_TC_PATH='tests/foreman/api tests/foreman/cli tests/foreman/ui tests/foreman/longrun tests/foreman/sys tests/foreman/installer tests/foreman/rhai'
+    export BETELGEUSE_TC_PATH='tests/foreman/api tests/foreman/cli tests/foreman/ui tests/foreman/longrun tests/foreman/sys tests/foreman/installer tests/foreman/rhai tests/foreman/endtoend'
 fi
 
 for TC_PATH in $(echo ${BETELGEUSE_TC_PATH}) ; do \
