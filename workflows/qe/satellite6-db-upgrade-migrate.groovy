@@ -233,23 +233,21 @@ def satellite_clone_with_upstream(){
 
 def use_clone_rpm(){
     dir('satellite-clone') {
-        sh_venv '''fab -H root@"${SATELLITE_HOSTNAME}" setup_satellite_clone'''
-        env.CLONE_DIR = "/usr/share/satellite-clone/satellite-clone-vars.yml"
         sh_venv '''
-        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" << EOF
-            echo "satellite_version: "${FROM_VERSION}"" >> "${CLONE_DIR}"
-            echo "activationkey: "test_ak"" >> "${CLONE_DIR}"
-            echo "org: "Default Organization"" >> "${CLONE_DIR}"
-            sed -i -e "/#backup_dir.*/abackup_dir: "${BACKUP_DIR}"/" "${CLONE_DIR}"
-            echo "include_pulp_data: "${INCLUDE_PULP_DATA}"" >> "${CLONE_DIR}"
-            echo "restorecon: "${RESTORECON}"" >> "${CLONE_DIR}"
-            echo "register_to_portal: true" >> "${CLONE_DIR}"
-            sed -i -e "/#org.*/arhn_pool: "$(echo ${RHN_POOLID} | cut -d' ' -f1)"" "${CLONE_DIR}"
-            sed -i -e "/#org.*/arhn_password: "${RHN_PASSWORD}"" "${CLONE_DIR}"
-            sed -i -e "/#org.*/arhn_user: "${RHN_USERNAME}"" "${CLONE_DIR}"
-            sed -i -e "/#org.*/arhelversion: "${OS_VERSION}"" "${CLONE_DIR}"
-    EOF
-        '''
+            fab -H root@"${SATELLITE_HOSTNAME}" setup_satellite_clone
+            ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" << EOF
+            echo "satellite_version: "$FROM_VERSION"" >> "$CLONE_DIR"
+            echo "activationkey: "test_ak"" >> "$CLONE_DIR"
+            echo "org: "Default Organization"" >> "$CLONE_DIR"
+            sed -i -e "/#backup_dir.*/abackup_dir: "$BACKUP_DIR"/" "$CLONE_DIR"
+            echo "include_pulp_data: "$INCLUDE_PULP_DATA"" >> "$CLONE_DIR"
+            echo "restorecon: "$RESTORECON"" >> "$CLONE_DIR"
+            echo "register_to_portal: true" >> "$CLONE_DIR"
+            sed -i -e "/#org.*/arhn_pool: "$(echo $RHN_POOLID | cut -d' ' -f1)"" "$CLONE_DIR"
+            sed -i -e "/#org.*/arhn_password: "$RHN_PASSWORD"" "$CLONE_DIR"
+            sed -i -e "/#org.*/arhn_user: "$RHN_USERNAME"" "$CLONE_DIR"
+            sed -i -e "/#org.*/arhelversion: "$OS_VERSION"" "$CLONE_DIR"
+        EOF'''.stripIndent()
     }
 }
 
@@ -266,10 +264,11 @@ def check_the_flag_incase_of_migration(){
         }
         else {
             dir('satellite-clone') {
-                sh_venv '''ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" << EOF
-                    sed -i -e "s/^#rhel_migration.*/rhel_migration: "${RHEL_MIGRATION}"/" "${CLONE_DIR}"
-                    sed -i -e "s/^rhelversion.*/rhelversion: 7/" "${CLONE_DIR}"
-                EOF'''
+                sh_venv '''
+                    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" << EOF
+                    sed -i -e "s/^#rhel_migration.*/rhel_migration: "$RHEL_MIGRATION"/" "$CLONE_DIR"
+                    sed -i -e "s/^rhelversion.*/rhelversion: 7/" "$CLONE_DIR"
+                 EOF'''.stripIndent()
             }
         }
     }
@@ -293,12 +292,13 @@ def setting_CloneRPM(){
     else{
         dir('satellite-clone') {
             env.MAIN_YAML = "/usr/share/satellite-clone/roles/satellite-clone/tasks/main.yml"
-            sh_venv '''ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" << EOF
-            sed -i -e '/subscription-manager register.*/d' "${MAIN_YAML}"
-            sed -i -e '/Register\\/Subscribe the system to Red Hat Portal.*/a\\ \\ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' "${MAIN_YAML}"
-            sed -i -e '/subscription-manager register.*/a- name: subscribe machine' "${MAIN_YAML}"
-            sed -i -e '/subscribe machine.*/a\\ \\ command: subscription-manager subscribe --pool={{ rhn_pool }}' "${MAIN_YAML}"
-        EOF '''
+            sh_venv '''
+                ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" << EOF
+                sed -i -e '/subscription-manager register.*/d' "$MAIN_YAML"
+                sed -i -e '/Register\\/Subscribe the system to Red Hat Portal.*/a\\ \\ command: subscription-manager register --force --user={{ rhn_user }} --password={{ rhn_password }} --release={{ rhelversion }}Server' "$MAIN_YAML"
+                sed -i -e '/subscription-manager register.*/a- name: subscribe machine' "$MAIN_YAML"
+                sed -i -e '/subscribe machine.*/a\\ \\ command: subscription-manager subscribe --pool={{ rhn_pool }}' "$MAIN_YAML"
+        EOF'''.stripIndent()
         }
     }
 }
