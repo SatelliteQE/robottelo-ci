@@ -266,7 +266,7 @@ options {
   steps{
     script{
         sh_venv '''
-         TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
+         TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer,endtoend})"
          set +e
          # Run sequential tests
         $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
@@ -286,7 +286,7 @@ options {
   steps{
     script{
         sh_venv '''
-         TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer})"
+         TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer,endtoend})"
          set +e
         # Run parallel tests
         $(which py.test) -v --junit-xml="${ENDPOINT}-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
