@@ -54,7 +54,7 @@
           satellite_cron: ''
       - '64':
           satellite_dotted_version: '6.4'
-          satellite_cron: 'H 18 * * *'
+          satellite_cron: ''
       - '65':
           satellite_dotted_version: '6.5'
           satellite_cron: 'H 2 * * *'
