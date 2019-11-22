@@ -94,7 +94,7 @@ pipeline {
      steps {
       build job: "satellite6-sanity-check-${satellite_version}-rhel7",
        parameters: [
-        string(name: 'BASE_URL', value: "${RHEL8_SATELLITE_URL}"),
+        string(name: 'BASE_URL', value: "${RHEL7_SATELLITE_URL}"),
         string(name: 'SELINUX_MODE', value: "${params.SELINUX_MODE}"),
         string(name: 'SATELLITE_DISTRIBUTION', value: "${params.SATELLITE_DISTRIBUTION}"),
         string(name: 'PROXY_MODE', value: "${params.PROXY_MODE}"),
