@@ -221,7 +221,9 @@ satellite_runner repository-set enable --name="Red Hat Enterprise Linux 6 Server
 
 # RHSCL repos
 satellite_runner repository-set enable --name="Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server" --basearch="x86_64" --releasever="7Server" --product "Red Hat Software Collections for RHEL Server" --organization-id="${ORG}"
-
+if [ "${SAT_VERSION}" = "6.7" ]; then
+    satellite_runner repository-set enable --name="Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server" --basearch="x86_64" --releasever="7Server" --product "Red Hat Software Collections (for RHEL Server)" --organization-id="${ORG}"
+fi
 # Foreman-Maintain repos
 if [ "${SATELLITE_DISTRIBUTION}" = "BETA" ]; then
     satellite_runner repository-set enable --name="Red Hat Satellite Maintenance 6 Beta (for RHEL 7 Server) (RPMs)" --basearch="x86_64" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
@@ -297,6 +299,9 @@ if [ "${RHELOS}" = "7" ]; then
     # Capsule RHEL7
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Software Collections for RHEL Server' --repository='Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server x86_64 7Server'
+    if [ "${SAT_VERSION}" = "6.7" ]; then
+    satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Software Collections (for RHEL Server)' --repository='Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server x86_64 7Server'
+    fi
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Ansible Engine' --repository='Red Hat Ansible Engine 2 RPMs for Red Hat Enterprise Linux 7 Server x86_64'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product="${RHEL7_TOOLS_PRD}" --repository="${RHEL7_TOOLS_REPO}"
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product="${SAT6C7_PRODUCT}" --repository="${CAPSULE7_REPO}"
