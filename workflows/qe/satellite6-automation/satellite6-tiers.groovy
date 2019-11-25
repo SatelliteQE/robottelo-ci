@@ -234,9 +234,7 @@ options {
    steps {
     script {
     sh_venv '''
-    set +e
     pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
-    set -e
     '''
      EXTRA_MARKS = SATELLITE_VERSION.contains("*upstream-nightly*") ? '' : "and upgrade"
     }
