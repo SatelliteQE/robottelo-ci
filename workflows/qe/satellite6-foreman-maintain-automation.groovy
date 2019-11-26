@@ -37,21 +37,22 @@ pipeline {
                             '''
                             load('config/sat6_repos_urls.groovy')
                             load('config/subscription_config.groovy')
+                            load('config/testfm.groovy')
                             sh_venv '''
-                                source config/testfm.conf
                                 cp testfm.properties.sample testfm.properties
                                 cp testfm/inventory.sample testfm/inventory
                                 sed -i "s/<server_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
+                                sed -i "s/<SERVER_HOSTNAME>/${SERVER_HOSTNAME}/g" testfm.properties
                             '''
                             if ("${COMPONENT}" != "CAPSULE") {
                                 propargs = [
                                     'RHN_USERNAME' : RHN_USERNAME,
-                                    'RHN_PASSWORD' : env.RHN_PASSWORD,
+                                    'RHN_PASSWORD' : RHN_PASSWORD,
                                     'RHN_POOLID' : RHN_POOLID,
                                     'DOGFOOD_ORG' : DOGFOOD_ORG,
-                                    'DOGFOOD_ACTIVATIONKEY' : env.DOGFOOD_ACTIVATIONKEY,
+                                    'DOGFOOD_ACTIVATIONKEY' : DOGFOOD_ACTIVATIONKEY,
                                     'DOGFOOD_URL' : DOGFOOD_URL,
-                                    'HOTFIX_URL' : env.HOTFIX_URL
+                                    'HOTFIX_URL' : HOTFIX_URL
                                 ]
                                 parse_ini ini_file: "${WORKSPACE}//testfm.properties", properties: propargs
                             }
