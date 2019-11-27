@@ -59,7 +59,9 @@ elif [ ${ENDPOINT} == 'upgrade' ]; then
 
     # Delete old scap_content and use new one.
     if [ "${FROM_VERSION}" != "6.3" ] && [ "${FROM_VERSION}" != "6.4" ] ; then
+        set +e
         fab -u root update_scap_content
+        set -e
     fi
 
 fi
