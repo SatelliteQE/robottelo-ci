@@ -20,7 +20,8 @@ pipeline {
                         returnStdout : true
                     )
                     currentBuild.displayName = "#${env.BUILD_NUMBER} ${SERVER_HOSTNAME} Ver."+FM_VER+" ${env.BUILD_LABEL}"
-                    git defaults.testfm
+                    checkout([$class: 'GitSCM', branches: [[name: '*/${TestFM_BRANCH}']],
+                        userRemoteConfigs: [[url: '${TestFM_REPO}']]])
                     sh_venv '''
                         pip install -r requirements.txt
                     '''
@@ -87,10 +88,10 @@ pipeline {
                         }
 
                         if ("${COMPONENT}" == "capsule") {
-                            def PYTEST_MARKS = 'capsule'
+                            PYTEST_MARKS = 'capsule'
                         }
                         else {
-                            def PYTEST_MARKS = "${PYTEST_MARKS}"
+                            PYTEST_MARKS = "${PYTEST_MARKS}"
                         }
                     }
                 }
@@ -106,7 +107,7 @@ pipeline {
                             sh_venv command + '${PYTEST_OPTIONS}'
                         }
                         else if (PYTEST_MARKS) {
-                            sh_venv command + 'tests/ -m ${PYTEST_MARKS}'
+                            sh_venv command + 'tests/ -m ' + PYTEST_MARKS
                         }
                         else {
                             sh_venv command + 'tests/'
