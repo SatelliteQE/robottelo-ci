@@ -40,6 +40,14 @@ url=<jenkins-url>
 Now update the jenkins credentials section in the `jenkins_jobs.ini` file,
 created by the above script.
 
+Contributions
+-------------
+
+1. Fork the repository.
+2. Submit the PR to the project.
+3. Reviewers would review the PR's and provide comments.
+4. On successful merge, the robottelo-ci-update job would run and update the job on server.
+
 Generating the jobs
 -------------------
 
@@ -48,6 +56,7 @@ ahead.
 
 Creating the jobs
 -----------------
+_Note: Only for Administartor usage. Never submit the job to jenkins_
 
 When all above steps are completed, you can update the jobs by running the
 following command:
