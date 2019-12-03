@@ -345,10 +345,9 @@ post {
             send_automation_email "fixed"
     }
     always {
-       archiveArtifacts(artifacts: '*.log,*-results.xml,*.xml,foreman-debug.tar.xz,robottelo.properties', allowEmptyArchive: true)
-       withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
-        script {
-        // Joins the workers separate logs file into one single log
+        withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
+          script {
+            // Joins the workers separate logs file into one single log
             if ("${ROBOTTELO_WORKERS}" > 0) {
                 sh_venv '''
                     set +e
@@ -385,9 +384,9 @@ post {
             onlyStable: false,
             sourceEncoding: 'ASCII',
             zoomCoverageChart: false
-
-         }
-         }
+          }
+        }
+        archiveArtifacts(artifacts: '*.log,*-results.xml,*.xml,foreman-debug.tar.xz,robottelo.properties', allowEmptyArchive: true)
         withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity',usernameVariable: 'userName')]) {
         script{
          remote = [name: "Provisioning serverr", allowAnyHosts: true, host: PROVISIONING_HOST, user: userName, identityFile: identity]
