@@ -4,7 +4,7 @@ def tools_compose_sles_versions = ['11.4', '12.3', '12.4', '15.1']
 
 def os_versions = ['7']
 
-def satellite_short_version = 66
+def satellite_short_version = 67
 def satellite_main_version = '6.7'
 def satellite_version = '6.7.0'
 
@@ -73,6 +73,13 @@ def tools_composite_content_views = [
     "Tools ${satellite_main_version} with RHEL5 Server",
 ]
 def composite_content_views = satellite_composite_content_views + capsule_composite_content_views + tools_composite_content_views
+
+def tools_sles_content_views = [
+    "Tools ${satellite_main_version} SLES11.4",
+    "Tools ${satellite_main_version} SLES12.3",
+    "Tools ${satellite_main_version} SLES12.4",
+    "Tools ${satellite_main_version} SLES15.1",
+]
 
 def satellite_activation_keys = [
     "satellite-${satellite_main_version}-qa-rhel7",
