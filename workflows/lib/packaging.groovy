@@ -99,18 +99,19 @@ node('sat6-build') {
             for (int i = 0; i < packages.size(); i++) {
                 package_name = packages[i]
 
+                name = query_rpmspec("packages/${package_name}/*.spec", '%{NAME}')
                 version = query_rpmspec("packages/${package_name}/*.spec", '%{VERSION}')
                 release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}')
 
                 brew_buildinfo = sh(
-                  script: "brew buildinfo ${package_name}-${version}-${release}.el7sat",
+                  script: "brew buildinfo ${name}-${version}-${release}.el7sat",
                   returnStdout: true
                 ).trim()
 
                 if(brew_buildinfo.contains('No such build')) {
-                  updateGitlabCommitStatus name: "${package_name}_brew_build", state: "success"
+                  updateGitlabCommitStatus name: "${name}_brew_build", state: "success"
                 } else {
-                  updateGitlabCommitStatus name: "${package_name}_brew_build", state: "failed"
+                  updateGitlabCommitStatus name: "${name}_brew_build", state: "failed"
                 }
             }
         }
@@ -163,7 +164,7 @@ def mark_bugs_built(build_status, packages_to_build, package_version, tool_belt_
 
     for (int i = 0; i < packages.size(); i++) {
         package_name = packages[i]
-        rpm = query_rpmspec("packages/${package_name}/*.spec", "${package_name}-%{VERSION}-%{RELEASE}")
+        rpm = query_rpmspec("packages/${package_name}/*.spec", "%{NAME}-%{VERSION}-%{RELEASE}")
         ids = sh(returnStdout: true, script: "rpmspec -q --srpm --queryformat=%{CHANGELOGTEXT} packages/${package_name}/*.spec |grep '^- BZ' | sed -E 's/^- BZ[ #]+?([0-9]+).*/\\1/'").trim()
 
         if (ids.size() > 0) {
@@ -270,6 +271,6 @@ def update_build_description_from_packages(packages_to_build) {
 }
 
 def query_rpmspec(specfile, queryformat) {
-    result = sh(returnStdout: true, script: "rpmspec -q --srpm --undefine=dist --undefine=foremandist --queryformat=${queryformat} ${specfile}").trim()
+    result = sh(returnStdout: true, script: "rpmspec -q --srpm --undefine=dist --undefine=foremandist --define='scl_prefix tfm-' --queryformat=${queryformat} ${specfile}").trim()
     return result
 }
