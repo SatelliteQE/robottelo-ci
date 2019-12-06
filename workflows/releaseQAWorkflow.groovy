@@ -146,6 +146,15 @@ node('sat6-build') {
         )
       }
 
+      tools_sles_content_views.each { cv ->
+        promoteContentView(
+          organization: 'Sat6-CI',
+          content_view: cv,
+          from_lifecycle_environment: 'QA',
+          to_lifecycle_environment: full_snap_version
+        )
+      }
+
       tools_activation_keys.each { ak ->
         copyActivationKey(
           organization: 'Sat6-CI',
