@@ -312,20 +312,6 @@ options {
   }
   }
   }
-  stage("Trigger Polarion Build"){
-    steps{
-     //Trigger Polarion Builds
-      build job: "polarion-test-run-${satellite_version}-${DISTRO}",
-       parameters: [
-        string(name: 'TEST_RUN_ID', value: "${params.BUILD_LABEL} ${DISTRO}"),
-        string(name: 'POLARION_RELEASE', value: "${params.BUILD_LABEL}"),
-        string(name: 'ENDPOINT', value: "${ENDPOINT}"),
-        booleanParam(name: 'PULL_ARTIFACTS', value: true)
-       ],
-       propagate: false,
-       wait: false
-  }
-  }
   }
 
 post {
@@ -344,6 +330,7 @@ post {
             send_automation_email "fixed"
     }
     always {
+        archiveArtifacts(artifacts: '*.log,*-results.xml,*.xml,foreman-debug.tar.xz,robottelo.properties', allowEmptyArchive: true)
         withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
           script {
             // Joins the workers separate logs file into one single log
@@ -385,7 +372,6 @@ post {
             zoomCoverageChart: false
           }
         }
-        archiveArtifacts(artifacts: '*.log,*-results.xml,*.xml,foreman-debug.tar.xz,robottelo.properties', allowEmptyArchive: true)
         withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity',usernameVariable: 'userName')]) {
         script{
          remote = [name: "Provisioning serverr", allowAnyHosts: true, host: PROVISIONING_HOST, user: userName, identityFile: identity]
@@ -399,9 +385,18 @@ post {
          echo "Credentials: admin/changeme"
          echo "========================================"
          echo "========================================"
-
          }
          }
+      //Trigger Polarion Builds
+      build job: "polarion-test-run-${satellite_version}-${DISTRO}",
+       parameters: [
+        string(name: 'TEST_RUN_ID', value: "${params.BUILD_LABEL} ${DISTRO}"),
+        string(name: 'POLARION_RELEASE', value: "${params.BUILD_LABEL}"),
+        string(name: 'ENDPOINT', value: "${ENDPOINT}"),
+        booleanParam(name: 'PULL_ARTIFACTS', value: true)
+       ],
+       propagate: false,
+       wait: false
   }
  }
 }
