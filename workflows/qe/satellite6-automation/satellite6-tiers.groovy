@@ -348,7 +348,7 @@ post {
             [$class: 'StabilityTestDataPublisher']],
             testResults: '*-results.xml'
              remote = [name: "Satellite server", allowAnyHosts: true, host: SERVER_HOSTNAME, user: userName, identityFile: identity]
-             sshCommand remote: remote, command: 'cp /root/.hammer/cli.modules.d/foreman.yml{_orig,}'
+             sshCommand remote: remote, command: 'cp /root/.hammer/cli.modules.d/foreman.yml{_orig,}||:'
              sshCommand remote: remote, command: 'foreman-debug -s 0 -q -d "/tmp/foreman-debug"'
              sshGet remote: remote, from: '/tmp/foreman-debug.tar.xz', into: '.', override: true
              // Start Code coverage
