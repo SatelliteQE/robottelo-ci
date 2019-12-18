@@ -14,6 +14,10 @@
             admin-list:
               - ntkathole
               - san7ket
+              - vijay8451 
+              - jyejare
+              - rochacbruno
+              - JacobCallahan
             cron: '* * * * *'
             trigger-phrase: 'ok to test'
             skip-build-phrase: '[skip]'
