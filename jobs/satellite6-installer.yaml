@@ -52,9 +52,9 @@
         - choice:
             name: PROXY_MODE
             choices:
+                - 'no-proxy'
                 - 'authenticated'
                 - 'non-authenticated'
-                - 'no-proxy'
         - bool:
             name: PARTITION_DISK
             default: true
