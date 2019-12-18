@@ -73,7 +73,8 @@ echo "DISCOVERY_ISO=${DISCOVERY_ISO}" >> build_env.properties
 # Run installation after writing the build_env.properties to make sure the
 # values are available for the post build actions, specially the foreman-debug
 # capturing.
-fab -D -H "root@${PROVISIONING_HOST}" "product_install:${DISTRIBUTION},create_vm=true,sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST},puppet4=${PUPPET4}"
+fab -D -H "root@${PROVISIONING_HOST}" "vm_create:target_image=${TARGET_IMAGE},source_image=${SOURCE_IMAGE},bridge=${BRIDGE}"
+fab -D -H "root@${SERVER_HOSTNAME}" "product_install:${DISTRIBUTION},sat_version=${SATELLITE_VERSION},test_in_stage=${STAGE_TEST},puppet4=${PUPPET4}"
 
 echo
 echo "========================================"
