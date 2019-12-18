@@ -27,4 +27,4 @@ for host in ${CLEANUP_PROVISIONING_HOSTS} ; do remove_instance $host; done
 
 export CAPSULE_SERVER_HOSTNAME="${SERVER_HOSTNAME}"
 
-fab -D -H "root@${PROVISIONING_HOST}" "vm_create"
+fab -D -H "root@${PROVISIONING_HOST}" "vm_create:target_image=${TARGET_IMAGE},source_image=${SOURCE_IMAGE},bridge=${BRIDGE}"

@@ -45,6 +45,12 @@
             description: |
                 Specify custom RHEL source image to be used for automation. Do not use the full path, use the image name without the .img suffix
         - bool:
+            name: PYTHON_CODE_COVERAGE
+            default: true
+            description: |
+                Configure the Base image of Satellite6 with the needed Python code coverage stuff.
+                Python Code coverage is active by default.
+        - bool:
             name: RUBY_CODE_COVERAGE
             default: false
             description: |
