@@ -20,17 +20,3 @@
 
     - name: 'Generate compose'
       command: "pungi-koji --test --config={{ compose_conf_dir }}/pungi/satellite-6/{{ compose_version }}/{{ compose_name }}-{{ distro }}-{{ distro_version }}-{{ compose_tag }}.conf --target-dir={{ compose_output_dir }} --skip-phase=createiso --skip-phase=live_images --skip-phase=extra_files"
-
-    - name: 'Find repos to cleanup'
-      find:
-        file_type: directory
-        patterns: "repo-*"
-        paths: "."
-      register: repos
-
-    - name: 'Cleanup repos'
-      file:
-        path: "{{ item.path }}"
-        state: absent
-      with_items: "{{ repos.files }}"
-
