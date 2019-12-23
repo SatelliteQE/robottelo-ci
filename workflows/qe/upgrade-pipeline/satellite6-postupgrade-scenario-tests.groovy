@@ -85,7 +85,12 @@ pipeline {
         stage('Run Post-upgrade Scenario Tests') {
             steps {
                 environment_variable_for_postupgrade_tests()
-                post_upgrade_test_case_execution()
+                environment_variable_for_postupgrade_test_decorator()
+                sh_venv '''
+                    set +e
+                    $(which py.test) -v --continue-on-collection-errors -s -m "${post_upgrade_decorator}" --junit-xml=test_scenarios-post-results.xml -o junit_suite_name=test_scenarios-post tests/upgrades
+                    set -e
+                '''
                 withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
                 script {
                  remote = [name: "Satellite server", allowAnyHosts: true, host: "${SERVER_HOSTNAME}", user: userName, identityFile: identity]
@@ -150,22 +155,12 @@ def check_zstream_upgrade() {
     }
 }
 
-def post_upgrade_test_case_execution(){
+def environment_variable_for_postupgrade_test_decorator(){
     if ("${params.DESTRUCTIVE_TEST_CASE_EXECUTION}" == 'true'){
-        sh_venv '''
-                set +e
-                $(which py.test) -v --continue-on-collection-errors -s -m "destructive and post_upgrade" --junit-xml=test_scenarios-post-results.xml -o junit_suite_name=test_scenarios-post tests/upgrades
-                set -e
-            '''
-
+        env.post_upgrade_decorator = "post_upgrade"
     }
     else {
-         sh_venv '''
-                set +e
-                $(which py.test) -v --continue-on-collection-errors -s -m "not destructive and post_upgrade --junit-xml=test_scenarios-post-results.xml -o junit_suite_name=test_scenarios-post tests/upgrades
-                set -e
-            '''
-
+        env.post_upgrade_decorator = "not destructive and post_upgrade"
     }
 }
 

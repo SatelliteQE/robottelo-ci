@@ -85,7 +85,12 @@ pipeline {
         stage('Run Pre-upgrade Scenario Tests') {
             steps {
                 environment_variable_for_preupgrade_tests()
-                pre_upgrade_test_case_execution()
+                environment_variable_for_preupgrade_test_decorator()
+                sh_venv '''
+                    set +e
+                    $(which py.test)  -v --continue-on-collection-errors -s -m "${pre_upgrade_decorator}" --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre tests/upgrades
+                    set -e
+                '''
             }
         }
         stage('Trigger Upgrade Phase Job') {
@@ -137,22 +142,12 @@ def check_zstream_upgrade() {
     }
 }
 
-def pre_upgrade_test_case_execution(){
+def environment_variable_for_preupgrade_test_decorator(){
     if ("${params.DESTRUCTIVE_TEST_CASE_EXECUTION}" == 'true'){
-        sh_venv '''
-                set +e
-                $(which py.test)  -v --continue-on-collection-errors -s -m "destructive and pre_upgrade" --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre tests/upgrades
-                set -e
-            '''
-
+        env.pre_upgrade_decorator = "pre_upgrade"
     }
     else {
-         sh_venv '''
-                set +e
-                $(which py.test)  -v --continue-on-collection-errors -s -m "not destructive and pre_upgrade" --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre tests/upgrades
-                set -e
-            '''
-
+        env.pre_upgrade_decorator = "not destructive and pre_upgrade"
     }
 }
 
