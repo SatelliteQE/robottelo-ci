@@ -1,11 +1,11 @@
 ---
 - hosts: compose
   become: true
-  become_user: jenkins
+  become_user: compose
   tasks:
     - name: 'Clone packaging repository'
       git:
         repo: "https://{{ git_server }}/{{ git_group }}/satellite-packaging.git"
-        dest: "/home/jenkins/satellite-packaging"
+        dest: "/home/compose/satellite-packaging"
         version: "SATELLITE-{{ satellite_version }}"
         update: yes

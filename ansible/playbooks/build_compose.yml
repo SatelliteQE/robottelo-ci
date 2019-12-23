@@ -1,10 +1,10 @@
 ---
 - hosts: compose
   become: true
-  become_user: jenkins
+  become_user: compose
   vars:
-    compose_conf_dir: "/home/jenkins/compose_repo"
-    compose_output_dir: "/home/jenkins/composes"
+    compose_conf_dir: "/home/compose/compose_repo"
+    compose_output_dir: "/home/compose/composes"
   tasks:
     - debug:
         msg: "Generating compose for {{ distro|upper }}{{ distro_version }}"
