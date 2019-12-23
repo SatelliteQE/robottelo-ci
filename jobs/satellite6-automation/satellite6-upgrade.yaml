@@ -30,6 +30,12 @@
                 This option is helpful in manually triggering this job for zStream upgrade.
                 e.g 6.3.0 to 6.3.1
         - bool:
+            name: DESTRUCTIVE_TEST_CASE_EXECUTION
+            default: false
+            description: |
+                - This option is helpful to execute destructive scenarios in pre-upgrade
+                and post upgrade scenarios
+        - bool:
             name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
             default: true
             description: |

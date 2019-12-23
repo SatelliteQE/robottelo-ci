@@ -85,11 +85,7 @@ pipeline {
         stage('Run Post-upgrade Scenario Tests') {
             steps {
                 environment_variable_for_postupgrade_tests()
-                sh_venv '''
-                set +e
-                $(which py.test) -v --continue-on-collection-errors -s -m post_upgrade --junit-xml=test_scenarios-post-results.xml -o junit_suite_name=test_scenarios-post tests/upgrades
-                set -e
-                '''
+                post_upgrade_test_case_execution()
                 withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
                 script {
                  remote = [name: "Satellite server", allowAnyHosts: true, host: "${SERVER_HOSTNAME}", user: userName, identityFile: identity]
@@ -151,6 +147,25 @@ def check_zstream_upgrade() {
     }
     else {
         env.FROM_VERSION = (Float.parseFloat(SATELLITE_VERSION)-0.1).round(1)
+    }
+}
+
+def post_upgrade_test_case_execution(){
+    if ("${params.DESTRUCTIVE_TEST_CASE_EXECUTION}" == 'true'){
+        sh_venv '''
+                set +e
+                $(which py.test) -v --continue-on-collection-errors -s -m "destructive and post_upgrade" --junit-xml=test_scenarios-post-results.xml -o junit_suite_name=test_scenarios-post tests/upgrades
+                set -e
+            '''
+
+    }
+    else {
+         sh_venv '''
+                set +e
+                $(which py.test) -v --continue-on-collection-errors -s -m "not destructive and post_upgrade --junit-xml=test_scenarios-post-results.xml -o junit_suite_name=test_scenarios-post tests/upgrades
+                set -e
+            '''
+
     }
 }
 
