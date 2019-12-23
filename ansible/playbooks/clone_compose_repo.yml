@@ -1,10 +1,12 @@
 ---
 - hosts: compose
   become: true
-  become_user: jenkins
+  become_user: compose
+  vars:
+    compose_conf_dir: "/home/compose/compose_repo"
   tasks:
     - name: 'Clone compose repository'
       git:
         repo: "{{ compose_git_repo }}"
-        dest: "/home/jenkins/compose_repo"
+        dest: "{{ compose_conf_dir }}"
         update: yes

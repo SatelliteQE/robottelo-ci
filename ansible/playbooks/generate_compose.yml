@@ -1,9 +1,9 @@
 ---
 - hosts: compose
   become: true
-  become_user: jenkins
+  become_user: compose
   vars:
-    compose_output_dir: "/home/jenkins/composes"
+    compose_output_dir: "/home/compose/composes"
   tasks:
     - debug:
         msg: "Generating for RHEL{{ rhel_version }}"
