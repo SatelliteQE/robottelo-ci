@@ -385,6 +385,8 @@ post {
          echo "========================================"
          }
          }
+      script {
+      if (currentBuild.getCurrentResult() == 'SUCCESS' || 'UNSTABLE') {
       //Trigger Polarion Builds
       build job: "polarion-test-run-${satellite_version}-${DISTRO}",
        parameters: [
@@ -395,6 +397,8 @@ post {
        ],
        propagate: false,
        wait: false
+       }
+       }
   }
  }
 }
