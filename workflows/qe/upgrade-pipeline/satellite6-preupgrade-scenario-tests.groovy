@@ -85,11 +85,7 @@ pipeline {
         stage('Run Pre-upgrade Scenario Tests') {
             steps {
                 environment_variable_for_preupgrade_tests()
-                sh_venv '''
-                set +e
-                $(which py.test)  -v --continue-on-collection-errors -s -m pre_upgrade --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre tests/upgrades
-                set -e
-                '''
+                pre_upgrade_test_case_execution()
             }
         }
         stage('Trigger Upgrade Phase Job') {
@@ -110,6 +106,7 @@ pipeline {
                      // get params defined in trigger
                      booleanParam(name: 'PERFORM_FOREMAN_MAINTAIN_UPGRADE', value: "${params.PERFORM_FOREMAN_MAINTAIN_UPGRADE}"),
                      booleanParam(name: 'ZSTREAM_UPGRADE', value: "${params.ZSTREAM_UPGRADE}"),
+                     booleanParam(name: 'DESTRUCTIVE_TEST_CASE_EXECUTION', value: "${params.DESTRUCTIVE_TEST_CASE_EXECUTION}"),
                      string(name: 'ROBOTTELO_WORKERS', value: "${params.ROBOTTELO_WORKERS}"),
                      string(name: 'BUILD_LABEL', value: "${params.BUILD_LABEL}"),
                     ], wait: false
@@ -137,6 +134,25 @@ def check_zstream_upgrade() {
     }
     else {
         env.FROM_VERSION = (Float.parseFloat(SATELLITE_VERSION)-0.1).round(1)
+    }
+}
+
+def pre_upgrade_test_case_execution(){
+    if ("${params.DESTRUCTIVE_TEST_CASE_EXECUTION}" == 'true'){
+        sh_venv '''
+                set +e
+                $(which py.test)  -v --continue-on-collection-errors -s -m "destructive and pre_upgrade" --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre tests/upgrades
+                set -e
+            '''
+
+    }
+    else {
+         sh_venv '''
+                set +e
+                $(which py.test)  -v --continue-on-collection-errors -s -m "not destructive and pre_upgrade" --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre tests/upgrades
+                set -e
+            '''
+
     }
 }
 
