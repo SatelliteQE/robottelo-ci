@@ -88,7 +88,7 @@ options {
       remote = [name: "Satellite server", allowAnyHosts: true, host: SERVER_HOSTNAME, user: userName, identityFile: identity]
       sshCommand remote: remote, command: "hostnamectl set-hostname ${SERVER_HOSTNAME}"
       sshCommand remote: remote, command: "sed -i '/redhat.com/d' /etc/hosts"
-      sshCommand remote: remote, command: "echo ${TIER_IPADDR} ${SERVER_HOSTNAME} ${TARGET_IMAGE}" >> /etc/hosts"
+      sshCommand remote: remote, command: "echo ${TIER_IPADDR} ${SERVER_HOSTNAME} ${TARGET_IMAGE} >> /etc/hosts"
       sshCommand remote: remote, command: "katello-service restart"
       timeout(time: 4, unit: 'MINUTES') {
        retry(240) {
