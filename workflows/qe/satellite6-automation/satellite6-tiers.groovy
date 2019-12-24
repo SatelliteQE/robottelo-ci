@@ -85,12 +85,10 @@ options {
      script {
       remote = [: ]
       //Restart Satellite6 service for a clean state of the running instance.
-      def tier_name = TIER_SOURCE_IMAGE.replace('-base', '.') + VM_DOMAIN
-      def tier_short_name = TIER_SOURCE_IMAGE.replace('-base', '')
       remote = [name: "Satellite server", allowAnyHosts: true, host: SERVER_HOSTNAME, user: userName, identityFile: identity]
-      sshCommand remote: remote, command: "hostnamectl set-hostname ${tier_name}"
+      sshCommand remote: remote, command: "hostnamectl set-hostname ${SERVER_HOSTNAME}"
       sshCommand remote: remote, command: "sed -i '/redhat.com/d' /etc/hosts"
-      sshCommand remote: remote, command: "echo ${TIER_IPADDR} ${tier_name} ${tier_short_name} >> /etc/hosts"
+      sshCommand remote: remote, command: "echo ${TIER_IPADDR} ${SERVER_HOSTNAME} ${TARGET_IMAGE}" >> /etc/hosts"
       sshCommand remote: remote, command: "katello-service restart"
       timeout(time: 4, unit: 'MINUTES') {
        retry(240) {
