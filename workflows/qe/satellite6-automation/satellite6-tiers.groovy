@@ -328,7 +328,7 @@ post {
             send_automation_email "fixed"
     }
     always {
-        archiveArtifacts(artifacts: '*.log,*-results.xml,*.xml,foreman-debug.tar.xz,robottelo.properties', allowEmptyArchive: true)
+        archiveArtifacts(artifacts: 'robottelo*.log,*-results.xml,foreman-debug.tar.xz,coverage.*.tar,tfm_reports_*.tar,screenshots/*/*.png,robottelo.properties', allowEmptyArchive: true)
         withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', usernameVariable: 'userName')]) {
           script {
             // Joins the workers separate logs file into one single log
