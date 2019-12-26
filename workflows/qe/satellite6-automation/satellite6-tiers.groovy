@@ -9,8 +9,6 @@ pipeline {
 options {
   // Build discarder
   buildDiscarder(logRotator(numToKeepStr: '32'))
-  // Implement resource locking for tier jobs
-  lock(label: "${ENDPOINT}_block")
   // Disable Concurrent builds
   disableConcurrentBuilds()
   // Load sauce settings
@@ -105,7 +103,7 @@ options {
       rename_cmd = "${rename_cmd} ${SERVER_HOSTNAME} -y -u admin -p changeme"
       sshCommand remote: remote, command: rename_cmd
 
-      if (ENDPOINT != 'tier3' && 'tier4') {
+      if ( "${ENDPOINT}" != "tier3" && "tier4") {
        sshCommand remote: remote, command: "systemctl stop dhcpd"
       }
      }
