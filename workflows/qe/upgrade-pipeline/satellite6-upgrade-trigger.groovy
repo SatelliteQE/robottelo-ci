@@ -20,7 +20,9 @@ pipeline {
             steps {
                 git branch: branch_selection(SATELLITE_VERSION), url: defaults.satellite6_upgrade
                 make_venv python: defaults.python
+                check_zstream_upgrade()
                 sh_venv '''
+                    sed -i "s/nailgun.git.*/nailgun.git@${FROM_VERSION}.z#egg=nailgun/" requirements.txt
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
                     pip install -U -r requirements.txt
                     pip install -r requirements-optional.txt
@@ -29,7 +31,6 @@ pipeline {
             }
         stage('Source Variables') {
             steps {
-                    check_zstream_upgrade()
                     configFileProvider([configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
                     sh_venv '''source ${CONFIG_FILES}'''
                     load('config/compute_resources.groovy')
