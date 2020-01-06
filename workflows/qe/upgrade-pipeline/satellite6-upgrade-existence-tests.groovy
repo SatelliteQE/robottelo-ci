@@ -29,20 +29,7 @@ pipeline {
         stage('Source Variables') {
             steps {
                     check_zstream_upgrade()
-                    configFileProvider([configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
-                    sh_venv '''
-                        source ${CONFIG_FILES}
-                    '''
-                    load('config/compute_resources.groovy')
-                    load('config/sat6_upgrade.groovy')
-                    load('config/sat6_repos_urls.groovy')
-                    load('config/subscription_config.groovy')
-                    load('config/fake_manifest.groovy')
-                    }
-                    // environment_variable_for_upgrade()
-                    script {
-                        currentBuild.displayName = "# ${env.BUILD_NUMBER} Existence-tests-${os} ${env.BUILD_LABEL}"
-                    }
+                    loading_the_groovy_script_to_build_existence_environment()
             }
         }
         stage('Untar Templates data for existence tests') {
@@ -70,6 +57,15 @@ pipeline {
                 }
             }
         }
+        stage("Restart Trigger Post-upgrade Scenario Tests Job"){
+            when {
+                isRestartedRun()
+            }
+            steps{
+                loading_the_groovy_script_to_build_existence_environment()
+            }
+        }
+
         stage('Trigger Post-upgrade Scenario Tests Job') {
             steps {
                 script {
@@ -116,6 +112,23 @@ def check_zstream_upgrade() {
     }
     else {
         env.FROM_VERSION = (Float.parseFloat(SATELLITE_VERSION)-0.1).round(1)
+    }
+}
+
+def loading_the_groovy_script_to_build_existence_environment(){
+    configFileProvider([configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
+    sh_venv '''
+        source ${CONFIG_FILES}
+    '''
+    load('config/compute_resources.groovy')
+    load('config/sat6_upgrade.groovy')
+    load('config/sat6_repos_urls.groovy')
+    load('config/subscription_config.groovy')
+    load('config/fake_manifest.groovy')
+    }
+    // environment_variable_for_upgrade()
+    script {
+        currentBuild.displayName = "# ${env.BUILD_NUMBER} Existence-tests-${os} ${env.BUILD_LABEL}"
     }
 }
 
