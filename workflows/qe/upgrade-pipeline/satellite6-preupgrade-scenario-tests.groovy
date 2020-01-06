@@ -31,41 +31,7 @@ pipeline {
             }
         stage('Source Variables') {
             steps {
-                    configFileProvider([configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
-                    sh_venv '''
-                        source ${CONFIG_FILES}
-                        cp config/robottelo.properties ./robottelo.properties
-                        cp config/robottelo.yaml ./robottelo.yaml
-                        sed -i "s/'robottelo.log'/'robottelo-${ENDPOINT}.log'/" logging.conf
-                    '''
-                    load('config/compute_resources.groovy')
-                    load('config/sat6_upgrade.groovy')
-                    load('config/sat6_repos_urls.groovy')
-                    load('config/subscription_config.groovy')
-                    load('config/fake_manifest.groovy')
-                    }
-                    script {
-                        currentBuild.displayName = "# ${env.BUILD_NUMBER} preupgrade-scenarios-Upgrade_${os}_to_${satellite_version} ${env.BUILD_LABEL}"
-                        network_args = ['[vlan_networking]':'',
-                        'subnet': "${SUBNET}",
-                        'netmask': "${NETMASK}",
-                        'gateway': "${GATEWAY}",
-                        'bridge': "${BRIDGE}"
-                        ]
-                        upgrade_args = ['rhev_cap_host':"${RHEV_CAP_HOST}",
-                        'rhev_capsule_ak':"${RHEV_CAPSULE_AK}",
-                        'from_version':"${FROM_VERSION}",
-                        'to_version': "${TO_VERSION}"
-                        ]
-                        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY')]) {
-                        all_args = [
-                       'hostname': "${RHEV_SAT_HOST}",
-                       'api_key': "${BZ_API_KEY}",
-                       'sattools_repo': "rhel8=${TOOLS_RHEL8},rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}",
-                       'capsule_repo': "${CAPSULE_REPO}"] + network_args + upgrade_args
-                       }
-                       parse_ini ini_file: "${WORKSPACE}//robottelo.properties" , properties: all_args
-                    }
+                loading_the_groovy_script_to_build_pre_upgrade_environment()
             }
         }
         stage('Build for running test') {
@@ -91,6 +57,14 @@ pipeline {
                     $(which py.test)  -v --continue-on-collection-errors -s -m "${pre_upgrade_decorator}" --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre tests/upgrades
                     set -e
                 '''
+            }
+        }
+        stage('Restart Trigger Upgrade Phase Job'){
+            when {
+                isRestartedRun()
+            }
+            steps{
+                loading_the_groovy_script_to_build_pre_upgrade_environment()
             }
         }
         stage('Trigger Upgrade Phase Job') {
@@ -139,6 +113,44 @@ def check_zstream_upgrade() {
     }
     else {
         env.FROM_VERSION = (Float.parseFloat(SATELLITE_VERSION)-0.1).round(1)
+    }
+}
+
+def loading_the_groovy_script_to_build_pre_upgrade_environment(){
+    configFileProvider([configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
+    sh_venv '''
+        source ${CONFIG_FILES}
+        cp config/robottelo.properties ./robottelo.properties
+        cp config/robottelo.yaml ./robottelo.yaml
+        sed -i "s/'robottelo.log'/'robottelo-${ENDPOINT}.log'/" logging.conf
+    '''
+    load('config/compute_resources.groovy')
+    load('config/sat6_upgrade.groovy')
+    load('config/sat6_repos_urls.groovy')
+    load('config/subscription_config.groovy')
+    load('config/fake_manifest.groovy')
+    }
+    script {
+        currentBuild.displayName = "# ${env.BUILD_NUMBER} preupgrade-scenarios-Upgrade_${os}_to_${satellite_version} ${env.BUILD_LABEL}"
+        network_args = ['[vlan_networking]':'',
+        'subnet': "${SUBNET}",
+        'netmask': "${NETMASK}",
+        'gateway': "${GATEWAY}",
+        'bridge': "${BRIDGE}"
+        ]
+        upgrade_args = ['rhev_cap_host':"${RHEV_CAP_HOST}",
+        'rhev_capsule_ak':"${RHEV_CAPSULE_AK}",
+        'from_version':"${FROM_VERSION}",
+        'to_version': "${TO_VERSION}"
+        ]
+        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY')]) {
+        all_args = [
+        'hostname': "${RHEV_SAT_HOST}",
+        'api_key': "${BZ_API_KEY}",
+        'sattools_repo': "rhel8=${TOOLS_RHEL8},rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}",
+        'capsule_repo': "${CAPSULE_REPO}"] + network_args + upgrade_args
+        }
+        parse_ini ini_file: "${WORKSPACE}//robottelo.properties" , properties: all_args
     }
 }
 
