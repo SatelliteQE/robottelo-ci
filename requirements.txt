@@ -1,2 +1,2 @@
-jenkins-job-builder<3.0
+jenkins-job-builder
 requests
