@@ -26,7 +26,7 @@ else
     sed -i "s|capsule_repo.*|capsule_repo=${CAPSULE_REPO}|" robottelo.properties
 fi
 
-if [-n "${ROBOTTELO_YAML:-}" ]; then
+if [ -n "${ROBOTTELO_YAML:-}" ]; then
     echo "${ROBOTTELO_YAML}" > ./robottelo.yaml
 else
     cp config/robottelo.yaml ./robottelo.yaml
