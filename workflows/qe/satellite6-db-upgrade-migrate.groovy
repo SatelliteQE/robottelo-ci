@@ -22,24 +22,9 @@ pipeline {
             }
         stage('Install requirements') {
             steps {
-                    script {
-                        configFileProvider(
-                            [configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
-                        sh_venv '''
-                            source ${CONFIG_FILES}
-                            '''
-                        conditional_param_execution( param: [env.SATELLITE_HOSTNAME])
-                        upgrade_environment_variable()
-                        load('config/sat6_repos_urls.groovy')
-                        load('config/subscription_config.groovy')
-                        environment_variable_for_sat6_repos_url()
-                        environment_variable_for_subscription_config()
-                        currentBuild.displayName = "#"+ env.BUILD_NUMBER + "CustDB_Upgrade for_" + env.CUSTOMERDB_NAME  + "_from_" + env.FROM_VERSION + "_to_" + env.TO_VERSION + "_" + env.OS + env.SATELLITE_HOSTNAME
-                    }
+                loading_the_groovy_script_to_build_db_environment()
                 }
-            }
         }
-
         stage("DB Upgrade Setup"){
             steps {
                 ansiColor('xterm') {
@@ -52,7 +37,6 @@ pipeline {
                 }
             }
         }
-
         stage ("Download Customer DB Backup")
         {
             steps{
@@ -61,7 +45,14 @@ pipeline {
                 }
             }
         }
-
+        stage ("Restart Upgrade"){
+            when {
+                isRestartedRun()
+            }
+            steps{
+                loading_the_groovy_script_to_build_db_environment()
+            }
+        }
         stage("Upgrade"){
             steps{
                 ansiColor('xterm') {
@@ -350,6 +341,25 @@ def mongodb_upgrade() {
         sh_venv ''' fab -H root@"${SATELLITE_HOSTNAME}" mongo_db_engine_upgrade:"SATELLITE" '''
     }
 }
+
+def loading_the_groovy_script_to_build_db_environment(){
+    script {
+            configFileProvider(
+                [configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
+            sh_venv '''
+                source ${CONFIG_FILES}
+                '''
+            conditional_param_execution( param: [env.SATELLITE_HOSTNAME])
+            upgrade_environment_variable()
+            load('config/sat6_repos_urls.groovy')
+            load('config/subscription_config.groovy')
+            environment_variable_for_sat6_repos_url()
+            environment_variable_for_subscription_config()
+            currentBuild.displayName = "#"+ env.BUILD_NUMBER + "CustDB_Upgrade for_" + env.CUSTOMERDB_NAME  + "_from_" + env.FROM_VERSION + "_to_" + env.TO_VERSION + "_" + env.OS + env.SATELLITE_HOSTNAME
+        }
+    }
+}
+
 def workspace_cleanup(){
     if (env.WORKSPACE_CLEANUP == 'true'){
         cleanupWs()
