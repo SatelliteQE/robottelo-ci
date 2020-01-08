@@ -59,6 +59,7 @@ pipeline {
                     puppet_upgrade()
                     perform_upgrade()
                     mongodb_upgrade()
+                    satellite_backup()
                 }
             }
         }
@@ -333,6 +334,12 @@ def perform_upgrade() {
         if (directory_existence == "true") {
             sh_venv '''tar -czf Log_Analyzer_Logs.tar.xz upgrade-diff-logs'''
         }
+    }
+}
+
+def satellite_backup(){
+    if (env.SATELLITE_BACKUP == 'true'){
+        sh_venv '''ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" "satellite-maintain backup offline -y /var/backup_directory" '''
     }
 }
 
