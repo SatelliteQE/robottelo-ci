@@ -141,6 +141,12 @@
             default: false
             description: |
                 <p> Perform Satellite clone operation with latest Foreman-maintain packages <p>
+        - bool:
+            name: SATELLITE_BACKUP
+            default: false
+            description: |
+                <p> Perform Satellite backup after upgrade, to perform the satellite backup operation
+                the volume size should be 1000 GB(It depends on DB selection)<p>
 
     dsl:
       !include-raw:
