@@ -143,10 +143,11 @@ def loading_the_groovy_script_to_build_pre_upgrade_environment(){
         'from_version':"${FROM_VERSION}",
         'to_version': "${TO_VERSION}"
         ]
-        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY')]) {
+        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY', passwordVariable: 'BUGZILLA_PASSWORD')]) {
         all_args = [
         'hostname': "${RHEV_SAT_HOST}",
         'api_key': "${BZ_API_KEY}",
+        'bz_password': "${BUGZILLA_PASSWORD}",
         'sattools_repo': "rhel8=${TOOLS_RHEL8},rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}",
         'capsule_repo': "${CAPSULE_REPO}"] + network_args + upgrade_args
         }
