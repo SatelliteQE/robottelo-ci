@@ -136,7 +136,7 @@ options {
             PYTHONHASHSEED=0
         '''
       }
-      withCredentials([string(credentialsId: 'SAUCELABS_KEY', variable: 'SAUCELABS_KEY'), string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY')]) {
+      withCredentials([string(credentialsId: 'SAUCELABS_KEY', variable: 'SAUCELABS_KEY'), string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY', passwordVariable: 'BUGZILLA_PASSWORD')]) {
       sauce_args = [:]
       image_args = [:]
       network_args = [:]
@@ -213,6 +213,7 @@ options {
                                                                 'screenshots_path': "${WORKSPACE}//screenshots",
                                                                 'external_url': "http://${SERVER_HOSTNAME}:2375",
                                                                 'api_key': BZ_API_KEY,
+                                                                'bz_password': "${BUGZILLA_PASSWORD}",
                                                                 'access_key': env.AWS_ACCESSKEY_ID,
                                                                 'secret_key': env.AWS_ACCESSKEY_SECRET,
                                                                 '[capsule]':'',
