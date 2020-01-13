@@ -137,7 +137,7 @@ options {
             PYTHONHASHSEED=0
         '''
       }
-      withCredentials([string(credentialsId: 'SAUCELABS_KEY', variable: 'SAUCELABS_KEY'), string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY', passwordVariable: 'BUGZILLA_PASSWORD')]) {
+      withCredentials([string(credentialsId: 'SAUCELABS_KEY', variable: 'SAUCELABS_KEY'), string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD')]) {
       sauce_args = [:]
       image_args = [:]
       network_args = [:]
