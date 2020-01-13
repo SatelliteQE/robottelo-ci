@@ -156,7 +156,7 @@ def loading_the_groovy_script_to_build_post_upgrade_environment(){
         'from_version':"${FROM_VERSION}",
         'to_version': "${TO_VERSION}"
         ]
-        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY', passwordVariable: 'BUGZILLA_PASSWORD')]) {
+        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD')]) {
         all_args = [
         'hostname': "${RHEV_SAT_HOST}",
         'api_key': "${BZ_API_KEY}",
