@@ -147,6 +147,10 @@
             description: |
                 <p> Perform Satellite backup after upgrade, to perform the satellite backup operation
                 the volume size should be 1000 GB(It depends on DB selection)<p>
+        - string:
+            name: WORKAROUND
+            description: |
+                <p> Enter the workaround, the workaround will be executed on the target machine, If you have more than one command then separate it with semicolon(;)</p>
 
     dsl:
       !include-raw:
