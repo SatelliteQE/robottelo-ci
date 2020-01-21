@@ -56,6 +56,7 @@ pipeline {
         stage("Upgrade"){
             steps{
                 ansiColor('xterm') {
+                    workaround()
                     puppet_upgrade()
                     perform_upgrade()
                     mongodb_upgrade()
@@ -364,6 +365,13 @@ def loading_the_groovy_script_to_build_db_environment(){
             environment_variable_for_subscription_config()
             currentBuild.displayName = "#"+ env.BUILD_NUMBER + "CustDB_Upgrade for_" + env.CUSTOMERDB_NAME  + "_from_" + env.FROM_VERSION + "_to_" + env.TO_VERSION + "_" + env.OS + env.SATELLITE_HOSTNAME
         }
+    }
+}
+
+def workaround(){
+    WORKAROUND = env.WORKAROUND ?: binding.hasVariable('WORKAROUND') ? WORKAROUND : ''
+    if (WORKAROUND){
+       sh_venv ''' ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" "${WORKAROUND}" '''
     }
 }
 
