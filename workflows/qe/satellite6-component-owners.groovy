@@ -99,6 +99,12 @@ pipeline {
         always {
             archiveArtifacts(artifacts: "**/component-owners-map.yaml, **/testimony.json")
         }
+        failure {
+            send_automation_email "failure"
+        }
+        fixed {
+            send_automation_email "fixed"
+        }
     }
 }
 
