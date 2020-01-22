@@ -100,6 +100,9 @@ options {
       }
       // changing Satellite6 hostname (supported on Sat6.2+)
       rename_cmd = (SATELLITE_VERSION == "upstream-nightly") ? "katello-change-hostname" : "satellite-change-hostname"
+      // Working around bug https://bugzilla.redhat.com/show_bug.cgi?id=1789752
+      echo "Working around bug https://bugzilla.redhat.com/show_bug.cgi?id=1789752, removing dynamic dns files to regenerate the files post satellite change hostname"
+      sshCommand remote: remote, command: "mv /var/named/dynamic/* /var/tmp/"
       rename_cmd = "${rename_cmd} ${SERVER_HOSTNAME} -y -u admin -p changeme"
       sshCommand remote: remote, command: rename_cmd
 
