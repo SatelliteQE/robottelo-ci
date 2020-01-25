@@ -2,6 +2,7 @@
     name: 'upgrade-to-{satellite_version}-{os}'
     concurrent: true
     project-type: pipeline
+    sandbox: True
     properties:
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
@@ -48,6 +49,7 @@
     name: 'automation-preupgrade-{satellite_version}-scenario-tests-{os}'
     concurrent: true
     project-type: pipeline
+    sandbox: True
     properties:
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
@@ -65,6 +67,7 @@
     name: 'upgrade-phase-{satellite_version}-{os}'
     concurrent: true
     project-type: pipeline
+    sandbox: True
     properties:
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
@@ -104,6 +107,7 @@
 - job-template:
     name: 'automation-upgraded-{satellite_version}-existence-tests-{os}'
     project-type: pipeline
+    sandbox: True
     properties:
         - satellite6-upgrade-build_blocker:
             satellite_version: "{satellite_version}"
@@ -134,6 +138,7 @@
                 ENDPOINT=post-upgrade
                 OS={os}
     project-type: pipeline
+    sandbox: True
     dsl:
       !include-raw-escape:
         - workflows/qe/upgrade-pipeline/satellite6-postupgrade-scenario-tests.groovy

@@ -112,7 +112,7 @@ def check_zstream_upgrade() {
         env.FROM_VERSION = TO_VERSION
     }
     else {
-        env.FROM_VERSION = (Float.parseFloat(SATELLITE_VERSION)-0.1).round(1)
+        env.FROM_VERSION = sh(script: 'echo `echo "${SATELLITE_VERSION} - 0.1"|bc`',returnStdout: true).trim()
     }
 }
 
