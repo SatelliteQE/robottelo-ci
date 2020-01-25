@@ -52,6 +52,7 @@ pipeline {
             steps {
                 environment_variable_for_postupgrade_tests()
                 environment_variable_for_postupgrade_test_decorator()
+                browser_update()
                 sh_venv '''
                     set +e
                     $(which py.test) -v --continue-on-collection-errors -s -m "${post_upgrade_decorator}" --junit-xml=test_scenarios-post-results.xml -o junit_suite_name=test_scenarios-post tests/upgrades
@@ -156,10 +157,12 @@ def loading_the_groovy_script_to_build_post_upgrade_environment(){
         'from_version':"${FROM_VERSION}",
         'to_version': "${TO_VERSION}"
         ]
-        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD')]) {
+        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD'), string(credentialsId: 'SAUCELABS_KEY', variable: 'SAUCELABS_KEY')]) {
         all_args = [
         'hostname': "${RHEV_SAT_HOST}",
         'api_key': "${BZ_API_KEY}",
+        'saucelabs_user': "${SAUCELABS_USER}",
+        'saucelabs_key': "${SAUCELABS_KEY}",
         'bz_password': "${BUGZILLA_PASSWORD}",
         'sattools_repo': "rhel8=${TOOLS_RHEL8},rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}",
         'capsule_repo': "${CAPSULE_REPO}"] + network_args + upgrade_args
@@ -177,6 +180,12 @@ def environment_variable_for_postupgrade_test_decorator(){
     }
 }
 
+def browser_update(){
+    if (env.BROWSER == "saucelabs") {
+        sh_venv ''' sed -i "s/browser=remote/browser=saucelabs/g" robottelo.properties'''
+    }
+}
+
 def environment_variable_for_postupgrade_tests() {
     // required for dockerize upgrade_tests helper
     env.DOCKER_VM = DOCKER_VM
@@ -189,6 +198,7 @@ def environment_variable_for_postupgrade_tests() {
     env.TOOLS_URL_RHEL6 = TOOLS_RHEL6
     env.TOOLS_URL_RHEL7 = TOOLS_RHEL7
     env.TOOLS_URL_RHEL8 = binding.hasVariable('TOOLS_RHEL8')?TOOLS_RHEL8:"None"
+    env.BROWSER = sh(script: 'if ((`echo "${TO_VERSION} <= 6.5"|bc`)); then echo "saucelabs"; else echo "remote"; fi',returnStdout: true).trim()
     env.RHEV_USER = RHEV_USER
     env.RHEV_PASSWD = RHEV_PASSWD
     env.RHEV_URL = RHEV_URL
