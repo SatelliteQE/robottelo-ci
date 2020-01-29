@@ -1,7 +1,7 @@
 ---
 - hosts: localhost
   tasks:
-    - name: "Upload file"
+    - name: "upload '{{ artifact | basename }}' to '{{ repo }}'"
       katello_upload:
         username: "{{ username }}"
         password: "{{ password }}"

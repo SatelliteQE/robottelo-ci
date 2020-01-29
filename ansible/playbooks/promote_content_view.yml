@@ -1,7 +1,7 @@
 ---
 - hosts: localhost
   tasks:
-    - name: "Promote a content view version"
+    - name: "promote '{{ content_view_name }}' content view to '{{ to_lifecycle_environment }}'"
       katello_content_view_version:
         username: "{{ username }}"
         password: "{{ password }}"
