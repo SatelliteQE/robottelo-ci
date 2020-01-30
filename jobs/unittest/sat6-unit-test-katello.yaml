@@ -20,3 +20,6 @@
         - workflows/lib/gitlab.groovy
     notifications:
       - snapper_notifications
+    properties:
+      - satellite6-katello-unittest-throttle
+
