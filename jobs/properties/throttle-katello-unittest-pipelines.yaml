@@ -1,0 +1,9 @@
+- property:
+    name: satellite6-katello-unittest-throttle
+    properties:
+      - throttle:
+          max-per-node: 3
+          max-total: 3
+          categories:
+            - katello-unittest
+          option: category
