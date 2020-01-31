@@ -89,6 +89,7 @@ pipeline {
                      booleanParam(name: 'DESTRUCTIVE_TEST_CASE_EXECUTION', value: "${params.DESTRUCTIVE_TEST_CASE_EXECUTION}"),
                      string(name: 'ROBOTTELO_WORKERS', value: "${params.ROBOTTELO_WORKERS}"),
                      string(name: 'BUILD_LABEL', value: "${params.BUILD_LABEL}"),
+                     string(name: 'WORKAROUNDS', value: "${params.WORKAROUNDS}"),
                     ], wait: false
                 }
             }

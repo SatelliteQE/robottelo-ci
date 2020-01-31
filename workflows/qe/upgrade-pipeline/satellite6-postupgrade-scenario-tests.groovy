@@ -102,6 +102,7 @@ pipeline {
                      booleanParam(name: 'ZSTREAM_UPGRADE', value: "${params.ZSTREAM_UPGRADE}"),
                      string(name: 'ROBOTTELO_WORKERS', value: "${params.ROBOTTELO_WORKERS}"),
                      string(name: 'BUILD_LABEL', value: "${params.BUILD_LABEL}"),
+                     string(name: 'WORKAROUNDS', value: "${params.WORKAROUNDS}"),
                     ], wait: false
                 }
             }

@@ -41,6 +41,13 @@
             default: true
             description: |
                 This option allows to use foreman-maintain for satellite-upgrade.
+        - string:
+              name: WORKAROUNDS
+              description: |
+                  <p>Enter the workarounds, the workarounds will be passed in key and value format</p>
+                  <p>wherever you wants to apply, mention it as a key and</p>
+                  <p>what you want to apply, mention it as value in workaround section, Example:</p>
+                  <p>Please provide the workaround as a python dictionary format</p>
     dsl:
       !include-raw-escape:
         - workflows/qe/upgrade-pipeline/satellite6-upgrade-trigger.groovy
