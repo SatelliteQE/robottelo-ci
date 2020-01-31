@@ -106,8 +106,8 @@ options {
       rename_cmd = "${rename_cmd} ${SERVER_HOSTNAME} -y -u admin -p changeme"
       sshCommand remote: remote, command: rename_cmd
 
-      if ( "${ENDPOINT}" != "tier3" && "tier4") {
-       sshCommand remote: remote, command: "systemctl stop dhcpd"
+      if (!("${ENDPOINT}" in ["tier3", "tier4"])){
+        sshCommand remote: remote, command: "systemctl stop dhcpd"
       }
      }
     }
