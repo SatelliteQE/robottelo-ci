@@ -33,23 +33,34 @@
             name: CUSTOMERDB_NAME
             choices:
                 - 'NoDB'
-                - 'CentralCI'
-                - 'ExpressScripts'
-                - 'Verizon'
-                - 'Walmart'
-                - 'CreditSuisse'
-                - 'ATPC'
+                - 'CCI'
+                - 'EXS'
+                - 'VZ'
+                - 'WMT'
+                - 'CSG'
+                - 'ATP'
+                - 'JEP'
+                - 'SoG'
+                - 'SLR'
+                - 'BAS'
+                - 'GBR'
+                - 'WSC'
                 - 'Sat62RHEL6Migrate'
                 - 'CustomDbURL'
-
             description: |
                 <p>Select the Customer DB for <b>Upgrade</b> OR <b>Migration</b></p>
-                <p>For CentralCI, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
-                <p>For ExpressScript, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
-                <p>For Verizon, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
-                <p>For Walmart, <b> From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
-                <p>For CreditSuisse, <b> From version</b> should be <b>6.3</b> and OS should be <b>RHEL7</b></p>
-                <p>For ATPC, <b> From version</b> should be <b>6.3</b> and OS should be <b>RHEL7</b></p>
+                <p>For CCI, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
+                <p>For EXS, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
+                <p>For VZ, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
+                <p>For WMT, <b> From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
+                <p>For CSG, <b> From version</b> should be <b>6.3, 6.4, 6.5, 6.6</b> and OS should be <b>RHEL7</b></p>
+                <p>For ATP, <b> From version</b> should be <b>6.3</b> and OS should be <b>RHEL7</b></p>
+                <p>For JEP, <b> From version</b> should be <b>6.3, 6.4, 6.5, 6.6</b> and OS should be <b>RHEL7</b></p>
+                <p>For SoG, <b> From version</b> should be <b>6.3, 6.4, 6.5 </b> and OS should be <b>RHEL7</b></p>
+                <p>For SLR, <b> From version</b> should be <b>6.3, 6.4, 6.5, 6.6</b> and OS should be <b>RHEL7</b></p>
+                <p>For BAS, <b> From version</b> should be <b>6.5, 6.6</b> and OS should be <b>RHEL7</b></p>
+                <p>For GBR, <b> From version</b> should be <b>6.6</b> and OS should be <b>RHEL7</b></p>
+                <p>For WSC, <b> From version</b> should be <b>6.5</b> and OS should be <b>RHEL7</b></p>
                 <p>For Sat62RHEL6Migrate, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For CustomDbURL, You need to provide CUSTOM_DB_URL parameter, also specify From version and OS accordingly.</p>
         - string:

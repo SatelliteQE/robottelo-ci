@@ -94,6 +94,8 @@ def instance_creation_deletion(){
     if (env.SATELLITE_HOSTNAME.size() == 0 && env.OPENSTACK_DEPLOY == 'true'){
         load('config/preupgrade_entities.groovy')
         environment_variable_for_preupgrade()
+        load('config/customers_name.groovy')
+        environment_variable_for_DB()
         sh_venv '''fab -D -u root delete_openstack_instance:"customerdb_"${CUSTOMERDB_NAME}
                    fab -D -u root create_openstack_instance:"customerdb_"${CUSTOMERDB_NAME},"${RHEL7_IMAGE}","${VOLUME_SIZE}"'''
     }
@@ -152,30 +154,6 @@ def inventory_configuration(){
     dir('satellite-clone') {
         // make_venv python: defaults.python
         sh_venv '''sed -i -e 2s/.*/"${INSTANCE_NAME}"/ inventory'''
-    }
-    if (env.CUSTOMERDB_NAME == "CentralCI"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases/Central-CI/6.2-OCT-13-2017/'
-    }
-    else if (env.CUSTOMERDB_NAME == "ExpressScripts"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases/express-scripts/6.2-OCT-14-2017'
-    }
-    else if (env.CUSTOMERDB_NAME == "Verizon"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases/Verizon/OCT-2-2017-62'
-    }
-    else if (env.CUSTOMERDB_NAME == "Walmart"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases/walmart/6.2-OCT-2017'
-    }
-    else if (env.CUSTOMERDB_NAME == "CreditSuisse"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases2/credit-suisse/MAY-21-2018-631/'
-    }
-    else if (env.CUSTOMERDB_NAME == "ATPC"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases2/ATPC/JUN-16-2018-631/'
-    }
-    else if (env.CUSTOMERDB_NAME == "Sat62RHEL6Migrate"){
-        env.DB_URL="http://"${cust_db_server}"/customer-databases/qe-rhel6-db/sat62-rhel6-db"
-    }
-    else if (env.CUSTOMERDB_NAME == "CustomDbURL") {
-        env.DB_URL="${env.CUSTOM_DB_URL}"
     }
 }
 
@@ -470,6 +448,13 @@ def environment_variable_for_preupgrade(){
     env.RHEL_REPO = RHEL_REPO
     env.DBSERVER = DBSERVER
     env.UPGRADE_STAGE = "pre"
+    env.CUST_DB_SERVER = cust_db_server
+}
+
+def environment_variable_for_DB(){
+    DB_VERSION = sh(script: 'echo ${FROM_VERSION}|sed"s/\.//g"',returnStdout: true).trim()
+    env.CUSTOMERDB_NAME = CUSTOMERDB_NAME + DB_VERSION
+    env.DB_URL = DB_URL
 }
 
 def environment_variable_for_sat6_upgrade(){
