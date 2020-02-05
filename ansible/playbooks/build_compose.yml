@@ -20,3 +20,8 @@
 
     - name: 'Generate compose'
       command: "pungi-koji --test --config={{ compose_conf_dir }}/pungi/satellite-6/{{ compose_version }}/{{ compose_name }}-{{ distro }}-{{ distro_version }}-{{ compose_tag }}.conf --target-dir={{ compose_output_dir }} --skip-phase=createiso --skip-phase=live_images --skip-phase=extra_files"
+
+    - name: 'Remove work folder from compose'
+      file: 
+        state: absent
+        path: "{{ compose_output_dir }}/latest-{{ compose_label }}-{{ distro|upper }}-{{ distro_version }}/work"
