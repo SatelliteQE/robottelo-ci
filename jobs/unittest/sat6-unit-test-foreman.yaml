@@ -20,4 +20,3 @@
         - workflows/lib/gitlab.groovy
     notifications:
       - snapper_notifications
-
