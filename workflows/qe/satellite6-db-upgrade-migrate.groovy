@@ -56,9 +56,12 @@ pipeline {
         stage("Upgrade"){
             steps{
                 ansiColor('xterm') {
+                    setup_for_existence_test()
                     workaround()
                     puppet_upgrade()
                     perform_upgrade()
+                    setup_for_existence_test()
+                    existence_test_execution()
                     mongodb_upgrade()
                     satellite_backup()
                 }
@@ -68,6 +71,8 @@ pipeline {
     post {
         always{
             mail_notification()
+            junit(testResults: '*-results.xml', allowEmptyResults: true)
+            archiveArtifacts(artifacts: 'postupgrade_*,preupgrade_*')
         }
     }
  }
@@ -325,17 +330,29 @@ def puppet_upgrade() {
 
 def perform_upgrade() {
     if (env.PERFORM_UPGRADE == 'true'){
-        sh_venv '''fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
+        sh_venv '''
                    fab -u root product_upgrade:"${UPGRADE_PRODUCT}"
                 '''
-        if (env.RUN_EXISTENCE_TESTS == 'true'){
-            sh_venv '''$(which py.test) -v --junit-xml=test_existance-results.xml -o junit_suite_name=test_existance upgrade_tests/test_existance_relations/ '''
-        }
         def directory_existence= sh(script: 'if [ -d upgrade-diff-logs ]; then echo "true"; else echo "false";fi',returnStdout: true).trim()
         if (directory_existence == "true") {
             sh_venv '''tar -czf Log_Analyzer_Logs.tar.xz upgrade-diff-logs'''
         }
     }
+}
+
+def existence_test_execution(){
+    if (env.RUN_EXISTENCE_TESTS == 'true'){
+            ansiColor('xterm') {
+                    sh_venv '''
+                        set +e
+                        export ENDPOINT='cli'
+                        $(which py.test) -v --continue-on-collection-errors --junit-xml=test_existance_cli-results.xml -o junit_suite_name=test_existance_cli upgrade_tests/test_existance_relations/cli/
+                        export ENDPOINT='api'
+                        $(which py.test) -v --continue-on-collection-errors --junit-xml=test_existance_api-results.xml -o junit_suite_name=test_existance_api upgrade_tests/test_existance_relations/api/
+                        set -e
+                    '''
+                }
+        }
 }
 
 def satellite_backup(){
@@ -388,6 +405,32 @@ def upgrade_environment_variable(){
     }
 }
 
+def setup_for_existence_test(){
+    if (env.UPGRADE_STAGE == "pre") {
+        sh_venv '''
+            fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
+        '''
+    }
+    if (env.RUN_EXISTENCE_TESTS == 'true') {
+        if (env.UPGRADE_STAGE == "pre"){
+            sh_venv '''
+                    fab -D -u root set_datastore:"preupgrade","cli"
+                    fab -D -u root set_datastore:"preupgrade","api"
+                    fab -D -u root set_templatestore:"preupgrade"
+                    tar -cf preupgrade_templates.tar.xz preupgrade_templates
+                '''
+            env.UPGRADE_STAGE = "post"
+        }
+        else {
+            sh_venv '''
+                    fab -D -u root set_datastore:"postupgrade","cli"
+                    fab -D -u root set_datastore:"postupgrade","api"
+                    fab -D -u root set_templatestore:"postupgrade"
+                    tar -cf postupgrade_templates.tar.xz postupgrade_templates
+                '''
+        }
+    }
+}
 
 def mail_notification(){
     env.BUILD_STATUS = currentBuild.result
@@ -409,7 +452,6 @@ def mail_notification(){
         )
 }
 
-
 def environment_variable_for_preupgrade(){
     env.USERNAME = USERNAME
     env.AUTH_URL = AUTH_URL
@@ -421,8 +463,8 @@ def environment_variable_for_preupgrade(){
     env.RHEL7_IMAGE = RHEL7_IMAGE
     env.RHEL_REPO = RHEL_REPO
     env.DBSERVER = DBSERVER
+    env.UPGRADE_STAGE = "pre"
 }
-
 
 def environment_variable_for_sat6_upgrade(){
     env.DOCKER_VM = DOCKER_VM
@@ -437,7 +479,6 @@ def environment_variable_for_sat6_upgrade(){
     env.RHEL7_CUSTOM_REPO = RHEL7_CUSTOM_REPO
 }
 
-
 def environment_variable_for_sat6_repos_url(){
 
     env.TOOLS_RHEL7 = TOOLS_RHEL7
@@ -448,7 +489,6 @@ def environment_variable_for_sat6_repos_url(){
     env.BASE_URL = BASE_URL
 }
 
-
 def environment_variable_for_compute_resource(){
     env.RHEV_USER = RHEV_USER
     env.RHEV_PASSWD = RHEV_PASSWD
@@ -458,7 +498,6 @@ def environment_variable_for_compute_resource(){
     env.LIBVIRT_HOSTNAME = LIBVIRT_HOSTNAME
     env.RHEV_DATACENTER = RHEV_DATACENTER
 }
-
 
 def environment_variable_for_subscription_config() {
     env.RHN_USERNAME = RHN_USERNAME
