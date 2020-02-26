@@ -71,8 +71,7 @@ pipeline {
     post {
         always{
             mail_notification()
-            junit(testResults: '*-results.xml', allowEmptyResults: true)
-            archiveArtifacts(artifacts: 'postupgrade_*,preupgrade_*')
+            post_upgrade_result()
         }
     }
  }
@@ -450,6 +449,13 @@ def mail_notification(){
         body:'${FILE,path="mail_report.html"}',
         to: "$QE_EMAIL_LIST"
         )
+}
+
+def post_upgrade_result(){
+    if (env.RUN_EXISTENCE_TESTS == 'true') {
+        junit(testResults: '*-results.xml', allowEmptyResults: true)
+        archiveArtifacts(artifacts: 'postupgrade_*,preupgrade_*')
+    }
 }
 
 def environment_variable_for_preupgrade(){
