@@ -30,6 +30,7 @@ pipeline {
                 ansiColor('xterm') {
                     instance_creation_deletion()
                     customer_db_setup()
+                    build_display_name()
                     inventory_configuration()
                     satellite_clone_setup()
                     check_the_flag_incase_of_migration()
@@ -51,6 +52,7 @@ pipeline {
             }
             steps{
                 loading_the_groovy_script_to_build_db_environment()
+                build_display_name()
             }
         }
         stage("Upgrade"){
@@ -94,6 +96,8 @@ def instance_creation_deletion(){
     if (env.SATELLITE_HOSTNAME.size() == 0 && env.OPENSTACK_DEPLOY == 'true'){
         load('config/preupgrade_entities.groovy')
         environment_variable_for_preupgrade()
+        load('config/customers_name.groovy')
+        environment_variable_for_DB()
         sh_venv '''fab -D -u root delete_openstack_instance:"customerdb_"${CUSTOMERDB_NAME}
                    fab -D -u root create_openstack_instance:"customerdb_"${CUSTOMERDB_NAME},"${RHEL7_IMAGE}","${VOLUME_SIZE}"'''
     }
@@ -138,7 +142,7 @@ def customer_db_setup(){
 
 
 def openstack_deploy(){
-    env.BACKUP_DIR = "\\/tmp\\/customer-dbs\\/$CUSTOMERDB_NAME"
+    env.BACKUP_DIR = "\\/tmp\\/customer-dbs\\/${env.CUSTOMERDB_NAME}"
     /// Need to check environment set on ssh_evenv
     def INSTANCE_NAME = sh(script: 'source /tmp/instance.info; echo ${OSP_HOSTNAME} ',returnStdout: true).trim()
     env.INSTANCE_NAME = INSTANCE_NAME
@@ -152,30 +156,6 @@ def inventory_configuration(){
     dir('satellite-clone') {
         // make_venv python: defaults.python
         sh_venv '''sed -i -e 2s/.*/"${INSTANCE_NAME}"/ inventory'''
-    }
-    if (env.CUSTOMERDB_NAME == "CentralCI"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases/Central-CI/6.2-OCT-13-2017/'
-    }
-    else if (env.CUSTOMERDB_NAME == "ExpressScripts"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases/express-scripts/6.2-OCT-14-2017'
-    }
-    else if (env.CUSTOMERDB_NAME == "Verizon"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases/Verizon/OCT-2-2017-62'
-    }
-    else if (env.CUSTOMERDB_NAME == "Walmart"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases/walmart/6.2-OCT-2017'
-    }
-    else if (env.CUSTOMERDB_NAME == "CreditSuisse"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases2/credit-suisse/MAY-21-2018-631/'
-    }
-    else if (env.CUSTOMERDB_NAME == "ATPC"){
-        env.DB_URL='http://"${cust_db_server}"/customer-databases2/ATPC/JUN-16-2018-631/'
-    }
-    else if (env.CUSTOMERDB_NAME == "Sat62RHEL6Migrate"){
-        env.DB_URL="http://"${cust_db_server}"/customer-databases/qe-rhel6-db/sat62-rhel6-db"
-    }
-    else if (env.CUSTOMERDB_NAME == "CustomDbURL") {
-        env.DB_URL="${env.CUSTOM_DB_URL}"
     }
 }
 
@@ -379,7 +359,6 @@ def loading_the_groovy_script_to_build_db_environment(){
             load('config/subscription_config.groovy')
             environment_variable_for_sat6_repos_url()
             environment_variable_for_subscription_config()
-            currentBuild.displayName = "#"+ env.BUILD_NUMBER + "CustDB_Upgrade for_" + env.CUSTOMERDB_NAME  + "_from_" + env.FROM_VERSION + "_to_" + env.TO_VERSION + "_" + env.OS + env.SATELLITE_HOSTNAME
         }
     }
 }
@@ -389,6 +368,10 @@ def workaround(){
     if (WORKAROUND){
        sh_venv ''' ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" "${WORKAROUND}" '''
     }
+}
+
+def build_display_name(){
+    currentBuild.displayName = "#"+ env.BUILD_NUMBER + "CustDB_Upgrade for_" + env.CUSTOMERDB_NAME  + "_from_" + env.FROM_VERSION + "_to_" + env.TO_VERSION + "_" + env.OS
 }
 
 def workspace_cleanup(){
@@ -470,6 +453,13 @@ def environment_variable_for_preupgrade(){
     env.RHEL_REPO = RHEL_REPO
     env.DBSERVER = DBSERVER
     env.UPGRADE_STAGE = "pre"
+    env.CUST_DB_SERVER = cust_db_server
+}
+
+def environment_variable_for_DB(){
+    DB_VERSION = sh(script: 'echo ${FROM_VERSION}|sed "s/\\.//g"',returnStdout: true).trim()
+    env.CUSTOMERDB_NAME = CUSTOMERDB_NAME + DB_VERSION
+    env.DB_URL = DB_URL
 }
 
 def environment_variable_for_sat6_upgrade(){
