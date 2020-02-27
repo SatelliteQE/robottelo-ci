@@ -30,6 +30,7 @@ pipeline {
                 ansiColor('xterm') {
                     instance_creation_deletion()
                     customer_db_setup()
+                    build_display_name()
                     inventory_configuration()
                     satellite_clone_setup()
                     check_the_flag_incase_of_migration()
@@ -51,6 +52,7 @@ pipeline {
             }
             steps{
                 loading_the_groovy_script_to_build_db_environment()
+                build_display_name()
             }
         }
         stage("Upgrade"){
@@ -140,7 +142,7 @@ def customer_db_setup(){
 
 
 def openstack_deploy(){
-    env.BACKUP_DIR = "\\/tmp\\/customer-dbs\\/$CUSTOMERDB_NAME"
+    env.BACKUP_DIR = "\\/tmp\\/customer-dbs\\/${env.CUSTOMERDB_NAME}"
     /// Need to check environment set on ssh_evenv
     def INSTANCE_NAME = sh(script: 'source /tmp/instance.info; echo ${OSP_HOSTNAME} ',returnStdout: true).trim()
     env.INSTANCE_NAME = INSTANCE_NAME
@@ -357,7 +359,6 @@ def loading_the_groovy_script_to_build_db_environment(){
             load('config/subscription_config.groovy')
             environment_variable_for_sat6_repos_url()
             environment_variable_for_subscription_config()
-            currentBuild.displayName = "#"+ env.BUILD_NUMBER + "CustDB_Upgrade for_" + env.CUSTOMERDB_NAME  + "_from_" + env.FROM_VERSION + "_to_" + env.TO_VERSION + "_" + env.OS + env.SATELLITE_HOSTNAME
         }
     }
 }
@@ -367,6 +368,10 @@ def workaround(){
     if (WORKAROUND){
        sh_venv ''' ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@"${SATELLITE_HOSTNAME}" "${WORKAROUND}" '''
     }
+}
+
+def build_display_name(){
+    currentBuild.displayName = "#"+ env.BUILD_NUMBER + "CustDB_Upgrade for_" + env.CUSTOMERDB_NAME  + "_from_" + env.FROM_VERSION + "_to_" + env.TO_VERSION + "_" + env.OS
 }
 
 def workspace_cleanup(){
@@ -452,7 +457,7 @@ def environment_variable_for_preupgrade(){
 }
 
 def environment_variable_for_DB(){
-    DB_VERSION = sh(script: 'echo ${FROM_VERSION}|sed"s/\.//g"',returnStdout: true).trim()
+    DB_VERSION = sh(script: 'echo ${FROM_VERSION}|sed "s/\\.//g"',returnStdout: true).trim()
     env.CUSTOMERDB_NAME = CUSTOMERDB_NAME + DB_VERSION
     env.DB_URL = DB_URL
 }
