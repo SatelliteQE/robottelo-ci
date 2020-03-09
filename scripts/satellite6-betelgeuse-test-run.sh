@@ -1,13 +1,14 @@
 # Populate token-prefix and betelgeuse depending upon Satellite6 Version.
 
-pip install Betelgeuse==0.16.0
+pip install Betelgeuse==1.6.0
 TOKEN_PREFIX=""
 
-# Create a new release with POLARION_RELEASE as the parent-plan.
+wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/lib/python/satellite6-polarion-test-plan.py
 
+# Create a new release with POLARION_RELEASE as the parent-plan.
 if [ -n "$POLARION_RELEASE" ]; then
-    betelgeuse test-plan --name "${POLARION_RELEASE}" --plan-type release \
-    "${POLARION_PROJECT}"
+    python satellite6-polarion-test-plan.py --name "${POLARION_RELEASE}" \
+        --plan-type release "${POLARION_PROJECT}"
 else
     echo "Please specify the POLARION_RELEASE"
     exit 1
@@ -15,10 +16,11 @@ fi
 
 # Create a new iteration for the current run
 if [ -n "$POLARION_RELEASE" ]; then
-    betelgeuse test-plan --name "${TEST_RUN_ID}" --parent-name "${POLARION_RELEASE}" \
+    python satellite6-polarion-test-plan.py --name "${TEST_RUN_ID}" \
+        --parent-name "${POLARION_RELEASE}" \
         --plan-type iteration "${POLARION_PROJECT}"
 else
-    betelgeuse test-plan --name "${TEST_RUN_ID}" \
+    python satellite6-polarion-test-plan.py --name "${TEST_RUN_ID}" \
         --plan-type iteration "${POLARION_PROJECT}"
 fi
 
@@ -31,7 +33,7 @@ TEST_RUN_GROUP_ID="$(echo ${TEST_RUN_ID} | cut -d' ' -f2)"
 if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
     # All tiers result upload
     for run in parallel sequential; do
-        betelgeuse ${TOKEN_PREFIX} xml-test-run \
+        betelgeuse ${TOKEN_PREFIX} test-run \
         --custom-fields "isautomated=true" \
         --custom-fields "arch=x8664" \
         --custom-fields "variant=server" \
@@ -50,7 +52,7 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
         "${POLARION_URL}import/xunit"
     done
     # end-to-end tier results upload
-    betelgeuse ${TOKEN_PREFIX} xml-test-run \
+    betelgeuse ${TOKEN_PREFIX} test-run \
     --custom-fields "isautomated=true" \
     --custom-fields "arch=x8664" \
     --custom-fields "variant=server" \
@@ -68,7 +70,7 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
     -F file=@polarion-smoke-upgrade-results.xml \
     "${POLARION_URL}import/xunit"
 elif [ "${ENDPOINT}" = "rhai" ] || [ "${ENDPOINT}" = "destructive" ]; then
-    betelgeuse ${TOKEN_PREFIX} xml-test-run \
+    betelgeuse ${TOKEN_PREFIX} test-run \
         --custom-fields "isautomated=true" \
         --custom-fields "arch=x8664" \
         --custom-fields "variant=server" \
@@ -87,7 +89,7 @@ elif [ "${ENDPOINT}" = "rhai" ] || [ "${ENDPOINT}" = "destructive" ]; then
         "${POLARION_URL}import/xunit"
 else
     for run in parallel sequential; do
-        betelgeuse ${TOKEN_PREFIX} xml-test-run \
+        betelgeuse ${TOKEN_PREFIX} test-run \
             --custom-fields "isautomated=true" \
             --custom-fields "arch=x8664" \
             --custom-fields "variant=server" \
@@ -108,7 +110,7 @@ else
 fi
 
 # Mark the iteration done
-betelgeuse test-plan \
+python satellite6-polarion-test-plan.py \
     --name "${TEST_RUN_ID}" \
     --custom-fields status=done \
     "${POLARION_PROJECT}"
