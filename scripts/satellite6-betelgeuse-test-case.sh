@@ -1,5 +1,5 @@
 # Install the latest version of betelgeuse.
-pip install Betelgeuse==0.16.0 pathlib pyyaml
+pip install Betelgeuse==1.6.0 pyyaml
 
 
 if [[ ${BETELGEUSE_AUTOMATION_PROJECT} = "satellite6-upgrade" ]]; then
@@ -11,7 +11,12 @@ fi
 for TC_PATH in $(echo ${BETELGEUSE_TC_PATH}) ; do \
 betelgeuse requirement \
     ${TC_PATH} \
-    "${POLARION_PROJECT}" ; done
+    "${POLARION_PROJECT}" \
+    "requirement.xml" ; \
+curl -k -u "${POLARION_USERNAME}:${POLARION_PASSWORD}" \
+    -X POST \
+    -F file=@requirement.xml \
+    "${POLARION_URL}import/requirement" ; done
 
 export PYTHONPATH="${PWD}"
 
