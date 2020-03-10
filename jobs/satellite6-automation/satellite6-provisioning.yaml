@@ -43,7 +43,7 @@
         - string:
             name: IMAGE
             description: |
-                Specify custom RHEL source image to be used for automation. Do not use the full path, use the image name without the .img suffix
+                Specify custom RHEL source image to be used for automation. Do not use the full path, use the image name without the "-base.img" suffix
         - bool:
             name: PYTHON_CODE_COVERAGE
             default: true
