@@ -20,14 +20,30 @@ def test_forklift(args) {
         for (int i = 0; i < os_versions.size(); i++) {
             def index = i // fresh variable per iteration; i will be mutated
             def item = os_versions.get(index)
-            def vars = ['pipeline_version': "${satellite_version}", 'pipeline_os': "rhel${item}"]
+            def vars = ['pipeline_type': "${satellite_product}", 'pipeline_version': "${satellite_version}", 'pipeline_os': "rhel${item}"]
             def extra_vars = buildExtraVars(extraVars: vars)
 
             branches["install-rhel-${item}"] = {
                 try {
                     runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/${satellite_product}_install_pipeline.yml -e forklift_state=up ${extra_vars}"
                 } finally {
+                    runOnLibvirtHost "cd sat-deploy && ansible-playbook forklift/playbooks/collect_debug.yml -l 'pipeline-*' ${extra_vars}"
                     runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/${satellite_product}_install_pipeline.yml -e forklift_state=destroy ${extra_vars}"
+
+                    def debug_folder = "debug-${satellite_product}-${satellite_version}-rhel${item}"
+
+                    dir(debug_folder){
+
+                        sh "scp -r jenkins@${env.LIBVIRT_HOST}:/tmp/${debug_folder}/ ."
+
+                        archiveArtifacts artifacts: "**/*.tap", allowEmptyArchive: true
+                        archiveArtifacts artifacts: "**/*.tar.xz", allowEmptyArchive: true
+                        archiveArtifacts artifacts: "**/*.xml", allowEmptyArchive: true
+
+                        runOnLibvirtHost "rm -rf /tmp/${debug_folder}/"
+
+                        deleteDir()
+                    }
                 }
             }
         }
