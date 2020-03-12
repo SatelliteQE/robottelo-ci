@@ -33,6 +33,27 @@ node('sat6-build') {
         update_build_description_from_packages(packages_to_build)
     }
 
+    stage('Lint Spec') {
+        when {
+            expression { packages_to_build }
+        }
+        steps {
+
+            script {
+                def packages = [:]
+
+                for(int i = 0; i < packages_to_build.size(); i++) {
+                    def index = i
+                    packages[packages_to_build[index]] = {
+                        obal(action: "lint", packages: packages_to_build[index])
+                    }
+                }
+
+                parallel packages
+            }
+        }
+    }
+
     stage("Verify version and release"){
         if (build_type == 'scratch') {
             def packages = packages_to_build.split(' ')
