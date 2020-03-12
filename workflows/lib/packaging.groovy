@@ -34,23 +34,25 @@ node('sat6-build') {
     }
 
     stage('Lint Spec') {
-        when {
-            expression { packages_to_build }
-        }
-        steps {
+        try {
+            setup_obal()
 
-            script {
+            to_build = packages_to_build.split()
+
+            gitlabCommitStatus(name: 'lint') {
                 def packages = [:]
 
-                for(int i = 0; i < packages_to_build.size(); i++) {
+                for(int i = 0; i < to_build.size(); i++) {
                     def index = i
-                    packages[packages_to_build[index]] = {
-                        obal(action: "lint", packages: packages_to_build[index])
+                    packages[to_build[index]] = {
+                        obal(action: "lint", packages: to_build[index])
                     }
                 }
 
                 parallel packages
             }
+        } catch(Exception ex) {
+            deleteDir()
         }
     }
 
@@ -143,8 +145,6 @@ node('sat6-build') {
         try {
 
             krbcc = kerberos_setup()
-
-            setup_obal()
 
             gitlabCommitStatus(name: build_type) {
                 withEnv(["KRB5CCNAME=${krbcc}"]) {
