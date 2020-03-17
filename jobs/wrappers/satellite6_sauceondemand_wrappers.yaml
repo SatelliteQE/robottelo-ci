@@ -14,7 +14,7 @@
                   <webDriverBrowsers/>
                   <appiumBrowsers/>
                   <useLatestVersion>false</useLatestVersion>
-                  <useLatestSauceConnect>true</useLatestSauceConnect>
+                  <useLatestSauceConnect>false</useLatestSauceConnect>
                   <forceCleanup>true</forceCleanup>
                   <launchSauceConnectOnSlave>true</launchSauceConnectOnSlave>
                   <verboseLogging>true</verboseLogging>
