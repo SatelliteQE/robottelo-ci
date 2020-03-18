@@ -40,8 +40,13 @@ node('rvm') {
 
     stage('Run Tests') {
 
-        gitlabCommitStatus() {
-            parallel tests
+        if (tests.size() > 0) {
+            gitlabCommitStatus() {
+                parallel tests
+            }
+        } else {
+            echo "No entry found for ${gitlabTargetBranch} in puppet-matrix.groovy"
+            sh 'exit 1'
         }
 
     }
