@@ -54,9 +54,9 @@ def create_test_plan(name, plan_type, parent_name, custom_fields, project):
     )
 
     # Check if the test plan already exists
-    result = Plan.search('id:{0}'.format(plan_id))
+    result = Plan.search(f'id:{plan_id}')
     if len(result) == 1:
-        logging.info('Found Test Plan {0}.'.format(name))
+        logging.info(f'Found Test Plan {name}.')
         test_plan = result[0]
     else:
         # Unlike Testrun, Pylarion currently does not accept **kwargs in
@@ -69,17 +69,14 @@ def create_test_plan(name, plan_type, parent_name, custom_fields, project):
             project_id=project,
             template_id=plan_type
         )
-        logging.info(
-            'Created new Test Plan {0} with ID {1}.'.format(name, plan_id)
-        )
+        logging.info(f'Created new Test Plan {name} with ID {plan_id}.')
 
     update = False
     for field, value in custom_fields.items():
         if getattr(test_plan, field) != value:
             setattr(test_plan, field, value)
             logging.info(
-                'Test Plan {0} updated with {1}={2}.'.format(
-                    test_plan.name, field, value)
+                f'Test Plan {test_plan.name} updated with {field}={value}.'
             )
             update = True
     if update:
