@@ -44,7 +44,15 @@ def load_custom_fields(custom_fields_opt):
 
 
 def create_test_plan(name, plan_type, parent_name, custom_fields, project):
-    """Create a new test plan in Polarion."""
+    """Create a new test plan in Polarion.
+
+    :param name: Name for new Test Plan
+    :param plan_type: Test Plan type; one of "release" or "iteration"
+    :param parent_name: Name of parent Test Plan to link to
+    :param custom_fields: Custom fields for the test plan
+    :param project: Name of Polarion project
+    """
+
     # Sanitize names to valid values for IDs...
     custom_fields = load_custom_fields(custom_fields)
     plan_id = re.sub(INVALID_CHARS_REGEX, '_', name).replace(' ', '_')
@@ -55,7 +63,7 @@ def create_test_plan(name, plan_type, parent_name, custom_fields, project):
 
     # Check if the test plan already exists
     result = Plan.search(f'id:{plan_id}')
-    if len(result) == 1:
+    if result:
         logging.info(f'Found Test Plan {name}.')
         test_plan = result[0]
     else:
