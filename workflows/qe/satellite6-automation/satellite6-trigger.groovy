@@ -53,7 +53,7 @@ pipeline {
          string(name: 'PROXY_MODE', value: "${params.PROXY_MODE}"),
          string(name: 'BUILD_LABEL', value: "${params.BUILD_LABEL}"),
          string(name: 'EXTERNAL_AUTH', value: "${params.EXTERNAL_AUTH}"),
-         booleanParam(name: 'IDM_REALM', defaultValue: true),
+         booleanParam(name: 'IDM_REALM', defaultValue: true, value: "${params.IDM_REALM}"),
          string(name: 'IMAGE', value: "${params.RHEL7_IMAGE}"),
          string(name: 'SAUCE_BROWSER', value: "${params.SAUCE_BROWSER}"),
          string(name: 'SAUCE_PLATFORM', value: "${params.SAUCE_PLATFORM}"),
@@ -100,7 +100,7 @@ pipeline {
         string(name: 'PROXY_MODE', value: "${params.PROXY_MODE}"),
         string(name: 'BUILD_LABEL', value: "${params.BUILD_LABEL}"),
         string(name: 'EXTERNAL_AUTH', value: "${params.EXTERNAL_AUTH}"),
-        booleanParam(name: 'IDM_REALM', defaultValue: true),
+        booleanParam(name: 'IDM_REALM', defaultValue: true, value: "${params.IDM_REALM}"),
        ],
        propagate: false,
        wait: true
