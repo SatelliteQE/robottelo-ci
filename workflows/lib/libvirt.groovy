@@ -27,8 +27,11 @@ def test_forklift(args) {
                 try {
                     runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/${satellite_product}_install_pipeline.yml -e forklift_state=up ${extra_vars}"
                 } finally {
-                    runOnLibvirtHost "cd sat-deploy && ansible-playbook forklift/playbooks/collect_debug.yml -l 'pipeline-*' ${extra_vars}"
-                    runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/${satellite_product}_install_pipeline.yml -e forklift_state=destroy ${extra_vars}"
+                    try {
+                        runOnLibvirtHost "cd sat-deploy && ansible-playbook forklift/playbooks/collect_debug.yml -l 'pipeline-*-${satellite_version}-rhel${item}' ${extra_vars}"
+                    } finally {
+                        runOnLibvirtHost "cd sat-deploy && ansible-playbook pipelines/${satellite_product}_install_pipeline.yml -e forklift_state=destroy ${extra_vars}"
+                    }
 
                     def debug_folder = "debug-${satellite_product}-${satellite_version}-rhel${item}"
 
