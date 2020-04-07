@@ -105,6 +105,10 @@ options {
       sshCommand remote: remote, command: "mv /var/named/dynamic/* /var/tmp/"
       rename_cmd = "${rename_cmd} ${SERVER_HOSTNAME} -y -u admin -p changeme"
       sshCommand remote: remote, command: rename_cmd
+      // we also need to update the A dns record for the satellite hostname for named
+      sshCommand remote: remote, command: "sed -i \"s/^\\(${TARGET_IMAGE}\\s*A\\s*\\).*\$/\\1${TIER_IPADDR}/g\" /var/named/dynamic/db.${VM_DOMAIN}"
+      sshCommand remote: remote, command: "systemctl restart named"
+      sshCommand remote: remote, command: "systemctl status named"
 
       if (!("${ENDPOINT}".toString() in ["tier3", "tier4"])){
         sshCommand remote: remote, command: "systemctl stop dhcpd"
