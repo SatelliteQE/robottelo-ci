@@ -8,10 +8,11 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.8'
+                - '6.7'
                 - '6.6'
                 - '6.5'
                 - '6.4'
-                - '6.7'
             description: "Select version of satellite for which discovery-image need to create."
         - choice:
             name: DISTRO
