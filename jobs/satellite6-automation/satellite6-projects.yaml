@@ -13,6 +13,7 @@
         - '6.6':
             scm-branch: origin/6.6.z
         - '6.7'
+        - '6.8'
         - 'upstream-nightly':
             rp_project: 'katello-nightly'
     os:
@@ -34,6 +35,8 @@
           os: 'rhel8'
         - satellite_version: '6.7'
           os: 'rhel8'
+        - satellite_version: '6.8'
+          os: 'rhel8'
     jobs:
         - 'provisioning-{satellite_version}-{os}'
         - 'automation-{satellite_version}-{endpoint}-{os}'
@@ -52,6 +55,7 @@
         - '6.5'
         - '6.6'
         - '6.7'
+        - '6.8'
     os:
         - 'rhel7'
         - 'rhel8'
@@ -63,6 +67,8 @@
         - satellite_version: '6.6'
           os: 'rhel8'
         - satellite_version: '6.7'
+          os: 'rhel8'
+        - satellite_version: '6.8'
           os: 'rhel8'
     jobs:
         - 'satellite6-sanity-check-{satellite_version}-{os}'
@@ -81,6 +87,7 @@
         - '6.6':
             scm-branch: origin/6.6.z
         - '6.7'
+        - '6.8'
     os:
         - 'rhel7'
     jobs:
@@ -103,6 +110,7 @@
         - '6.5'
         - '6.6'
         - '6.7'
+        - '6.8'
     jobs:
         - 'trigger-satellite-{satellite_version}'
 

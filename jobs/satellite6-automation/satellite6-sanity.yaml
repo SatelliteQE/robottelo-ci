@@ -165,7 +165,7 @@
             properties-file: build_env.properties
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[4567])
+            regex: (6\.[45678])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
                 - trigger-builds:
@@ -176,11 +176,6 @@
                         SERVER_HOSTNAME=${{SATELLITE_SERVER_HOSTNAME}}
                         BUILD_LABEL=${{BUILD_LABEL}}
                         SATELLITE_VERSION=${{SATELLITE_VERSION}}
-        - conditional-step:
-            condition-kind: regex-match
-            regex: (6\.[4567])
-            label: ${{ENV,var="SATELLITE_VERSION"}}
-            steps:
                 - trigger-builds:
                     - project: 'foreman-maintain-automation'
                       current-parameters: true
