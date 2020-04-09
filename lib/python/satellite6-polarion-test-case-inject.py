@@ -69,6 +69,7 @@ def get_product_versions(repo, test_path, tmp_path, xml_file_path):
                     # Replace master with respective product version it points to
                     master_branch_sat_version = float(max([x.replace(
                         ".z", "") for x in satellite_stable_branches if x != "master"])) + 0.1
+                    master_branch_sat_version = round(master_branch_sat_version, 1)
                     versions.append(branches_name.replace(
                         "master", str(master_branch_sat_version)))
                 else:
