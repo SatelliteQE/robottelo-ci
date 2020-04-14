@@ -220,11 +220,7 @@ satellite_runner repository-set enable --name="Red Hat Enterprise Linux 7 Server
 satellite_runner repository-set enable --name="Red Hat Enterprise Linux 6 Server (RPMs)" --basearch="x86_64" --releasever="6Server" --product "Red Hat Enterprise Linux Server" --organization-id="${ORG}"
 
 # RHSCL repos
-if [ "${SAT_VERSION}" = "6.7" ]; then
-    satellite_runner repository-set enable --name="Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server" --basearch="x86_64" --releasever="7Server" --product "Red Hat Software Collections (for RHEL Server)" --organization-id="${ORG}"
-else
-    satellite_runner repository-set enable --name="Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server" --basearch="x86_64" --releasever="7Server" --product "Red Hat Software Collections for RHEL Server" --organization-id="${ORG}"
-fi
+satellite_runner repository-set enable --name="Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server" --basearch="x86_64" --releasever="7Server" --product "Red Hat Software Collections (for RHEL Server)" --organization-id="${ORG}"
 
 # Foreman-Maintain repos
 if [ "${SATELLITE_DISTRIBUTION}" = "BETA" ]; then
@@ -300,11 +296,7 @@ satellite_runner  content-view version promote --content-view='RHEL 6 CV' --orga
 if [ "${RHELOS}" = "7" ]; then
     # Capsule RHEL7
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Enterprise Linux Server' --repository='Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server'
-    if [ "${SAT_VERSION}" = "6.7" ]; then
-        satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Software Collections (for RHEL Server)' --repository='Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server x86_64 7Server'
-    else
-        satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Software Collections for RHEL Server' --repository='Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server x86_64 7Server'
-    fi
+    satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Software Collections (for RHEL Server)' --repository='Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server x86_64 7Server'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product='Red Hat Ansible Engine' --repository='Red Hat Ansible Engine 2 RPMs for Red Hat Enterprise Linux 7 Server x86_64'
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product="${RHEL7_TOOLS_PRD}" --repository="${RHEL7_TOOLS_REPO}"
     satellite_runner  content-view add-repository --name='Capsule RHEL 7 CV' --organization-id="${ORG}" --product="${SAT6C7_PRODUCT}" --repository="${CAPSULE7_REPO}"
@@ -502,7 +494,7 @@ RHEL6_SCAP_CONTENT_ID=$(satellite --csv scap-content list --search='title~"Red H
 RHEL7_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL7_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1' | head -n 1)
 RHEL6_SCAP_CONTENT_PROFILE_ID=$(satellite --csv scap-content info --id "${RHEL6_SCAP_CONTENT_ID}" | cut -d ',' -f5 | grep -vi 'SCAP content profiles::Id::1' | head -n 1)
 
-if [ "${SAT_VERSION}" == "6.6" ] || [ "${SAT_VERSION}" == "6.7" ]; then
+if [[ ${SAT_VERSION} =~ ^6\.[678] ]] ; then
     satellite_runner policy create --name='RHEL 7 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL7_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL7_SCAP_CONTENT_PROFILE_ID}" --deploy-by puppet
     satellite_runner policy create --name='RHEL 6 policy' --organization-ids "${ORG}" --location-ids "${LOC}" --period='weekly' --weekday='monday' --scap-content-id="${RHEL6_SCAP_CONTENT_ID}" --scap-content-profile-id="${RHEL6_SCAP_CONTENT_PROFILE_ID}" --deploy-by puppet
 else
