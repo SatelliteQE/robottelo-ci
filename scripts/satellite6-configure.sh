@@ -31,16 +31,6 @@ else
     chmod 755 satellite6-populate.sh
 fi
 
-if [[ -n "${NMINUSONE}" ]]; then
-    if [[ "${NMINUSONE}" = "true" ]]; then
-        if [[ "${SATELLITE_VERSION}" = "6.4" ]]; then
-            export SATELLITE_VERSION=6.3
-        elif [[ "${SATELLITE_VERSION}" = "6.5" ]]; then
-            export SATELLITE_VERSION=6.4
-        elif [[ "${SATELLITE_VERSION}" = "6.6" ]]; then
-            export SATELLITE_VERSION=6.5
-        elif [[ "${SATELLITE_VERSION}" = "6.3" ]]; then
-            export SATELLITE_VERSION=6.2
-        fi
-    fi
+if [[ "${NMINUSONE}" = "true" ]]; then
+    export SATELLITE_VERSION=$(bc <<< "$SATELLITE_VERSION - 0.1")
 fi
