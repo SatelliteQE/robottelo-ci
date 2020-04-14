@@ -164,4 +164,8 @@ def environment_variable_for_upgrade() {
     // required for setup_foreman_maintain
     env.TOOLS_RHEL7 = TOOLS_RHEL7
     env.MAINTAIN_REPO = MAINTAIN_REPO
+    // required for existance test cases execution
+    env.REMOTE_EXECUTION_SSH_PASSWORD = REMOTE_EXECUTION_SSH_PASSWORD
+    env.OAUTH_CONSUMER_KEY = OAUTH_CONSUMER_KEY
+    env.OAUTH_CONSUMER_SECRET = OAUTH_CONSUMER_SECRET
 }
