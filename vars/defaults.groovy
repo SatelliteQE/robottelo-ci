@@ -5,6 +5,7 @@ class defaults implements Serializable {
 
     String automation_tools = 'https://github.com/SatelliteQE/automation-tools'
     String betelgeuse = 'https://github.com/SatelliteQE/betelgeuse'
+    String foreman_ansible_modules = 'https://github.com/theforeman/foreman-ansible-modules'
     String robottelo = 'https://github.com/SatelliteQE/robottelo/'
     String robottelo_ci = 'https://github.com/SatelliteQE/robottelo-ci'
     String apix = 'https://github.com/JacobCallahan/apix'

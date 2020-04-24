@@ -1,0 +1,6 @@
+- publisher:
+    name: foreman-ansible-modules-automation-archiver
+    publishers:
+        - archive:
+            artifacts: 'cassettes.tar.gz, *-results.xml'
+            allow-empty: true
