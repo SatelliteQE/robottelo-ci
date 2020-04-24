@@ -1,0 +1,44 @@
+- job:
+    name: 'foreman-ansible-modules-automation'
+    concurrent: false
+    display-name: 'Foreman Ansible Modules Automation'
+    description: |
+        <p> Triggers automation for <strong>Foreman Ansible modules</strong> Testing.</p>
+        <p>Please make sure to add the following <strong>ssh key</strong> to your server so that this <strong>Jenkins</strong> job can access it.</p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+    project-type: pipeline
+    sandbox: true
+    parameters:
+        - string:
+            name: SERVER_HOSTNAME
+            description: "FQDN of the Satellite server where you want to test foreman-ansible-modules. Mandatory."
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.8'
+                - 'upstream-nightly'
+            description: Select Satellite version for testing 
+        - string:
+            name: BUILD_LABEL
+            description: "Label you want to set for job."
+        - bool:
+            name: RELEASED_FAM
+            description: "If checked, the latest packaged version of foreman-ansible-modules is used. Otherwise modules from the upstream repo (https://github.com/theforeman/foreman_ansible_modules) are used"
+            default: false
+        - bool:
+            name: REPLAY
+            description: "If checked, will use vcr recording instead of actual http requests. If unchecked, server is queried directly and new vcr recordings are created."
+            default: false
+        - string:
+            name: FAM_REPO
+            default: https://github.com/theforeman/foreman-ansible-modules.git
+            description: "You can override this to your fork of foreman_ansible_modules repo, if needed."
+        - string:
+            name: FAM_BRANCH
+            default: master
+            description: "You can override this to any branch."
+    dsl:
+      !include-raw:
+        - workflows/qe/satellite6-foreman-ansible-modules-automation.groovy
