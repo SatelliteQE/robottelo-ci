@@ -12,7 +12,8 @@
             scm-branch: origin/6.5.z
         - '6.6':
             scm-branch: origin/6.6.z
-        - '6.7'
+        - '6.7':
+            scm-branch: origin/6.7.z
         - '6.8'
         - 'upstream-nightly':
             rp_project: 'katello-nightly'
@@ -86,7 +87,8 @@
             scm-branch: origin/6.5.z
         - '6.6':
             scm-branch: origin/6.6.z
-        - '6.7'
+        - '6.7':
+            scm-branch: origin/6.7.z
         - '6.8'
     os:
         - 'rhel7'
