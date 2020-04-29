@@ -106,6 +106,7 @@ def loading_the_groovy_script_to_build_environment(){
      configFileProvider([configFile(fileId: 'bc5f0cbc-616f-46de-bdfe-2e024e84fcbf', variable: 'CONFIG_FILES')]) {
         sh_venv '''source ${CONFIG_FILES}'''
         load('config/compute_resources.groovy')
+        load('config/installation_environment.groovy')
         load('config/sat6_upgrade.groovy')
         load('config/sat6_repos_urls.groovy')
         load('config/subscription_config.groovy')
@@ -116,6 +117,7 @@ def loading_the_groovy_script_to_build_environment(){
 }
 
 def environment_variable_for_setup_upgrade() {
+    env.HTTP_SERVER_HOSTNAME = HTTP_SERVER_HOSTNAME
     // required for get_rhevm4_client() from satellite6-upgrade
     env.RHEV_USER = RHEV_USER
     env.RHEV_PASSWD = RHEV_PASSWD
