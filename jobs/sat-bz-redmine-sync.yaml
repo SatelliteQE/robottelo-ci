@@ -1,0 +1,12 @@
+- job:
+    name: sat-bz-redmine-sync
+    sandbox: true
+    project-type: pipeline
+    auth-token: ""
+    display-name: 'Sync redmine issues with bugzilla'
+    triggers:
+      - timed: "0 */4 * * *"
+    dsl:
+      !include-raw:
+        - workflows/bugzilla/bugzilla.groovy
+        - workflows/bugzilla/redmine-sync.groovy

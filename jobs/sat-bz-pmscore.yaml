@@ -1,0 +1,12 @@
+- job:
+    name: sat-bz-pmscore
+    sandbox: true
+    project-type: pipeline
+    auth-token: ""
+    display-name: 'Update PM Score on Satellite Bugs'
+    triggers:
+      - timed: "@midnight"
+    dsl:
+      !include-raw:
+        - workflows/bugzilla/bugzilla.groovy
+        - workflows/bugzilla/pmscore.groovy
