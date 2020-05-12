@@ -15,7 +15,7 @@ if [ "${ACTION}" = "start" ]; then
         ssh $ssh_opts root@"${PROVISIONING_HOST}" virsh start ${TARGET_IMAGE}
         set -e
         sleep 60
-        ssh $ssh_opts root@"${TARGET_BASE_IMAGE%%-base}-${ENDPOINT}.${VM_DOMAIN}" katello-service restart
+        ssh $ssh_opts root@"${TARGET_BASE_IMAGE%%-base}-${ENDPOINT}.${VM_DOMAIN}" foreman-maintain service restart
     elif [ $RESULT -eq 0 ]; then
         echo "An instance with IP: ${IPADDR} is already running and so cannot start this instance."
         echo "Shutdown other instances using the IP: ${IPADDR} and then start this instance."
@@ -29,7 +29,7 @@ elif [ "${ACTION}" = "shutdown" ]; then
     echo "========================================"
     echo " Shutdown the instances of ${TARGET_IMAGE} virsh domain."
     echo "========================================"
-    ssh $ssh_opts root@"${TARGET_BASE_IMAGE%%-base}-${ENDPOINT}.${VM_DOMAIN}" katello-service stop
+    ssh $ssh_opts root@"${TARGET_BASE_IMAGE%%-base}-${ENDPOINT}.${VM_DOMAIN}" foreman-maintain service stop
     set +e
     # Gracefully shutdown the vm instance.
     ssh $ssh_opts root@"${PROVISIONING_HOST}" virsh shutdown ${TARGET_IMAGE}

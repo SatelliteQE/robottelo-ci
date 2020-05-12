@@ -2,7 +2,7 @@ ssh_opts='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 
 echo "Shutting down the Base instance of ${SERVER_HOSTNAME} gracefully"
 # Shutdown the Satellite6 services before shutdown.
-ssh $ssh_opts root@"${SERVER_HOSTNAME}" katello-service stop
+ssh $ssh_opts root@"${SERVER_HOSTNAME}" foreman-maintain service stop
 # Try to shutdown the Satellite6 instance gracefully and sleep for a while.
 ssh $ssh_opts root@"${PROVISIONING_HOST}" virsh shutdown ${TARGET_IMAGE}
 sleep 120
