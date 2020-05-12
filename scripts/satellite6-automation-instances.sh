@@ -44,7 +44,7 @@ function setup_instance () {
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" hostnamectl set-hostname "${TIER_SOURCE_IMAGE%%-base}.${VM_DOMAIN}"
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" sed -i '/redhat.com/d' /etc/hosts
     ssh $ssh_opts root@"${SERVER_HOSTNAME}" "echo ${TIER_IPADDR} ${TIER_SOURCE_IMAGE%%-base}.${VM_DOMAIN} ${TIER_SOURCE_IMAGE%%-base} >> /etc/hosts"
-    ssh $ssh_opts root@"${SERVER_HOSTNAME}" 'katello-service restart'
+    ssh $ssh_opts root@"${SERVER_HOSTNAME}" 'foreman-maintain service restart'
     wait_for_hammerping "${SERVER_HOSTNAME}" 240
 
     # changing Satellite6 hostname (supported on Sat6.2+)

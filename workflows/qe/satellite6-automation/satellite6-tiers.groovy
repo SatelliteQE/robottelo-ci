@@ -89,7 +89,7 @@ options {
       sshCommand remote: remote, command: "hostnamectl set-hostname ${tier_name}"
       sshCommand remote: remote, command: "sed -i '/redhat.com/d' /etc/hosts"
       sshCommand remote: remote, command: "echo ${TIER_IPADDR} ${tier_name} ${tier_short_name} >> /etc/hosts"
-      sshCommand remote: remote, command: "katello-service restart"
+      sshCommand remote: remote, command: "foreman-maintain service restart"
       timeout(time: 4, unit: 'MINUTES') {
        retry(240) {
         sleep(10)
@@ -419,7 +419,7 @@ def get_code_coverage(String ENDPOINT, String coverage) {
     remote = [name: "Satellite server", allowAnyHosts: true, host: SERVER_HOSTNAME, user: userName, identityFile: identity]
     if (coverage == 'python') {
         // Shutdown the Satellite6 services for collecting coverage.
-        sshCommand remote: remote, command: 'katello-service stop || true'
+        sshCommand remote: remote, command: 'foreman-maintain service stop || true'
         // Create tar file for each of the Tier .coverage files to create a consolidated coverage report.
         sshCommand remote: remote, command: "cd /etc/coverage ; tar -cvf coverage.${ENDPOINT}.tar .coverage.*"
         // Combine the coverage output to a single file and create a xml file.
