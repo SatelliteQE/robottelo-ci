@@ -27,7 +27,7 @@ branch_map = [
         'repo': 'Satellite 6.6 Source Files',
         'version': '6.6.0',
         'tool_belt_config': './configs/satellite/',
-        'foreman_branch': 'develop',
+        'foreman_branch': '1.22-stable',
         'ruby': '2.5',
         'packaging_job': 'sat-66-satellite-packaging-update'
     ],
@@ -35,7 +35,7 @@ branch_map = [
         'repo': 'Satellite 6.7 Source Files',
         'version': '6.7.0',
         'tool_belt_config': './configs/satellite/',
-        'foreman_branch': 'develop',
+        'foreman_branch': '1.24-stable',
         'ruby': '2.5',
         'packaging_job': 'sat-67-satellite-packaging-update'
     ],
@@ -43,7 +43,7 @@ branch_map = [
         'repo': 'Satellite 6.8 Source Files',
         'version': '6.8.0',
         'tool_belt_config': './configs/satellite/',
-        'foreman_branch': 'develop',
+        'foreman_branch': '2.1-stable',
         'ruby': '2.5',
         'packaging_job': 'sat-68-satellite-packaging-update'
     ],
