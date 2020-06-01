@@ -20,6 +20,7 @@ pipeline {
                         userRemoteConfigs: [[url: '${FAM_REPO}']]])
                     sh_venv '''
                         pip install -r requirements.txt
+                        pip install pytest-xdist
                     '''
                 }
             }
@@ -52,7 +53,7 @@ pipeline {
                         '''
                         if (env.RELEASED_FAM == 'true') {
                             sh_venv '''
-                            sed -i "s|plugins/modules|TBA package location|g" ansible.cfg
+                            sed -i "s|plugins/|/usr/share/ansible/collections/ansible_collections/redhat/satellite/plugins/|g" ansible.cfg
                             '''
                         }
                     }
