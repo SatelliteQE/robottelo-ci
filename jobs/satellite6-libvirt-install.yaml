@@ -62,9 +62,9 @@
         - choice:
             name: PROXY_MODE
             choices:
-                - 'no-proxy'
                 - 'authenticated'
                 - 'non-authenticated'
+                - 'no-proxy'
         - string:
             name: ADMIN_PASSWORD
             default: changeme

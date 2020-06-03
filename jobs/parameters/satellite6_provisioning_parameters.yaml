@@ -9,9 +9,9 @@
         - choice:
             name: PROXY_MODE
             choices:
-                - 'no-proxy'
                 - 'authenticated'
                 - 'non-authenticated'
+                - 'no-proxy'
         - string:
             name: ROBOTTELO_WORKERS
             default: '8'
