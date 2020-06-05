@@ -135,15 +135,13 @@ options {
       sed -i "s/'robottelo.log'/'robottelo-${ENDPOINT}.log'/" logging.conf
       '''
       // Sauce Labs Configuration and pytest-env setting.
-      if ("${SATELLITE_VERSION}" != "6.3" ){
-        SAUCE_BROWSER="chrome"
-        sh_venv '''
-        pip install -U pytest-env
+      SAUCE_BROWSER="chrome"
+      sh_venv '''
+      pip install -U pytest-env
 
-        env =
-            PYTHONHASHSEED=0
-        '''
-      }
+      env =
+          PYTHONHASHSEED=0
+      '''
       withCredentials([string(credentialsId: 'SAUCELABS_KEY', variable: 'SAUCELABS_KEY'), string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD')]) {
       sauce_args = [:]
       image_args = [:]
@@ -159,12 +157,7 @@ options {
         else if ( "${SAUCE_BROWSER}" == "chrome" ) {
             BROWSER_VERSION='63.0'
         }
-        if ( "${SATELLITE_VERSION}" == "6.4" ) {
-            SELENIUM_VERSION='3.14.0'
-            }
-        else {
-            SELENIUM_VERSION='3.141.0'
-             }
+        SELENIUM_VERSION='3.141.0'
         sauce_args = ['browser': 'saucelabs',
                  'saucelabs_user': env.SAUCELABS_USER,
                  'saucelabs_key': SAUCELABS_KEY,
