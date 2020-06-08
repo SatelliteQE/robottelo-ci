@@ -117,7 +117,7 @@ function Upgrade () {
     fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
 
     # Perform Upgrade
-    if [ "${PERFORM_FOREMAN_MAINTAIN_UPGRADE}" == "true" ]; then
+    if [ "${FOREMAN_MAINTAIN_SATELLITE_UPGRADE}" == "true" ]; then
         # setup foreman-maintain
         fab -H root@"${SAT_HOST}" setup_foreman_maintain
     fi

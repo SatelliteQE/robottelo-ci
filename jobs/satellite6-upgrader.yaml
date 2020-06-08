@@ -92,7 +92,7 @@
                  <p>Do Not Use Option in releases. Causes UPGRADE DOWNTIME</p>
                  <p>Upgrades the QE Instances and Create Upgraded template. [ONLY QE USE]</p>
         - bool:
-            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            name: FOREMAN_MAINTAIN_SATELLITE_UPGRADE
             default: false
             description: |
                 <p>Check if you want to perform upgrade using Foreman-Maintain Tool.</p>
