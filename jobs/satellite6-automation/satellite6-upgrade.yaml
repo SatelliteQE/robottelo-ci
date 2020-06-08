@@ -37,7 +37,7 @@
                 This option is helpful to execute destructive scenarios in pre-upgrade
                 and post upgrade scenarios
         - bool:
-            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            name: FOREMAN_MAINTAIN_SATELLITE_UPGRADE
             default: true
             description: |
                 This option allows to use foreman-maintain for satellite-upgrade.
@@ -47,6 +47,11 @@
             decription: |
                 This option helps to enable the required reposiory for non-release-fm version
                 upgrade
+        - bool:
+            name: FOREMAN_MAINTAIN_CAPSULE_UPGRADE
+            default: false
+            descripton: |
+                This opton allows to use foreman-maintain for capsule upgrade.
     dsl:
       !include-raw-escape:
         - workflows/qe/upgrade-pipeline/satellite6-upgrade-trigger.groovy
@@ -102,16 +107,21 @@
                 This option is helpful in manually triggering this job for zStream upgrade.
                 e.g 6.3.0 to 6.3.1
         - bool:
-            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            name: FOREMAN_MAINTAIN_SATELLITE_UPGRADE
             default: true
             description: |
                 This option allows to use foreman-maintain for satellite-upgrade.
         - bool:
-              name: DOWNSTREAM_FM_UPGRADE
-              default: false
-              decription: |
-                  This option helps to enable the required reposiory for non-release-fm version
-                  upgrade
+            name: DOWNSTREAM_FM_UPGRADE
+            default: false
+            decription: |
+                This option helps to enable the required reposiory for non-release-fm version
+                upgrade
+        - bool:
+            name: FOREMAN_MAINTAIN_CAPSULE_UPGRADE
+            default: false
+            descripton: |
+                This opton allows to use foreman-maintain for capsule upgrade.
     dsl:
       !include-raw-escape:
         - workflows/qe/upgrade-pipeline/satellite6-upgrade-phase.groovy

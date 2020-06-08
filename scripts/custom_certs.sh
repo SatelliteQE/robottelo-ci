@@ -82,8 +82,8 @@ if [ "${ACTION}" = "UPGRADE" ]; then
         export BASE_URL="${SATELLITE6_REPO}"
     fi
 
-    # Run satellite upgrade only when PERFORM_FOREMAN_MAINTAIN_UPGRADE flag is set
-    if [ "${PERFORM_FOREMAN_MAINTAIN_UPGRADE}" == "true" ]; then
+    # Run satellite upgrade only when FOREMAN_MAINTAIN_SATELLITE_UPGRADE flag is set
+    if [ "${FOREMAN_MAINTAIN_SATELLITE_UPGRADE}" == "true" ]; then
         # setup foreman-maintain
         fab -H root@"${SATELLITE_HOSTNAME}" setup_foreman_maintain
         # perform upgrade using foreman-maintain

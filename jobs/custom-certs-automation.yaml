@@ -69,7 +69,7 @@
             description: |
                 <p>Used in INTERNAL install only. Provide baseurl for satellite install.</p>
         - bool:
-            name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
+            name: FOREMAN_MAINTAIN_SATELLITE_UPGRADE
             default: true
             description: |
                  <p>Check if you want to perform upgrade using Foreman-Maintain Tool.</p>

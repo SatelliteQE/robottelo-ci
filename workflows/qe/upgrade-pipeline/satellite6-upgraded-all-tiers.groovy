@@ -112,7 +112,7 @@ pipeline {
                      string(name: 'DISCOVERY_ISO', value: "${DISCOVERY_ISO}"),
                      string(name: 'SERVER_HOSTNAME', value: "${RHEV_SAT_HOST}"),
                      // get params defined in trigger
-                     booleanParam(name: 'PERFORM_FOREMAN_MAINTAIN_UPGRADE', value: "${params.PERFORM_FOREMAN_MAINTAIN_UPGRADE}"),
+                     booleanParam(name: 'FOREMAN_MAINTAIN_SATELLITE_UPGRADE', value: "${params.FOREMAN_MAINTAIN_SATELLITE_UPGRADE}"),
                      booleanParam(name: 'ZSTREAM_UPGRADE', value: "${params.ZSTREAM_UPGRADE}"),
                      string(name: 'ROBOTTELO_WORKERS', value: "${params.ROBOTTELO_WORKERS}"),
                      string(name: 'BUILD_LABEL', value: "${params.BUILD_LABEL}"),
