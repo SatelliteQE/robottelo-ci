@@ -209,6 +209,7 @@ satellite_runner settings set --name default_download_policy --value "${DOWNLOAD
 
 # Import Manifest.
 satellite_runner subscription upload --organization-id "${ORG}" --file "${HOME}"/manifest-latest.zip
+satellite_runner subscription refresh --organization-id "${ORG}"
 
 # Enable Red Hat repositories
 # Kickstart trees
