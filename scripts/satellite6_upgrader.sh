@@ -113,11 +113,6 @@ function Upgrade () {
     # No changes in requirements, so not implemented
     setupPrerequisites
 
-    # perform puppet3 to puppet4 upgrade
-    if [ "${PUPPET4_UPGRADE}" = "true" ]; then
-        fab -H root@"${SAT_HOST}" upgrade_puppet3_to_puppet4
-    fi
-
     # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading
     fab -u root setup_products_for_upgrade:"${UPGRADE_PRODUCT}","${OS}"
 

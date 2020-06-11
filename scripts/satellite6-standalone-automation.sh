@@ -18,7 +18,7 @@ else
 
     sed -i "/^\[bugzilla\]/,/^\[/s/^#\?api_key=\w*/api_key=${BUGZILLA_KEY}/" robottelo.properties
 
-    if [[ ${SATELLITE_VERSION} =~ ^6\.[34] ]]; then
+    if [[ ${SATELLITE_VERSION} =~ ^6\.4 ]]; then
         sed -i "s|sattools_repo.*|sattools_repo=rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
     else
         sed -i "s|sattools_repo.*|sattools_repo=rhel8=${RHEL8_TOOLS_REPO:-${TOOLS_RHEL8}},rhel7=${RHEL7_TOOLS_REPO:-${TOOLS_RHEL7}},rhel6=${RHEL6_TOOLS_REPO:-${TOOLS_RHEL6}}|" robottelo.properties
@@ -33,15 +33,10 @@ else
 fi
 
 # Sauce Labs Configuration and pytest-env setting
-if [[ "${SATELLITE_VERSION}" != "6.3" ]]; then
-    SAUCE_BROWSER="chrome"
-
-    pip install -U pytest-env
-
-    env =
-        PYTHONHASHSEED=0
-fi
-
+SAUCE_BROWSER="chrome"
+pip install -U pytest-env
+env =
+   PYTHONHASHSEED=0
 
 if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"
@@ -59,9 +54,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     elif [[ -n "${BROWSER_VERSION}" ]]; then
         BROWSER_VERSION=${BROWSER_VERSION}
     fi
-    if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
-        SELENIUM_VERSION=2.53.1
-    elif [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+    if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
         SELENIUM_VERSION=3.14.0
     elif [[ -n "${SELENIUM_VERSION}" ]]; then
         SELENIUM_VERSION=${SELENIUM_VERSION}

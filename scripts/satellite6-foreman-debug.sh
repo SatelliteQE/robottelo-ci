@@ -8,7 +8,6 @@ fi
 # Disable error checking, for more information check the related issue
 # http://projects.theforeman.org/issues/13442
 set +e
-# option have changed from -m to -s in sat6.3
 ssh $ssh_opts "root@${SERVER_HOSTNAME}" foreman-debug -s 0 -q -d "~/foreman-debug"
 set -e
 scp $ssh_opts -r "root@${SERVER_HOSTNAME}:~/foreman-debug.tar.xz" .
