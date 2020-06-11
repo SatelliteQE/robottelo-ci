@@ -27,13 +27,13 @@
             description: |
                 <p>Choose the distribution type:</p>
                 <ul>
-                  <li><strong>INTERNALAK</strong>: Install Satellite 6.4 via AK from latest stable internal compose</li>
-                  <li><strong>INTERNAL</strong>: Install Satellite6 from latest stable internal compose</li>
-                  <li><strong>INTERNALREPOFILE</strong>: Install Satellite6.3 via REPOFILE from latest stable internal compose</li>
-                  <li><strong>GA</strong>: Install from CDN</li>
-                  <li><strong>BETA</strong>: Install from CDN, using the beta repository</li>
-                  <li><strong>UPSTREAM</strong>: Install upstream from regular nightly repos</li>
-                  <li><strong>KOJI</strong>: Install staging nightly from koji repos</li>
+                  <li><strong>INTERNAL AK</strong>: subscribes to dogfood and gets internal repos by AK</li>
+                  <li><strong>INTERNAL</strong>: subscribes to CDN and uses internal repo</li>
+                  <li><strong>INTERNAL REPOFILE</strong>: subscribes to CDN and uses internal repofile (multiple repos)</li>
+                  <li><strong>GA</strong>: subscribes to CDN and uses CDN repos</li>
+                  <li><strong>BETA</strong>: subscribes to CDN and uses CDN Beta repos</li>
+                  <li><strong>UPSTREAM</strong>: installs upstream from regular nightly repos</li>
+                  <li><strong>KOJI</strong>: installs staging nightly from koji repos</li>
                 </ul>
         - choice:
             name: SATELLITE_VERSION
@@ -166,15 +166,6 @@
             description: |
                 Upgrade OS using this repo URL(s), typically RHEL candidate repo.
                 This can be space-separated list of repos' URLs to specify multiple repos.
-        - choice:
-            name: PUPPET4
-            choices:
-                - 'no'
-                - 'yes'
-                - 'upgrade'
-            description: |
-                Install Satellite with Puppet v4 (Satellite 6.3 only). 
-                no = default puppet3, yes = fresh puppet4, upgrade = upgraded puppet4 install
         - choice:
             name: EXTERNAL_AUTH
             choices:

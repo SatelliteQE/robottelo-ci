@@ -60,7 +60,7 @@ unset TARGET_IMAGE
 
 if [ "${ACTION}" != "CUSTOM_CERTS" ]; then
     # install satellite
-    fab -D -H "root@${SERVER_HOSTNAME}" "product_install:${DISTRIBUTION},sat_version=${SATELLITE_VERSION},puppet4=${PUPPET4}"
+    fab -D -H "root@${SERVER_HOSTNAME}" "product_install:${DISTRIBUTION},sat_version=${SATELLITE_VERSION}"
 fi
 
 if [ "${ACTION}" = "CUSTOM_CERTS" ]; then

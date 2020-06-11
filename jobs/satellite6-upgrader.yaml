@@ -96,11 +96,6 @@
             default: false
             description: |
                 <p>Check if you want to perform upgrade using Foreman-Maintain Tool.</p>
-        - bool:
-            name: PUPPET4_UPGRADE
-            default: false
-            description: |
-                <p>Check if satellite is 6.3 and you want to upgrade puppet3 to puppet4 before upgrading to 6.4.</p>
         - string:
             name: SATELLITE_HOSTNAME
             description: |

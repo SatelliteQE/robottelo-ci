@@ -35,7 +35,6 @@
                 - '6.6'
                 - '6.5'
                 - '6.4'
-                - '6.3'
             description: |
                 <p>Select Satellite version to install.</p>
         - choice:
@@ -55,7 +54,6 @@
                 - '6.6'
                 - '6.5'
                 - '6.4'
-                - '6.3'
             description: |
                 <p>Select Satellite version to upgrade. Mandatory if ACTION selected is upgrade.</p>
         - choice:
@@ -70,14 +68,6 @@
             name: SATELLITE6_CUSTOM_BASEURL
             description: |
                 <p>Used in INTERNAL install only. Provide baseurl for satellite install.</p>
-        - choice:
-            name: PUPPET4
-            choices:
-                - 'no'
-                - 'yes'
-                - 'upgrade'
-            description: |
-                <p>Install Satellite with Puppet v4 (Satellite 6.3 only). no = default puppet3, yes = fresh puppet4, upgrade = upgraded puppet4 install.</p>
         - bool:
             name: PERFORM_FOREMAN_MAINTAIN_UPGRADE
             default: true

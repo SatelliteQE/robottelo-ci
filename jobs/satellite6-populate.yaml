@@ -41,10 +41,8 @@
                 - 'immediate'
                 - 'background'
             description: |
-                For satellite 6.2 - the default installation setup is immediate.
-                For satellite 6.3 and higher - the default installation setup is on_demand
+                The default installation setup is on_demand
                 The chosen download policy will override the installation download policy on your satellite.
-                Immediate is the default choice for this job as this is more stable option.
         - choice:
             name: SATELLITE_DISTRIBUTION
             choices:
@@ -54,7 +52,14 @@
                 - 'INTERNAL REPOFILE'
                 - 'BETA'
             description: |
-                Depending upon Distribution, INTERNAL and/or GA is decided and either DOGFOOD or CDN content is synced.
+                <p>Choose the distribution type:</p>
+                <ul>
+                  <li><strong>INTERNAL AK</strong>: subscribes to dogfood and gets internal repos by AK</li>
+                  <li><strong>INTERNAL</strong>: subscribes to CDN and uses internal repo</li>
+                  <li><strong>INTERNAL REPOFILE</strong>: subscribes to CDN and uses internal repofile (multiple repos)</li>
+                  <li><strong>GA</strong>: subscribes to CDN and uses CDN repos</li>
+                  <li><strong>BETA</strong>: subscribes to CDN and uses CDN Beta repos</li>
+                </ul>
         - string:
             name: MANIFEST_LOCATION_URL
             description: This is Mandatory. Host your Manifest file on any server and pass the URL link.

@@ -16,14 +16,12 @@ sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottel
 
 # Sauce Labs Configuration and pytest-env setting.
 
-if [[ "${SATELLITE_VERSION}" != "6.3" ]]; then
-    SAUCE_BROWSER="chrome"
+SAUCE_BROWSER="chrome"
 
-    pip install -U pytest-env
+pip install -U pytest-env
 
-    env =
-        PYTHONHASHSEED=0
-fi
+env =
+    PYTHONHASHSEED=0
 
 if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"
@@ -36,9 +34,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     elif [[ "${SAUCE_BROWSER}" == "chrome" ]]; then
         BROWSER_VERSION=63.0
     fi
-    if [[ "${SATELLITE_VERSION}" == "6.3" ]]; then
-        SELENIUM_VERSION=2.53.1
-    elif [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
+    if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
         SELENIUM_VERSION=3.14.0
     else
         SELENIUM_VERSION=3.141.0

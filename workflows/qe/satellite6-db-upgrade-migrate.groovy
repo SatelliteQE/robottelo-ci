@@ -60,7 +60,6 @@ pipeline {
                 ansiColor('xterm') {
                     setup_for_existence_test()
                     workaround()
-                    puppet_upgrade()
                     perform_upgrade()
                     setup_for_existence_test()
                     existence_test_execution()
@@ -298,14 +297,6 @@ def download_customerDB_Backup(){
         }
     }
 }
-
-
-def puppet_upgrade() {
-    if (PUPPET4_UPGRADE == 'true') {
-        sh_venv ''' fab -H root@"${SATELLITE_HOSTNAME}" upgrade_puppet3_to_puppet4 '''
-    }
-}
-
 
 def perform_upgrade() {
     if (env.PERFORM_UPGRADE == 'true'){

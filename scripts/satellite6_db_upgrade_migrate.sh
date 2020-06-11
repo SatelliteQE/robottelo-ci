@@ -177,11 +177,6 @@ EOF
     fi
 fi
 
-if [ "${PUPPET4_UPGRADE}" = "true" ]; then
-    # perform puppet3 to puppet4 upgrade
-    fab -H root@"${SATELLITE_HOSTNAME}" upgrade_puppet3_to_puppet4
-fi
-
 # Run satellite upgrade only when PERORM_UPGRADE flag is set.
 if [ "${PERFORM_UPGRADE}" = "true" ]; then
     # Sets up the satellite, capsule and clients on rhevm or personal boxes before upgrading

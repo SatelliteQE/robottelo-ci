@@ -42,14 +42,12 @@
         - choice:
             name: DOWNLOAD_POLICY
             choices:
-                - 'immediate'
                 - 'on_demand'
+                - 'immediate'
                 - 'background'
             description: |
-                For satellite 6.2 - the default installation setup is immediate.
-                For satellite 6.3 - the default installation setup is on_demand
+                The default installation setup is on_demand
                 The chosen download policy will override the installation download policy on your satellite.
-                Immediate is the default choice for this job as this is more stable option.
         - choice:
             name: SATELLITE_INSTALL_DISTRIBUTION
             choices:
