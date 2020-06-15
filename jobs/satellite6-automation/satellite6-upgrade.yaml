@@ -41,6 +41,12 @@
             default: true
             description: |
                 This option allows to use foreman-maintain for satellite-upgrade.
+        - bool:
+            name: DOWNSTREAM_FM_UPGRADE
+            default: false
+            decription: |
+                This option helps to enable the required reposiory for non-release-fm version
+                upgrade
     dsl:
       !include-raw-escape:
         - workflows/qe/upgrade-pipeline/satellite6-upgrade-trigger.groovy
@@ -100,6 +106,12 @@
             default: true
             description: |
                 This option allows to use foreman-maintain for satellite-upgrade.
+        - bool:
+              name: DOWNSTREAM_FM_UPGRADE
+              default: false
+              decription: |
+                  This option helps to enable the required reposiory for non-release-fm version
+                  upgrade
     dsl:
       !include-raw-escape:
         - workflows/qe/upgrade-pipeline/satellite6-upgrade-phase.groovy
