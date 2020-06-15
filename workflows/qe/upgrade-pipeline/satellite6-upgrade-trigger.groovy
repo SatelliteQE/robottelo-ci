@@ -72,6 +72,7 @@ pipeline {
                      booleanParam(name: 'PERFORM_FOREMAN_MAINTAIN_UPGRADE', value: "${params.PERFORM_FOREMAN_MAINTAIN_UPGRADE}"),
                      booleanParam(name: 'ZSTREAM_UPGRADE', value: "${params.ZSTREAM_UPGRADE}"),
                      booleanParam(name: 'DESTRUCTIVE_TEST_CASE_EXECUTION', value: "${params.DESTRUCTIVE_TEST_CASE_EXECUTION}"),
+                     booleanParam(name: 'DOWNSTREAM_FM_UPGRADE', value: "${params.DOWNSTREAM_FM_UPGRADE}"),
                      string(name: 'ROBOTTELO_WORKERS', value: "${params.ROBOTTELO_WORKERS}"),
                      string(name: 'BUILD_LABEL', value: "${params.BUILD_LABEL}"),
                     ], wait: false
