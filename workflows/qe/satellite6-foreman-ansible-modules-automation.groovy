@@ -19,8 +19,7 @@ pipeline {
                     checkout([$class: 'GitSCM', branches: [[name: '*/${FAM_BRANCH}']],
                         userRemoteConfigs: [[url: '${FAM_REPO}']]])
                     sh_venv '''
-                        pip install -r requirements.txt
-                        pip install pytest-xdist
+                        make test-setup
                     '''
                 }
             }
@@ -48,9 +47,6 @@ pipeline {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-                        sh_venv '''
-                        make test setup
-                        '''
                         if (env.RELEASED_FAM == 'true') {
                             sh_venv '''
                             sed -i "s|plugins/|/usr/share/ansible/collections/ansible_collections/redhat/satellite/plugins/|g" ansible.cfg
