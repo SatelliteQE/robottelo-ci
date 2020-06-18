@@ -62,7 +62,7 @@
                 parameter will be ignored</strong>.</p>
         - string:
             name: PYTEST_MARKS
-            default: not stubbed
+            default: stubbed
             description: |
                 Specify the py.test marks you want to run or skip when specifying PYTEST_OPTIONS.
         - string:
