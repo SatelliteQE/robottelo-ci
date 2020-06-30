@@ -78,7 +78,8 @@ node ('sat6-build') {
                 packages: package_name,
                 extraVars: [
                     'version': version,
-                    'changelog': changelog
+                    'changelog': changelog,
+                    'commit': true,
                 ]
             )
         }
