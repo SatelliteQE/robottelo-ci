@@ -64,7 +64,7 @@ pipeline {
                        'saucelabs_user': "${SAUCELABS_USER}",
                        'saucelabs_key': "${SAUCELABS_KEY}",
                        'bz_password': "${BUGZILLA_PASSWORD}",
-                       'sattools_repo': "rhel8=${TOOLS_RHEL8},rhel7=${RHEL7_TOOLS_REPO},rhel6=${RHEL6_TOOLS_REPO}",
+                       'sattools_repo': "rhel8=${TOOLS_RHEL8},rhel7=${TOOLS_RHEL7},rhel6=${TOOLS_RHEL6}",
                        'capsule_repo': "${CAPSULE_REPO}"] + network_args + upgrade_args
                        }
                        parse_ini ini_file: "${WORKSPACE}//robottelo.properties" , properties: all_args
