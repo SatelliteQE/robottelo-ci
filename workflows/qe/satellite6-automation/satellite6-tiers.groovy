@@ -101,10 +101,6 @@ stages {
           }
           // changing Satellite6 hostname
           rename_cmd = (SATELLITE_VERSION == "upstream-nightly") ? "katello-change-hostname" : "satellite-change-hostname"
-          echo "WORKAROUND: BZ 1843926 satellite-change-hostname fails when running nsupdate"
-          sshCommand remote: remote, command: "sed -Ei '/zone\\s+\".+\"\\s+\\{\\s*/a\\    update-policy { grant rndc-key zonesub ANY; };' /etc/named/zones.conf"
-          sshCommand remote: remote, command: "rndc reload"
-          echo "END: Remove when fixed > https://bugzilla.redhat.com/show_bug.cgi?id=1843926"
           sshCommand remote: remote, command: "${rename_cmd} ${SERVER_HOSTNAME} -y -u admin -p changeme"
           // we also need to update the A dns record for the satellite hostname for named
           sshCommand remote: remote, command: "sed -i \"s/^\\(${TARGET_IMAGE}\\s*A\\s*\\).*\$/\\1${TIER_IPADDR}/g\" /var/named/dynamic/db.${VM_DOMAIN}"
