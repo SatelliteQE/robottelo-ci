@@ -61,16 +61,28 @@ pipeline {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-                        def command = 'pytest -sv -n4 --boxed --junit-xml=foreman-results.xml -k"not check_mode"'
+                        sh_venv '''
+                        for i in plugins/modules/* ; do
+                            bn=`basename "$i" .py`
+                            if ! [[ $bn =~ ^(__init__|scc_account|scc_product)$ ]]; then
+                              echo $bn >> module_list
+                            fi
+                        done
+                        '''
                         try {
                             if (env.REPLAY == 'true') {
-                                sh_venv command + 'tests/'
+                                sh_venv '''
+                                while read -r module; do
+                                    make test_$module
+                                done < module_list
+                                '''
                             }
                             else {
                                 sh_venv '''
-                                rm tests/test_playbooks/fixtures/*.yml
+                                while read -r module; do
+                                    make record_$module
+                                done < module_list
                                 '''
-                                sh_venv command + '--record tests/'
                             }
                         }
                         catch(all) {
@@ -92,6 +104,9 @@ pipeline {
                         remote.user = userName
                         remote.identityFile = identity
                         sshCommand remote: remote, command: 'tar -czvf cassettes.tar.gz tests/test_playbooks/fixtures'
+                        ssh_venv '''
+                            rm -f module_list
+                        '''
                     }
                 }
             }
