@@ -376,8 +376,9 @@ post {
           sourceEncoding: 'ASCII',
           zoomCoverageChart: false
       }
+      sh 'cp /var/tmp/report_for*.tar.gz ./'
     }
-    archiveArtifacts(artifacts: 'robottelo*.log,*-results.xml,foreman-debug.tar.xz,coverage.*.tar,tfm_reports_*.tar,screenshots/*/*.png,robottelo.properties', allowEmptyArchive: true)
+    archiveArtifacts(artifacts: 'robottelo*.log,*-results.xml,foreman-debug.tar.xz,coverage.*.tar,tfm_reports_*.tar,screenshots/*/*.png,robottelo.properties,report_for*.tar.gz', allowEmptyArchive: true)
     withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity',usernameVariable: 'userName')]) {
       script {
         remote = [name: "Provisioning serverr", allowAnyHosts: true, host: PROVISIONING_HOST, user: userName, identityFile: identity]
