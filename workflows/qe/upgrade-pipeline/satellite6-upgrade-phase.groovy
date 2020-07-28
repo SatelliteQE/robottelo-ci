@@ -144,6 +144,7 @@ def loading_the_groovy_script_to_build_upgrade_phase_environment(){
         source ${CONFIG_FILES}
     '''
     load('config/compute_resources.groovy')
+    load('config/installation_environment.groovy')
     load('config/sat6_upgrade.groovy')
     load('config/sat6_repos_urls.groovy')
     load('config/subscription_config.groovy')
@@ -156,6 +157,7 @@ def loading_the_groovy_script_to_build_upgrade_phase_environment(){
 }
 
 def environment_variable_for_upgrade() {
+    env.HTTP_SERVER_HOSTNAME = HTTP_SERVER_HOSTNAME
     // required for product_upgrade task from satellite6-upgrade
     env.RHEV_USER = RHEV_USER
     env.RHEV_PASSWD = RHEV_PASSWD
