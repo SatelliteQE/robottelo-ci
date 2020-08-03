@@ -45,6 +45,10 @@
                 - 'BAS'
                 - 'GBR'
                 - 'WSC'
+                - 'BNM'
+                - 'FLB'
+                - 'KPN'
+                - 'MYO'
                 - 'Sat62RHEL6Migrate'
                 - 'CustomDbURL'
             description: |
@@ -52,15 +56,19 @@
                 <p>For CCI, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For EXS, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For VZ, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
-                <p>For WMT, <b> From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
-                <p>For CSG, <b> From version</b> should be <b>6.3, 6.4, 6.5, 6.6</b> and OS should be <b>RHEL7</b></p>
+                <p>For WMT, <b> From version</b> should be <b>6.2, 6.7 or above</b> and OS should be <b>RHEL7</b></p>
+                <p>For CSG, <b> From version</b> should be <b>6.3 or above </b> and OS should be <b>RHEL7</b></p>
                 <p>For ATP, <b> From version</b> should be <b>6.3</b> and OS should be <b>RHEL7</b></p>
                 <p>For JEP, <b> From version</b> should be <b>6.3, 6.4, 6.5, 6.6</b> and OS should be <b>RHEL7</b></p>
-                <p>For SoG, <b> From version</b> should be <b>6.3, 6.4, 6.5 </b> and OS should be <b>RHEL7</b></p>
-                <p>For SLR, <b> From version</b> should be <b>6.3, 6.4, 6.5, 6.6</b> and OS should be <b>RHEL7</b></p>
-                <p>For BAS, <b> From version</b> should be <b>6.5, 6.6</b> and OS should be <b>RHEL7</b></p>
-                <p>For GBR, <b> From version</b> should be <b>6.6</b> and OS should be <b>RHEL7</b></p>
-                <p>For WSC, <b> From version</b> should be <b>6.5</b> and OS should be <b>RHEL7</b></p>
+                <p>For SoG, <b> From version</b> should be <b>6.3, 6.4, 6.5 or above</b> and OS should be <b>RHEL7</b></p>
+                <p>For SLR, <b> From version</b> should be <b>6.3, 6.4, 6.5, 6.6 or above</b> and OS should be <b>RHEL7</b></p>
+                <p>For BAS, <b> From version</b> should be <b>6.5, 6.6 or above </b> and OS should be <b>RHEL7</b></p>
+                <p>For GBR, <b> From version</b> should be <b>6.6 or above </b> and OS should be <b>RHEL7</b></p>
+                <p>For WSC, <b> From version</b> should be <b>6.5 or above</b> and OS should be <b>RHEL7</b></p>
+                <p>For BNM, <b> From version</b> should be <b>6.7 or above </b> and OS should be <b>RHEL7</b></p>
+                <p>For FLB, <b> From version</b> should be <b>6.7 or above</b> and OS should be <b>RHEL7</b></p>
+                <p>For KPN, <b> From version</b> should be <b>6.7 or above</b> and OS should be <b>RHEL7</b></p>
+                <p>For MYO, <b> From version</b> should be <b>6.7 or above</b> and OS should be <b>RHEL7</b></p>
                 <p>For Sat62RHEL6Migrate, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For CustomDbURL, You need to provide CUSTOM_DB_URL parameter, also specify From version and OS accordingly.</p>
         - string:
