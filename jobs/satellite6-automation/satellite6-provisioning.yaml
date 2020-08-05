@@ -105,6 +105,7 @@
                   SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
                   RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
                   RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                  RHEL8_TOOLS_REPO=${{RHEL8_TOOLS_REPO}}
                   CAPSULE_REPO=${{CAPSULE_REPO}}
                   SUBNET=${{SUBNET}}
                   NETMASK=${{NETMASK}}
@@ -129,6 +130,7 @@
                   SATELLITE_DISTRIBUTION=${{SATELLITE_DISTRIBUTION}}
                   RHEL6_TOOLS_REPO=${{RHEL6_TOOLS_REPO}}
                   RHEL7_TOOLS_REPO=${{RHEL7_TOOLS_REPO}}
+                  RHEL8_TOOLS_REPO=${{RHEL8_TOOLS_REPO}}
                   CAPSULE_REPO=${{CAPSULE_REPO}}
                   SUBNET=${{SUBNET}}
                   NETMASK=${{NETMASK}}
