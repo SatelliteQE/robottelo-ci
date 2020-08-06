@@ -262,7 +262,7 @@ stages {
 
   stage("Run Sequential Tests"){
     when {
-      expression{ !"${ENDPOINT}".contains("rhai") }
+      expression{ !"${ENDPOINT}".contains("rhai") && !"${ENDPOINT}".contains("destructive") } 
     }
     steps{
       script{
@@ -282,7 +282,7 @@ stages {
 
   stage("Run Parallel Tests"){
     when {
-      expression{ !"${ENDPOINT}".contains("rhai") }
+      expression{ !"${ENDPOINT}".contains("rhai") && !"${ENDPOINT}".contains("destructive") }
     } 
     steps{
       script{
