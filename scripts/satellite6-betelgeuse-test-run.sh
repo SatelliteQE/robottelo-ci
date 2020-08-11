@@ -38,6 +38,7 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
         --custom-fields "arch=x8664" \
         --custom-fields "variant=server" \
         --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
+        --custom-fields "status=in_progress" \
         --response-property "${POLARION_SELECTOR}" \
         --test-run-id "${TEST_RUN_ID} - ${run} - Tier all-tiers" \
         --test-run-group-id "${TEST_RUN_GROUP_ID}" \
@@ -57,6 +58,7 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
     --custom-fields "arch=x8664" \
     --custom-fields "variant=server" \
     --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
+    --custom-fields "status=in_progress" \
     --response-property "${POLARION_SELECTOR}" \
     --test-run-id "${TEST_RUN_ID} - Tier end-to-end" \
     --test-run-group-id "${TEST_RUN_GROUP_ID}" \
@@ -75,6 +77,7 @@ elif [ "${ENDPOINT}" = "rhai" ] || [ "${ENDPOINT}" = "destructive" ]; then
         --custom-fields "arch=x8664" \
         --custom-fields "variant=server" \
         --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
+        --custom-fields "status=in_progress" \
         --response-property "${POLARION_SELECTOR}" \
         --test-run-id "${TEST_RUN_ID} - ${ENDPOINT##tier}" \
         --test-run-group-id "${TEST_RUN_GROUP_ID}" \
@@ -94,6 +97,7 @@ else
             --custom-fields "arch=x8664" \
             --custom-fields "variant=server" \
             --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
+            --custom-fields "status=in_progress" \
             --response-property "${POLARION_SELECTOR}" \
             --test-run-id "${TEST_RUN_ID} - ${run} - Tier ${ENDPOINT##tier}" \
             --test-run-group-id "${TEST_RUN_GROUP_ID}" \
@@ -112,5 +116,4 @@ fi
 # Mark the iteration done
 python satellite6-polarion-test-plan.py \
     --name "${TEST_RUN_ID}" \
-    --custom-fields status=done \
     "${POLARION_PROJECT}"
