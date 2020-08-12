@@ -127,7 +127,7 @@ node('sat6-build') {
                 release = query_rpmspec("packages/${package_name}/*.spec", '%{RELEASE}')
 
                 brew_buildinfo = sh(
-                  script: "brew buildinfo ${name}-${version}-${release}.el7sat",
+                  script: "brew buildinfo ${name}-${version}-${release}.el7${packaging_disttag}",
                   returnStdout: true
                 ).trim()
 
