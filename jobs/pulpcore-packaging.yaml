@@ -1,5 +1,5 @@
 - job-template:
-    name: sat-{pulpcore_version}-pulpcore-packaging-release-build
+    name: pulpcore-{pulpcore_version}-pulpcore-packaging-release-build
     project-type: pipeline
     sandbox: true
     concurrent: true
@@ -34,7 +34,7 @@
       - snapper_notifications
 
 - job-template:
-    name: sat-{pulpcore_version}-pulpcore-packaging-scratch-build
+    name: pulpcore-{pulpcore_version}-pulpcore-packaging-scratch-build
     project-type: pipeline
     sandbox: true
     concurrent: true
@@ -69,7 +69,7 @@
       - snapper_notifications
 
 - job-template:
-    name: sat-{pulpcore_version}-pulpcore-packaging-update
+    name: pulpcore-{pulpcore_version}-pulpcore-packaging-update
     project-type: pipeline
     sandbox: true
     build-discarder:
@@ -103,6 +103,6 @@
       - '34'
       - '35'
     jobs:
-      - sat-{pulpcore_version}-pulpcore-packaging-release-build
-      - sat-{pulpcore_version}-pulpcore-packaging-scratch-build
-      - sat-{pulpcore_version}-pulpcore-packaging-update
+      - pulpcore-{pulpcore_version}-pulpcore-packaging-release-build
+      - pulpcore-{pulpcore_version}-pulpcore-packaging-scratch-build
+      - pulpcore-{pulpcore_version}-pulpcore-packaging-update
