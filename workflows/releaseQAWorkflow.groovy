@@ -176,12 +176,31 @@ node('sat6-build') {
 
 node {
     stage("Run Automation") {
-        build job: "trigger-satellite-${satellite_main_version}",
-          parameters: [
-            [$class: 'StringParameterValue', name: 'SATELLITE_DISTRIBUTION', value: 'INTERNAL'],
-            [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${full_snap_version}"],
-          ],
-          wait: false
+      if (satellite_product == 'satellite') {
+        script {
+          try{
+            timeout(10) {
+                sendCIMessage messageProperties: '',
+                    failOnError: false,
+                    providerName: 'Satellite UMB',
+                    overrides: [topic: 'VirtualTopic.eng.sat6eng-ci.snap.ready'],
+                    messageContent: "{'satellite_version': '${satellite_version}', 'snap_version': '${snap_version}', 'rhel_major_version': '7', 'satellite_activation_key': 'satellite-${satellite_main_version}-qa-rhel7-${full_snap_version}', 'capsule_activation_key': 'capsule-${satellite_main_version}-qa-rhel7-${full_snap_version}'}",
+                    messageType: 'Custom'
+            }
+          } catch (err) {
+            echo "UMB message failed"
+            echo err
+          }
+        }
+      }
+
+
+      build job: "trigger-satellite-${satellite_main_version}",
+        parameters: [
+          [$class: 'StringParameterValue', name: 'SATELLITE_DISTRIBUTION', value: 'INTERNAL'],
+          [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${full_snap_version}"],
+        ],
+        wait: false
     }
 }
 
