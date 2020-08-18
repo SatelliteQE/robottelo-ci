@@ -38,10 +38,10 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
         --custom-fields "arch=x8664" \
         --custom-fields "variant=server" \
         --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
-        --custom-fields "status=in_progress" \
         --response-property "${POLARION_SELECTOR}" \
         --test-run-id "${TEST_RUN_ID} - ${run} - Tier all-tiers" \
         --test-run-group-id "${TEST_RUN_GROUP_ID}" \
+        --status inprogress \
         "./all-tiers-upgrade-${run}-results.xml" \
         tests/foreman \
         "${POLARION_USERNAME}" \
@@ -58,10 +58,10 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
     --custom-fields "arch=x8664" \
     --custom-fields "variant=server" \
     --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
-    --custom-fields "status=in_progress" \
     --response-property "${POLARION_SELECTOR}" \
     --test-run-id "${TEST_RUN_ID} - Tier end-to-end" \
     --test-run-group-id "${TEST_RUN_GROUP_ID}" \
+    --status inprogress \
     "./smoke-tests-results.xml" \
     tests/foreman \
     "${POLARION_USERNAME}" \
@@ -77,10 +77,10 @@ elif [ "${ENDPOINT}" = "rhai" ] || [ "${ENDPOINT}" = "destructive" ]; then
         --custom-fields "arch=x8664" \
         --custom-fields "variant=server" \
         --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
-        --custom-fields "status=in_progress" \
         --response-property "${POLARION_SELECTOR}" \
         --test-run-id "${TEST_RUN_ID} - ${ENDPOINT##tier}" \
         --test-run-group-id "${TEST_RUN_GROUP_ID}" \
+        --status inprogress \
         "./foreman-results.xml" \
         tests/foreman \
         "${POLARION_USERNAME}" \
@@ -97,10 +97,10 @@ else
             --custom-fields "arch=x8664" \
             --custom-fields "variant=server" \
             --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
-            --custom-fields "status=in_progress" \
             --response-property "${POLARION_SELECTOR}" \
             --test-run-id "${TEST_RUN_ID} - ${run} - Tier ${ENDPOINT##tier}" \
             --test-run-group-id "${TEST_RUN_GROUP_ID}" \
+            --status inprogress \
             "./tier${ENDPOINT##tier}-${run}-results.xml" \
             tests/foreman \
             "${POLARION_USERNAME}" \
