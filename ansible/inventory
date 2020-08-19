@@ -1,2 +1,5 @@
 [localhost]
 localhost ansible_connection=local
+
+[server]
+foreman.example.com ansible_connection=ssh ansible_user=root
