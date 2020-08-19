@@ -1,0 +1,93 @@
+- job:
+    name: 'satellite-populate-fam'
+    concurrent: false
+    display-name: 'Satellite Populate using FAM'
+    description: |
+      <p>Job that just Populates an already installed <strong>Satellite 6</strong> on a machine. This job imports manifest, syncs RHEL content, creates CV, Publishes it, promotes it, Creates Ak.</p>
+      <p>Please make sure to add the following <strong>ssh key</strong> to your server so that this <strong>Jenkins</strong> job can access it.</p>
+        <pre>
+        ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzoPajR2xtQOAfBebX69Mx9Ee4P/LMqlxQLKvF0bc79/1ayMf3IrmpY1V6JCpABvMV1830I9D9x9Tr8E9zjg2wWT14hhHsrUKSWUsy3doIwz3MtISBZPMig5AizVjH6Wl/t833zgkeHtStCYI/bmJQykj6AgB8/A4L5SRIpNnl1q7V+sw37Rmumaiqu4lRDXyTXY7mlOCuxrus/WcGyVTh2k+oBVqkz2V2s3+Or8Zy2Y441B4z3vF3lE6aoIBwidBVZ1LKaofZDMRf/lu575cI4AB3N5DQvpqwLSc4+HIvog0FdKUo3qMaFgg0KNkYS5fnpDpRDRQnFw7oFnBHiPNqw== jenkins@satellite-jenkins
+        </pre>
+    project-type: pipeline
+    sandbox: true
+    parameters:
+        - string:
+            name: SERVER_HOSTNAME
+            description: "This is Mandatory, FQDN for your server where you want to populate Satellite 6 content."
+        - string:
+            name: ADMIN_PASSWORD
+            default: changeme
+            description: "Specify the admin password if changed from the default set."
+        - choice:
+            name: SATELLITE_VERSION
+            choices:
+                - '6.8'
+            description: "Choose correct Satellite version."
+        - choice:
+            name: DOWNLOAD_POLICY
+            choices:
+              - 'on_demand'
+              - 'immediate'
+              - 'background'
+            description: |
+              The default installation setup is on_demand
+              The chosen download policy will override the installation download policy on your satellite.
+              - choice:
+                  name: SATELLITE_DISTRIBUTION
+                  choices:
+                    - 'INTERNAL AK'
+                  description: |
+                    <p>Choose the distribution type:</p>
+                    <ul>
+                      <li><strong>INTERNAL AK</strong>: subscribes to dogfood and gets internal repos by AK</li>
+                    </ul>
+        - string:
+            name: MANIFEST_LOCATION_URL
+            description: "This is Mandatory. Host your Manifest file on any server and pass the URL link."
+        - bool:
+            name: RHEL_7_CV
+            default: true
+            description: "Create Rhel 7 Content View."
+        - bool:
+            name: RHEL_7_AK
+            default: true
+            description: "Create Rhel 7 Activation key."
+        - bool:
+            name: EC2_CR
+            default: true
+            description: "Create EC2 Compute Resource."
+        - bool:
+            name: GCE_CR
+            default: true
+            description: "Create GCE Compute Resource."
+        - bool:
+            name: AZURE_CR
+            default: true
+            description: "Create AZURE Compute Resource."
+        - bool:
+            name: LIBVIRT_CR
+            default: true
+            description: "Create LIBVIRT Compute Resource."
+        - bool:
+            name: OSCAP_POLICY
+            default: true
+            description: "Create OpenSCAP Policies."
+        - bool:
+            name: RHEL7_HG
+            default: true
+            description: "Create RHEL 7 Hostgroup."
+        - bool:
+            name: RHEL7_HOST
+            default: true
+            description: "Provision RHEL 7 Host on Libvirt."
+        - string:
+            name: CI_REPO
+            default: https://github.com/SatelliteQE/robottelo-ci.git
+            description: "You can override this to your automation-tools repo, if needed."
+        - string:
+            name: CI_BRANCH
+            default: master
+            description: "You can override this to any branch."
+    dsl:
+      !include-raw:
+        - workflows/qe/satellite-populate-fam.groovy
