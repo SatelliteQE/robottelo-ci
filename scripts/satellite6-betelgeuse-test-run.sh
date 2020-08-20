@@ -31,6 +31,7 @@ TEST_RUN_GROUP_ID="$(echo ${TEST_RUN_ID} | cut -d' ' -f2)"
 # Prepare the XML files
 
 if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
+    TEST_RUN_ID="${TEST_RUN_ID} - Upgrade"
     # All tiers result upload
     for run in parallel sequential; do
         betelgeuse ${TOKEN_PREFIX} test-run \
@@ -39,7 +40,7 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
         --custom-fields "variant=server" \
         --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
         --response-property "${POLARION_SELECTOR}" \
-        --test-run-id "${TEST_RUN_ID} - ${run} - Tier all-tiers" \
+        --test-run-id "${TEST_RUN_ID}" \
         --test-run-group-id "${TEST_RUN_GROUP_ID}" \
         --status inprogress \
         "./all-tiers-upgrade-${run}-results.xml" \
@@ -59,7 +60,7 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
     --custom-fields "variant=server" \
     --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
     --response-property "${POLARION_SELECTOR}" \
-    --test-run-id "${TEST_RUN_ID} - Tier end-to-end" \
+    --test-run-id "${TEST_RUN_ID}" \
     --test-run-group-id "${TEST_RUN_GROUP_ID}" \
     --status inprogress \
     "./smoke-tests-results.xml" \
@@ -78,7 +79,7 @@ elif [ "${ENDPOINT}" = "rhai" ] || [ "${ENDPOINT}" = "destructive" ]; then
         --custom-fields "variant=server" \
         --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
         --response-property "${POLARION_SELECTOR}" \
-        --test-run-id "${TEST_RUN_ID} - ${ENDPOINT##tier}" \
+        --test-run-id "${TEST_RUN_ID}" \
         --test-run-group-id "${TEST_RUN_GROUP_ID}" \
         --status inprogress \
         "./foreman-results.xml" \
@@ -98,7 +99,7 @@ else
             --custom-fields "variant=server" \
             --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
             --response-property "${POLARION_SELECTOR}" \
-            --test-run-id "${TEST_RUN_ID} - ${run} - Tier ${ENDPOINT##tier}" \
+            --test-run-id "${TEST_RUN_ID}" \
             --test-run-group-id "${TEST_RUN_GROUP_ID}" \
             --status inprogress \
             "./tier${ENDPOINT##tier}-${run}-results.xml" \
