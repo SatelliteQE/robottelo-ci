@@ -1,5 +1,5 @@
 # Install the latest version of betelgeuse.
-pip install Betelgeuse==1.6.0 pyyaml
+pip install Betelgeuse==1.7.0 pyyaml
 
 
 if [[ ${BETELGEUSE_AUTOMATION_PROJECT} = "satellite6-upgrade" ]]; then

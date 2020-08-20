@@ -1,6 +1,6 @@
 # Populate token-prefix and betelgeuse depending upon Satellite6 Version.
 
-pip install Betelgeuse==1.6.0
+pip install Betelgeuse==1.7.0
 TOKEN_PREFIX=""
 
 wget https://raw.githubusercontent.com/SatelliteQE/robottelo-ci/master/lib/python/satellite6-polarion-test-plan.py
