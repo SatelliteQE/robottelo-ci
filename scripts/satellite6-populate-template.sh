@@ -418,7 +418,8 @@ if [ "${SAT_VERSION}" == "6.4" ] || [ "${SAT_VERSION}" == "6.5" ]; then
 fi
 
 # Create VMware CR
-satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_VMWARE}" --provider VMware --server "${VMWARE_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${VMWARE_DATACENTER}" --user "${VMWARE_USERNAME}" --password "${VMWARE_PASSWORD}"
+# Skipping VMWare CR creation because of BZ 1867895
+#satellite_runner compute-resource create --name "${COMPUTE_RESOURCE_NAME_VMWARE}" --provider VMware --server "${VMWARE_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --datacenter "${VMWARE_DATACENTER}" --user "${VMWARE_USERNAME}" --password "${VMWARE_PASSWORD}"
 
 # Create OpenStack CR
 # satellite_runner compute-resource create --name openstack_provider --provider Openstack --url "${OS_URL}" --location-ids "${LOC}" --organization-ids "${ORG}" --user "${OS_USERNAME}" --password "${OS_PASSWORD}"
