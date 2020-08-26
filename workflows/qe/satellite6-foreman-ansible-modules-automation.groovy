@@ -73,14 +73,14 @@ pipeline {
                             if (env.REPLAY == 'true') {
                                 sh_venv '''
                                 while read -r module; do
-                                    make test_$module || true
+                                    make test_$module "FLAGS= --junit-xml=$module-results.xml" || true
                                 done < module_list
                                 '''
                             }
                             else {
                                 sh_venv '''
                                 while read -r module; do
-                                    make record_$module || true
+                                    make record_$module "FLAGS= --junit-xml=$module-results.xml" || true
                                 done < module_list
                                 '''
                             }
