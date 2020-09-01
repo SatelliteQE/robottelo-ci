@@ -101,7 +101,6 @@
     name: pulpcore-packaging
     pulpcore_version:
       - '34'
-      - '35'
       - '36'
     jobs:
       - pulpcore-{pulpcore_version}-pulpcore-packaging-release-build
