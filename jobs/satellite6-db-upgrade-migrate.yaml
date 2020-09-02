@@ -49,6 +49,7 @@
                 - 'FLB'
                 - 'KPN'
                 - 'MYO'
+                - 'PRF'
                 - 'Sat62RHEL6Migrate'
                 - 'CustomDbURL'
             description: |
