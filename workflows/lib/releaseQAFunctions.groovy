@@ -114,8 +114,7 @@ def generate_snap_data(args) {
                 command: 'release snap',
                 config: "./configs/${args.release_name}/",
                 options: [
-                    "--version ${args.release_stream}",
-                    "--milestone ${args.release_version}",
+                    "--version ${args.release_version}",
                     "--snap ${args.snap_version}",
                     "--gitlab-username jenkins",
                     "--gitlab-token ${env.GITLAB_TOKEN}",
@@ -143,7 +142,6 @@ def release_snap(args) {
         version: "${args.release_name}/${args.release_version}",
         release_name: args.release_name,
         release_version: args.release_version,
-        release_stream: args.release_stream,
         snap_version: args.snap_version
     )
 
