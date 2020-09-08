@@ -37,7 +37,7 @@
             description: "You can override this to your fork of foreman_ansible_modules repo, if needed."
         - string:
             name: FAM_BRANCH
-            default: master
+            default: develop
             description: "You can override this to any branch."
     dsl:
       !include-raw:
