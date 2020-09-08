@@ -2,7 +2,7 @@
 - hosts: localhost
   tasks:
   - name: "copy activation key '{{ activation_key_name }}'"
-    katello_activation_key:
+    theforeman.foreman.activation_key:
       username: "{{ username }}"
       password: "{{ password }}"
       server_url: "{{ server }}"
@@ -13,7 +13,7 @@
       state: 'copied'
 
   - name: "Set Lifecycle Environment for Activation Key"
-    katello_activation_key:
+    theforeman.foreman.activation_key:
       username: "{{ username }}"
       password: "{{ password }}"
       server_url: "{{ server }}"

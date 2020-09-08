@@ -20,6 +20,7 @@
         - workflows/lib/releaseQAFunctions.groovy{empty}
         - workflows/lib/toolbelt.groovy{empty}
         - foreman-infra/pipelines/lib/ansible.groovy{empty}
+        - foreman-infra/pipelines/lib/virtualEnv.groovy{empty}
         - workflows/lib/runPlaybook.groovy{empty}
     notifications:
       - snapper_notifications
@@ -36,6 +37,7 @@
         - workflows/releaseSatellitePipeline.groovy{empty}
         - workflows/lib/libvirt.groovy{empty}
         - foreman-infra/pipelines/lib/ansible.groovy{empty}
+        - foreman-infra/pipelines/lib/virtualEnv.groovy{empty}
         - workflows/lib/runPlaybook.groovy{empty}
         - workflows/lib/releaseQAFunctions.groovy{empty}
         - workflows/lib/toolbelt.groovy{empty}

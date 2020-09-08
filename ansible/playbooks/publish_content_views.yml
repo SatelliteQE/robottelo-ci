@@ -4,7 +4,7 @@
     organization: Sat6-CI
   tasks:
     - name: "publish '{{ content_view }}' content view"
-      katello_content_view_version:
+      theforeman.foreman.content_view_version:
         username: "{{ username }}"
         password: "{{ password }}"
         server_url: "{{ server }}"

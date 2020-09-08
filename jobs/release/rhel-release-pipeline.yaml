@@ -8,6 +8,7 @@
       !include-raw:
         - workflows/rhelPipeline.groovy
         - foreman-infra/pipelines/lib/ansible.groovy
+        - foreman-infra/pipelines/lib/virtualEnv.groovy
         - workflows/lib/runPlaybook.groovy
     notifications:
       - snapper_notifications
