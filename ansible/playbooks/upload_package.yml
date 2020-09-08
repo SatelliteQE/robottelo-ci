@@ -2,7 +2,7 @@
 - hosts: localhost
   tasks:
     - name: "upload '{{ artifact | basename }}' to '{{ repo }}'"
-      katello_upload:
+      theforeman.foreman.content_upload:
         username: "{{ username }}"
         password: "{{ password }}"
         server_url: "{{ server }}"

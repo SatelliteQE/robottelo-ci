@@ -4,7 +4,7 @@
     organization: Sat6-CI
   tasks:
     - name: "sync repository '{{ repository }}' for '{{ product }}'"
-      katello_sync:
+      theforeman.foreman.repository_sync:
         username: "{{ username }}"
         password: "{{ password }}"
         server_url: "{{ server }}"

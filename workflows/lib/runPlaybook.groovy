@@ -17,13 +17,8 @@ def setupAnsibleEnvironment(body) {
             git url: "https://${env.GIT_HOSTNAME}/satellite6/sat-infra.git"
         }
 
-        dir('foreman-ansible-modules') {
-            checkout([
-              $class: 'GitSCM',
-              branches: [[name: '0.8-stable' ]],
-              userRemoteConfigs: [[url: "https://github.com/theforeman/foreman-ansible-modules.git"]],
-            ])
-        }
+        virtEnv('ansible-venv', 'pip install -r ansible-requirements.txt')
+        virtEnv('ansible-venv', 'ansible-galaxy collection install -r requirements.yml')
     }
 
 }
@@ -99,7 +94,8 @@ def runDownstreamPlaybook(body) {
                     playbook: config.playbook,
                     inventory: inventory,
                     extraVars: config.extraVars,
-                    sensitiveExtraVars: sensitiveVars
+                    sensitiveExtraVars: sensitiveVars,
+                    venv: 'ansible-venv',
                 )
             }
 

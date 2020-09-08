@@ -2,7 +2,7 @@
 - hosts: localhost
   tasks:
   - name: "create lifecycle environment '{{ lifecycle_environment_name }}'"
-    katello_lifecycle_environment:
+    theforeman.foreman.lifecycle_environment:
       username: "{{ username }}"
       password: "{{ password }}"
       server_url: "{{ server }}"

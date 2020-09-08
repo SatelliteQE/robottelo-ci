@@ -2,7 +2,7 @@
 - hosts: localhost
   tasks:
     - name: "promote '{{ content_view_name }}' content view to '{{ to_lifecycle_environment }}'"
-      katello_content_view_version:
+      theforeman.foreman.content_view_version:
         username: "{{ username }}"
         password: "{{ password }}"
         server_url: "{{ server }}"
