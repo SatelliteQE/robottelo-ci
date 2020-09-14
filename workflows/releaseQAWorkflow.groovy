@@ -184,7 +184,7 @@ node {
                     failOnError: false,
                     providerName: 'Satellite UMB',
                     overrides: [topic: 'VirtualTopic.eng.sat6eng-ci.snap.ready'],
-                    messageContent: "{'satellite_version': '${satellite_version}', 'snap_version': '${snap_version}', 'rhel_major_version': '7', 'satellite_activation_key': 'satellite-${satellite_main_version}-qa-rhel7-${full_snap_version}', 'capsule_activation_key': 'capsule-${satellite_main_version}-qa-rhel7-${full_snap_version}'}",
+                    messageContent: "{'satellite_version': '${releaseVersion}', 'snap_version': '${snap_version}', 'rhel_major_version': '7', 'satellite_activation_key': 'satellite-${satellite_main_version}-qa-rhel7-${full_snap_version}', 'capsule_activation_key': 'capsule-${satellite_main_version}-qa-rhel7-${full_snap_version}'}",
                     messageType: 'Custom'
             }
           } catch (err) {
