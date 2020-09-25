@@ -102,6 +102,7 @@
     pulpcore_version:
       - '34'
       - '36'
+      - '37'
     jobs:
       - pulpcore-{pulpcore_version}-pulpcore-packaging-release-build
       - pulpcore-{pulpcore_version}-pulpcore-packaging-scratch-build
