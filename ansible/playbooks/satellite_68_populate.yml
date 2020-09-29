@@ -1,0 +1,165 @@
+---
+- name: satellite6-populate-template
+  hosts: server
+  tasks:
+    - name: Create lifecycle-environments
+      include_tasks: tasks/create_lifecycle_environment.yml
+      loop:
+        - lifecycle_environment_name: "DEV"
+          organization: "Default Organization"
+          prior: "Library"
+        - lifecycle_environment_name: "QE"
+          organization: "Default Organization"
+          prior: "DEV"
+        - lifecycle_environment_name: "PROD"
+          organization: "Default Organization"
+          prior: "QE"
+
+    - name: Update the DOWNLOAD_POLICY to sync content.
+      include_tasks: tasks/satellite_setting.yml
+      loop:
+        - setting_name: "default_download_policy"
+          setting_value: "{{ DOWNLOAD_POLICY }}"
+
+    - name: Check if manifest already present or not.
+      stat:
+        path: "{{ lookup('env','HOME') }}/manifest-latest.zip"
+        register: manifest_latest
+
+    - name: Fetch the manifest from server.
+        get_url:
+          url: "{{ MANIFEST_LOCATION_URL }}"
+          dest: "{{ lookup('env','HOME') }}/manifest-latest.zip"
+        when: manifest_latest.stat.exists == true
+
+    - name: Import Manifest.
+        include_tasks: tasks/manifest_upload.yml
+        loop:
+          - organization: "Default Organization"
+            manifest_path: "{{ lookup('env','HOME') }}/manifest-latest.zip"
+
+    - name: Enable Red Hat repositories
+        include_tasks: tasks/create_repository_set.yml
+        loop:
+          - organization: "Default Organization"
+            repo_name: "Red Hat Enterprise Linux 7 Server (Kickstart)"
+            product: "Red Hat Enterprise Linux Server"
+            releasever: "7.7"
+            basearch: "x86_64"
+          - organization: "Default Organization"
+            repo_name: "Red Hat Enterprise Linux 7 Server (RPMs)"
+            product: "Red Hat Enterprise Linux Server"
+            releasever: "7Server"
+            basearch: "x86_64"
+          - organization: "Default Organization"
+            repo_name: "Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server"
+            product: "Red Hat Software Collections for RHEL Server"
+            releasever: "7Server"
+            basearch: "x86_64"
+
+    - name: Get all repositories.
+      foreman_search_facts:
+        username: "{{ username }}"
+        password: "{{ password }}"
+        server_url: "{{ server_url }}"
+        resource: repositories
+      register: repositories
+
+    - name: Kick off repository Sync tasks. except for Puppet repositories which don't have URLs
+      katello_sync:
+        username: "{{ username }}"
+        password: "{{ password }}"
+        server_url: "{{ server_url }}"
+        product: "{{ item.product.name }}"
+        repository:  "{{ item.name }}"
+        organization: "Default Organization"
+      loop: "{{ repositories.resources }}"
+      when: item.url  # Not all repositories have a URL
+      async: 999999
+      poll: 0
+      register: repo_sync_sleeper
+
+    - name: Wait until all Syncs have finished
+      async_status:
+        jid: "{{ repo_sync_sleeper_item.ansible_job_id }}"
+      loop: "{{ repo_sync_sleeper.results }}"
+      loop_control:
+        loop_var: repo_sync_sleeper_item
+      when: repo_sync_sleeper_item.ansible_job_id is defined  # Skip items that were skipped in the previous task
+      register: async_job_result
+      until: async_job_result.finished
+      retries: 999
+      delay: 10
+
+    - name: Wait until all Syncs have finished
+      async_status:
+        jid: "{{ repo_sync_sleeper_item.ansible_job_id }}"
+      loop: "{{ repo_sync_sleeper.results }}"
+      loop_control:
+        loop_var: repo_sync_sleeper_item
+      when: repo_sync_sleeper_item.ansible_job_id is defined  # Skip items that were skipped in the previous task
+      register: async_job_result
+      until: async_job_result.finished
+      retries: 999
+      delay: 10
+
+    - name:  Create Repos and Sync Repositories. Create both Tools for RHEL6 and RHEL7 and Capsule for RHEL6 and RHEL7
+        include_tasks: tasks/create_repository.yml
+        loop:
+          - organization: "{{ organization }}"
+              product: "{{ RHEL7_TOOLS_PRD }}"
+              repo_name: "{{ RHEL7_TOOLS_REPO }}"
+              repo_url: "{{ RHEL7_TOOLS_URL }}"
+              download_policy: "{{ DOWNLOAD_POLICY }}"
+
+    - name: Create content views
+        include_tasks: tasks/create_content_view.yml
+        loop:
+          - organization: "{{ organization }}"
+            cv_name: "RHEL 7 CV"
+
+    - name: Add content to content views RHEL 7 CV and RHEL 6 CV
+        include_tasks: tasks/add_content_to_cv.yml
+        loop:
+          - organization: "{{ organization }}"
+            cv_name: "RHEL 7 CV"
+            product: "Red Hat Enterprise Linux Server"
+            repo_name: "Red Hat Enterprise Linux 7 Server Kickstart x86_64 7.6"
+          - organization: "{{ organization }}"
+            cv_name: "RHEL 7 CV"
+            product: "Red Hat Enterprise Linux Server"
+            repo_name: "Red Hat Enterprise Linux 7 Server RPMs x86_64 7Server"
+          - organization: "{{ organization }}"
+            cv_name: "RHEL 7 CV"
+            product: "Red Hat Software Collections for RHEL Server"
+            repo_name: "Red Hat Software Collections RPMs for Red Hat Enterprise Linux 7 Server"
+          - organization: "{{ organization }}"
+            cv_name: "RHEL 7 CV"
+            product: "{{ RHEL7_TOOLS_PRD }}"
+            repo_name: "{{ RHEL7_TOOLS_REPO }}"
+
+    - name: Publish and promote RHEL 7 CV and RHEL 6 CV
+        include_tasks: tasks/publish_and_promote_cv.yml
+        loop:
+          - organization: "{{ organization }}"
+            cv_name: "RHEL 7 CV"
+            lifecycle_environment: "DEV"
+
+    - name: Create activation keys
+        include_tasks: tasks/create_activation_key.yml
+        loop:
+          - organization: "{{ organization }}"
+            ak_name: "ak-rhel-7"
+            content_view: "RHEL 7 CV"
+            lifecycle_environment: "DEV"
+            auto_attach: False
+
+    - name: Add Subscriptions to part1
+        include_tasks: tasks/add_subscriptions_to_ak.yml
+        loop:
+          - organization: "{{ organization }}"
+            ak_name: "ak-rhel-7"
+            subscription_name: "Red Hat Satellite Infrastructure Subscription"
+          - organization: "{{ organization }}"
+            ak_name: "ak-rhel-7"
+            subscription_name: "{{ RHEL7_TOOLS_PRD }}"
