@@ -1,0 +1,10 @@
+- name: "Create katello client activation key"
+  theforeman.foreman.activation_key:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    name: "{{ item.ak_name }}"
+    organization: "{{ item.organization }}"
+    lifecycle_environment: "{{ item.lifecycle_environment }}"
+    content_view: "{{ item.content_view }}"
+    auto_attach: "{{ item.auto_attach }}"

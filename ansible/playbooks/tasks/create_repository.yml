@@ -1,0 +1,31 @@
+- name: "Create Product"
+  theforeman.foreman.product:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    name: "{{ item.product }}"
+    organization: "{{ item.organization }}"
+    state: present
+
+- name: "Create repository"
+  theforeman.foreman.repository:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    name: "{{ item.repo_name }}"
+    state: present
+    content_type: "yum"
+    product: "{{ item.product }}"
+    organization: "{{ item.organization }}"
+    url: "{{ item.repo_url }}"
+    mirror_on_sync: true
+    download_policy: "{{ item.download_policy }}"
+
+- name: "Sync repository"
+  theforeman.foreman.sync:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    repository: "{{ item.repo_name }}"
+    product: "{{ item.product }}"
+    organization: "{{ item.organization }}"

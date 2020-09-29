@@ -1,0 +1,7 @@
+- name: "Create content view"
+  theforeman.foreman.content_view:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    name: "{{ item.cv_name }}"
+    organization: "{{ item.organization }}"

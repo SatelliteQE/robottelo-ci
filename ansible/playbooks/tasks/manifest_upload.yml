@@ -1,0 +1,8 @@
+- name: "Upload the RHEL developer edition manifest"
+  theforeman.foreman.manifest:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    organization: "{{ item.organization }}"
+    state: present
+    manifest_path: "{{ item.manifest_path }}"

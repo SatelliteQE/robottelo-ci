@@ -14,13 +14,8 @@ pipeline {
         stage('Setup Environment') {
             dir('ansible') {
 
-        dir('foreman-ansible-modules') {
-            checkout([
-              $class: 'GitSCM',
-              branches: [[name: '0.8-stable' ]],
-              userRemoteConfigs: [[url: "https://github.com/theforeman/foreman-ansible-modules.git"]],
-            ])
-        }
+                virtEnv('ansible-venv', 'pip install -r ansible-requirements.txt')
+                virtEnv('ansible-venv', 'ansible-galaxy collection install -r requirements.yml')
     }
         }
         stage('Source Config and Variables') {
@@ -42,9 +37,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-                        sh_venv '''
-                                ansible-playbook -i ansible/inventory ansible/playbooks/satellite_68_populate.yml
-                            '''
+                        virtEnv('ansible-venv', 'ansible-playbook -i ansible/inventory ansible/playbooks/satellite_68_populate.yml')
                             }
                     }
                 }

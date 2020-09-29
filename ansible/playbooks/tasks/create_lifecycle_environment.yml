@@ -1,0 +1,11 @@
+---
+- name: "Add a lifecycle environment"
+  theforeman.foreman.lifecycle_environment:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    verify_ssl: False
+    name: "{{ item.lifecycle_environment }}"
+    organization: "{{ item.organization }}"
+    prior: "{{ item.prior }}"
+    state: 'present'

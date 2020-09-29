@@ -1,0 +1,9 @@
+- name: "Publish a content view and promote that version"
+  theforeman.foreman.content_view_version:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    content_view: "{{ item.cv_name }}"
+    organization: "{{ item.organization }}"
+    lifecycle_environments:
+      - "{{ item.lifecycle_environment }}"

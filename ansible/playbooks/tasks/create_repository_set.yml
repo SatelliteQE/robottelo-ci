@@ -1,0 +1,30 @@
+- name: "Create Product"
+  theforeman.foreman.product:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    name: "{{ item.product }}"
+    organization: "{{ item.organization }}"
+    state: present
+
+- name: "Enable Red Hat repositories"
+  theforeman.foreman.repository_set:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    name: "{{ item.repo_name }}"
+    organization: "{{ item.organization }}"
+    product: "{{ item.product }}"
+    repositories:
+    - releasever: "{{ item.releasever }}"
+      basearch: "{{ item.basearch }}"
+    state: enabled
+
+- name: "Sync repository"
+  theforeman.foreman.sync:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    repository: "{{ item.repo_name }}"
+    product: "{{ item.product }}"
+    organization: "{{ item.organization }}"

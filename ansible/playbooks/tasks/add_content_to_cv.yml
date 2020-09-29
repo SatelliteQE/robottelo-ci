@@ -1,0 +1,10 @@
+- name: "Add content tp content view"
+  theforeman.foreman.content_view:
+    username: "{{ username }}"
+    password: "{{ password }}"
+    server_url: "{{ server }}"
+    name: "{{ item.cv_name }}"
+    organization: "{{ item.organization }}"
+    repositories:
+      - name: '{{ item.repo_name }}'
+        product: '{{ item.product }}'

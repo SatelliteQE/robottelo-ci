@@ -1,0 +1,12 @@
+---
+SATELLITE_DISTRIBUTION: "INTERNAL AK"
+DOWNLOAD_POLICY: "{{ lookup('env','DOWNLOAD_POLICY') }}"
+SAT_VERSION: "{{ lookup('env','SATELLITE_VERSION') }}"
+RHEL7_TOOLS_PRD: "Sat6Tools7"
+RHEL7_TOOLS_REPO: "sat6tool7"
+RHEL7_TOOLS_URL: "{{ lookup('env','TOOLS_RHEL7') }}"
+MANIFEST_LOCATION_URL: "{{ lookup('env','MANIFEST_LOCATION_URL') }}"
+username: "admin"
+password: "{{ lookup('env','ADMIN_PASSWORD') }}"
+server_url: "{{ lookup('env','SERVER_HOSTNAME') }}"
+organization: "Default Organization"
