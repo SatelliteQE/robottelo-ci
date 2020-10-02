@@ -126,6 +126,7 @@ stages {
             source ${CONFIG_FILES}
             cp config/robottelo.properties robottelo.properties
             cp config/robottelo.yaml robottelo.yaml
+            cp config/virtwho.properties virtwho.properties
             cp -r robottelodir/* .
             # Robottelo logging configuration
             sed -i "s/'robottelo.log'/'robottelo-${ENDPOINT}.log'/" logging.conf
