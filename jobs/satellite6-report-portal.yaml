@@ -18,7 +18,7 @@
             default: 'satelliteqe'
         - string:
             name: RP_TOOLS_BRANCH
-            default: 'master'
+            default: 'RPv4'
         - string:
             name: WORKERS
             default: '8'
