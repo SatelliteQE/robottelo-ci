@@ -9,6 +9,7 @@ if [ -n "${ROBOTTELO_PROPERTIES:-}" ]; then
     echo "${ROBOTTELO_PROPERTIES}" > ./robottelo.properties
 else
     cp config/robottelo.properties ./robottelo.properties
+    cp config/virtwho.properties ./virtwho.properties
 
     sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
     sed -i "s/^ssh_username.*/ssh_username=${SSH_USER}/" robottelo.properties

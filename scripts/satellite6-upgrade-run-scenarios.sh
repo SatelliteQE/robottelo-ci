@@ -15,6 +15,7 @@ function setupPrerequisites () {
     source config/fake_manifest.conf
     source config/installation_environment.conf
     cp config/robottelo.properties ./robottelo.properties
+    cp config/virtwho.properties ./virtwho.properties
     cp config/robottelo.yaml ./robottelo.yaml
     sed -i "s/{server_hostname}/${RHEV_SAT_HOST}/" robottelo.properties
     sed -i "s/# rhev_cap_host=.*/rhev_cap_host=${RHEV_CAP_HOST}/" robottelo.properties

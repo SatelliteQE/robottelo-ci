@@ -8,6 +8,7 @@ export SERVER_HOSTNAME="${SERVER_HOSTNAME:-${RHEV_SAT_HOST}}"
 
 
 cp config/robottelo.properties ./robottelo.properties
+cp config/virtwho.properties ./virtwho.properties
 cp config/robottelo.yaml ./robottelo.yaml
 
 sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
