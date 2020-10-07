@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
+pip install -U -r requirements.txt docker-py sauceclient
 pip install -r requirements-optional.txt
  # Sourcing and exporting required env vars for tier jobs
 source ${CONFIG_FILES}

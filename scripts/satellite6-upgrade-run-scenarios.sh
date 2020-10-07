@@ -1,6 +1,6 @@
 
 function setupRequirement () {
-    pip install -U -r requirements.txt docker-py pytest-xdist==1.27.0 sauceclient
+    pip install -U -r requirements.txt docker-py sauceclient
     pip install -r requirements-optional.txt
 }
 

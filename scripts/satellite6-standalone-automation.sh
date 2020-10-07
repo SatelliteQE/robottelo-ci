@@ -3,7 +3,7 @@ set -o nounset
 source ${CONFIG_FILES}
 source config/sat6_repos_urls.conf
 
-pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
+pip install -U -r requirements.txt docker-py sauceclient
 
 if [ -n "${ROBOTTELO_PROPERTIES:-}" ]; then
     echo "${ROBOTTELO_PROPERTIES}" > ./robottelo.properties

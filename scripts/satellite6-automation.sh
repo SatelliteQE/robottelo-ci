@@ -1,4 +1,4 @@
-pip install -U -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
+pip install -U -r requirements.txt docker-py sauceclient
 
 cp config/robottelo.properties ./robottelo.properties
 cp config/robottelo.yaml ./robottelo.yaml
