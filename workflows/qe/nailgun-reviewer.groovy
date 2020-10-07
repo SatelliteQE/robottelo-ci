@@ -33,7 +33,7 @@ pipeline {
                     cp config/robottelo.properties ./robottelo.properties
                     sed -i "s|@stable-satellite#egg=nailgun|@refs/pull/${ghprbPullId}/head|g" requirements.txt
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
-                    pip install -r requirements.txt docker-py pytest-xdist==1.25.0 sauceclient
+                    pip install -r requirements.txt docker-py sauceclient
                '''
                script {
                    def DATA="${env.ghprbCommentBody}"

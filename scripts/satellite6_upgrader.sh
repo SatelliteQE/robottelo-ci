@@ -1,7 +1,7 @@
 # ==================================================== Define Functions for both in common processes =====================================
 
 function setupRequirement () {
-    pip install -U -r requirements.txt docker-py pytest-xdist==1.27.0
+    pip install -U -r requirements.txt docker-py 
     pip install -r requirements-optional.txt
 }
 
