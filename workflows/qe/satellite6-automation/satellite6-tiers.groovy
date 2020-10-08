@@ -34,6 +34,7 @@ stages {
         sh_venv 'source ${CONFIG_FILES}'
         load('config/provisioning_environment.groovy')
         load('config/provisioning_env_with_endpoints.groovy')
+        load('config/ibutsu_config.groovy')
         script {
           // Provisioning jobs TARGET_IMAGE becomes the SOURCE_IMAGE for Tier and RHAI jobs.
           // source-image at this stage for example: qe-sat63-rhel7-base
@@ -265,15 +266,31 @@ stages {
     when {
       expression{ !"${ENDPOINT}".contains("rhai") && !"${ENDPOINT}".contains("destructive") } 
     }
+
+    environment {
+        // From ibutsu_config.groovy
+        IBUTSU_SERVER = "${IBUTSU_SERVER}"
+        IBUTSU_PROJECT = "${IBUTSU_PROJECT}"
+        IBUTSU_CERT_SERVER = "${CERT_SERVER}"
+        REQUESTS_CA_BUNDLE="/etc/pki/tls/certs/ca-bundle.crt"
+    }
+
     steps{
       script{
+        // https://github.com/ibutsu/pytest-ibutsu/issues/8
         sh_venv '''
+          sudo curl ${IBUTSU_CERT_SERVER} -o /etc/pki/ca-trust/source/anchors/Ibutsu.crt
+          sudo update-ca-trust
+
           TEST_TYPE="$(echo tests/foreman/{api,cli,ui,longrun,sys,installer,endtoend})"
           set +e
           # Run sequential tests
           $(which py.test) -v --junit-xml="${ENDPOINT}-sequential-results.xml" \
             -o junit_suite_name="${ENDPOINT}-sequential" \
             -m "${ENDPOINT} and run_in_one_thread ${EXTRA_MARKS}" \
+            --ibutsu ${IBUTSU_SERVER} \
+            --ibutsu-project ${IBUTSU_PROJECT} \
+            --ibutsu-source ${ENDPOINT}-sequential \
             ${TEST_TYPE}
           set -e
         '''
@@ -285,6 +302,7 @@ stages {
     when {
       expression{ !"${ENDPOINT}".contains("rhai") && !"${ENDPOINT}".contains("destructive") }
     } 
+
     steps{
       script{
         sh_venv '''
