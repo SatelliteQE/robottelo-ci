@@ -49,7 +49,7 @@ pipeline {
                    propargs = [
                        'RHN_USERNAME' : RHN_USERNAME,
                        'RHN_PASSWORD' : env.RHN_PASSWORD,
-                       'RHN_POOLID' : RHN_POOLID,
+                       'FM_RHN_POOLID' : FM_RHN_POOLID,
                        'DOGFOOD_ORG' : DOGFOOD_ORG,
                        'DOGFOOD_ACTIVATIONKEY' : env.DOGFOOD_ACTIVATIONKEY,
                        'DOGFOOD_URL' : DOGFOOD_URL,
