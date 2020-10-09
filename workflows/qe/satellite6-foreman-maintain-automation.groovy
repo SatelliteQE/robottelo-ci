@@ -45,18 +45,18 @@ pipeline {
                                 sed -i "s/<server_hostname>/${SERVER_HOSTNAME}/g" testfm/inventory
                                 sed -i "s/<SERVER_HOSTNAME>/${SERVER_HOSTNAME}/g" testfm.properties
                             '''
-                            if ("${COMPONENT}" != "CAPSULE") {
-                                propargs = [
-                                    'RHN_USERNAME' : RHN_USERNAME,
-                                    'RHN_PASSWORD' : RHN_PASSWORD,
-                                    'RHN_POOLID' : RHN_POOLID,
-                                    'DOGFOOD_ORG' : DOGFOOD_ORG,
-                                    'DOGFOOD_ACTIVATIONKEY' : DOGFOOD_ACTIVATIONKEY,
-                                    'DOGFOOD_URL' : DOGFOOD_URL,
-                                    'HOTFIX_URL' : HOTFIX_URL
-                                ]
-                                parse_ini ini_file: "${WORKSPACE}//testfm.properties", properties: propargs
-                            }
+                            propargs = [
+                                'RHN_USERNAME' : RHN_USERNAME,
+                                'RHN_PASSWORD' : RHN_PASSWORD,
+                                'FM_RHN_POOLID' : FM_RHN_POOLID,
+                                'DOGFOOD_ORG' : DOGFOOD_ORG,
+                                'DOGFOOD_ACTIVATIONKEY' : DOGFOOD_ACTIVATIONKEY,
+                                'CAPSULE_DOGFOOD_ACTIVATIONKEY' : CAPSULE_DOGFOOD_ACTIVATIONKEY,
+                                'DOGFOOD_URL' : DOGFOOD_URL,
+                                'HOTFIX_URL' : HOTFIX_URL
+                            ]
+                            parse_ini ini_file: "${WORKSPACE}//testfm.properties", properties: propargs
+
                         }
                     }
                 }
