@@ -5,7 +5,7 @@
     - raw:
         xml: |
           <jenkins.plugins.shiningpanda.builders.VirtualenvBuilder plugin="shiningpanda@0.23">
-          <pythonName>System-CPython-3.6</pythonName>
+          <pythonName>System-CPython-3.8</pythonName>
           <home>claims</home>
           <clear>false</clear>
           <systemSitePackages>true</systemSitePackages>
