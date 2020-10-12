@@ -24,7 +24,7 @@
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse
-            python-version: System-CPython-3.6
+            python-version: System-CPython-3.8
             clear: true
             nature: shell
             command:
@@ -166,7 +166,7 @@
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse
-            python-version: System-CPython-3.6
+            python-version: System-CPython-3.8
             clear: true
             nature: shell
             command:
@@ -204,7 +204,7 @@
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse
-            python-version: System-CPython-3.6
+            python-version: System-CPython-3.8
             clear: true
             nature: shell
             command:
@@ -259,7 +259,7 @@
         - shining-panda:
             build-environment: virtualenv
             name: betelgeuse
-            python-version: System-CPython-3.6
+            python-version: System-CPython-3.8
             clear: true
             nature: shell
             command:
