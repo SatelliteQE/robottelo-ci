@@ -1,5 +1,5 @@
 class defaults implements Serializable {
-    String python = 'python3'
+    String python = 'python3.8'
     String venv = '.env'
     String venvModule = 'virtualenv'
 
