@@ -73,6 +73,5 @@ def tools_activation_keys = [
     "satellite-tools-${satellite_main_version}-qa-rhel8",
     "satellite-tools-${satellite_main_version}-qa-rhel7",
     "satellite-tools-${satellite_main_version}-qa-rhel6",
-    "satellite-tools-${satellite_main_version}-qa-rhel5",
 ]
 def satellite_product = 'satellite'
