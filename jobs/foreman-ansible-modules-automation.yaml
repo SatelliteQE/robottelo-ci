@@ -28,10 +28,13 @@
             name: RELEASED_FAM
             description: "If checked, the latest packaged version of foreman-ansible-modules is used. Otherwise modules from the upstream repo (https://github.com/theforeman/foreman_ansible_modules) are used"
             default: false
-        - bool:
-            name: REPLAY
-            description: "If checked, will use vcr recording instead of actual http requests. If unchecked, server is queried directly and new vcr recordings are created."
-            default: false
+        - choice:
+            name: VCR_MODE
+            choices:
+                - 'livetest'
+                - 'record'
+                - 'test'
+            description: "Select vcr.py mode: 'livetest' makes direct http requests to Satellite without creating records, 'record' makes direct requests and creates new records, 'test' uses previous vcr recordings with no requests to the server."
         - string:
             name: FAM_REPO
             default: https://github.com/theforeman/foreman-ansible-modules.git

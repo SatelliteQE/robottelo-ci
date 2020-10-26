@@ -70,20 +70,11 @@ pipeline {
                         done
                         '''
                         try {
-                            if (env.REPLAY == 'true') {
-                                sh_venv '''
-                                while read -r module; do
-                                    make test_$module "FLAGS= --junit-xml=$module-results.xml" || true
-                                done < module_list
-                                '''
-                            }
-                            else {
-                                sh_venv '''
-                                while read -r module; do
-                                    make record_$module "FLAGS= --junit-xml=$module-results.xml" || true
-                                done < module_list
-                                '''
-                            }
+                            sh_venv '''
+                            while read -r module; do
+                                make ${env.VCR_MODE}_$module "FLAGS= --junit-xml=$module-results.xml" || true
+                            done < module_list
+                            '''
                         }
                         catch(all) {
                             currentBuild.result = 'UNSTABLE'
