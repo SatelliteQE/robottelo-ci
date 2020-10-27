@@ -103,6 +103,7 @@
       - '34'
       - '36'
       - '37'
+      - '38'
     jobs:
       - pulpcore-{pulpcore_version}-pulpcore-packaging-release-build
       - pulpcore-{pulpcore_version}-pulpcore-packaging-scratch-build
