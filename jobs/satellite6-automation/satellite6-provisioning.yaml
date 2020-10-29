@@ -85,7 +85,7 @@
             - project: 'satellite6-manifest-downloader'
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[45678])
+            regex: (6\.[456789])
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
             - trigger-builds:
@@ -120,7 +120,7 @@
                   RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
         - conditional-step:
             condition-kind: regex-match
-            regex: (6\.[78]|upstream-nightly)
+            regex: (6\.[789]|upstream-nightly)
             label: ${{ENV,var="SATELLITE_VERSION"}}
             steps:
             - trigger-builds:
