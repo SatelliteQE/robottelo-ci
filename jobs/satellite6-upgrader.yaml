@@ -33,6 +33,7 @@
         - choice:
             name: FROM_VERSION
             choices:
+                - '6.8'
                 - '6.7'
                 - '6.6'
                 - '6.5'
@@ -43,6 +44,7 @@
         - choice:
             name: TO_VERSION
             choices:
+                - '6.9'
                 - '6.8'
                 - '6.7'
                 - '6.6'

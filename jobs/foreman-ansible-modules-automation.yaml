@@ -17,6 +17,7 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.9'
                 - '6.8'
                 - 'upstream-nightly'
             description: Select Satellite version for testing 

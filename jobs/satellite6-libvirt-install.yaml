@@ -43,6 +43,7 @@
         - choice:
             name: SATELLITE_VERSION
             choices:
+                - '6.9'
                 - '6.8'
                 - '6.7'
                 - '6.6'
