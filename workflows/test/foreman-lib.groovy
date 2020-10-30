@@ -15,14 +15,14 @@ test:
   template: template0
 development:
   adapter: postgresql
-  database: ${gemset()}-development
+  database: ${gemset()}-dev
   username: foreman
   password: foreman
   host: localhost
   template: template0
 production:
   adapter: postgresql
-  database: ${gemset()}-development
+  database: ${gemset()}-dev
   username: foreman
   password: foreman
   host: localhost
