@@ -137,6 +137,7 @@ def loading_the_groovy_script_to_build_post_upgrade_environment(){
         cp config/robottelo.properties ./robottelo.properties
         cp config/robottelo.yaml ./robottelo.yaml
         cp config/virtwho.properties ./virtwho.properties
+        cp config/broker_settings.yaml ./broker_settings.yaml
         sed -i "s/'robottelo.log'/'robottelo-${ENDPOINT}.log'/" logging.conf
     '''
     load('config/compute_resources.groovy')
