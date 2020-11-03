@@ -2,6 +2,7 @@ pip install -U -r requirements.txt docker-py sauceclient
 
 cp config/robottelo.properties ./robottelo.properties
 cp config/robottelo.yaml ./robottelo.yaml
+cp config/broker_settings.yaml ./broker_settings.yaml
 
 sed -i "s/{server_hostname}/${SERVER_HOSTNAME}/" robottelo.properties
 sed -i "s|# screenshots_path=.*|screenshots_path=$(pwd)/screenshots|" robottelo.properties
