@@ -5,7 +5,7 @@ source config/sat6_repos_urls.conf
 
 # https://github.com/SatelliteQE/robottelo-ci/issues/1873
 pip install -U 'pip<21.0'
-pip install -U --use-deprecated=legacy-resolver -r requirements.txt sauceclient
+pip install -U --use-deprecated=legacy-resolver -r requirements.txt
 
 if [ -n "${ROBOTTELO_PROPERTIES:-}" ]; then
     echo "${ROBOTTELO_PROPERTIES}" > ./robottelo.properties

@@ -26,7 +26,7 @@ pipeline {
                     sed -i "s/nailgun.git.*/nailgun.git@${FROM_VERSION}.z#egg=nailgun/" requirements.txt
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
                     pip install -U "pip<21.0"
-                    pip install -U --use-deprecated=legacy-resolver -r requirements.txt sauceclient
+                    pip install -U --use-deprecated=legacy-resolver -r requirements.txt
                     pip install -r requirements-optional.txt
                 '''
                 }
