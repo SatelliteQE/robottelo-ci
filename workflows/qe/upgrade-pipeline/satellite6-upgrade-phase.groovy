@@ -67,13 +67,11 @@ pipeline {
         stage('Delete old scap_content') {
             steps {
                 script {
-                   if (("${FROM_VERSION}" != "6.3") && ("${FROM_VERSION}" != "6.4")) {
-                       sh_venv '''
-                            set +e
-                            fab -u root update_scap_content
-                            set -e
-                       '''
-                    }
+                    sh_venv '''
+                        set +e
+                        fab -u root update_scap_content
+                        set -e
+                    '''
                 }
             }
         }

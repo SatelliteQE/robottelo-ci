@@ -6,10 +6,6 @@
     scm-branch: origin/master
     rp_project: 'satellite6'
     satellite_version:
-        - '6.4':
-            scm-branch: origin/6.4.z
-        - '6.5':
-            scm-branch: origin/6.5.z
         - '6.6':
             scm-branch: origin/6.6.z
         - '6.7':
@@ -30,10 +26,6 @@
         - 'rhai'
         - 'destructive'
     exclude:
-        - satellite_version: '6.4'
-          os: 'rhel8'
-        - satellite_version: '6.5'
-          os: 'rhel8'
         - satellite_version: '6.6'
           os: 'rhel8'
         - satellite_version: '6.7'
@@ -56,8 +48,6 @@
     name: satellite6-sanitycheck
     scm-branch: origin/master
     satellite_version:
-        - '6.4'
-        - '6.5'
         - '6.6'
         - '6.7'
         - '6.8'
@@ -66,10 +56,6 @@
         - 'rhel7'
         - 'rhel8'
     exclude:
-        - satellite_version: '6.4'
-          os: 'rhel8'
-        - satellite_version: '6.5'
-          os: 'rhel8'
         - satellite_version: '6.6'
           os: 'rhel8'
         - satellite_version: '6.7'
@@ -88,10 +74,6 @@
     name: satellite6-upgrade
     scm-branch: origin/master
     satellite_version:
-        - '6.4':
-            scm-branch: origin/6.4.z
-        - '6.5':
-            scm-branch: origin/6.5.z
         - '6.6':
             scm-branch: origin/6.6.z
         - '6.7':
@@ -117,8 +99,6 @@
 - project:
     name: satellite6-triggers
     satellite_version:
-        - '6.4'
-        - '6.5'
         - '6.6'
         - '6.7'
         - '6.8'

@@ -110,10 +110,6 @@ for id in `satellite --csv task list | grep -i synchronize | awk -F "," '{print 
 
 if [ "${SATELLITE_DISTRIBUTION}" != "GA" ]; then
     if [[ "${POPULATE_RHEL5}" = 'true' ]]; then
-        if [ "${SAT_VERSION}" == "6.4" ]; then
-            create-repo "${RHEL5_TOOLS_PPC64_PRD}" "${RHEL5_TOOLS_PPC64_REPO}" "${RHEL5_TOOLS_PPC64_URL}"
-            create-repo "${RHEL5_TOOLS_IA64_PRD}" "${RHEL5_TOOLS_IA64_REPO}" "${RHEL5_TOOLS_IA64_URL}"
-        fi
         create-repo "${RHEL5_TOOLS_PRD}" "${RHEL5_TOOLS_REPO}" "${RHEL5_TOOLS_URL}"
         create-repo "${RHEL5_TOOLS_S390X_PRD}" "${RHEL5_TOOLS_S390X_REPO}" "${RHEL5_TOOLS_S390X_URL}"
         create-repo "${RHEL5_TOOLS_I386_PRD}" "${RHEL5_TOOLS_I386_REPO}" "${RHEL5_TOOLS_I386_URL}"
@@ -190,13 +186,7 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
     fi
     if [[ "${POPULATE_RHEL5}" = 'true' ]]; then
         # RHEL 5
-        if [ "${SAT_VERSION}" == "6.4" ]; then
-            for cv in 'RHEL 5 CV x86_64' 'RHEL 5 CV s390x' 'RHEL 5 CV i386'; do satellite_runner content-view create --name="${cv}" --organization-id="${ORG}"; done
-            satellite_runner  content-view add-repository --name='RHEL 5 CV ppc64' --organization-id="${ORG}" --product="${RHEL5_TOOLS_PPC64_PRD}" --repository="${RHEL5_TOOLS_PPC64_REPO}"
-            satellite_runner  content-view add-repository --name='RHEL 5 CV ia64' --organization-id="${ORG}" --product="${RHEL5_TOOLS_IA64_PRD}" --repository="${RHEL5_TOOLS_IA64_REPO}"
-        else
-            for cv in 'RHEL 5 CV x86_64' 'RHEL 5 CV ppc64' 'RHEL 5 CV s390x' 'RHEL 5 CV i386' 'RHEL 5 CV ia64'; do satellite_runner content-view create --name="${cv}" --organization-id="${ORG}"; done
-        fi
+        for cv in 'RHEL 5 CV x86_64' 'RHEL 5 CV ppc64' 'RHEL 5 CV s390x' 'RHEL 5 CV i386' 'RHEL 5 CV ia64'; do satellite_runner content-view create --name="${cv}" --organization-id="${ORG}"; done
         satellite_runner  content-view add-repository --name='RHEL 5 CV x86_64' --organization-id="${ORG}" --product="${RHEL5_TOOLS_PRD}" --repository="${RHEL5_TOOLS_REPO}"
         satellite_runner  content-view add-repository --name='RHEL 5 CV s390x' --organization-id="${ORG}" --product="${RHEL5_TOOLS_S390X_PRD}" --repository="${RHEL5_TOOLS_S390X_REPO}"
         satellite_runner  content-view add-repository --name='RHEL 5 CV i386' --organization-id="${ORG}" --product="${RHEL5_TOOLS_I386_PRD}" --repository="${RHEL5_TOOLS_I386_REPO}"
@@ -205,14 +195,6 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
             satellite_runner  content-view publish --name="${line}" --organization-id="${ORG}";
             satellite_runner  content-view version promote --content-view="${line}" --organization-id="${ORG}" --to-lifecycle-environment=DEV --from-lifecycle-environment="Library";
         done
-        if [ "${SAT_VERSION}" == "6.4" ]; then
-            satellite_runner  activation-key create --name 'ak-rhel-5-ppc64' --content-view='RHEL 5 CV ppc64' --lifecycle-environment='DEV' --organization-id="${ORG}"
-            satellite_runner  activation-key create --name 'ak-rhel-5-ia64' --content-view='RHEL 5 CV ia64' --lifecycle-environment='DEV' --organization-id="${ORG}"
-            satellite_runner  activation-key add-subscription --name='ak-rhel-5-ppc64' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID_ppc64}"
-            satellite_runner  activation-key add-subscription --name='ak-rhel-5-ia64' --organization-id="${ORG}" --subscription-id="${RHEL_SUBS_ID}"
-            satellite_runner activation-key content-override --name 'ak-rhel-5-ppc64' --content-label "rhel-5-for-power-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
-            satellite_runner activation-key content-override --name 'ak-rhel-5-ia64' --content-label "rhel-5-server-satellite-tools-${SAT_VERSION}-rpms" --organization-id="${ORG}" --value "1"
-        fi
         satellite_runner  activation-key create --name 'ak-rhel-5' --content-view='RHEL 5 CV x86_64' --lifecycle-environment='DEV' --organization-id="${ORG}"
         satellite_runner  activation-key create --name 'ak-rhel-5-s390x' --content-view='RHEL 5 CV s390x' --lifecycle-environment='DEV' --organization-id="${ORG}"
         satellite_runner  activation-key create --name 'ak-rhel-5-i386' --content-view='RHEL 5 CV i386' --lifecycle-environment='DEV' --organization-id="${ORG}"
@@ -239,12 +221,6 @@ if [[ "${POPULATE_CLIENTS_ARCH}" = 'true' ]]; then
             satellite_runner  activation-key add-subscription --name='ak-rhel-5' --organization-id="${ORG}" --subscription-id="${TOOLS5_SUBS_ID}"
             satellite_runner  activation-key add-subscription --name='ak-rhel-5-s390x' --organization-id="${ORG}" --subscription-id="${TOOLS5_SUBS_ID_s390x}"
             satellite_runner  activation-key add-subscription --name='ak-rhel-5-i386' --organization-id="${ORG}" --subscription-id="${TOOLS5_SUBS_ID_i386}"
-            if [ "${SAT_VERSION}" == "6.4" ]; then
-                TOOLS5_SUBS_ID_ppc64=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL5_TOOLS_PPC64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-                TOOLS5_SUBS_ID_ia64=$(satellite  --csv subscription list --organization-id=${ORG} --search="name=${RHEL5_TOOLS_IA64_PRD}" | awk -F "," '{print $1}' | grep -vi id)
-                satellite_runner  activation-key add-subscription --name='ak-rhel-5-ppc64' --organization-id="${ORG}" --subscription-id="${TOOLS5_SUBS_ID_ppc64}"
-                satellite_runner  activation-key add-subscription --name='ak-rhel-5-ia64' --organization-id="${ORG}" --subscription-id="${TOOLS5_SUBS_ID_ia64}"
-            fi
         fi
         if [[ "${POPULATE_RHEL6}" = 'true' ]]; then
             # RHEL 6

@@ -32,8 +32,6 @@
                 - '6.8'
                 - '6.7'
                 - '6.6'
-                - '6.5'
-                - '6.4'
             description: "Choose correct Satellite version."
         - choice:
             name: DISTRO
@@ -132,7 +130,7 @@
             name: NMINUSONE
             default: false
             description: |
-                If set to true, will populate N-1 client repos ex: testing 6.3 clients with 6.4 satellite.
+                If set to true, will populate N-1 client repos ex: testing 6.(n-1) clients with 6.n satellite.
     scm:
         - git:
             url: https://github.com/SatelliteQE/automation-tools.git
