@@ -115,8 +115,8 @@
                   DISCOVERY_ISO=${{DISCOVERY_ISO}}
                   ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
                   IMAGE=${{IMAGE}}
-                  SAUCE_BROWSER=${{SAUCE_BROWSER}}
-                  SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                  BROWSER=${{BROWSER}}
+                  UI_PLATFORM=${{UI_PLATFORM}}
                   RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
         - conditional-step:
             condition-kind: regex-match
@@ -140,8 +140,8 @@
                   DISCOVERY_ISO=${{DISCOVERY_ISO}}
                   ROBOTTELO_WORKERS=${{ROBOTTELO_WORKERS}}
                   IMAGE=${{IMAGE}}
-                  SAUCE_BROWSER=${{SAUCE_BROWSER}}
-                  SAUCE_PLATFORM=${{SAUCE_PLATFORM}}
+                  BROWSER=${{BROWSER}}
+                  UI_PLATFORM=${{UI_PLATFORM}}
                   RUBY_CODE_COVERAGE=${{RUBY_CODE_COVERAGE}}
     publishers:
         - satellite6-automation-mails

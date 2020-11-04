@@ -44,21 +44,21 @@
             name: ROBOTTELO_WORKERS
             description: 'The number of testcase threads to run automation.'
         - choice:
-            name: SAUCE_PLATFORM
+            name: UI_PLATFORM
             choices:
-                - 'no_saucelabs'
+                - 'zalenium'
                 - 'macOS 10.12'
                 - 'Windows 10'
             description: |
-                'Specify the Sauce Platform to run against, along with Sauce Browser.'
+                'Specify UI Platform to run against, along with Browser.'
         - choice:
-            name: SAUCE_BROWSER
+            name: BROWSER
             choices:
                 - 'chrome'
                 - 'firefox'
                 - 'edge'
                 - 'internet explorer'
-            description: 'Specify the Sauce Browser to use along with Sauce Platform.'
+            description: 'Specify the Browser to use along with UI Platform.'
         - string:
             name: IMAGE
             description: 'The custom image name, for the content-host test-cases.'

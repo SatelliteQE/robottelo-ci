@@ -19,27 +19,26 @@ sed -i "s|# screenshots_path=.*|screenshots_path=$(pwd)/screenshots|" robottelo.
 sed -i "s|external_url=.*|external_url=http://${SERVER_HOSTNAME}:2375|" robottelo.properties
 
 # Sauce Labs Configuration and pytest-env setting.
-
-SAUCE_BROWSER="chrome"
+BROWSER="chrome"
 
 pip install -U pytest-env
 
 env =
     PYTHONHASHSEED=0
 
-if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
+if [[ "${UI_PLATFORM}" != "zalenium" ]]; then
     echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"
     sed -i "s/^browser.*/browser=saucelabs/" robottelo.properties
     sed -i "s/^# saucelabs_user=.*/saucelabs_user=${SAUCELABS_USER}/" robottelo.properties
     sed -i "s/^# saucelabs_key=.*/saucelabs_key=${SAUCELABS_KEY}/" robottelo.properties
-    sed -i "s/^# webdriver=.*/webdriver=${SAUCE_BROWSER}/" robottelo.properties
-    if [[ "${SAUCE_BROWSER}" == "edge" ]]; then
+    sed -i "s/^# webdriver=.*/webdriver=${BROWSER}/" robottelo.properties
+    if [[ "${BROWSER}" == "edge" ]]; then
         BROWSER_VERSION=14.14393
-    elif [[ "${SAUCE_BROWSER}" == "chrome" ]]; then
+    elif [[ "${BROWSER}" == "chrome" ]]; then
         BROWSER_VERSION=63.0
     fi
     SELENIUM_VERSION=3.141.0
-    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},extendedDebugging=true,tags=[${JOB_NAME}]/" robottelo.properties
+    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${UI_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},extendedDebugging=true,tags=[${JOB_NAME}]/" robottelo.properties
 fi
 
 # Bugzilla Login Details
