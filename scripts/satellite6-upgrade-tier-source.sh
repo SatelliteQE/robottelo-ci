@@ -1,6 +1,6 @@
 # https://github.com/SatelliteQE/robottelo-ci/issues/1873
 pip install -U 'pip<21.0'
-pip install -U --use-deprecated=legacy-resolver -r requirements.txt sauceclient
+pip install -U --use-deprecated=legacy-resolver -r requirements.txt
 pip install -r requirements-optional.txt
  # Sourcing and exporting required env vars for tier jobs
 source ${CONFIG_FILES}
