@@ -102,16 +102,16 @@
               <p><strong>If left blank latest stable will be used.</strong></p>
 
         - choice:
-            name: SAUCE_PLATFORM
+            name: UI_PLATFORM
             choices:
-                 - 'no_saucelabs'
+                 - 'zalenium'
                  - 'macOS 10.12'
                  - 'Windows 10'
         - choice:
-            name: SAUCE_BROWSER
+            name: BROWSER
             choices:
-                 - 'firefox'
                  - 'chrome'
+                 - 'firefox'
                  - 'edge'
                  - 'internet explorer'
     scm:
