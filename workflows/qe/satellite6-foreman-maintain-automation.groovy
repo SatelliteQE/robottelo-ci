@@ -83,7 +83,7 @@ pipeline {
                             }
                         }
 
-                        if (("${SATELLITE_VERSION}" != "6.4") && "${TEST_UPSTREAM}" == "false") {
+                        if ("${TEST_UPSTREAM}" == "false") {
                             sh_venv 'sed -i "s/foreman-maintain {0} {1} {2}/satellite-maintain {0} {1} {2}/g" testfm/base.py'
                         }
 

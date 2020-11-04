@@ -165,7 +165,7 @@ def environment_variable_for_preupgrade_tests() {
     env.TOOLS_URL_RHEL6 = TOOLS_RHEL6
     env.TOOLS_URL_RHEL7 = TOOLS_RHEL7
     env.TOOLS_URL_RHEL8 = binding.hasVariable('TOOLS_RHEL8')?TOOLS_RHEL8:"None"
-    env.BROWSER = sh(script: 'if ((`echo "${TO_VERSION} <= 6.5"|bc`)); then echo "saucelabs"; else echo "remote"; fi',returnStdout: true).trim()
+    env.BROWSER = 'remote'
     env.RHEV_USER = RHEV_USER
     env.RHEV_PASSWD = RHEV_PASSWD
     env.RHEV_URL = RHEV_URL

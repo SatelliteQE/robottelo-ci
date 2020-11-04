@@ -16,8 +16,6 @@
                 - '6.8'
                 - '6.7'
                 - '6.6'
-                - '6.5'
-                - '6.4'
                 - 'upstream-nightly'
             description: Select the Satellite version in order to correctly populate Tools and Capsule URLs.
         - string:
@@ -75,7 +73,7 @@
             name: ROBOTTELO_BRANCH
             default: master
             description: |
-                You can override this to any branch. Example: 6.4.z
+                You can override this to your any branch.
         - string:
             name: ROBOTTELO_WORKERS
             default: '4'

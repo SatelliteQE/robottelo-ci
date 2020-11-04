@@ -36,11 +36,7 @@ if [[ "${SAUCE_PLATFORM}" != "no_saucelabs" ]]; then
     elif [[ "${SAUCE_BROWSER}" == "chrome" ]]; then
         BROWSER_VERSION=63.0
     fi
-    if [[ "${SATELLITE_VERSION}" == "6.4" ]]; then
-        SELENIUM_VERSION=3.14.0
-    else
-        SELENIUM_VERSION=3.141.0
-    fi
+    SELENIUM_VERSION=3.141.0
     sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${SAUCE_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},extendedDebugging=true,tags=[${JOB_NAME}]/" robottelo.properties
 fi
 
@@ -117,11 +113,7 @@ if [ "${ENDPOINT}" != "end-to-end" ]; then
 elif [ "${ENDPOINT}" == "end-to-end" ]; then
     set +e
     # Run end-to-end , also known as smoke tests
-    if [[ "${SATELLITE_VERSION}" != "6.3" ]]; then
-        $(which py.test) -v --junit-xml="smoke-tests-results.xml" -o junit_suite_name="smoke-tests" tests/foreman/endtoend/test_{api,cli}_endtoend.py
-    else
-        $(which py.test) -v --junit-xml="smoke-tests-results.xml" -o junit_suite_name="smoke-tests" tests/foreman/endtoend
-    fi
+    $(which py.test) -v --junit-xml="smoke-tests-results.xml" -o junit_suite_name="smoke-tests" tests/foreman/endtoend/test_{api,cli}_endtoend.py
     set -e
 else
     make test-foreman-${ENDPOINT} PYTEST_XDIST_NUMPROCESSES=${ROBOTTELO_WORKERS}

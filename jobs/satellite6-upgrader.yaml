@@ -37,8 +37,6 @@
                 - '6.7'
                 - '6.6'
                 - '6.5'
-                - '6.4'
-                - '6.3'
             description: |
                 <p>Select the currently installed Satellite version.</p>
         - choice:
@@ -48,8 +46,6 @@
                 - '6.8'
                 - '6.7'
                 - '6.6'
-                - '6.5'
-                - '6.4'
             description: |
                 <p>Select the Satellite <b>TO_VERSION</b> to upgrade.</p>
         - string:
@@ -57,7 +53,7 @@
             default: master
             description: |
                 <p>The Upgrade Git branch as per TO_VERSION, if not TO_VERSION is latest</p>
-                <p>like if TO_VERSION is 6.4, then branch should be 6.4.z</p>
+                <p>like if TO_VERSION is 6.<n>, then branch should be 6.<n>.z</p>
                 <p>But in case of latest TO_VERSION, branch will be always master</p>
         - choice:
             name: DISTRIBUTION

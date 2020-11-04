@@ -43,7 +43,6 @@
                 - '6.7'
                 - '6.6'
                 - '6.5'
-                - '6.4'
                 - 'upstream-nightly'
             description: Make sure to select the right Satellite version you want to install, otherwise the job can fail.
         - choice:
