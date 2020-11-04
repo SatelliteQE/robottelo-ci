@@ -127,6 +127,7 @@ stages {
             source ${CONFIG_FILES}
             cp config/robottelo.properties robottelo.properties
             cp config/robottelo.yaml robottelo.yaml
+            cp config/broker_settings.yaml broker_settings.yaml
             cp config/virtwho.properties virtwho.properties
             cp -r robottelodir/* .
             # Robottelo logging configuration
