@@ -62,9 +62,9 @@ pipeline {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
                         sh_venv '''
-                        for i in plugins/modules/* ; do
-                            bn=`basename "$i" .py`
-                            if ! [[ $bn =~ ^(__init__|scc_account|scc_product)$ ]]; then
+                        for i in tests/test_playbooks/*.yml ; do
+                            bn=`basename "$i" .yml`
+                            if ! [[ $bn =~ ^(scc_account|scc_product|content_upload_deb|repository_deb)$ ]]; then
                               echo $bn >> module_list
                             fi
                         done
