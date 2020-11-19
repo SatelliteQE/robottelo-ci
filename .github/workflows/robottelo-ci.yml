@@ -1,0 +1,28 @@
+name: Robottelo - CI
+
+on:
+  push:
+  pull_request:
+    types: ["opened", "synchronize", "reopened"]
+
+jobs:
+  codechecks:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Robottelo-CI
+        uses: actions/checkout@v2
+
+      - name: Set Up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Setup JJB and generate jobs
+        run: |
+          ./setup_jjb.sh
+          ./generate_jobs.sh
