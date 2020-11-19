@@ -12,15 +12,15 @@ def call(buildStatus) {
     def body = "body"
     if (buildStatus == "failure") {
         body = "This build ${env.BUILD_URL} is Failed. Please check failure and re-trigger the job."
-        subject = "The Build Number ${env.BUILD_NUMBER} of JOB ${env.JOB_NAME} is Failed."
+        subject = "[Jenkins] ${env.JOB_NAME} Build #${env.BUILD_NUMBER} Failed"
     }
     else if (buildStatus == "fixed") {
         body = "This build ${env.BUILD_URL} is Successful."
-        subject = "The Build Number ${env.BUILD_NUMBER} of JOB ${env.JOB_NAME} is Fixed."
+        subject = "[Jenkins] ${env.JOB_NAME} Build #${env.BUILD_NUMBER} Fixed"
     }
     else if (buildStatus == "success") {
         body = "This build ${env.BUILD_URL} is Successful."
-        subject = "The Build Number ${env.BUILD_NUMBER} of JOB ${env.JOB_NAME} is Passed."
+        subject = "[Jenkins] ${env.JOB_NAME} Build #${env.BUILD_NUMBER} Passed"
     }
 
     emailext (
