@@ -93,6 +93,7 @@ pipeline {
                      // get params defined in jenkins config gitlab
                      string(name: 'RHEL6_TOOLS_REPO', value: "${TOOLS_RHEL6}"),
                      string(name: 'RHEL7_TOOLS_REPO', value: "${TOOLS_RHEL7}"),
+                     string(name: 'RHEL8_TOOLS_REPO', value: "${TOOLS_RHEL8}"),
                      string(name: 'CAPSULE_REPO', value: "${CAPSULE_REPO}"),
                      string(name: 'SUBNET', value: "${SUBNET}"),
                      string(name: 'NETMASK', value: "${NETMASK}"),
