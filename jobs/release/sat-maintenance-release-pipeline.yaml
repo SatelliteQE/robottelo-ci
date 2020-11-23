@@ -3,7 +3,7 @@
     project-type: pipeline
     sandbox: true
     triggers:
-      - timed: 'H 06 * * *'
+      - timed: 'H 9 * * *'
     dsl:
       !include-raw:
         - workflows/maintenance/releasePipelineAttributes.groovy
