@@ -40,6 +40,7 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
         --custom-fields "variant=server" \
         --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
         --response-property "${POLARION_SELECTOR}" \
+        --test-run-title "${TEST_RUN_ID}" \
         --test-run-id "${TEST_RUN_ID}" \
         --test-run-group-id "${TEST_RUN_GROUP_ID}" \
         --status inprogress \
@@ -60,6 +61,7 @@ if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
     --custom-fields "variant=server" \
     --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
     --response-property "${POLARION_SELECTOR}" \
+    --test-run-title "${TEST_RUN_ID}" \
     --test-run-id "${TEST_RUN_ID}" \
     --test-run-group-id "${TEST_RUN_GROUP_ID}" \
     --status inprogress \
@@ -79,6 +81,7 @@ elif [ "${ENDPOINT}" = "rhai" ] || [ "${ENDPOINT}" = "destructive" ]; then
         --custom-fields "variant=server" \
         --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
         --response-property "${POLARION_SELECTOR}" \
+        --test-run-title "${TEST_RUN_ID}" \
         --test-run-id "${TEST_RUN_ID}" \
         --test-run-group-id "${TEST_RUN_GROUP_ID}" \
         --status inprogress \
@@ -99,6 +102,7 @@ else
             --custom-fields "variant=server" \
             --custom-fields "plannedin=${SANITIZED_ITERATION_ID}" \
             --response-property "${POLARION_SELECTOR}" \
+            --test-run-title "${TEST_RUN_ID}" \
             --test-run-id "${TEST_RUN_ID}" \
             --test-run-group-id "${TEST_RUN_GROUP_ID}" \
             --status inprogress \
