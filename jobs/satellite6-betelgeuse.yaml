@@ -31,8 +31,6 @@
                 !include-raw:
                     - scripts/satellite6-install-pylarion.sh
                     - scripts/satellite6-betelgeuse-test-case.sh
-        - satellite6-testcase-ci-subscribe.yaml:
-            selector: satellite6 = 'testcases'
     publishers:
         - satellite6-automation-mails
 
@@ -211,8 +209,6 @@
                 !include-raw:
                     - scripts/satellite6-install-pylarion.sh
                     - scripts/satellite6-betelgeuse-test-case.sh
-        - satellite6-testcase-ci-subscribe.yaml:
-            selector: satellite6 = 'upgrade-testcases'
     publishers:
         - satellite6-automation-mails
 
