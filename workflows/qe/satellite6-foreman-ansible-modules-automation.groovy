@@ -70,11 +70,11 @@ pipeline {
                         done
                         '''
                         try {
-                            sh_venv '''
+                            sh_venv """
                             while read -r module; do
                                 make ${env.VCR_MODE}_$module "FLAGS= --junit-xml=$module-results.xml" || true
                             done < module_list
-                            '''
+                            """
                         }
                         catch(all) {
                             currentBuild.result = 'UNSTABLE'
