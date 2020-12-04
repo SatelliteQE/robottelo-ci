@@ -20,11 +20,13 @@ pipeline {
                 git branch: branch_selection(SATELLITE_VERSION), url: defaults.robottelo
                 make_venv python: defaults.python
                 check_zstream_upgrade()
+                // https://github.com/SatelliteQE/robottelo-ci/issues/1873
                 sh_venv '''
                     # Installing nailgun according to FROM_VERSION
                     sed -i "s/nailgun.git.*/nailgun.git@${FROM_VERSION}.z#egg=nailgun/" requirements.txt
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
-                    pip install -U -r requirements.txt docker-py sauceclient
+                    pip install -U pip<21.0
+                    pip install -U --use-deprecated=legacy-resolver -r requirements.txt docker-py sauceclient
                     pip install -r requirements-optional.txt
                 '''
                 }

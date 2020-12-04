@@ -29,13 +29,15 @@ pipeline {
         }
         stage('Build') {
             steps {
+               // # https://github.com/SatelliteQE/robottelo-ci/issues/1873
                sh_venv '''
                     cp config/robottelo.properties ./robottelo.properties
                     cp config/virtwho.properties ./virtwho.properties
                     cp config/broker_settings.yaml ./broker_settings.yaml
                     sed -i "s|@stable-satellite#egg=nailgun|@refs/pull/${ghprbPullId}/head|g" requirements.txt
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
-                    pip install -r requirements.txt docker-py sauceclient
+                    pip install -U pip<21.0
+                    pip install -r --use-deprecated=legacy-resolver requirements.txt docker-py sauceclient
                '''
                script {
                    def DATA="${env.ghprbCommentBody}"

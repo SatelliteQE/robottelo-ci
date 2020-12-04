@@ -234,8 +234,10 @@ stages {
   stage("Configure dependencies and pytest"){
     steps {
       script {
+        // https://github.com/SatelliteQE/robottelo-ci/issues/1873
         sh_venv '''
-          pip install -U -r requirements.txt docker-py sauceclient
+          pip install -U pip<21.0
+          pip install -U --use-deprecated=legacy-resolver -r requirements.txt docker-py sauceclient
         '''
         EXTRA_MARKS = SATELLITE_VERSION.contains("*upstream-nightly*") ? '' : "and upgrade"
       }
