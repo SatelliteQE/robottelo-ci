@@ -237,7 +237,7 @@ stages {
         // https://github.com/SatelliteQE/robottelo-ci/issues/1873
         sh_venv '''
           pip install -U "pip<21.0"
-          pip install -U --use-deprecated=legacy-resolver -r requirements.txt docker-py sauceclient
+          pip install -U --use-deprecated=legacy-resolver -r requirements.txt sauceclient
         '''
         EXTRA_MARKS = SATELLITE_VERSION.contains("*upstream-nightly*") ? '' : "and upgrade"
       }

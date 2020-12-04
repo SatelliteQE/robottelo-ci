@@ -37,7 +37,7 @@ pipeline {
                     sed -i "s|@stable-satellite#egg=nailgun|@refs/pull/${ghprbPullId}/head|g" requirements.txt
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
                     pip install -U "pip<21.0"
-                    pip install -r --use-deprecated=legacy-resolver requirements.txt docker-py sauceclient
+                    pip install -r --use-deprecated=legacy-resolver requirements.txt sauceclient
                '''
                script {
                    def DATA="${env.ghprbCommentBody}"
