@@ -4,7 +4,7 @@ source ${CONFIG_FILES}
 source config/sat6_repos_urls.conf
 
 # https://github.com/SatelliteQE/robottelo-ci/issues/1873
-pip install -U pip<21.0
+pip install -U 'pip<21.0'
 pip install -U --use-deprecated=legacy-resolver -r requirements.txt docker-py sauceclient
 
 if [ -n "${ROBOTTELO_PROPERTIES:-}" ]; then
