@@ -36,7 +36,7 @@ pipeline {
                     cp config/broker_settings.yaml ./broker_settings.yaml
                     sed -i "s|@stable-satellite#egg=nailgun|@refs/pull/${ghprbPullId}/head|g" requirements.txt
                     export PYCURL_SSL_LIBRARY=\$(curl -V | sed -n 's/.*\\(NSS\\|OpenSSL\\).*/\\L\\1/p')
-                    pip install -U pip<21.0
+                    pip install -U "pip<21.0"
                     pip install -r --use-deprecated=legacy-resolver requirements.txt docker-py sauceclient
                '''
                script {
