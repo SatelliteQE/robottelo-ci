@@ -1,7 +1,9 @@
 # ==================================================== Define Functions for both in common processes =====================================
 
 function setupRequirement () {
-    pip install -U -r requirements.txt docker-py 
+    # https://github.com/SatelliteQE/robottelo-ci/issues/1873
+    pip install -U pip<21.0
+    pip install -U --use-deprecated=legacy-resolver -r requirements.txt docker-py
     pip install -r requirements-optional.txt
 }
 
