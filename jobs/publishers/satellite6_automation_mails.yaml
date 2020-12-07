@@ -7,6 +7,6 @@
             failure: true
             attach-build-log : true
             fixed-unhealthy: true
-            subject: '[Jenkins] ${JOB_NAME} Build #${BUILD_NUMBER} is ${BUILD_STATUS}"'
+            subject: '[Jenkins] ${JOB_NAME} Build #${BUILD_NUMBER} is ${BUILD_STATUS}'
             body: |
                 This build ${BUILD_URL} is ${BUILD_STATUS}. If failed, may need to fix and re-trigger.
