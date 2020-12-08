@@ -4,31 +4,7 @@ def configure_foreman_environment() {
         sh "sed -i 's/:locations_enabled: false/:locations_enabled: true/' config/settings.yaml"
         sh "sed -i 's/:organizations_enabled: false/:organizations_enabled: true/' config/settings.yaml"
 
-        sh """
-cat <<EOT > config/database.yml
-test:
-  adapter: postgresql
-  database: ${gemset()}-test
-  username: foreman
-  password: foreman
-  host: localhost
-  template: template0
-development:
-  adapter: postgresql
-  database: ${gemset()}-dev
-  username: foreman
-  password: foreman
-  host: localhost
-  template: template0
-production:
-  adapter: postgresql
-  database: ${gemset()}-dev
-  username: foreman
-  password: foreman
-  host: localhost
-  template: template0
-EOT
-        """
+        databaseFile(gemset())
     } catch(all) {
 
         updateGitlabCommitStatus state: 'failed'

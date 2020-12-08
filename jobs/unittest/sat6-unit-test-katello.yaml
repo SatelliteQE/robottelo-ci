@@ -16,6 +16,7 @@
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/katello.groovy
         - workflows/test/foreman-lib.groovy
+        - pipelines/lib/foreman.groovy
         - pipelines/lib/rvm.groovy
         - workflows/lib/gitlab.groovy
     notifications:
