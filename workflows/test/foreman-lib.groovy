@@ -1,9 +1,5 @@
 def configure_foreman_environment() {
     try {
-        sh "cp config/settings.yaml.example config/settings.yaml"
-        sh "sed -i 's/:locations_enabled: false/:locations_enabled: true/' config/settings.yaml"
-        sh "sed -i 's/:organizations_enabled: false/:organizations_enabled: true/' config/settings.yaml"
-
         databaseFile(gemset())
     } catch(all) {
 
