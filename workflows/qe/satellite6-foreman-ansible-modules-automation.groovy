@@ -47,6 +47,17 @@ pipeline {
             steps {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+                        remote = [: ]
+                        remote.name = "Satellite Server "
+                        remote.allowAnyHosts = true
+                        remote.host = SERVER_HOSTNAME
+                        remote.user = userName
+                        remote.identityFile = identity
+                        sshCommand remote: remote, command: '''
+                            puppet module install puppetlabs-ntp
+                            puppet module install puppet-prometheus
+                            hammer proxy import-classes --puppet-environment production --name $(hostname -f)
+                        '''
                         if (env.RELEASED_FAM == 'true') {
                             sh_venv '''
                             sed -i "s|plugins/|/usr/share/ansible/collections/ansible_collections/redhat/satellite/plugins/|g" ansible.cfg
