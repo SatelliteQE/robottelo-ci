@@ -55,16 +55,3 @@ def setup_plugin(plugin_name) {
             sh "cat ../plugin/gemfile.d/${plugin_name}.rb >> bundler.d/Gemfile.local.rb"
         }
 }
-
-def cleanup(ruby = '2.2') {
-    try {
-
-        sh "rm -rf node_modules/"
-        withRVM(['bundle exec rake db:drop DISABLE_DATABASE_ENVIRONMENT_CHECK=true'], ruby)
-
-    } finally {
-
-        cleanupRVM(ruby)
-
-    }
-}

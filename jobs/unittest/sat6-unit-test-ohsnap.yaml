@@ -15,6 +15,7 @@
         - workflows/lib/gitlabEnv.groovy
         - workflows/test/ohsnap.groovy
         - pipelines/lib/rvm.groovy
+        - pipelines/lib/foreman.groovy
         - workflows/lib/gitlab.groovy
     notifications:
       - snapper_notifications
