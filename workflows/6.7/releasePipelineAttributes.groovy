@@ -28,7 +28,6 @@ def tools_repositories = [
     "Satellite Tools ${satellite_main_version} RHEL7 aarch64",
     "Satellite Tools ${satellite_main_version} RHEL6 x86_64",
     "Satellite Tools ${satellite_main_version} RHEL6 i386",
-    "Satellite Tools ${satellite_main_version} RHEL6 ppc64",
     "Satellite Tools ${satellite_main_version} RHEL6 s390x",
     "Satellite Tools ${satellite_main_version} RHEL5 x86_64",
     "Satellite Tools ${satellite_main_version} RHEL5 i386",
