@@ -131,6 +131,7 @@
       - '67'
       - '68'
       - '69'
+      - 'stream'
       - 'maintenance'
       - 'maintenance-next'
     jobs:
