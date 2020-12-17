@@ -55,6 +55,14 @@ branch_map = [
         'ruby': '2.5',
         'packaging_job': 'sat-69-satellite-packaging-update'
     ],
+    'SATELLITE-STREAM': [
+        'repo': 'Satellite Stream Source Files',
+        'version': 'stream',
+        'tool_belt_config': './configs/satellite/',
+        'foreman_branch': 'develop',
+        'ruby': '2.5',
+        'packaging_job': 'sat-stream-satellite-packaging-update'
+    ],
     'RHUI-3.0.0': [
         'repo': 'RHUI 3.0 Source Files',
         'version': '3.0.0',
