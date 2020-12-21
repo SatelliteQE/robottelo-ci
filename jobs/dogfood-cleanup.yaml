@@ -5,6 +5,8 @@
     auth-token: ""
     triggers:
       - timed: "@midnight"
+    notifications:
+      - snapper_notifications
     dsl:
       !include-raw:
           - workflows/dogfoodCleanup.groovy
