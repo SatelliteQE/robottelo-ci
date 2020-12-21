@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  roles:
+    - role: theforeman.foreman.content_view_version_cleanup
+      vars:
+        username: "{{ username }}"
+        password: "{{ password }}"
+        server_url: "{{ server }}"
+        validate_certs: False
+        organization: "{{ organization }}"
+        content_view_version_cleanup_keep: 5

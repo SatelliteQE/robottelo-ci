@@ -1,29 +1,20 @@
 node('sat6-build') {
-  try {
-    stage("run cvmanager") {
 
-        git url: "https://github.com/RedHatSatellite/katello-cvmanager"
+    stage("Setup Workspace") {
 
-        sh "bundle install --without=development"
-        withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artefact-satellite-credentials', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME']]) {
-          timeout(time: 1, unit: 'HOURS') {
-            sh "bundle exec ruby ./cvmanager clean --uri ${env.SATELLITE_SERVER} --user '${USERNAME}' --pass '${PASSWORD}' --organization-id=3 --no-verify-ssl --sequential 100"
-          }
+        deleteDir()
+        setupAnsibleEnvironment {}
+
+    }
+
+    stage("Clean Content Views") {
+
+        runDownstreamPlaybook {
+            playbook = 'playbooks/content_view_version_cleanup.yml'
+            extraVars = [
+                'organization': 'Sat6-CI',
+            ]
         }
 
     }
-  } catch (e) {
-    currentBuild.result = "FAILED"
-    notifyFailed()
-    throw e
-  }
-}
-
-def notifyFailed() {
-  emailext (
-      subject: "FAILED: Job ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-      body: """FAILED: Job ${env.JOB_NAME} #${env.BUILD_NUMBER}:
-Check console output at ${env.BUILD_URL}""",
-      to: "${env.DOGFOOD_EMAIL_LIST}"
-    )
 }
