@@ -61,15 +61,3 @@ pipeline {
         }
     }
 }
-
-def cleanup(ruby = my_ruby) {
-    try {
-
-        sh "rm -rf node_modules/"
-
-    } finally {
-
-        cleanupRVM(ruby)
-
-    }
-}
