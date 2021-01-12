@@ -1,2 +1,2 @@
-ansible
+ansible==2.8
 apypie
