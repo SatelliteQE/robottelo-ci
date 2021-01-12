@@ -7,13 +7,8 @@ agent {
 }
 
 options {
-  // Build discarder
   buildDiscarder(logRotator(numToKeepStr: '32'))
-  // Disable Concurrent builds
   disableConcurrentBuilds()
-  // Load sauce settings
-  sauce('e20b4b28-acfd-44e2-811d-5c43902593a7')
-  sauceconnect(options: '', sauceConnectPath: '', useGeneratedTunnelIdentifier: true, verboseLogging: true)
 }
 
 stages {

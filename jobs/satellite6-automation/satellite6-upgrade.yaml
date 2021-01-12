@@ -191,7 +191,6 @@
                 ENDPOINT=all-tiers
                 OS={os}
         - satellite6-maskpassword-wrappers
-        - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-upgrade-tiers-builders
         - trigger-builds:
@@ -239,7 +238,6 @@
                 ENDPOINT=end-to-end
                 OS={os}
         - satellite6-maskpassword-wrappers
-        - satellite6-sauce-ondemand-wrappers
     builders:
         - satellite6-upgrade-tiers-builders
         - shell: echo "POLARION_RELEASE=${{BUILD_LABEL%%-*}}" > build_env.txt
