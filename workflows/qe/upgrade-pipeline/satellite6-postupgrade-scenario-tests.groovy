@@ -54,7 +54,6 @@ pipeline {
             steps {
                 environment_variable_for_postupgrade_tests()
                 environment_variable_for_postupgrade_test_decorator()
-                browser_update()
                 sh_venv '''
                     set +e
                     $(which py.test) -v --continue-on-collection-errors -s -m "${post_upgrade_decorator}" --junit-xml=test_scenarios-post-results.xml -o junit_suite_name=test_scenarios-post tests/upgrades
@@ -162,12 +161,10 @@ def loading_the_groovy_script_to_build_post_upgrade_environment(){
         'from_version':"${FROM_VERSION}",
         'to_version': "${TO_VERSION}"
         ]
-        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD'), string(credentialsId: 'SAUCELABS_KEY', variable: 'SAUCELABS_KEY')]) {
+        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD')]) {
         all_args = [
         'hostname': "${RHEV_SAT_HOST}",
         'api_key': "${BZ_API_KEY}",
-        'saucelabs_user': "${SAUCELABS_USER}",
-        'saucelabs_key': "${SAUCELABS_KEY}",
         'bz_password': "${BUGZILLA_PASSWORD}",
         'sattools_repo': "rhel8=${TOOLS_RHEL8},rhel7=${TOOLS_RHEL7},rhel6=${TOOLS_RHEL6}",
         'capsule_repo': "${CAPSULE_REPO}"] + network_args + upgrade_args
@@ -182,12 +179,6 @@ def environment_variable_for_postupgrade_test_decorator(){
     }
     else {
         env.post_upgrade_decorator = "not destructive and post_upgrade"
-    }
-}
-
-def browser_update(){
-    if (env.BROWSER == "saucelabs") {
-        sh_venv ''' sed -i "s/browser=remote/browser=saucelabs/g" robottelo.properties'''
     }
 }
 

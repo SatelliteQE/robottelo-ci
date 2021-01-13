@@ -128,14 +128,13 @@ stages {
             # Robottelo logging configuration
             sed -i "s/'robottelo.log'/'robottelo-${ENDPOINT}.log'/" logging.conf
           '''
-          // Sauce Labs Configuration and pytest-env setting.
           BROWSER="chrome"
           sh_venv '''
             pip install -U pytest-env
             env = 
               PYTHONHASHSEED=0
           '''
-          withCredentials([string(credentialsId: 'SAUCELABS_KEY', variable: 'SAUCELABS_KEY'), string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD')]) {
+          withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD')]) {
             ui_args = [:]
             image_args = [:]
             network_args = [:]
@@ -146,23 +145,6 @@ stages {
               ui_args = [
                 'webdriver': 'chrome',
                 'webdriver_desired_capabilities' : "platform=ANY,maxDuration=5400,idleTimeout=1000,start-maximised=true,screenResolution=1600x1200,tags=[${env.JOB_NAME}]"
-              ]
-            }
-            else {
-              echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"
-              if ( "${BROWSER}" == "edge" ){
-                BROWSER_VERSION='14.14393'
-              } 
-              else if ( "${BROWSER}" == "chrome" ) {
-                BROWSER_VERSION='63.0'
-              }
-              SELENIUM_VERSION='3.141.0'
-              ui_args = [
-                'browser': 'saucelabs',
-                'saucelabs_user': env.SAUCELABS_USER,
-                'saucelabs_key': SAUCELABS_KEY,
-                'webdriver':  "${BROWSER}",
-                'webdriver_desired_capabilities' : "platform=${UI_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${env.BUILD_LABEL},screenResolution=1600x1200,tunnelIdentifier=${TUNNEL_IDENTIFIER},extendedDebugging=true,tags=[${env.JOB_NAME}]"
               ]
             }
 
