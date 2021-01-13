@@ -61,12 +61,10 @@ pipeline {
                         'from_version':"${FROM_VERSION}",
                         'to_version': "${TO_VERSION}"
                         ]
-                        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD'), string(credentialsId: 'SAUCELABS_KEY', variable: 'SAUCELABS_KEY')]) {
+                        withCredentials([string(credentialsId: 'BZ_API_KEY', variable: 'BZ_API_KEY'), string(credentialsId: 'BUGZILLA_PASSWORD', variable: 'BUGZILLA_PASSWORD')]) {
                         all_args = [
                        'hostname': "${RHEV_SAT_HOST}",
                        'api_key': "${BZ_API_KEY}",
-                       'saucelabs_user': "${SAUCELABS_USER}",
-                       'saucelabs_key': "${SAUCELABS_KEY}",
                        'bz_password': "${BUGZILLA_PASSWORD}",
                        'sattools_repo': "rhel8=${TOOLS_RHEL8},rhel7=${TOOLS_RHEL7},rhel6=${TOOLS_RHEL6}",
                        'capsule_repo': "${CAPSULE_REPO}"] + network_args + upgrade_args
@@ -92,7 +90,6 @@ pipeline {
         stage('Run Pre-upgrade Scenario Tests') {
             steps {
                 environment_variable_for_preupgrade_tests()
-                browser_update()
                 sh_venv '''
                 set +e
                 $(which py.test)  -v --continue-on-collection-errors -s -m pre_upgrade --junit-xml=test_scenarios-pre-results.xml -o junit_suite_name=test_scenarios-pre tests/upgrades
@@ -146,12 +143,6 @@ def check_zstream_upgrade() {
     }
     else {
         env.FROM_VERSION = sh(script: 'echo `echo "${SATELLITE_VERSION} - 0.1"|bc`',returnStdout: true).trim()
-    }
-}
-
-def browser_update(){
-    if (env.BROWSER == "saucelabs") {
-        sh_venv ''' sed -i "s/browser=remote/browser=saucelabs/g" robottelo.properties'''
     }
 }
 

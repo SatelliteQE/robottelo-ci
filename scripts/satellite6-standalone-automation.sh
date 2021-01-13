@@ -32,35 +32,10 @@ else
     cp config/robottelo.yaml ./robottelo.yaml
 fi
 
-# Sauce Labs Configuration and pytest-env setting
 BROWSER="chrome"
 pip install -U pytest-env
 env =
    PYTHONHASHSEED=0
-
-if [[ "${UI_PLATFORM}" != "zalenium" ]]; then
-    echo "The Sauce Tunnel Identifier for Server Hostname ${SERVER_HOSTNAME} is ${TUNNEL_IDENTIFIER}"
-    sed -i "s/^browser=.*/browser=saucelabs/" robottelo.properties
-    sed -i "s/^# saucelabs_user=.*/saucelabs_user=${SAUCELABS_USER}/" robottelo.properties
-    sed -i "s/^# saucelabs_key=.*/saucelabs_key=${SAUCELABS_KEY}/" robottelo.properties
-    sed -i "s/^# webdriver=.*/webdriver=${BROWSER}/" robottelo.properties
-    if [[ "${BROWSER}" == "firefox" ]]; then
-        BROWSER_VERSION=47.0
-    elif [[ "${BROWSER}" == "edge" ]]; then
-        BROWSER_VERSION=14.14393
-    elif [[ "${BROWSER}" == "chrome" ]]; then
-        BROWSER_VERSION=63.0
-    # Only chrome version testing support
-    elif [[ -n "${BROWSER_VERSION}" ]]; then
-        BROWSER_VERSION=${BROWSER_VERSION}
-    fi
-    if [[ -n "${SELENIUM_VERSION}" ]]; then
-        SELENIUM_VERSION=${SELENIUM_VERSION}
-    else
-        SELENIUM_VERSION=3.141.0
-    fi
-    sed -i "s/^# webdriver_desired_capabilities=.*/webdriver_desired_capabilities=platform=${UI_PLATFORM},version=${BROWSER_VERSION},maxDuration=5400,idleTimeout=1000,seleniumVersion=${SELENIUM_VERSION},build=${SATELLITE_VERSION}-$(date +%Y-%m-%d-%S),screenResolution=1600x1200,extendedDebugging=true,tunnelIdentifier=${TUNNEL_IDENTIFIER}/" robottelo.properties
-fi
 
 pytest() {
     $(which py.test) -v --junit-xml=foreman-results.xml -o junit_suite_name=standalone-automation -m "${PYTEST_MARKS}" "$@"
