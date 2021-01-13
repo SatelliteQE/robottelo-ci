@@ -29,6 +29,9 @@ def setup_foreman(ruby = '2.2') {
         withRVM(['bundle exec rake db:drop -q RAILS_ENV=test || true'], ruby)
         withRVM(['bundle exec rake db:create -q RAILS_ENV=test'], ruby)
         withRVM(['bundle exec rake db:migrate -q RAILS_ENV=test'], ruby)
+        withRVM(['bundle exec rake db:drop -q RAILS_ENV=production || true'], ruby)
+        withRVM(['bundle exec rake db:create -q RAILS_ENV=production'], ruby)
+        withRVM(['bundle exec rake db:migrate -q RAILS_ENV=production'], ruby)
 
         if (fileExists('package.json')) {
               sh 'npm install --save npm'
