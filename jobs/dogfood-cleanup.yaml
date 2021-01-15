@@ -9,4 +9,7 @@
       - snapper_notifications
     dsl:
       !include-raw:
-          - workflows/dogfoodCleanup.groovy
+        - workflows/dogfoodCleanup.groovy
+        - foreman-infra/pipelines/lib/ansible.groovy
+        - foreman-infra/pipelines/lib/virtualEnv.groovy
+        - workflows/lib/runPlaybook.groovy
