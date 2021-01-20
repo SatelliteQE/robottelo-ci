@@ -99,14 +99,5 @@ pipeline {
                 '''
             }
         }
-        stage('Generate initial status report') {
-            steps {
-                sh_venv '''
-                    cd rp_tools/scripts/reportportal_cli/
-                    ./todo_cli.py
-                '''
-            }
-        }
-
     }
   }
