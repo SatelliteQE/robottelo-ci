@@ -72,6 +72,9 @@
       - '69':
           satellite_dotted_version: '6.9'
           satellite_cron: 'H 7 * * *'
+      - 'stream':
+          satellite_dotted_version: 'stream'
+          satellite_cron: 'H 9 * * *'
     jobs:
       - sat-{satellite_version}-release-pipeline
       - sat-{satellite_version}-release-qa
