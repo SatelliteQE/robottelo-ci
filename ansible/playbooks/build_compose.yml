@@ -20,11 +20,11 @@
 
     - name: 'Generate compose'
       command: "pungi-koji --test --config={{ compose_conf_dir }}/pungi/satellite-6/{{ compose_version }}/{{ compose_name }}-{{ distro }}-{{ distro_version }}-{{ compose_tag }}.conf --target-dir={{ compose_output_dir }} --skip-phase=createiso --skip-phase=live_images --skip-phase=extra_files"
-      when: "{{ compose_version }} != 'satellite-stream'"
+      when: compose_version != 'satellite-stream'
 
     - name: 'Generate compose'
       command: "pungi-koji --test --config={{ compose_conf_dir }}/pungi/{{ compose_version }}/{{ compose_name }}-{{ distro }}-{{ distro_version }}-{{ compose_tag }}.conf --target-dir={{ compose_output_dir }} --skip-phase=createiso --skip-phase=live_images --skip-phase=extra_files"
-      when: "{{ compose_version }} == 'satellite-stream'"
+      when: compose_version == 'satellite-stream'
 
     - name: 'Remove work folder from compose'
       file: 
