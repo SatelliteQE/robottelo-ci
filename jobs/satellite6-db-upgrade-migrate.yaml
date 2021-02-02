@@ -50,6 +50,8 @@
                 - 'KPN'
                 - 'MYO'
                 - 'PRF'
+                - 'DFD'
+                - 'SCN'
                 - 'Sat62RHEL6Migrate'
                 - 'CustomDbURL'
             description: |
@@ -70,6 +72,9 @@
                 <p>For FLB, <b> From version</b> should be <b>6.7 or above</b> and OS should be <b>RHEL7</b></p>
                 <p>For KPN, <b> From version</b> should be <b>6.7 or above</b> and OS should be <b>RHEL7</b></p>
                 <p>For MYO, <b> From version</b> should be <b>6.7 or above</b> and OS should be <b>RHEL7</b></p>
+                <p>For PRF, <b> From version</b> should be <b>6.7 or above</b> and OS should be <b>RHEL7</b></p>
+                <p>For DFD, <b> From version</b> should be <b>6.8 or above</b> and OS should be <b>RHEL7</b></p>
+                <p>For SCN, <b> From version</b> should be <b>6.8 or above</b> and OS should be <b>RHEL7</b></p>
                 <p>For Sat62RHEL6Migrate, <b>From version</b> should be <b>6.2</b> and OS should be <b>RHEL7</b></p>
                 <p>For CustomDbURL, You need to provide CUSTOM_DB_URL parameter, also specify From version and OS accordingly.</p>
         - string:
