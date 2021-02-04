@@ -5,7 +5,7 @@ def tools_compose_sles_versions = [ ]
 def os_versions = ['7']
 
 def satellite_short_version = 'stream'
-def satellite_main_version = 'stream'
+def satellite_main_version = 'Stream'
 def satellite_version = 'stream'
 
 def satellite_repositories = [
