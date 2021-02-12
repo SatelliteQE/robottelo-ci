@@ -79,7 +79,7 @@ pipeline {
                     steps {
                         gitlabCommitStatus(name: "react-ui") {
                             dir('plugin') {
-                                sh "npm install npm"
+                                sh "npm install 'npm@<7'"
                                 sh "node_modules/.bin/npm install"
                                 sh 'npm run lint'
                                 sh 'npm test'
@@ -105,7 +105,7 @@ pipeline {
 
                                     sh "cp -rf \$(cat foreman/bastion-version) plugin/engines/bastion_katello/bastion-${bastion_version}"
                                     dir('plugin/engines/bastion_katello') {
-                                        sh "npm install npm"
+                                        sh "npm install 'npm@<7'"
                                         sh "node_modules/.bin/npm install bastion-${bastion_version}"
                                         sh "TZ=UTC grunt ci"
                                     }
@@ -127,7 +127,7 @@ pipeline {
                     steps {
                         dir('foreman') {
                             gitlabCommitStatus(name: "assets-precompile") {
-                                sh "npm install npm"
+                                sh "npm install 'npm@<7'"
                                 withRVM(["bundle exec node_modules/.bin/npm install"], ruby)
                                 withRVM(["bundle exec rake plugin:assets:precompile[${plugin_name}] RAILS_ENV=production --trace"], ruby)
                             }

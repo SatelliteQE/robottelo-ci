@@ -71,7 +71,7 @@ pipeline {
                     steps {
                         dir('foreman') {
                             gitlabCommitStatus(name: "assets-precompile") {
-                                sh "npm install npm"
+                                sh "npm install 'npm@<7'"
                                 withRVM(["bundle exec node_modules/.bin/npm install"], ruby)
                                 withRVM(["bundle exec rake plugin:assets:precompile[${plugin_name}] RAILS_ENV=production --trace"], ruby)
                             }
