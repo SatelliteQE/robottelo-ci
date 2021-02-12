@@ -34,7 +34,7 @@ def setup_foreman(ruby = '2.2') {
         withRVM(['bundle exec rake db:migrate -q RAILS_ENV=production'], ruby)
 
         if (fileExists('package.json')) {
-              sh 'npm install --save npm'
+              sh "npm install --save 'npm@<7'"
               sh 'npm install phantomjs'
               withRVM(['./node_modules/.bin/npm install'], ruby)
         }
