@@ -97,18 +97,20 @@ pipeline {
 
         stage("Post Testing - archiving casettes") {
             steps {
-                script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-                        remote = [: ]
-                        remote.name = "Satellite Server "
-                        remote.allowAnyHosts = true
-                        remote.host = SERVER_HOSTNAME
-                        remote.user = userName
-                        remote.identityFile = identity
-                        sshCommand remote: remote, command: 'tar -czvf cassettes.tar.gz tests/test_playbooks/fixtures'
-                        ssh_venv '''
-                            rm -f module_list
-                        '''
+                if (VCR_MODE != 'livetest') {
+                    script {
+                        withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+                            remote = [: ]
+                            remote.name = "Satellite Server "
+                            remote.allowAnyHosts = true
+                            remote.host = SERVER_HOSTNAME
+                            remote.user = userName
+                            remote.identityFile = identity
+                            sshCommand remote: remote, command: 'tar -czvf cassettes.tar.gz tests/test_playbooks/fixtures'
+                            ssh_venv '''
+                                rm -f module_list
+                            '''
+                        }
                     }
                 }
             }
