@@ -1,0 +1,29 @@
+- job:
+    name: obal-update
+    project-type: pipeline
+    sandbox: true
+    build-discarder:
+      days-to-keep: 45
+      num-to-keep: -1
+    parameters:
+      - string:
+          name: package_name
+          description: 'Name of the package to update in the obal packaging repo'
+      - string:
+          name: branch
+          default: 'SATELLITE-STREAM'
+          description: 'Branch of the obal packaging repo to update.'
+      - string:
+          name: gitlab_repo
+          default: 'satellite6/satellite-packaging'
+          description: 'The obal packaging repo "project/repo" in gitlab'
+    dsl:
+      !include-raw:
+        - workflows/obal-update.groovy
+        - workflows/lib/toolbelt.groovy
+        - pipelines/lib/ansible.groovy
+        - pipelines/lib/obal.groovy
+        - workflows/lib/kerberos.groovy
+        - workflows/lib/gitlab.groovy
+    notifications:
+      - snapper_notifications
