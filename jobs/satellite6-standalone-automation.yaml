@@ -61,9 +61,9 @@
                 parameter will be ignored</strong>.</p>
         - string:
             name: PYTEST_MARKS
-            default: stubbed
+            default: 
             description: |
-                Specify the py.test marks you want to run or skip when specifying PYTEST_OPTIONS.
+                Specify the -m option to filter pytest collection. INCLUDE `-m`, for example `-m destructive`
         - string:
             name: ROBOTTELO_REPO
             default: https://github.com/SatelliteQE/robottelo.git

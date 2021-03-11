@@ -86,6 +86,7 @@ if [ "${ENDPOINT}" != "end-to-end" ]; then
     $(which py.test) -v --junit-xml="${ENDPOINT}-upgrade-sequential-results.xml" \
         -o junit_suite_name="${ENDPOINT}-upgrade-sequential" \
         -m "upgrade and run_in_one_thread" \
+        --include-stubbed \
         ${TEST_TYPE}
 
     # Run all tiers parallel tests with upgrade mark
@@ -93,6 +94,7 @@ if [ "${ENDPOINT}" != "end-to-end" ]; then
     $(which py.test) -v --junit-xml="${ENDPOINT}-upgrade-parallel-results.xml" -n "${ROBOTTELO_WORKERS}" \
         -o junit_suite_name="${ENDPOINT}-upgrade-parallel" \
         -m "upgrade and not run_in_one_thread" \
+        --include-stubbed \
         ${TEST_TYPE}
     set -e
 elif [ "${ENDPOINT}" == "end-to-end" ]; then

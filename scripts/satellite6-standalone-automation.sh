@@ -38,7 +38,7 @@ env =
    PYTHONHASHSEED=0
 
 pytest() {
-    $(which py.test) -v --junit-xml=foreman-results.xml -o junit_suite_name=standalone-automation -m "${PYTEST_MARKS}" "$@"
+    $(which py.test) -v --junit-xml=foreman-results.xml -o junit_suite_name=standalone-automation "${PYTEST_MARKS}" "$@"
 }
 
 if [ -n "${PYTEST_OPTIONS:-}" ]; then
