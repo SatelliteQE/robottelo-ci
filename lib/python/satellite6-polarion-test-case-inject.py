@@ -30,11 +30,13 @@ def get_product_versions(repo, test_path, tmp_path, xml_file_path):
     # Get all branches of cloned repo
     get_repo(url=repo, tmp_path=tmp_path)
     branches = get_all_branches(tmp_path + "/.git")
-    satellite_stable_branches = re.findall(r"origin/6.*", branches.decode('utf-8'))
+    # FREEZE: care only about 6.2.z..6.8.z branches
+    satellite_stable_branches = re.findall(r"origin/6\.[2-8].*", branches.decode('utf-8'))
 
     satellite_stable_branches = [
         name.replace("origin/", " ").strip() for name in satellite_stable_branches]
-    satellite_stable_branches.append('master')
+    # FREEZE: 6.9.freeze branch replaces master
+    satellite_stable_branches.append('6.9.freeze')
     previous_directory = os.getcwd()
     os.chdir(tmp_path)
 
@@ -65,15 +67,16 @@ def get_product_versions(repo, test_path, tmp_path, xml_file_path):
         versions = []
         for branches_name in satellite_stable_branches:
             if tc_id in dict[branches_name]:
-                if branches_name == "master":
-                    # Replace master with respective product version it points to
-                    master_branch_sat_version = float(max([x.replace(
-                        ".z", "") for x in satellite_stable_branches if x != "master"])) + 0.1
-                    master_branch_sat_version = round(master_branch_sat_version, 1)
-                    versions.append(branches_name.replace(
-                        "master", str(master_branch_sat_version)))
-                else:
-                    versions.append(branches_name.replace(".z", ""))
+                # FREEZE: 6.9.freeze branch replaces master
+                # if branches_name == "master":
+                #     # Replace master with respective product version it points to
+                #     master_branch_sat_version = float(max([x.replace(
+                #         ".z", "") for x in satellite_stable_branches if x != "master"])) + 0.1
+                #     master_branch_sat_version = round(master_branch_sat_version, 1)
+                #     versions.append(branches_name.replace(
+                #         "master", str(master_branch_sat_version)))
+                # else:
+                versions.append('.'.join(branches_name.split('.')[:2]))
         dict1[tc_id] = ", ".join(versions)
 
     os.chdir(previous_directory)
