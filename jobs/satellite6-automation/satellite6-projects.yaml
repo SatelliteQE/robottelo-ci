@@ -12,9 +12,11 @@
             scm-branch: origin/6.7.z
         - '6.8':
               scm-branch: origin/6.8.z
-        - '6.9'
+        - '6.9':
+              scm-branch: origin/6.9.freeze
         - 'upstream-nightly':
-            rp_project: 'katello-nightly'
+              scm-branch: origin/6.9.freeze
+              rp_project: 'katello-nightly'
     os:
         - 'rhel7'
         - 'rhel8'
@@ -80,7 +82,8 @@
             scm-branch: origin/6.7.z
         - '6.8':
             scm-branch: origin/6.8.z
-        - '6.9'
+        - '6.9':
+            scm-branch: origin/6.9.freeze
     os:
         - 'rhel7'
     jobs:
