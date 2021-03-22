@@ -97,8 +97,8 @@ pipeline {
 
         stage("Post Testing - archiving casettes") {
             steps {
-                if (VCR_MODE != 'livetest') {
-                    script {
+                script {
+                    if (VCR_MODE != 'livetest') {
                         withCredentials([sshUserPrivateKey(credentialsId: 'id_hudson_rsa', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
                             remote = [: ]
                             remote.name = "Satellite Server "
