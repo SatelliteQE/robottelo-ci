@@ -53,6 +53,9 @@ echo "========================================"
 echo "Hostname: ${SERVER_HOSTNAME}"
 echo "========================================"
 
+# Addign sleep here as dns lookup is taking some time to get updated 
+sleep 10m
+
 fab -D -H "root@${SERVER_HOSTNAME}" partition_disk
 
 fab -D -H "root@${SERVER_HOSTNAME}" "generate_custom_certs"
