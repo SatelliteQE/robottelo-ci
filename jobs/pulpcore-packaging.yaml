@@ -100,10 +100,8 @@
 - project:
     name: pulpcore-packaging
     pulpcore_version:
-      - '34'
-      - '36'
       - '37'
-      - '38'
+      - '311'
     jobs:
       - pulpcore-{pulpcore_version}-pulpcore-packaging-release-build
       - pulpcore-{pulpcore_version}-pulpcore-packaging-scratch-build
