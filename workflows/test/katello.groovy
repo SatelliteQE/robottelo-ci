@@ -72,21 +72,6 @@ pipeline {
                         }
                     }
                 }
-                stage('react-ui') {
-                    when {
-                        expression { fileExists('plugin/package.json') }
-                    }
-                    steps {
-                        gitlabCommitStatus(name: "react-ui") {
-                            dir('plugin') {
-                                sh "npm install 'npm@<7'"
-                                sh "node_modules/.bin/npm install"
-                                sh 'npm run lint'
-                                sh 'npm test'
-                            }
-                        }
-                    }
-                }
                 stage('angular-ui') {
                     steps {
                         script {
