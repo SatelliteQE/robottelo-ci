@@ -1,5 +1,6 @@
 - job:
     name: polarion-test-case
+    disabled: true
     node: sat6-rhel
     scm:
         - git:
