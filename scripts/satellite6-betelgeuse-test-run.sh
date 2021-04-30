@@ -117,8 +117,3 @@ else
             "${POLARION_URL}import/xunit"
     done
 fi
-
-# Mark the iteration done
-python satellite6-polarion-test-plan.py \
-    --name "${TEST_RUN_ID}" \
-    "${POLARION_PROJECT}"
