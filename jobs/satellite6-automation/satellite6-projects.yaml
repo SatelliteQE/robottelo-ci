@@ -5,6 +5,7 @@
     name: satellite6-automation
     scm-branch: origin/master
     rp_project: 'satellite6'
+    disabled: false
     satellite_version:
         - '6.6':
             scm-branch: origin/6.6.z

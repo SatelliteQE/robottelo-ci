@@ -1,6 +1,7 @@
 - job-template:
     name: 'automation-{satellite_version}-trigger-tiers-{os}'
     project-type: multijob
+    disabled: {disabled}
     node: docker
     build-discarder:
         num-to-keep: 16
@@ -66,6 +67,7 @@
 - job-template:
     name: 'automation-{satellite_version}-{endpoint}-{os}'
     project-type: pipeline
+    disabled: {disabled}
     sandbox: true
     properties:
         - inject:

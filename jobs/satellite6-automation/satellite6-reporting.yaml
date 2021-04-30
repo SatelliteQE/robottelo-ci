@@ -1,6 +1,7 @@
 - job-template:
     name: 'report-automation-results-{satellite_version}-{os}'
     project-type: pipeline
+    disabled: {disabled}
     sandbox: true
     parameters:
       - string:
@@ -23,6 +24,7 @@
 
 - job-template:
     name: 'report-consolidated-coverage-{satellite_version}-{os}'
+    disabled: {disabled}
     node: sat6-{satellite_version}
     parameters:
         - satellite6-automation-parameters
