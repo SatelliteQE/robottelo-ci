@@ -1,7 +1,7 @@
 - job-template:
     name: 'automation-{satellite_version}-trigger-tiers-{os}'
     project-type: multijob
-    disabled: {disabled}
+    disabled: '{disabled}'
     node: docker
     build-discarder:
         num-to-keep: 16
