@@ -39,7 +39,7 @@
 - job-template:
     name: polarion-trigger-{satellite_version}-{os}
     project-type: multijob
-    disabled: {disabled}
+    disabled: '{disabled}'
     node: sat6-{satellite_version}
     parameters:
         - string:
@@ -116,7 +116,7 @@
 
 - job-template:
     name: polarion-test-run-{satellite_version}-{os}
-    disabled: {disabled}
+    disabled: '{disabled}'
     node: sat6-{satellite_version}
     scm:
         - git:

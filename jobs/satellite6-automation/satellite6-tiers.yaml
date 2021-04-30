@@ -67,7 +67,7 @@
 - job-template:
     name: 'automation-{satellite_version}-{endpoint}-{os}'
     project-type: pipeline
-    disabled: {disabled}
+    disabled: '{disabled}'
     sandbox: true
     properties:
         - inject:
