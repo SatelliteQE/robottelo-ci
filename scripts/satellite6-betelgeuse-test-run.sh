@@ -31,7 +31,6 @@ TEST_RUN_GROUP_ID="$(echo ${TEST_RUN_ID} | cut -d' ' -f2)"
 # Prepare the XML files
 
 if [[ "${TEST_RUN_ID}" = *"upgrade"* ]]; then
-    TEST_RUN_ID="${TEST_RUN_ID} - Upgrade"
     # All tiers result upload
     for run in parallel sequential; do
         betelgeuse ${TOKEN_PREFIX} test-run \
