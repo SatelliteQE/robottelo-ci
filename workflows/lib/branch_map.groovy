@@ -56,7 +56,7 @@ branch_map = [
         'packaging_job': 'sat-69-satellite-packaging-update'
     ],
     'SATELLITE-STREAM': [
-        'repo': 'Satellite Stream Source Files',
+        'repo': 'Satellite stream Source Files',
         'version': 'stream',
         'tool_belt_config': './configs/satellite/',
         'foreman_branch': 'develop',
