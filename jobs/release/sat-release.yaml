@@ -62,7 +62,7 @@
           satellite_cron: ''
       - '66':
           satellite_dotted_version: '6.6'
-          satellite_cron: 'H 1 * * *'
+          satellite_cron: ''
       - '67':
           satellite_dotted_version: '6.7'
           satellite_cron: 'H 3 * * *'
@@ -72,6 +72,9 @@
       - '69':
           satellite_dotted_version: '6.9'
           satellite_cron: 'H 7 * * *'
+      - '610':
+          satellite_dotted_version: '6.10'
+          satellite_cron: 'H 1 * * *'
       - 'stream':
           satellite_dotted_version: 'stream'
           satellite_cron: 'H 9 * * *'

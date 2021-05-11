@@ -55,6 +55,14 @@ branch_map = [
         'ruby': '2.5',
         'packaging_job': 'sat-69-satellite-packaging-update'
     ],
+    'SATELLITE-6.10.0': [
+        'repo': 'Satellite 6.10 Source Files',
+        'version': '6.10.0',
+        'tool_belt_config': './configs/satellite/',
+        'foreman_branch': '2.5-stable',
+        'ruby': '2.7',
+        'packaging_job': 'sat-610-satellite-packaging-update'
+    ],
     'SATELLITE-STREAM': [
         'repo': 'Satellite stream Source Files',
         'version': 'stream',
