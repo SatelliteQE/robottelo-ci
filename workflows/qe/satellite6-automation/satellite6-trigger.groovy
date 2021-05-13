@@ -73,18 +73,6 @@ pipeline {
       }
      }
     }
-    stage("Trigger Polarion test Case job") {
-     steps {
-      script {
-       build job: "polarion-test-case",
-        parameters: [
-         string(name: 'SATELLITE_VERSION', value: "${satellite_version}"),
-        ],
-        propagate: false,
-        wait: true
-      }
-     }
-    }
     stage("Trigger Sanity job for rhel7") {
      when {
       expression {
