@@ -8,4 +8,4 @@
         foreman_server_url: "{{ server }}"
         foreman_validate_certs: False
         foreman_organization: "{{ organization }}"
-        foreman_content_view_version_cleanup_keep: 5
+        foreman_content_view_version_cleanup_keep: 2
