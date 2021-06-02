@@ -193,14 +193,6 @@ node {
           }
         }
       }
-
-
-      build job: "trigger-satellite-${satellite_main_version}",
-        parameters: [
-          [$class: 'StringParameterValue', name: 'SATELLITE_DISTRIBUTION', value: 'INTERNAL'],
-          [$class: 'StringParameterValue', name: 'BUILD_LABEL', value: "Satellite ${full_snap_version}"],
-        ],
-        wait: false
     }
 }
 
