@@ -1,6 +1,5 @@
 def compose_rhel_versions = ['7']
 def tools_compose_rhel_versions = ['8', '7', '6']
-def tools_compose_sles_versions = [ ]
 
 def os_versions = ['7']
 
@@ -59,8 +58,6 @@ def tools_composite_content_views = [
     "Tools ${satellite_main_version} with RHEL6 Server",
 ]
 def composite_content_views = satellite_composite_content_views + capsule_composite_content_views + tools_composite_content_views
-
-def tools_sles_content_views = [ ]
 
 def satellite_activation_keys = [
     "satellite-${satellite_main_version}-qa-rhel7",

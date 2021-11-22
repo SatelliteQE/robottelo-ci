@@ -65,22 +65,6 @@ node('sat6-build') {
         )
       }
 
-      tools_sles_content_views.each { cv ->
-        compareContentViews(
-          organization: 'Sat6-CI',
-          content_view: cv,
-          from_lifecycle_environment: 'Library',
-          to_lifecycle_environment: 'QA'
-        )
-
-        promoteContentView(
-          organization: 'Sat6-CI',
-          content_view: cv,
-          from_lifecycle_environment: 'Library',
-          to_lifecycle_environment: 'QA'
-        )
-      }
-
     }
 
     stage("Create Archive Environment") {
@@ -138,15 +122,6 @@ node('sat6-build') {
     stage("Archive Tools") {
 
       tools_composite_content_views.each { cv ->
-        promoteContentView(
-          organization: 'Sat6-CI',
-          content_view: cv,
-          from_lifecycle_environment: 'QA',
-          to_lifecycle_environment: full_snap_version
-        )
-      }
-
-      tools_sles_content_views.each { cv ->
         promoteContentView(
           organization: 'Sat6-CI',
           content_view: cv,
